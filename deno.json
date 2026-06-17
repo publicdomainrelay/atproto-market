@@ -10,7 +10,10 @@
     "lib/hono-factory-market-settlement-free",
     "lib/hono-factory-market-settlement-x402",
     "lib/hono-factory-did-plc-directory",
-    "lib/hono-factory-compute-bidder"
+    "lib/hono-factory-compute-bidder",
+    "lib/market-registry-atproto",
+    "lib/hono-factory-market-registry",
+    "hono-market-registry"
   ],
   "nodeModulesDir": "auto",
   "imports": {
@@ -39,6 +42,8 @@
     "@publicdomainrelay/hono-factory-market-settlement-x402": "./lib/hono-factory-market-settlement-x402/mod.ts",
     "@publicdomainrelay/hono-factory-did-plc-directory": "./lib/hono-factory-did-plc-directory/mod.ts",
     "@publicdomainrelay/hono-factory-compute-bidder": "./lib/hono-factory-compute-bidder/mod.ts",
+    "@publicdomainrelay/market-registry-atproto": "./lib/market-registry-atproto/mod.ts",
+    "@publicdomainrelay/hono-factory-market-registry": "./lib/hono-factory-market-registry/mod.ts",
     "@publicdomainrelay/atproto-attestation-port": "../typescript-helpers/lib/atproto-attestation-port/mod.ts",
     "@publicdomainrelay/atproto-helpers": "../typescript-helpers/lib/atproto-helpers/mod.ts",
     "@publicdomainrelay/did-plc": "../typescript-helpers/lib/did-plc/mod.ts",
@@ -46,8 +51,8 @@
     "@publicdomainrelay/logger": "../typescript-helpers/lib/logger/mod.ts",
     "@publicdomainrelay/hono-error-middleware": "../typescript-helpers/lib/hono-error-middleware/mod.ts",
     "@publicdomainrelay/atproto-repo-abc": "../hono-pds/lib/abc/atproto-repo/mod.ts",
-    "@publicdomainrelay/atproto-repo-deno": "../hono-pds/lib/atproto-repo-deno/mod.ts",
     "@publicdomainrelay/atproto-repo-common": "../hono-pds/lib/common/mod.ts",
+    "@publicdomainrelay/atproto-repo-deno": "../hono-pds/lib/atproto-repo-deno/mod.ts",
     "@publicdomainrelay/hono-factory-atproto-repo-deno": "../hono-pds/lib/hono-factory-atproto-repo-deno/mod.ts",
     "@publicdomainrelay/did-key-relay-subscriber-xrpc": "../did-key-relay/lib/did-key-relay-subscriber-xrpc/mod.ts",
     "@publicdomainrelay/hono-factory-did-key-relay-subscriber-xrpc": "../did-key-relay/lib/hono-factory-did-key-relay-subscriber-xrpc/mod.ts",
@@ -61,7 +66,7 @@
     "@atproto/common": "npm:@atproto/common@^0.5.0"
   },
   "tasks": {
-    "check": "deno check lib/common/market-lexicons/mod.ts lib/common/market-common/mod.ts lib/abc/market/mod.ts lib/market-atproto/mod.ts",
+    "check": "deno check lib/common/market-lexicons/mod.ts lib/common/market-common/mod.ts lib/abc/market/mod.ts lib/market-atproto/mod.ts lib/market-registry-atproto/mod.ts lib/hono-factory-market-registry/mod.ts",
     "generate-lexicons": "goat lex pull com.atproto.repo.strongRef && deno x -A -y npm:@atproto/lex build --override --import-ext \".ts\" --lexicons ./lexicons --out lib/common/market-lexicons"
   },
   "fmt": {

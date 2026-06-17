@@ -1,0 +1,7 @@
+{
+  "port": 0,
+  "plc-directory-url": "https://plc.directory",
+  "dispatcher-host": "xrpc.fedproxy.com",
+  "health-interval-ms": 60000,
+  "stale-threshold-ms": 300000
+}
