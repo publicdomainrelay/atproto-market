@@ -1,0 +1,54 @@
+{
+  "workspace": [
+    "lib/common/market-lexicons",
+    "lib/common/market-common",
+    "lib/abc/market",
+    "lib/market-atproto",
+    "lib/market-settlement-free",
+    "lib/market-settlement-x402",
+    "lib/hono-factory-market-atproto",
+    "lib/hono-factory-market-settlement-free",
+    "lib/hono-factory-market-settlement-x402",
+    "lib/hono-factory-did-plc-directory"
+  ],
+  "nodeModulesDir": "auto",
+  "imports": {
+    "@hono/hono": "jsr:@hono/hono@^4",
+    "@std/assert": "jsr:@std/assert@^1",
+    "@atproto/lex": "npm:@atproto/lex@^0.1.3",
+    "@atproto/api": "npm:@atproto/api@^0.20.8",
+    "@atproto/common-web": "npm:@atproto/common-web@^0.5.0",
+    "@atproto/crypto": "npm:@atproto/crypto@^0.4.4",
+    "@atproto/identity": "npm:@atproto/identity@^0.5.0",
+    "@atproto/xrpc": "npm:@atproto/xrpc@^0.7.0",
+    "@atproto/xrpc-server": "npm:@atproto/xrpc-server@^0.11.1",
+    "@atiproto/atproto-attestation": "../typescript-helpers/lib/atproto-attestation-port/mod.ts",
+    "@atiproto/key-resolver": "npm:@atiproto/key-resolver@^0.1.0",
+    "@ipld/dag-cbor": "npm:@ipld/dag-cbor@^9.2.0",
+    "multiformats": "npm:multiformats@^13.3.0",
+    "multiformats/bases/base32": "npm:multiformats@^13.3.0/bases/base32",
+    "@publicdomainrelay/market-lexicons": "./lib/common/market-lexicons/mod.ts",
+    "@publicdomainrelay/market-common": "./lib/common/market-common/mod.ts",
+    "@publicdomainrelay/market-abc": "./lib/abc/market/mod.ts",
+    "@publicdomainrelay/market-atproto": "./lib/market-atproto/mod.ts",
+    "@publicdomainrelay/market-settlement-free": "./lib/market-settlement-free/mod.ts",
+    "@publicdomainrelay/market-settlement-x402": "./lib/market-settlement-x402/mod.ts",
+    "@publicdomainrelay/hono-factory-market-atproto": "./lib/hono-factory-market-atproto/mod.ts",
+    "@publicdomainrelay/hono-factory-market-settlement-free": "./lib/hono-factory-market-settlement-free/mod.ts",
+    "@publicdomainrelay/hono-factory-market-settlement-x402": "./lib/hono-factory-market-settlement-x402/mod.ts",
+    "@publicdomainrelay/hono-factory-did-plc-directory": "./lib/hono-factory-did-plc-directory/mod.ts",
+    "@publicdomainrelay/atproto-attestation-port": "../typescript-helpers/lib/atproto-attestation-port/mod.ts",
+    "@publicdomainrelay/atproto-helpers": "../typescript-helpers/lib/atproto-helpers/mod.ts",
+    "@publicdomainrelay/did-plc": "../typescript-helpers/lib/did-plc/mod.ts",
+    "@publicdomainrelay/cli-args-env": "../typescript-helpers/lib/cli-args-env/mod.ts",
+    "@publicdomainrelay/logger": "../typescript-helpers/lib/logger/mod.ts",
+    "@publicdomainrelay/hono-error-middleware": "../typescript-helpers/lib/hono-error-middleware/mod.ts"
+  },
+  "tasks": {
+    "check": "deno check lib/common/market-lexicons/mod.ts lib/common/market-common/mod.ts lib/abc/market/mod.ts lib/market-atproto/mod.ts",
+    "generate-lexicons": "goat lex pull com.atproto.repo.strongRef && deno x -A -y npm:@atproto/lex build --override --import-ext \".ts\" --lexicons ./lexicons --out lib/common/market-lexicons"
+  },
+  "fmt": {
+    "lineWidth": 100
+  }
+}

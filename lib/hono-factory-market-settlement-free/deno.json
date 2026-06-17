@@ -1,0 +1,12 @@
+{
+  "name": "@publicdomainrelay/hono-factory-market-settlement-free",
+  "version": "0.0.0",
+  "license": "Unlicense",
+  "imports": {
+    "@hono/hono": "jsr:@hono/hono@^4",
+    "@publicdomainrelay/market-settlement-free": "jsr:@publicdomainrelay/market-settlement-free@^0",
+    "@publicdomainrelay/market-atproto": "jsr:@publicdomainrelay/market-atproto@^0",
+    "@publicdomainrelay/market-common": "jsr:@publicdomainrelay/market-common@^0"
+  },
+  "exports": "./mod.ts"
+}
