@@ -13,7 +13,8 @@
     "lib/hono-factory-compute-bidder",
     "lib/market-registry-atproto",
     "lib/hono-factory-market-registry",
-    "hono-market-registry"
+    "hono-market-registry",
+    "hono-bidder"
   ],
   "nodeModulesDir": "auto",
   "imports": {
