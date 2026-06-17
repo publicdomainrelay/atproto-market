@@ -9,7 +9,8 @@
     "lib/hono-factory-market-atproto",
     "lib/hono-factory-market-settlement-free",
     "lib/hono-factory-market-settlement-x402",
-    "lib/hono-factory-did-plc-directory"
+    "lib/hono-factory-did-plc-directory",
+    "lib/hono-factory-compute-bidder"
   ],
   "nodeModulesDir": "auto",
   "imports": {
@@ -37,12 +38,27 @@
     "@publicdomainrelay/hono-factory-market-settlement-free": "./lib/hono-factory-market-settlement-free/mod.ts",
     "@publicdomainrelay/hono-factory-market-settlement-x402": "./lib/hono-factory-market-settlement-x402/mod.ts",
     "@publicdomainrelay/hono-factory-did-plc-directory": "./lib/hono-factory-did-plc-directory/mod.ts",
+    "@publicdomainrelay/hono-factory-compute-bidder": "./lib/hono-factory-compute-bidder/mod.ts",
     "@publicdomainrelay/atproto-attestation-port": "../typescript-helpers/lib/atproto-attestation-port/mod.ts",
     "@publicdomainrelay/atproto-helpers": "../typescript-helpers/lib/atproto-helpers/mod.ts",
     "@publicdomainrelay/did-plc": "../typescript-helpers/lib/did-plc/mod.ts",
     "@publicdomainrelay/cli-args-env": "../typescript-helpers/lib/cli-args-env/mod.ts",
     "@publicdomainrelay/logger": "../typescript-helpers/lib/logger/mod.ts",
-    "@publicdomainrelay/hono-error-middleware": "../typescript-helpers/lib/hono-error-middleware/mod.ts"
+    "@publicdomainrelay/hono-error-middleware": "../typescript-helpers/lib/hono-error-middleware/mod.ts",
+    "@publicdomainrelay/atproto-repo-abc": "../hono-pds/lib/abc/atproto-repo/mod.ts",
+    "@publicdomainrelay/atproto-repo-deno": "../hono-pds/lib/atproto-repo-deno/mod.ts",
+    "@publicdomainrelay/atproto-repo-common": "../hono-pds/lib/common/mod.ts",
+    "@publicdomainrelay/hono-factory-atproto-repo-deno": "../hono-pds/lib/hono-factory-atproto-repo-deno/mod.ts",
+    "@publicdomainrelay/did-key-relay-subscriber-xrpc": "../did-key-relay/lib/did-key-relay-subscriber-xrpc/mod.ts",
+    "@publicdomainrelay/hono-factory-did-key-relay-subscriber-xrpc": "../did-key-relay/lib/hono-factory-did-key-relay-subscriber-xrpc/mod.ts",
+    "@publicdomainrelay/did-key-relay-subscriber-abc": "../did-key-relay/lib/abc/did-key-relay-subscriber/mod.ts",
+    "@publicdomainrelay/did-key-relay-common": "../did-key-relay/lib/common/did-key-relay/mod.ts",
+    "@publicdomainrelay/compute-provider-abc": "../hono-compute-provider/lib/abc/compute-provider/mod.ts",
+    "@publicdomainrelay/compute-provider-local": "../hono-compute-provider/lib/compute-provider-local/mod.ts",
+    "@publicdomainrelay/compute-provider-digitalocean": "../hono-compute-provider/lib/compute-provider-digitalocean/mod.ts",
+    "@publicdomainrelay/compute-provider-common": "../hono-compute-provider/lib/common/compute-provider-common/mod.ts",
+    "@publicdomainrelay/rbac-atproto": "../hono-compute-provider/lib/rbac-atproto/mod.ts",
+    "@atproto/common": "npm:@atproto/common@^0.5.0"
   },
   "tasks": {
     "check": "deno check lib/common/market-lexicons/mod.ts lib/common/market-common/mod.ts lib/abc/market/mod.ts lib/market-atproto/mod.ts",
