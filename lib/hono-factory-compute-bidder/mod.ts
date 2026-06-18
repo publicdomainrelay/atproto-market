@@ -28,6 +28,11 @@ import { strongRef, DEFAULT_REGISTRY_ENDPOINTS, SUBMIT_BID_LXM } from "@publicdo
 import type { ComputeProvider, ComputeProviderMode, DropletSpec, StrongRef } from "@publicdomainrelay/compute-provider-abc";
 import { createLocalComputeProvider } from "@publicdomainrelay/compute-provider-local";
 import { createDigitalOceanComputeProvider } from "@publicdomainrelay/compute-provider-digitalocean";
+import { createOidcIssuer } from "@publicdomainrelay/oidc-issuer";
+
+function didWebToHttps(didOrUrl: string): string {
+  return didOrUrl.startsWith("did:web:") ? "https://" + didOrUrl.slice("did:web:".length) : didOrUrl;
+}
 
 export interface ComputeProviderConfig {
   mode?: ComputeProviderMode;
@@ -301,7 +306,7 @@ export async function createBidder(
         log: localLog,
         parseAtUri,
         getAgentDid: () => did,
-        getIssuerUrl: () => "",
+        getIssuerUrl: () => didWebToHttps(relayProxyRef),
         acceptPathVm: cpCfg?.acceptPathVm,
         containerMode: cpCfg?.containerMode ?? "container",
         vmImage: cpCfg?.vmImage,
@@ -594,6 +599,7 @@ export async function createBidder(
           rfp: { uri: rfpRef.uri, cid: rfpRef.cid },
           bid: bidRef ? { uri: bidRef.uri, cid: bidRef.cid } : null,
           bid_config: bidConfigResolved,
+          vm: { uri: vmRef.uri, cid: vmRef.cid, value: vm },
         };
         const vmWithBundle = {
           ...vm,
@@ -790,6 +796,24 @@ export async function createBidder(
         message: e.message,
       }),
   });
+
+  // Mount OIDC issuer routes on the bidder's app (served over XRPC relay).
+  // Containers call back through the relay to exchange provisioning tokens
+  // for workload-identity OIDC tokens. proxyRef is the public HTTPS URL
+  // returned by the relay registration.
+  if (mode === "local" && computeProvider) {
+    const issuerHttps = didWebToHttps(relayProxyRef);
+    const oidcIssuer = createOidcIssuer({
+      getIssuerUrl: () => issuerHttps,
+      getDroplet: (id) => computeProvider.getDroplet?.(id),
+      serviceUrl: issuerHttps,
+      log: (level, msg, extra) =>
+        logInfo({ label: LABEL, severity: level, message: msg, ...(extra ?? {}) }),
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    app.route("/", oidcIssuer.app as any);
+    logInfo({ event: "bidder_oidc_issuer_mounted", issuerUrl: issuerHttps });
+  }
 
   logInfo({ event: "bidder_relay_connecting", dispatcherHost: DISPATCHER_HOST });
 

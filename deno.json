@@ -64,6 +64,8 @@
     "@publicdomainrelay/compute-provider-digitalocean": "../hono-compute-provider/lib/compute-provider-digitalocean/mod.ts",
     "@publicdomainrelay/compute-provider-common": "../hono-compute-provider/lib/common/compute-provider-common/mod.ts",
     "@publicdomainrelay/rbac-atproto": "../hono-compute-provider/lib/rbac-atproto/mod.ts",
+    "@publicdomainrelay/oidc-issuer": "../hono-compute-provider/lib/oidc-issuer/mod.ts",
+    "@publicdomainrelay/oidc-issuer-abc": "../hono-compute-provider/lib/abc/oidc-issuer/mod.ts",
     "@atproto/common": "npm:@atproto/common@^0.5.0"
   },
   "tasks": {
