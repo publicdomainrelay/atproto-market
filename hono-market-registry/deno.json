@@ -5,7 +5,7 @@
     "@hono/hono": "jsr:@hono/hono@^4",
     "@publicdomainrelay/cli-args-env": "../../typescript-helpers/lib/cli-args-env/mod.ts",
     "@publicdomainrelay/logger": "../../typescript-helpers/lib/logger/mod.ts",
-    "@publicdomainrelay/did-plc": "../../typescript-helpers/lib/did-plc/mod.ts",
+    "@publicdomainrelay/did-plc": "../lib/did-plc/mod.ts",
     "@publicdomainrelay/market-abc": "../lib/abc/market/mod.ts",
     "@publicdomainrelay/market-common": "../lib/common/market-common/mod.ts",
     "@publicdomainrelay/market-atproto": "../lib/market-atproto/mod.ts",
