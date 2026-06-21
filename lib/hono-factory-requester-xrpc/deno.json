@@ -1,0 +1,14 @@
+{
+  "name": "@publicdomainrelay/hono-factory-requester-xrpc",
+  "version": "0.0.0",
+  "license": "Unlicense",
+  "exports": "./mod.ts",
+  "imports": {
+    "@hono/hono": "jsr:@hono/hono@^4",
+    "@atproto/identity": "npm:@atproto/identity@^0.5.0",
+    "@publicdomainrelay/market-atproto": "jsr:@publicdomainrelay/market-atproto@^0",
+    "@publicdomainrelay/market-common": "jsr:@publicdomainrelay/market-common@^0",
+    "@publicdomainrelay/requester-abc": "jsr:@publicdomainrelay/requester-abc@^0",
+    "@publicdomainrelay/logger": "jsr:@publicdomainrelay/logger@^0"
+  }
+}
