@@ -21,6 +21,7 @@
     "lib/abc/requester",
     "lib/requester-xrpc",
     "lib/hono-factory-requester-xrpc",
+    "lib/xrpc-relay",
     "request-vm-ssh",
     "hono-bidder"
   ],
@@ -59,6 +60,7 @@
     "@publicdomainrelay/hono-error-middleware": "../typescript-helpers/lib/hono-error-middleware/mod.ts",
     "@publicdomainrelay/hono-factory-atproto-repo-deno": "../hono-pds/lib/hono-factory-atproto-repo-deno/mod.ts",
     "@publicdomainrelay/hono-factory-did-key-relay-subscriber-xrpc": "../did-key-relay/lib/hono-factory-did-key-relay-subscriber-xrpc/mod.ts",
+    "@publicdomainrelay/hono-factory-did-key-relay-relayer-xrpc": "../did-key-relay/lib/hono-factory-did-key-relay-relayer-xrpc/mod.ts",
     "@publicdomainrelay/hono-factory-did-plc-directory": "./lib/hono-factory-did-plc-directory/mod.ts",
     "@publicdomainrelay/hono-factory-market-atproto": "./lib/hono-factory-market-atproto/mod.ts",
     "@publicdomainrelay/hono-factory-market-settlement-free": "./lib/hono-factory-market-settlement-free/mod.ts",
@@ -81,6 +83,9 @@
     "@publicdomainrelay/requester-xrpc": "./lib/requester-xrpc/mod.ts",
     "@publicdomainrelay/sandbox-abc": "../deno-worker-sandbox/lib/abc/sandbox/mod.ts",
     "@publicdomainrelay/sandbox-deno": "../deno-worker-sandbox/lib/sandbox-deno/mod.ts",
+    "@publicdomainrelay/serve": "../typescript-helpers/lib/serve/mod.ts",
+    "@publicdomainrelay/xrpc-relay": "./lib/xrpc-relay/mod.ts",
+    "@publicdomainrelay/hostname-helpers": "../typescript-helpers/lib/hostname-helpers/mod.ts",
     "@std/assert": "jsr:@std/assert@^1",
     "multiformats": "npm:multiformats@^13.3.0",
     "multiformats/bases/base32": "npm:multiformats@^13.3.0/bases/base32"

@@ -1,0 +1,16 @@
+{
+  "name": "@publicdomainrelay/xrpc-relay",
+  "version": "0.0.0",
+  "license": "Unlicense",
+  "exports": "./mod.ts",
+  "imports": {
+    "@publicdomainrelay/atproto-repo-deno": "jsr:@publicdomainrelay/atproto-repo-deno@^0",
+    "@publicdomainrelay/did-key-relay-common": "jsr:@publicdomainrelay/did-key-relay-common@^0",
+    "@publicdomainrelay/did-key-relay-subscriber-abc": "jsr:@publicdomainrelay/did-key-relay-subscriber-abc@^0",
+    "@publicdomainrelay/did-key-relay-subscriber-xrpc": "jsr:@publicdomainrelay/did-key-relay-subscriber-xrpc@^0",
+    "@publicdomainrelay/hono-factory-did-key-relay-subscriber-xrpc": "jsr:@publicdomainrelay/hono-factory-did-key-relay-subscriber-xrpc@^0",
+    "@publicdomainrelay/hostname-helpers": "jsr:@publicdomainrelay/hostname-helpers@^0",
+    "@publicdomainrelay/logger": "jsr:@publicdomainrelay/logger@^0",
+    "@publicdomainrelay/serve": "jsr:@publicdomainrelay/serve@^0"
+  }
+}
