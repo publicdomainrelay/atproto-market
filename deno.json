@@ -7,6 +7,7 @@
     "lib/common/market-lexicons",
     "lib/common/market-common",
     "lib/abc/market",
+    "lib/abc/market-bidder",
     "lib/market-atproto",
     "lib/market-settlement-free",
     "lib/market-settlement-x402",
@@ -51,6 +52,9 @@
     "@publicdomainrelay/atproto-relay-xrpc": "../atproto-relay/lib/atproto-relay-xrpc/mod.ts",
     "@publicdomainrelay/atproto-repo-deno": "../hono-pds/lib/atproto-repo-deno/mod.ts",
     "@publicdomainrelay/event-bus": "../typescript-helpers/lib/event-bus/mod.ts",
+    "@publicdomainrelay/firehose-watcher-abc": "../typescript-helpers/lib/firehose-watcher-abc/mod.ts",
+    "@publicdomainrelay/firehose-watcher-subscriberepos": "../typescript-helpers/lib/firehose-watcher-subscriberepos/mod.ts",
+    "@publicdomainrelay/firehose-watcher-jetstream": "../typescript-helpers/lib/firehose-watcher-jetstream/mod.ts",
     "@publicdomainrelay/hono-factory-atproto-relay-xrpc": "../atproto-relay/lib/hono-factory-atproto-relay-xrpc/mod.ts",
     "@publicdomainrelay/cli-args-env": "../typescript-helpers/lib/cli-args-env/mod.ts",
     "@publicdomainrelay/cloud-init-common": "./lib/common/cloud-init-common/mod.ts",
@@ -78,6 +82,7 @@
     "@publicdomainrelay/market-abc": "./lib/abc/market/mod.ts",
     "@publicdomainrelay/market-atproto": "./lib/market-atproto/mod.ts",
     "@publicdomainrelay/market-bidder": "./lib/market-bidder/mod.ts",
+    "@publicdomainrelay/market-bidder-abc": "./lib/abc/market-bidder/mod.ts",
     "@publicdomainrelay/market-bidder-compute": "./lib/market-bidder-compute/mod.ts",
     "@publicdomainrelay/market-bidder-worker": "./lib/market-bidder-worker/mod.ts",
     "@publicdomainrelay/market-common": "./lib/common/market-common/mod.ts",
@@ -101,7 +106,7 @@
     "multiformats/bases/base32": "npm:multiformats@^13.3.0/bases/base32"
   },
   "tasks": {
-    "check": "deno check lib/common/market-lexicons/mod.ts lib/common/market-common/mod.ts lib/abc/market/mod.ts lib/market-atproto/mod.ts lib/common/cloud-init-common/mod.ts lib/abc/requester/mod.ts",
+    "check": "deno check lib/common/market-lexicons/mod.ts lib/common/market-common/mod.ts lib/abc/market/mod.ts lib/abc/market-bidder/mod.ts lib/market-atproto/mod.ts lib/common/cloud-init-common/mod.ts lib/abc/requester/mod.ts",
     "generate-lexicons": "goat lex pull com.atproto.repo.strongRef && deno x -A -y npm:@atproto/lex build --override --import-ext \".ts\" --lexicons ./lexicons --out lib/common/market-lexicons"
   },
   "fmt": {
