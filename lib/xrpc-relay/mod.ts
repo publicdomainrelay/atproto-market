@@ -10,10 +10,12 @@ export interface CreateXrpcRelayOpts {
   dispatcherHost: string;
   signer: { did(): string; sign(bytes: Uint8Array): Promise<Uint8Array> };
   keypair: { did(): string; sign(data: Uint8Array): Promise<Uint8Array> };
+  label?: string;
 }
 
 export function createXrpcRelay(opts: CreateXrpcRelayOpts): RelayRef {
   const { logger, dispatcherHost, signer, keypair } = opts;
+  const label = opts.label ?? "bidder";
   let ws: WebSocket | null = null;
 
   const relay: RelayRef = {
@@ -28,7 +30,6 @@ export function createXrpcRelay(opts: CreateXrpcRelayOpts): RelayRef {
       }
 
       const host = hostnameOnly(dispatcherHost);
-      const label = "bidder";
 
       logger.info("xrpc-relay connecting", { dispatcherHost });
 
