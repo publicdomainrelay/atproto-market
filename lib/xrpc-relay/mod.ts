@@ -11,12 +11,19 @@ export interface CreateXrpcRelayOpts {
   signer: { did(): string; sign(bytes: Uint8Array): Promise<Uint8Array> };
   keypair: { did(): string; sign(data: Uint8Array): Promise<Uint8Array> };
   label?: string;
+  /**
+   * Lazily resolves the local serve's TCP address so inbound relay WS
+   * subscriptions (e.g. com.atproto.sync.subscribeRepos from a crawling relay)
+   * are forwarded to the local app's firehose. Read lazily because the port is
+   * assigned when the serve starts listening.
+   */
+  localWsTarget?: () => { hostname: string; port: number } | undefined;
 }
 
 export function createXrpcRelay(opts: CreateXrpcRelayOpts): RelayRef {
   const { logger, dispatcherHost, signer, keypair } = opts;
   const label = opts.label ?? "bidder";
-  let ws: WebSocket | null = null;
+  let subscriber: { close(): void } | null = null;
 
   const relay: RelayRef = {
     proxyRef: "",
@@ -39,10 +46,11 @@ export function createXrpcRelay(opts: CreateXrpcRelayOpts): RelayRef {
         getServiceAuthToken,
         dispatcherHost,
         handleRequest,
+        wsTarget: opts.localWsTarget,
       });
 
       relay.proxyRef = handle.proxyRef;
-      ws = handle.ws;
+      subscriber = handle;
 
       logger.info("xrpc-relay registered", {
         subdomain: handle.subdomain,
@@ -51,7 +59,7 @@ export function createXrpcRelay(opts: CreateXrpcRelayOpts): RelayRef {
     },
 
     close(): void {
-      ws?.close();
+      subscriber?.close();
     },
   };
 
