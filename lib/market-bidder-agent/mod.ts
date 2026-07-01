@@ -126,15 +126,20 @@ export function createOAuthAgent(
     did: string,
     writes: WriteOp[],
   ) {
+    // AT Protocol XRPC uses "value" for record content; internal WriteOp uses "record"
+    const xrpcWrites = writes.map((w) => {
+      const { record, ...rest } = w as { record?: unknown; [key: string]: unknown };
+      return { ...rest, ...(record !== undefined ? { value: record } : {}) };
+    });
     const res = await dpopFetch(
       "POST",
       `${currentSession.pds}/xrpc/com.atproto.repo.applyWrites`,
-      { repo: did, writes },
+      { repo: did, validate: false, writes: xrpcWrites },
     );
     if (!res.ok) {
       const err = await res.text().catch(() => "");
       const dpopNonce = res.headers.get("DPoP-Nonce") || "";
-      throw new Error(`applyWrites failed: ${res.status} ${err} dpop-nonce=${dpopNonce}`);
+      throw new Error(`applyWrites failed: ${res.status} ${err} dpop-nonce=${dpopNonce} body=${JSON.stringify({ repo: did, writes: xrpcWrites }).slice(0, 500)}`);
     }
     return res.json() as Promise<CommitEvent>;
   }
@@ -174,12 +179,31 @@ export function createOAuthAgent(
     return res.json() as Promise<{ records: Array<{ uri: string; cid: string; value: Record<string, unknown> }> }>;
   }
 
+  async function createRecord(
+    did: string,
+    collection: string,
+    rkey: string,
+    record: Record<string, unknown>,
+  ): Promise<{ uri: string; cid: string }> {
+    const res = await dpopFetch(
+      "POST",
+      `${currentSession.pds}/xrpc/com.atproto.repo.createRecord`,
+      { repo: did, collection, rkey, record, validate: false },
+    );
+    if (!res.ok) {
+      const err = await res.text().catch(() => "");
+      throw new Error(`createRecord failed: ${res.status} ${err}`);
+    }
+    return res.json() as Promise<{ uri: string; cid: string }>;
+  }
+
   return {
     did: currentSession.did,
     signer,
     applyWrites,
     getRecord,
     listRecords,
+    createRecord,
   };
 }
 
@@ -195,10 +219,30 @@ export async function createDesktopATProto(
   plcClient: CreateATProtoOpts["plcDirectory"],
 ): Promise<ATProto> {
   const { createATProto } = await import("@publicdomainrelay/atproto-helpers");
-  return createATProto({
+  const atproto = await createATProto({
     logger,
     badgeBlueSigner,
     plcDirectory: plcClient,
     agent,
   });
+  // Override createRecord to use validate:false — bsky.social PDS rejects
+  // applyWrites for Lexicons not in its local cache, but createRecord with
+  // validate:false bypasses Lexicon validation.
+  const rawCreateRecord = (agent as { createRecord?: (did: string, collection: string, rkey: string, record: Record<string, unknown>) => Promise<{ uri: string; cid: string }> }).createRecord;
+  if (rawCreateRecord) {
+    const did = atproto.did;
+    let _clock = 0;
+    const nextTid = () => {
+      const ts = Date.now().toString(36).padStart(13, "0");
+      const clock = (_clock++ % 2048).toString(36).padStart(2, "0");
+      return (ts + clock + "0").toLowerCase();
+    };
+    atproto.createRecord = async (collection: string, record: Record<string, unknown>) => {
+      return rawCreateRecord(did, collection, nextTid(), record);
+    };
+    atproto.createRepoRecord = async (collection: string, record: Record<string, unknown>) => {
+      return rawCreateRecord(did, collection, nextTid(), record);
+    };
+  }
+  return atproto;
 }
