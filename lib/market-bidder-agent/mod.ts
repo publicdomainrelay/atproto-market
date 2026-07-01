@@ -12,7 +12,13 @@ import type { WriteOp, CommitEvent } from "@publicdomainrelay/atproto-repo-abc";
 import type { StructuredLoggerInterface } from "@publicdomainrelay/logger";
 import { TID } from "@atproto/common";
 import { attestationFor, toStorableEntry } from "@publicdomainrelay/market-atproto";
-import type { AttestationKeypair } from "@publicdomainrelay/market-atproto";
+import type { AttestationKeypair, InlineAttestation } from "@publicdomainrelay/market-atproto";
+import type { StrongRef } from "@publicdomainrelay/market-common";
+
+/** Minimal DID-doc resolver shape callService needs — not the full @atproto/identity IdResolver. */
+export interface DidResolverLike {
+  did: { resolve(did: string): Promise<Record<string, unknown> | null> };
+}
 
 // ---------------------------------------------------------------------------
 // Minimal session shape — avoids importing from deno-macos-runner-desktop
@@ -31,8 +37,8 @@ export type DpopProofCreator = (
   publicJwk: Record<string, string>,
   method: string,
   url: string,
-  accessToken: string | null,
   nonce?: string | null,
+  accessToken?: string | null,
 ) => Promise<string>;
 
 export interface OAuthAgentOptions {
@@ -82,13 +88,13 @@ export function createOAuthAgent(
     body?: Record<string, unknown>,
   ): Promise<Response> {
     const makeRequest = async (): Promise<Response> => {
-      const nonce = nonces.get(url) ?? undefined;
+      const nonce = nonces.get(url) ?? null;
       const proof = await createDpopProof(
         currentSession.dpopKeyPair,
         currentSession.dpopPublicJwk,
         method,
         url,
-        nonce ?? undefined,
+        nonce,
         currentSession.accessJwt,
       );
       const headers: Record<string, string> = {
@@ -131,13 +137,13 @@ export function createOAuthAgent(
   ) {
     // AT Protocol XRPC uses "value" for record content; internal WriteOp uses "record"
     const xrpcWrites = writes.map((w) => {
-      const { record, ...rest } = w as { record?: unknown; [key: string]: unknown };
+      const { record, ...rest } = w as unknown as { record?: unknown; [key: string]: unknown };
       return { ...rest, ...(record !== undefined ? { value: record } : {}) };
     });
     const res = await dpopFetch(
       "POST",
-      `${currentSession.pds}/xrpc/com.atproto.repo.applyWrites?validate=false`,
-      { repo: did, writes: xrpcWrites },
+      `${currentSession.pds}/xrpc/com.atproto.repo.applyWrites`,
+      { repo: did, validate: false, writes: xrpcWrites },
     );
     if (!res.ok) {
       const err = await res.text().catch(() => "");
@@ -190,12 +196,30 @@ export function createOAuthAgent(
   ): Promise<{ uri: string; cid: string }> {
     const res = await dpopFetch(
       "POST",
-      `${currentSession.pds}/xrpc/com.atproto.repo.createRecord?validate=false`,
-      { repo: did, collection, rkey, record },
+      `${currentSession.pds}/xrpc/com.atproto.repo.createRecord`,
+      { repo: did, collection, rkey, record, validate: false },
     );
     if (!res.ok) {
       const err = await res.text().catch(() => "");
       throw new Error(`createRecord failed: ${res.status} ${err}`);
+    }
+    return res.json() as Promise<{ uri: string; cid: string }>;
+  }
+
+  async function putRecord(
+    did: string,
+    collection: string,
+    rkey: string,
+    record: Record<string, unknown>,
+  ): Promise<{ uri: string; cid: string }> {
+    const res = await dpopFetch(
+      "POST",
+      `${currentSession.pds}/xrpc/com.atproto.repo.putRecord`,
+      { repo: did, collection, rkey, record, validate: false },
+    );
+    if (!res.ok) {
+      const err = await res.text().catch(() => "");
+      throw new Error(`putRecord failed: ${res.status} ${err}`);
     }
     return res.json() as Promise<{ uri: string; cid: string }>;
   }
@@ -220,6 +244,7 @@ export function createOAuthAgent(
     getRecord,
     listRecords,
     createRecord,
+    putRecord,
     getServiceAuth,
   };
 }
@@ -232,7 +257,7 @@ export async function createDesktopATProto(
   logger: StructuredLoggerInterface,
   agent: AtprotoAgentLike,
   badgeBlueSigner: CreateATProtoOpts["badgeBlueSigner"],
-  idResolver: CreateATProtoOpts["plcDirectory"],
+  idResolver: DidResolverLike,
   plcClient: CreateATProtoOpts["plcDirectory"],
 ): Promise<ATProto> {
   const { createATProto } = await import("@publicdomainrelay/atproto-helpers");
@@ -246,6 +271,14 @@ export async function createDesktopATProto(
   // applyWrites for Lexicons not in its local cache, but createRecord with
   // validate:false bypasses Lexicon validation.
   const rawCreateRecord = (agent as { createRecord?: (did: string, collection: string, rkey: string, record: Record<string, unknown>) => Promise<{ uri: string; cid: string }> }).createRecord;
+  const rawPutRecord = (agent as { putRecord?: (did: string, collection: string, rkey: string, record: Record<string, unknown>) => Promise<{ uri: string; cid: string }> }).putRecord;
+  if (rawPutRecord) {
+    const did = atproto.did;
+    atproto.updateRecord = async (collection: string, rkey: string, record: Record<string, unknown>) => {
+      const result = await rawPutRecord(did, collection, rkey, record);
+      return { $type: "com.atproto.repo.strongRef", uri: result.uri, cid: result.cid } as StrongRef;
+    };
+  }
   if (rawCreateRecord) {
     const did = atproto.did;
     let _clock = 0;
@@ -255,7 +288,8 @@ export async function createDesktopATProto(
       return (ts + clock + "0").toLowerCase();
     };
     atproto.createRecord = async (collection: string, record: Record<string, unknown>) => {
-      return rawCreateRecord(did, collection, nextTid(), record);
+      const result = await rawCreateRecord(did, collection, nextTid(), record);
+      return { $type: "com.atproto.repo.strongRef", uri: result.uri, cid: result.cid } as StrongRef;
     };
     atproto.createRepoRecord = async (collection: string, record: Record<string, unknown>) => {
       return rawCreateRecord(did, collection, nextTid(), record);
@@ -273,7 +307,7 @@ export async function createDesktopATProto(
       ) => {
         const rkey = TID.next().toString();
         const att = attestationFor(signer, issuer);
-        const entry = await att.sign({ record: record as Record<string, unknown>, repository: did });
+        const entry = await att.sign({ record: record as Record<string, unknown>, repository: did }) as InlineAttestation;
         const signed = { ...record, signatures: [toStorableEntry(entry)] };
         const result = await rawCreateRecord(did, collection, rkey, signed);
         return { uri: result.uri, cid: result.cid, record: signed };
@@ -304,8 +338,8 @@ export async function createDesktopATProto(
       } else if (endpointUrl.startsWith("did:")) {
         const didPart = endpointUrl.split("#")[0];
         const svcId = endpointUrl.includes("#") ? endpointUrl.split("#")[1] : "pdr_temp_market";
-        const svcDoc = await idResolver.did.resolve(didPart);
-        const svc = (svcDoc?.service ?? []).find((s: { id: string }) => s.id === `#${svcId}`);
+        const svcDoc = await idResolver.did.resolve(didPart) as { service?: Array<{ id: string; serviceEndpoint: string }> } | null;
+        const svc = (svcDoc?.service ?? []).find((s) => s.id === `#${svcId}`);
         if (!svc) throw new Error(`service ${svcId} not found in DID doc for ${didPart}`);
         const ep = (svc as { serviceEndpoint: string }).serviceEndpoint.replace(/\/+$/, "");
         targetBase = `${ep}/xrpc`;
