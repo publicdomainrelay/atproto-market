@@ -10,6 +10,9 @@
 import type { AtprotoAgentLike, ATProto, CreateATProtoOpts } from "@publicdomainrelay/atproto-helpers";
 import type { WriteOp, CommitEvent } from "@publicdomainrelay/atproto-repo-abc";
 import type { StructuredLoggerInterface } from "@publicdomainrelay/logger";
+import { TID } from "@atproto/common";
+import { attestationFor, toStorableEntry } from "@publicdomainrelay/market-atproto";
+import type { AttestationKeypair } from "@publicdomainrelay/market-atproto";
 
 // ---------------------------------------------------------------------------
 // Minimal session shape — avoids importing from deno-macos-runner-desktop
@@ -133,8 +136,8 @@ export function createOAuthAgent(
     });
     const res = await dpopFetch(
       "POST",
-      `${currentSession.pds}/xrpc/com.atproto.repo.applyWrites`,
-      { repo: did, validate: false, writes: xrpcWrites },
+      `${currentSession.pds}/xrpc/com.atproto.repo.applyWrites?validate=false`,
+      { repo: did, writes: xrpcWrites },
     );
     if (!res.ok) {
       const err = await res.text().catch(() => "");
@@ -187,14 +190,27 @@ export function createOAuthAgent(
   ): Promise<{ uri: string; cid: string }> {
     const res = await dpopFetch(
       "POST",
-      `${currentSession.pds}/xrpc/com.atproto.repo.createRecord`,
-      { repo: did, collection, rkey, record, validate: false },
+      `${currentSession.pds}/xrpc/com.atproto.repo.createRecord?validate=false`,
+      { repo: did, collection, rkey, record },
     );
     if (!res.ok) {
       const err = await res.text().catch(() => "");
       throw new Error(`createRecord failed: ${res.status} ${err}`);
     }
     return res.json() as Promise<{ uri: string; cid: string }>;
+  }
+
+  async function getServiceAuth(aud: string, lxm?: string): Promise<string> {
+    const params = new URLSearchParams({ aud });
+    if (lxm) params.set("lxm", lxm);
+    const url = `${currentSession.pds}/xrpc/com.atproto.server.getServiceAuth?${params}`;
+    const res = await dpopFetch("GET", url);
+    if (!res.ok) {
+      const err = await res.text().catch(() => "");
+      throw new Error(`getServiceAuth failed: ${res.status} ${err}`);
+    }
+    const data = await res.json() as { token: string };
+    return data.token;
   }
 
   return {
@@ -204,6 +220,7 @@ export function createOAuthAgent(
     getRecord,
     listRecords,
     createRecord,
+    getServiceAuth,
   };
 }
 
@@ -243,6 +260,70 @@ export async function createDesktopATProto(
     atproto.createRepoRecord = async (collection: string, record: Record<string, unknown>) => {
       return rawCreateRecord(did, collection, nextTid(), record);
     };
+    // Override createSignedRepoRecord: base impl calls applyWrites which bsky.social
+    // PDS rejects for custom Lexicons even with validate=false. Use createRecord
+    // (com.atproto.repo.createRecord) instead — same endpoint as the working
+    // createRecord wrapper.
+    if (atproto.createSignedRepoRecord) {
+      const signer = badgeBlueSigner as AttestationKeypair;
+      atproto.createSignedRepoRecord = async (
+        collection: string,
+        record: Record<string, unknown>,
+        issuer?: string,
+      ) => {
+        const rkey = TID.next().toString();
+        const att = attestationFor(signer, issuer);
+        const entry = await att.sign({ record: record as Record<string, unknown>, repository: did });
+        const signed = { ...record, signatures: [toStorableEntry(entry)] };
+        const result = await rawCreateRecord(did, collection, rkey, signed);
+        return { uri: result.uri, cid: result.cid, record: signed };
+      };
+    }
   }
+
+  // Override callService: base impl uses signServiceAuth which signs JWTs with
+  // the raw keypair (iss=did:key:...). Bsky.social PDS users cannot register
+  // custom keys in their PLC DID doc, so the JWT signature doesn't verify
+  // against did:plc's #atproto key. Per ATProto inter-service-auth spec, use
+  // com.atproto.server.getServiceAuth — the PDS signs the JWT with the user's
+  // real atproto key, producing iss=did:plc:... and a verifiable signature.
+  const saAgent = agent as { getServiceAuth?: (aud: string, lxm?: string) => Promise<string> };
+  if (saAgent.getServiceAuth) {
+    const baseCallService = atproto.callService;
+    atproto.callService = async (
+      endpointUrl: string,
+      nsid: string,
+      lxm: string,
+      body: Record<string, unknown>,
+    ): Promise<{ status: number; ok: boolean; body: unknown }> => {
+      let targetBase: string;
+      let audDid: string;
+      if (endpointUrl.startsWith("http://") || endpointUrl.startsWith("https://")) {
+        targetBase = `${endpointUrl.replace(/\/+$/, "")}/xrpc`;
+        audDid = `did:web:${new URL(endpointUrl).host}`;
+      } else if (endpointUrl.startsWith("did:")) {
+        const didPart = endpointUrl.split("#")[0];
+        const svcId = endpointUrl.includes("#") ? endpointUrl.split("#")[1] : "pdr_temp_market";
+        const svcDoc = await idResolver.did.resolve(didPart);
+        const svc = (svcDoc?.service ?? []).find((s: { id: string }) => s.id === `#${svcId}`);
+        if (!svc) throw new Error(`service ${svcId} not found in DID doc for ${didPart}`);
+        const ep = (svc as { serviceEndpoint: string }).serviceEndpoint.replace(/\/+$/, "");
+        targetBase = `${ep}/xrpc`;
+        audDid = `did:web:${new URL(ep).host}`;
+      } else {
+        throw new Error(`unresolvable endpoint: ${endpointUrl}`);
+      }
+      const token = await saAgent.getServiceAuth!(audDid, lxm);
+      const res = await fetch(`${targetBase}/${nsid}`, {
+        method: "POST",
+        headers: { "content-type": "application/json", authorization: `Bearer ${token}` },
+        body: JSON.stringify(body),
+      });
+      let resBody: unknown;
+      try { resBody = await res.json(); } catch { resBody = await res.text(); }
+      return { status: res.status, ok: res.ok, body: resBody };
+    };
+  }
+
   return atproto;
 }
