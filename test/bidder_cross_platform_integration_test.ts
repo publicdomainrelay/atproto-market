@@ -1,6 +1,7 @@
 // Cross-platform bidder integration test matrix.
-// Validates: RFP → bid → accept → container provision → SSH via relay tunnel.
-// Two bidder variants: hono-bidder (static imports) + hono-desktop (dynamic imports).
+// Validates: RFP → bid → accept → container provision.
+// Two bidder variants: hono-bidder (static imports for core flow) +
+// hono-bidder CLI subprocess (local ssh-xrpc-relay).
 // Runs on macOS (container CLI), Linux (docker), WSL2 (docker), Windows (wsl docker).
 //
 //   deno test --allow-all test/bidder_cross_platform_integration_test.ts
@@ -20,11 +21,14 @@ import { createLocalComputeProvider } from "@publicdomainrelay/compute-provider-
 import type { ComputeAtproto } from "@publicdomainrelay/compute-provider-abc";
 import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-relay-relayer-xrpc";
 import {
-  createRequesterPDS, runComputeContract,
+  createRequesterPDS, ensureWebsocat, runComputeContract,
 } from "@publicdomainrelay/requester-xrpc";
 import type { ContainerBackend } from "@publicdomainrelay/container-backend-abc";
 import { createContainerBackend } from "@publicdomainrelay/container-backend-container";
 import { createDockerBackend } from "@publicdomainrelay/container-backend-docker";
+import { buildTunnelUserData } from "@publicdomainrelay/cloud-init-common";
+import { didToSubdomain, TUNNEL_NSID } from "@publicdomainrelay/did-key-relay-common";
+import { runPackageRegistry } from "../../hono-jsr/hono-package-registry/main.ts";
 import { installFetchInterceptor } from "./fetch-interceptor.ts";
 
 // ===========================================================================
@@ -44,10 +48,11 @@ function flattenLabel(s: string): string {
 function serveOnPort0(
   fetch: (req: Request) => Response | Promise<Response>,
   ac: AbortController,
+  hostname = "127.0.0.1",
 ): Promise<number> {
   const { promise, resolve } = Promise.withResolvers<number>();
   Deno.serve(
-    { port: 0, hostname: "127.0.0.1", signal: ac.signal,
+    { port: 0, hostname, signal: ac.signal,
       onListen: (addr) => resolve((addr as Deno.NetAddr).port) },
     fetch,
   );
@@ -100,14 +105,6 @@ function createFakePlc() {
   return { app };
 }
 
-async function execInContainer(
-  backend: ContainerBackend, containerName: string, args: string[],
-): Promise<string> {
-  const { code, stdout } = await backend.exec(containerName, args);
-  if (code !== 0) throw new Error(`exec ${args.join(" ")} failed`);
-  return stdout;
-}
-
 async function findContainerByDid(
   backend: ContainerBackend, did: string,
 ): Promise<string | null> {
@@ -118,18 +115,109 @@ async function findContainerByDid(
 }
 
 // ===========================================================================
-// Bidder factories
+// Subprocess bidder spawner
 // ===========================================================================
 
-async function createHonoBidder(opts: {
+interface BidderProcess {
+  did: string;
+  cleanup: () => void;
+}
+
+async function spawnBidder(opts: {
+  modPath: string;
+  args: string[];
+  label: string;
+}): Promise<BidderProcess> {
+  const decoder = new TextDecoder();
+  const cmd = new Deno.Command("deno", {
+    args: ["run", "-A", opts.modPath, ...opts.args],
+    stdout: "piped",
+    stderr: "piped",
+  });
+  const child = cmd.spawn();
+  let killed = false;
+  const cleanup = () => {
+    killed = true;
+    try { child.kill("SIGTERM"); } catch { /* already exited */ }
+  };
+
+  const { promise, resolve, reject } = Promise.withResolvers<string>();
+
+  // Forward stderr to test stderr for visibility
+  (async () => {
+    const reader = child.stderr.getReader();
+    let buf = "";
+    try {
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        buf += chunk;
+        while (true) {
+          const nl = buf.indexOf("\n");
+          if (nl < 0) break;
+          Deno.stderr.writeSync(encoder.encode(`[${opts.label}] ${buf.slice(0, nl)}\n`));
+          buf = buf.slice(nl + 1);
+        }
+      }
+    } catch { /* stream closed */ }
+  })();
+
+  // Parse bidder_ready from stdout
+  (async () => {
+    const reader = child.stdout.getReader();
+    let buf = "";
+    try {
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        buf += chunk;
+        while (true) {
+          const nl = buf.indexOf("\n");
+          if (nl < 0) break;
+          const line = buf.slice(0, nl).trim();
+          buf = buf.slice(nl + 1);
+          if (!line) continue;
+          try {
+            const parsed = JSON.parse(line);
+            if (parsed.event === "bidder_ready" && parsed.did) {
+              resolve(parsed.did);
+              return;
+            }
+          } catch { /* not JSON, skip */ }
+        }
+      }
+    } catch { /* stream closed */ }
+    if (!killed) reject(new Error(`[${opts.label}] process exited without bidder_ready`));
+  })();
+
+  const timeout = setTimeout(() => {
+    if (!killed) reject(new Error(`[${opts.label}] bidder_ready timeout after 60s`));
+  }, 60_000);
+
+  try {
+    const did = await promise;
+    clearTimeout(timeout);
+    return { did, cleanup };
+  } catch (e) {
+    clearTimeout(timeout);
+    cleanup();
+    throw e;
+  }
+}
+
+// ===========================================================================
+// Inline bidder factories — core bid flow (skipSsh: true)
+// ===========================================================================
+
+async function createHonoBidderInline(opts: {
   logger: ReturnType<typeof createLogger>;
   plcDirectoryUrl: string;
   dispatcherHost: string;
-  containerMode?: string;
   cleanups: Array<() => void>;
 }) {
   const { logger, plcDirectoryUrl, dispatcherHost, cleanups } = opts;
-  const containerMode = (opts.containerMode ?? "container") as "vm" | "container" | undefined;
 
   const bidderKeypair = await Secp256k1Keypair.create({ exportable: true });
   const bidderPrivHex = Array.from(await bidderKeypair.export())
@@ -162,7 +250,7 @@ async function createHonoBidder(opts: {
       atproto: atproto as unknown as ComputeAtproto,
       serve: providerServe,
       getIssuerUrl: () => didWebToHttps(providerRelay.proxyRef),
-      containerMode,
+      containerMode: "container",
     }),
   });
   await providerServe.beginServe();
@@ -175,26 +263,22 @@ async function createHonoBidder(opts: {
   await bidder.beginServe();
   cleanups.push(() => bidder.shutdown());
 
-  return { atproto, bidder, provider, pdsAgent, providerRelay, providerServe };
+  return { atproto, bidder };
 }
 
-async function createDesktopBidder(opts: {
+async function createDesktopBidderInline(opts: {
   logger: ReturnType<typeof createLogger>;
   plcDirectoryUrl: string;
   dispatcherHost: string;
-  containerMode?: string;
   cleanups: Array<() => void>;
 }) {
   const { logger, plcDirectoryUrl, dispatcherHost, cleanups } = opts;
-  const containerMode = (opts.containerMode ?? "container") as "vm" | "container" | undefined;
 
-  // Dynamic imports — mirrors hono-desktop startBidder()
   const [
     { createXrpcRelay: ciXrpcRelay },
     { createMarketBidder: ciMarketBidder },
     { createComputeProviderHooks: ciProviderHooks },
     { createLocalComputeProvider: ciLocalCompute },
-    { createAppAttestService, createRichKeychainStore },
     { loadOrCreateMarketKeypair },
     { createFilesystemKeychainStore },
     { buildStandardChain },
@@ -204,7 +288,6 @@ async function createDesktopBidder(opts: {
     import("../../atproto-market/lib/market-bidder/mod.ts"),
     import("../../atproto-market/lib/market-bidder-compute/mod.ts"),
     import("../../hono-compute-provider/lib/compute-provider-local/mod.ts"),
-    import("../../deno-macos-runner-desktop/lib/app-attest-none/mod.ts"),
     import("../../deno-macos-runner-desktop/lib/market-bidder-keys/mod.ts"),
     import("../../deno-macos-runner-desktop/lib/secret-store-filesystem/mod.ts"),
     import("../../deno-macos-runner-desktop/lib/secret-store-chain/mod.ts"),
@@ -216,14 +299,9 @@ async function createDesktopBidder(opts: {
 
   const fsStore = createFilesystemKeychainStore({ logger, storageDir: tmpDir });
   const secretStore = buildStandardChain({ filesystemStore: fsStore, logger });
-
-  // Load market keypair from secret store (for market bidder identity)
   const { keypair: marketKp, hex } = await loadOrCreateMarketKeypair(secretStore);
 
-  // Generate separate Secp256k1Keypair for the local PDS agent
   const pdsKeypair = await Secp256k1Keypair.create({ exportable: true });
-  const pdsPrivHex = Array.from(await pdsKeypair.export())
-    .map((b) => b.toString(16).padStart(2, "0")).join("");
 
   const pdsAgent = await createLocalPDSAgent({
     logger, keypair: pdsKeypair,
@@ -252,7 +330,7 @@ async function createDesktopBidder(opts: {
       atproto: atproto as unknown as ComputeAtproto,
       serve: providerServe,
       getIssuerUrl: () => didWebToHttps(providerRelay.proxyRef),
-      containerMode,
+      containerMode: "container",
       rbacProvisioner: ciRbac(),
     }),
   });
@@ -266,12 +344,44 @@ async function createDesktopBidder(opts: {
   await bidder.beginServe();
   cleanups.push(() => bidder.shutdown());
 
-  return { atproto, bidder, provider, pdsAgent, providerRelay, providerServe, secretStore };
+  return { atproto, bidder };
+}
+
+// ===========================================================================
+// Local tunnel contract — guest uses buildTunnelUserData (tunnel-subscriber)
+// ===========================================================================
+
+async function localTunnelContract(opts: {
+  registry: { tcpPort: number };
+  gateway: string;
+  dispPort: number;
+}): Promise<Record<string, unknown>> {
+  const guestKp = await Secp256k1Keypair.create({ exportable: true });
+  const guestPrivHex = Array.from(await guestKp.export())
+    .map((b) => b.toString(16).padStart(2, "0")).join("");
+  const guestSub = didToSubdomain(guestKp.did());
+  const dispatcherHost = `localhost:${opts.dispPort}`;
+  return {
+    fedproxyHost: dispatcherHost,
+    userDataFactory: (sshAuthorizedKey: string) =>
+      buildTunnelUserData({
+        dispatcherHost: `${opts.gateway}:${opts.dispPort}`,
+        audHost: "localhost",
+        privateKeyHex: guestPrivHex,
+        jsrUrl: `${opts.gateway}:${opts.registry.tcpPort}`,
+        sshAuthorizedKey,
+      }),
+    sshProxyCommandFn: () =>
+      `websocat -b --ws-c-uri=ws://${guestSub}.localhost:${opts.dispPort}/xrpc/${TUNNEL_NSID} - ws-c:tcp:127.0.0.1:${opts.dispPort}`,
+  };
 }
 
 // ===========================================================================
 // Test
 // ===========================================================================
+
+const ORG = new URL("../../", import.meta.url).pathname.replace(/\/$/, "");
+const HONO_BIDDER = `${ORG}/atproto-market/hono-bidder/mod.ts`;
 
 Deno.test({
   name: "cross-platform bidder matrix",
@@ -281,7 +391,7 @@ Deno.test({
   const logger = createLogger({ serviceName: "matrix" });
   const cleanups: Array<() => void> = [];
 
-  // ── Detect container backend ────────────────────────────────────────
+  // ── Container backend ─────────────────────────────────────────────────
   const backend: ContainerBackend = Deno.build.os === "darwin"
     ? createContainerBackend()
     : createDockerBackend();
@@ -290,24 +400,26 @@ Deno.test({
     return;
   }
   console.log(`[platform] ${Deno.build.os}, backend: ${backend.type}`);
+  const gateway = await backend.defaultGateway();
 
-  // ── Shared infra: dispatcher ────────────────────────────────────────
-  const dispatcherApp = createRelayFactory({ hostname: "localhost" }).createApp();
+  // ── Shared infra: dispatcher ──────────────────────────────────────────
+  const dispatcherApp = createRelayFactory({
+    hostname: "localhost",
+    additionalHosts: [gateway],
+  }).createApp();
   const dispAc = new AbortController();
-  const dispPort = await serveOnPort0(dispatcherApp.fetch, dispAc);
+  const dispPort = await serveOnPort0(dispatcherApp.fetch, dispAc, "0.0.0.0");
   cleanups.push(() => dispAc.abort());
   const dispatcherHost = `localhost:${dispPort}`;
 
-  // ── Shared infra: fake PLC ──────────────────────────────────────────
+  // ── Shared infra: fake PLC ────────────────────────────────────────────
   const plc = createFakePlc();
   const plcAc = new AbortController();
   const plcPort = await serveOnPort0(plc.app.fetch, plcAc);
   cleanups.push(() => plcAc.abort());
   const plcDirectoryUrl = `http://127.0.0.1:${plcPort}`;
 
-  // ── Fetch interception ──────────────────────────────────────────────
-  // *.localhost DNS doesn't resolve on Windows. Uses raw HTTP via
-  // Deno.connect to preserve the Host header for dispatcher routing.
+  // ── Fetch interception ────────────────────────────────────────────────
   const restoreFetch = installFetchInterceptor({
     realFetch: globalThis.fetch,
     plcDirectoryUrl,
@@ -316,15 +428,12 @@ Deno.test({
   cleanups.push(restoreFetch);
 
   // =====================================================================
-  // Sub-test helper: core bid flow (shared by both variants)
+  // Core bid flow (skipSsh: true) — inline helpers
   // =====================================================================
 
   async function runCoreBidFlow(opts: {
     label: string;
-    createBidder: () => Promise<{
-      atproto: { did: string };
-      providerRelay: { proxyRef: string }; providerServe: { shutdown(): void };
-    }>;
+    createBidder: () => Promise<{ atproto: { did: string } }>;
   }) {
     const bidder = await opts.createBidder();
 
@@ -336,7 +445,6 @@ Deno.test({
     cleanups.push(() => requesterServe.shutdown());
     await requester.beginServe();
 
-    // Spy on bids
     const seenBids: Array<{ did: string; uri: string }> = [];
     const origSet = requester.pendingBids.set.bind(requester.pendingBids);
     requester.pendingBids.set = ((k: string, v: Array<{ did: string; uri: string }>) => {
@@ -361,37 +469,100 @@ Deno.test({
       new Promise((r) => setTimeout(r, 40_000)),
     ]);
 
-    // Assert
     const ourBids = seenBids.filter((b) => b.did === bidder.atproto.did);
     assert(ourBids.length > 0,
       `expected >=1 bid from ${bidder.atproto.did}; got ${seenBids.length} bid(s) from ${JSON.stringify(seenBids.map(b => b.did))}`);
     assert(!seenBids.some((b) => b.did === "did:plc:centraldefaultbidder000000"),
       "central default bidder must not have bid");
 
-    // Clean up container
     const name = await findContainerByDid(backend, bidder.atproto.did);
     if (name) await backend.rm(name).catch(() => {});
   }
 
-  // =====================================================================
-  // Sub-test: hono-bidder core bid flow
-  // =====================================================================
-
   await t.step("[bidder:hono-bidder] core bid flow (container mode)", async () => {
     await runCoreBidFlow({
       label: "hono-bidder",
-      createBidder: () => createHonoBidder({ logger, plcDirectoryUrl, dispatcherHost, cleanups }),
+      createBidder: () => createHonoBidderInline({ logger, plcDirectoryUrl, dispatcherHost, cleanups }),
     });
   });
-
-  // =====================================================================
-  // Sub-test: hono-desktop core bid flow
-  // =====================================================================
 
   await t.step("[bidder:hono-desktop] core bid flow (container mode)", async () => {
     await runCoreBidFlow({
       label: "hono-desktop",
-      createBidder: () => createDesktopBidder({ logger, plcDirectoryUrl, dispatcherHost, cleanups }),
+      createBidder: () => createDesktopBidderInline({ logger, plcDirectoryUrl, dispatcherHost, cleanups }),
+    });
+  });
+
+  // =====================================================================
+  // Local SSH relay — hono-bidder CLI subprocess + buildTunnelUserData
+  // =====================================================================
+
+  await ensureWebsocat(logger).catch(() => {});
+  const websocatOk = await hasCommand("websocat");
+  let jsrRegistry: { tcpPort: number; shutdown(): void } | null = null;
+  async function ensureJsrRegistry(): Promise<{ tcpPort: number }> {
+    if (jsrRegistry) return jsrRegistry;
+    jsrRegistry = await runPackageRegistry({ port: 0, baseDir: ORG });
+    cleanups.push(() => jsrRegistry?.shutdown());
+    return jsrRegistry;
+  }
+
+  async function runSshStep(opts: {
+    label: string;
+    spawnConfig: { modPath: string; args: string[] };
+    contract: Record<string, unknown>;
+  }) {
+    const proc = await spawnBidder({
+      modPath: opts.spawnConfig.modPath,
+      args: opts.spawnConfig.args,
+      label: opts.label,
+    });
+    cleanups.push(proc.cleanup);
+
+    const requesterServe = createServe({ logger, tcp: { addr: "127.0.0.1", port: 0 } });
+    const requester = await createRequesterPDS({
+      logger, serve: requesterServe,
+      plcDirectoryUrl, dispatcherHost,
+      label: `requester-${flattenLabel(opts.label)}`,
+    });
+    cleanups.push(() => requesterServe.shutdown());
+    await requester.beginServe();
+
+    const result = await runComputeContract(requester, {
+      logger,
+      dispatcherHost,
+      skipSsh: false,
+      keepVm: false,
+      bidWindowSec: 8,
+      vmReadyTimeoutSec: 240,
+      execProgram: "echo SSH_OK_VIA_RELAY && uname -a",
+      extraBidderDids: [proc.did],
+      denyBidderDids: ["did:plc:centraldefaultbidder000000"],
+      ...opts.contract,
+    });
+
+    assert(result.event === "compute_request_complete",
+      `[${opts.label}] expected compute_request_complete, got ${result.event}: ${result.error ?? ""}`);
+    assert(result.sshReady === true, `[${opts.label}] guest never reachable over ssh relay`);
+    assert(result.sshExitCode === 0, `[${opts.label}] ssh session exited ${result.sshExitCode}`);
+  }
+
+  await t.step("[bidder:hono-bidder] ssh via local xrpc relay", async () => {
+    if (!websocatOk) { console.log("[SKIP] websocat not installed"); return; }
+    const registry = await ensureJsrRegistry();
+    await runSshStep({
+      label: "hono-bidder-local-ssh",
+      spawnConfig: {
+        modPath: HONO_BIDDER,
+        args: [
+          "--relay-dispatcher-host", dispatcherHost,
+          "--plc-directory-url", plcDirectoryUrl,
+          "--compute-provider-local",
+          "--compute-provider-local-container-mode", "container",
+          "--serve-port", "0",
+        ],
+      },
+      contract: await localTunnelContract({ registry, gateway, dispPort }),
     });
   });
 

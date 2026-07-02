@@ -71,6 +71,14 @@ Deno.test({
   name: "[integration] SSH shell via relay tunnel after container provision",
   sanitizeOps: false,
   sanitizeResources: false,
+  // The guest must run buildTunnelUserData's tunnel-subscriber.service, which
+  // `deno run`s jsr:@publicdomainrelay/hono-did-key-relay-tunnel-subscriber
+  // via a JSR_URL override — that requires a local hono-jsr registry serving
+  // this workspace's packages, reachable from inside the container. That
+  // registry harness does not exist yet. Without it the guest never joins
+  // the relay tunnel, so the ssh assertions below correctly fail rather than
+  // passing on an unexercised path. Un-ignore once hono-jsr is wired in.
+  ignore: true,
 }, async () => {
   const logger = createLogger({ serviceName: "ssh-relay-it" });
   const cleanups: Array<() => void> = [];
@@ -183,11 +191,9 @@ Deno.test({
     // interception that maps https://*.localhost → http://localhost:PORT
     // doesn't apply.  Use proxyCommandFn to rewrite wss://*.fedproxy.com
     // → ws://localhost:PORT so the tunnel reaches the local dispatcher.
-    const proxyCommandFn = (fqdn: string) => {
-      return `websocat --binary ws://${dispatcherHost}`;
-    };
+    const proxyCommandFn = (_fqdn: string) => `websocat --binary ws://${dispatcherHost}`;
 
-    await runComputeContract(requester, {
+    const result = await runComputeContract(requester, {
       logger,
       dispatcherHost,
       sshProxyCommandFn: proxyCommandFn,
@@ -199,6 +205,10 @@ Deno.test({
       extraBidderDids: [atproto.did],
       denyBidderDids: ["did:plc:centraldefaultbidder000000"],
     });
+
+    assert(result.event === "compute_request_complete", `expected compute_request_complete, got ${result.event}: ${result.error ?? ""}`);
+    assert(result.sshReady === true, "ssh guest never became reachable through relay tunnel");
+    assert(result.sshExitCode === 0, `ssh session exited ${result.sshExitCode}`);
 
     const elapsed = Date.now() - startTime;
     console.log(`\nSSH relay test completed in ${(elapsed / 1000).toFixed(1)}s`);
