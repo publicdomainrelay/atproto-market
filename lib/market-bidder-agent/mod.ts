@@ -124,8 +124,21 @@ export function createOAuthAgent(
           res = await makeRequest();
         }
       } else if (res.status === 401) {
-        await refreshLock();
-        res = await makeRequest();
+        // Refresh token and retry. Loop up to 2 refresh attempts:
+        // the auth server that issues access tokens may have clock skew
+        // relative to the PDS resource server — a fresh token can still
+        // fail "exp" claim check. A second refresh gives the auth server
+        // (possibly a different instance with a different clock) another
+        // chance to issue a token the PDS accepts.
+        for (let attempts = 0; attempts < 2; attempts++) {
+          await refreshLock();
+          res = await makeRequest();
+          if (res.status !== 401) break;
+          const retryErr = await res.clone().text().catch(() => "");
+          if (!retryErr.includes("exp")) break;
+          // Clear cached DPoP nonce so next refresh starts fresh
+          nonces.delete(url);
+        }
       }
     }
     return res;
