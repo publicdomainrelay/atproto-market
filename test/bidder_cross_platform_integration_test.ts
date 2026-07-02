@@ -25,6 +25,7 @@ import {
 import type { ContainerBackend } from "@publicdomainrelay/container-backend-abc";
 import { createContainerBackend } from "@publicdomainrelay/container-backend-container";
 import { createDockerBackend } from "@publicdomainrelay/container-backend-docker";
+import { installFetchInterceptor } from "./fetch-interceptor.ts";
 
 // ===========================================================================
 // Helpers
@@ -305,108 +306,14 @@ Deno.test({
   const plcDirectoryUrl = `http://127.0.0.1:${plcPort}`;
 
   // ── Fetch interception ──────────────────────────────────────────────
-  // *.localhost doesn't resolve on Windows. Deno's fetch() ignores manual
-  // Host headers. Use Deno.connect + raw HTTP to preserve the Host header
-  // so the dispatcher can route by subdomain.
-  const realFetch = globalThis.fetch;
-
-  async function rawHttpFetch(urlStr: string, init?: RequestInit): Promise<Response> {
-    const u = new URL(urlStr);
-    const method = init?.method ?? "GET";
-    const headers = new Headers(init?.headers);
-    const body = init?.body as string | Uint8Array | undefined;
-    headers.set("Host", u.host);
-    if (body && !headers.has("content-type")) {
-      headers.set("content-type", "application/json");
-    }
-    if (body && !headers.has("content-length")) {
-      headers.set("content-length", String(new TextEncoder().encode(
-        typeof body === "string" ? body : new TextDecoder().decode(body)
-      ).length));
-    }
-
-    const headerLines = [`${method} ${u.pathname}${u.search} HTTP/1.1`];
-    for (const [k, v] of headers) headerLines.push(`${k}: ${v}`);
-    headerLines.push("connection: close");
-    // join with \r\n, add trailing \r\n to end header section, body follows separately
-    const reqStr = headerLines.join("\r\n") + "\r\n\r\n";
-    const reqBytes = new TextEncoder().encode(reqStr);
-
-    const conn = await Deno.connect({ hostname: "127.0.0.1", port: dispPort });
-    try {
-      await conn.write(reqBytes);
-      if (body) {
-        const bodyBytes = typeof body === "string" ? new TextEncoder().encode(body) : body;
-        await conn.write(bodyBytes);
-      }
-      // Read until connection close (Connection: close header ensures this)
-      const chunks: Uint8Array[] = [];
-      const readBuf = new Uint8Array(8192);
-      while (true) {
-        let n: number | null = null;
-        try { n = await conn.read(readBuf); } catch { break; }
-        if (n === null || n === 0) break;
-        chunks.push(readBuf.slice(0, n));
-      }
-      const rawBytes = chunks.reduce((acc, c) => {
-        const t = new Uint8Array(acc.length + c.length);
-        t.set(acc); t.set(c, acc.length); return t;
-      }, new Uint8Array(0));
-      const raw = new TextDecoder().decode(rawBytes);
-      const headerEnd = raw.indexOf("\r\n\r\n");
-      if (headerEnd < 0) return new Response(raw, { status: 502 });
-      const headerSection = raw.slice(0, headerEnd);
-      let bodySection = raw.slice(headerEnd + 4);
-      const lines = headerSection.split("\r\n");
-      const statusLine = lines[0];
-      const status = parseInt(statusLine.split(" ")[1] || "500");
-      const respHeaders = new Headers();
-      let isChunked = false;
-      for (let i = 1; i < lines.length; i++) {
-        const ci = lines[i].indexOf(": ");
-        if (ci >= 0) {
-          const k = lines[i].slice(0, ci);
-          const v = lines[i].slice(ci + 2);
-          respHeaders.set(k, v);
-          if (k.toLowerCase() === "transfer-encoding" && v.toLowerCase() === "chunked") isChunked = true;
-        }
-      }
-      // Dechunk if needed
-      if (isChunked) {
-        let out = "";
-        while (bodySection.length > 0) {
-          const crlf = bodySection.indexOf("\r\n");
-          if (crlf < 0) break;
-          const sizeHex = bodySection.slice(0, crlf);
-          const size = parseInt(sizeHex, 16);
-          if (size === 0) break;
-          out += bodySection.slice(crlf + 2, crlf + 2 + size);
-          bodySection = bodySection.slice(crlf + 2 + size + 2); // skip \r\n after chunk
-        }
-        bodySection = out;
-      }
-      return new Response(bodySection, { status, headers: respHeaders });
-    } finally {
-      try { conn.close(); } catch { /* ok */ }
-    }
-  }
-
-  globalThis.fetch = ((input: string | URL | Request, init?: RequestInit) => {
-    let url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
-    if (url.startsWith("https://plc.directory/")) {
-      url = plcDirectoryUrl + url.slice("https://plc.directory".length);
-      return realFetch(new Request(url, input instanceof Request ? input : init));
-    }
-    const m = url.match(/^https:\/\/([^/]+)(\/.*)?$/);
-    if (m && (m[1].endsWith(".localhost") || m[1] === "localhost" || m[1].includes(".localhost:"))) {
-      let host = m[1];
-      if (!host.includes(":")) host = `${host}:${dispPort}`;
-      url = `http://${host}${m[2] ?? ""}`;
-      return rawHttpFetch(url, input instanceof Request ? input : init);
-    }
-    return realFetch(input as string | URL | Request, init);
-  }) as typeof fetch;
-  cleanups.push(() => { globalThis.fetch = realFetch; });
+  // *.localhost DNS doesn't resolve on Windows. Uses raw HTTP via
+  // Deno.connect to preserve the Host header for dispatcher routing.
+  const restoreFetch = installFetchInterceptor({
+    realFetch: globalThis.fetch,
+    plcDirectoryUrl,
+    dispPort,
+  });
+  cleanups.push(restoreFetch);
 
   // =====================================================================
   // Sub-test helper: core bid flow (shared by both variants)
