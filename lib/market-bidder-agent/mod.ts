@@ -1,11 +1,9 @@
 // OAuth DPoP-backed AtprotoAgentLike implementation.
-// Bridges the desktop app's OAuth session to the ATProto agent interface
-// that createATProto expects. Uses DPoP-bound fetch for all PDS calls.
+// Uses the official @atproto/oauth-client dpopFetchWrapper for DPoP proof
+// generation, nonce tracking, and use_dpop_nonce retry per RFC 9449.
+// Our code handles Authorization header + 401 invalid_token → refresh → retry.
 //
 // Layering: impl (cross-concept bridge between atproto-oauth and atproto-helpers).
-// Acknowledged exception: accepts createDpopProof via dependency injection
-// rather than importing from atproto-oauth-fetch directly — keeps the package
-// self-contained and avoids a cross-repo import cycle.
 
 import type { AtprotoAgentLike, ATProto, CreateATProtoOpts } from "@publicdomainrelay/atproto-helpers";
 import type { WriteOp, CommitEvent } from "@publicdomainrelay/atproto-repo-abc";
@@ -14,6 +12,11 @@ import { TID } from "@atproto/common";
 import { attestationFor, toStorableEntry } from "@publicdomainrelay/market-atproto";
 import type { AttestationKeypair, InlineAttestation } from "@publicdomainrelay/market-atproto";
 import type { StrongRef } from "@publicdomainrelay/market-common";
+// dpopFetchWrapper is used internally by OAuthSession; import from the
+// implementation module. This is the same DPoP engine the official client uses.
+import { dpopFetchWrapper } from "@atproto/oauth-client/dist/fetch-dpop.js";
+import { base64url } from "multiformats/bases/base64";
+const b64url = (bytes: Uint8Array): string => base64url.baseEncode(bytes);
 
 /** Minimal DID-doc resolver shape callService needs — not the full @atproto/identity IdResolver. */
 export interface DidResolverLike {
@@ -32,26 +35,15 @@ export interface OAuthAgentSession {
   dpopPublicJwk: Record<string, string>;
 }
 
-export type DpopProofCreator = (
-  keyPair: CryptoKeyPair,
-  publicJwk: Record<string, string>,
-  method: string,
-  url: string,
-  nonce?: string | null,
-  accessToken?: string | null,
-) => Promise<string>;
-
 export interface OAuthAgentOptions {
-  createDpopProof: DpopProofCreator;
   refreshSession: () => Promise<OAuthAgentSession>;
   onSessionRefreshed?: (session: OAuthAgentSession) => void;
-  /** Initial DPoP server nonce from token endpoint response. Seeded into
-   * the per-endpoint nonce map so the first resource request carries it. */
-  serverNonce?: string | null;
 }
 
 // ---------------------------------------------------------------------------
-// OAuthAgent — AtprotoAgentLike backed by OAuth DPoP tokens
+// OAuthAgent — AtprotoAgentLike backed by official dpopFetchWrapper + our
+// token refresh logic. DPoP nonce tracking, proof generation, ath claims,
+// and use_dpop_nonce retry are all handled by the official implementation.
 // ---------------------------------------------------------------------------
 
 export function createOAuthAgent(
@@ -61,10 +53,62 @@ export function createOAuthAgent(
 ): AtprotoAgentLike {
   let currentSession = session;
   let refreshPromise: Promise<void> | null = null;
-  const nonces = new Map<string, string | null>();
 
-  const { createDpopProof, refreshSession, onSessionRefreshed, serverNonce } = opts;
-  if (serverNonce) nonces.set(`${session.pds}/xrpc/com.atproto.repo.applyWrites`, serverNonce);
+  const { refreshSession, onSessionRefreshed } = opts;
+
+  // SHA-256 returning base64url string — dpopFetchWrapper calls this with
+  // the access token to compute the ath claim.
+  const sha256b64 = async (input: Uint8Array | string): Promise<string> => {
+    const bytes: Uint8Array<ArrayBuffer> = typeof input === "string"
+      ? new TextEncoder().encode(input) as Uint8Array<ArrayBuffer>
+      : input as Uint8Array<ArrayBuffer>;
+    const digest = await crypto.subtle.digest("SHA-256", bytes);
+    return b64url(new Uint8Array(digest));
+  };
+
+  // Nonce store keyed by origin (per RFC 9449). dpopFetchWrapper reads the
+  // stored nonce for each origin and updates it from response headers.
+  const nonceStore = new Map<string, string>();
+  const nonces = {
+    async get(key: string) { return nonceStore.get(key); },
+    async set(key: string, value: string) { nonceStore.set(key, value); },
+    async del(key: string) { nonceStore.delete(key); },
+  };
+
+  // Build a Key-like object for dpopFetchWrapper. Must provide bareJwk,
+  // algorithms, and createJwt per the @atproto/jwk Key interface.
+  const buildDpopKey = () => ({
+    get bareJwk(): Record<string, string> {
+      const { kty, crv, x, y } = currentSession.dpopPublicJwk;
+      return { kty, crv, x, y };
+    },
+    algorithms: ["ES256"] as string[],
+    async createJwt(
+      header: Record<string, unknown>,
+      payload: Record<string, unknown>,
+    ): Promise<string> {
+      const enc = new TextEncoder();
+      const headerB64 = b64url(enc.encode(JSON.stringify(header)));
+      const payloadB64 = b64url(enc.encode(JSON.stringify(payload)));
+      const signingInput = `${headerB64}.${payloadB64}`;
+      const sig = await crypto.subtle.sign(
+        { name: "ECDSA", hash: "SHA-256" },
+        currentSession.dpopKeyPair.privateKey,
+        enc.encode(signingInput),
+      );
+      return `${signingInput}.${b64url(new Uint8Array(sig))}`;
+    },
+  });
+
+  // deno-lint-ignore no-explicit-any
+  let dpopFetchFn = dpopFetchWrapper({
+    key: buildDpopKey() as any,
+    supportedAlgs: ["ES256"],
+    nonces,
+    // deno-lint-ignore no-explicit-any
+    sha256: sha256b64 as any,
+    isAuthServer: false,
+  });
 
   async function refreshLock(): Promise<void> {
     if (refreshPromise) {
@@ -75,6 +119,16 @@ export function createOAuthAgent(
       try {
         currentSession = await refreshSession();
         onSessionRefreshed?.(currentSession);
+        // Rebuild dpopFetchFn with the new session's key material.
+        // deno-lint-ignore no-explicit-any
+        dpopFetchFn = dpopFetchWrapper({
+          key: buildDpopKey() as any,
+          supportedAlgs: ["ES256"],
+          nonces,
+          // deno-lint-ignore no-explicit-any
+          sha256: sha256b64 as any,
+          isAuthServer: false,
+        });
       } finally {
         refreshPromise = null;
       }
@@ -88,56 +142,39 @@ export function createOAuthAgent(
     body?: Record<string, unknown>,
   ): Promise<Response> {
     const makeRequest = async (): Promise<Response> => {
-      const nonce = nonces.get(url) ?? null;
-      const proof = await createDpopProof(
-        currentSession.dpopKeyPair,
-        currentSession.dpopPublicJwk,
-        method,
-        url,
-        nonce,
-        currentSession.accessJwt,
-      );
       const headers: Record<string, string> = {
         "Authorization": `DPoP ${currentSession.accessJwt}`,
-        "DPoP": proof,
         "Content-Type": "application/json",
       };
-      const res = await fetch(url, {
+      // dpopFetchWrapper reads the Authorization header, computes ath, adds
+      // the DPoP proof header, and handles use_dpop_nonce retry internally.
+      return dpopFetchFn(url, {
         method,
         headers,
         body: body ? JSON.stringify(body) : undefined,
       });
-      // Track DPoP nonce from response
-      const dpopNonce = res.headers.get("DPoP-Nonce");
-      if (dpopNonce) nonces.set(url, dpopNonce);
-      return res;
     };
 
     let res = await makeRequest();
-    // DPoP nonce retry: match working pattern from badge-blue-keys-atproto
-    if (res.status === 400 || res.status === 401) {
-      const errText = await res.clone().text().catch(() => "");
-      if (errText.includes("use_dpop_nonce")) {
-        const dpopNonce = res.headers.get("DPoP-Nonce");
-        if (dpopNonce) {
-          nonces.set(url, dpopNonce);
-          res = await makeRequest();
-        }
-      } else if (res.status === 401) {
-        // Refresh token and retry. Loop up to 2 refresh attempts:
-        // the auth server that issues access tokens may have clock skew
-        // relative to the PDS resource server — a fresh token can still
-        // fail "exp" claim check. A second refresh gives the auth server
-        // (possibly a different instance with a different clock) another
-        // chance to issue a token the PDS accepts.
+    // 401 with WWW-Authenticate: Bearer/DPoP error="invalid_token" means
+    // the access token is expired. Refresh and retry up to 2 times — auth
+    // server and PDS may have clock skew, so a fresh token can still fail
+    // exp claim check on the first attempt.
+    if (res.status === 401) {
+      const wwwAuth = res.headers.get("WWW-Authenticate") ?? "";
+      if (
+        (wwwAuth.startsWith("Bearer ") || wwwAuth.startsWith("DPoP ")) &&
+        wwwAuth.includes('error="invalid_token"')
+      ) {
         for (let attempts = 0; attempts < 2; attempts++) {
           await refreshLock();
           res = await makeRequest();
           if (res.status !== 401) break;
-          const retryErr = await res.clone().text().catch(() => "");
-          if (!retryErr.includes("exp")) break;
-          // Clear cached DPoP nonce so next refresh starts fresh
-          nonces.delete(url);
+          const wwwAuth2 = res.headers.get("WWW-Authenticate") ?? "";
+          if (
+            !(wwwAuth2.startsWith("Bearer ") || wwwAuth2.startsWith("DPoP ")) ||
+            !wwwAuth2.includes('error="invalid_token"')
+          ) break;
         }
       }
     }
@@ -148,7 +185,6 @@ export function createOAuthAgent(
     did: string,
     writes: WriteOp[],
   ) {
-    // AT Protocol XRPC uses "value" for record content; internal WriteOp uses "record"
     const xrpcWrites = writes.map((w) => {
       const { record, ...rest } = w as unknown as { record?: unknown; [key: string]: unknown };
       return { ...rest, ...(record !== undefined ? { value: record } : {}) };
@@ -160,8 +196,7 @@ export function createOAuthAgent(
     );
     if (!res.ok) {
       const err = await res.text().catch(() => "");
-      const dpopNonce = res.headers.get("DPoP-Nonce") || "";
-      throw new Error(`applyWrites failed: ${res.status} ${err} dpop-nonce=${dpopNonce} body=${JSON.stringify({ repo: did, writes: xrpcWrites }).slice(0, 500)}`);
+      throw new Error(`applyWrites failed: ${res.status} ${err}`);
     }
     return res.json() as Promise<CommitEvent>;
   }
@@ -280,9 +315,6 @@ export async function createDesktopATProto(
     plcDirectory: plcClient,
     agent,
   });
-  // Override createRecord to use validate:false — bsky.social PDS rejects
-  // applyWrites for Lexicons not in its local cache, but createRecord with
-  // validate:false bypasses Lexicon validation.
   const rawCreateRecord = (agent as { createRecord?: (did: string, collection: string, rkey: string, record: Record<string, unknown>) => Promise<{ uri: string; cid: string }> }).createRecord;
   const rawPutRecord = (agent as { putRecord?: (did: string, collection: string, rkey: string, record: Record<string, unknown>) => Promise<{ uri: string; cid: string }> }).putRecord;
   if (rawPutRecord) {
@@ -307,10 +339,6 @@ export async function createDesktopATProto(
     atproto.createRepoRecord = async (collection: string, record: Record<string, unknown>) => {
       return rawCreateRecord(did, collection, nextTid(), record);
     };
-    // Override createSignedRepoRecord: base impl calls applyWrites which bsky.social
-    // PDS rejects for custom Lexicons even with validate=false. Use createRecord
-    // (com.atproto.repo.createRecord) instead — same endpoint as the working
-    // createRecord wrapper.
     if (atproto.createSignedRepoRecord) {
       const signer = badgeBlueSigner as AttestationKeypair;
       atproto.createSignedRepoRecord = async (
@@ -328,12 +356,6 @@ export async function createDesktopATProto(
     }
   }
 
-  // Override callService: base impl uses signServiceAuth which signs JWTs with
-  // the raw keypair (iss=did:key:...). Bsky.social PDS users cannot register
-  // custom keys in their PLC DID doc, so the JWT signature doesn't verify
-  // against did:plc's #atproto key. Per ATProto inter-service-auth spec, use
-  // com.atproto.server.getServiceAuth — the PDS signs the JWT with the user's
-  // real atproto key, producing iss=did:plc:... and a verifiable signature.
   const saAgent = agent as { getServiceAuth?: (aud: string, lxm?: string) => Promise<string> };
   if (saAgent.getServiceAuth) {
     const baseCallService = atproto.callService;
