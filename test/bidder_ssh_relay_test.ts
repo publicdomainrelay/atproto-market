@@ -179,13 +179,22 @@ Deno.test({
     // execProgram runs on the guest via SSH through the relay websocket tunnel.
     // A successful exit proves the full path: relay websocket → VM sshd → shell.
     const startTime = Date.now();
+    // The SSH tunnel uses websocat directly (not fetch), so the fetch
+    // interception that maps https://*.localhost → http://localhost:PORT
+    // doesn't apply.  Use proxyCommandFn to rewrite wss://*.fedproxy.com
+    // → ws://localhost:PORT so the tunnel reaches the local dispatcher.
+    const proxyCommandFn = (fqdn: string) => {
+      return `websocat --binary ws://${dispatcherHost}`;
+    };
+
     await runComputeContract(requester, {
       logger,
       dispatcherHost,
-      skipSsh: false,           // ← ENABLE SSH
-      keepVm: false,            // clean up after
+      sshProxyCommandFn: proxyCommandFn,
+      skipSsh: false,
+      keepVm: false,
       bidWindowSec: 8,
-      vmReadyTimeoutSec: 120,   // container boot + sshd startup can take time
+      vmReadyTimeoutSec: 120,
       execProgram: "echo SSH_OK_VIA_RELAY && uname -a && whoami && hostname",
       extraBidderDids: [atproto.did],
       denyBidderDids: ["did:plc:centraldefaultbidder000000"],
