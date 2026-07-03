@@ -1,7 +1,9 @@
 // OAuth DPoP-backed AtprotoAgentLike implementation.
-// Uses the official @atproto/oauth-client dpopFetchWrapper for DPoP proof
-// generation, nonce tracking, and use_dpop_nonce retry per RFC 9449.
-// Our code handles Authorization header + 401 invalid_token → refresh → retry.
+// DPoP proof generation, nonce tracking, and use_dpop_nonce retry per RFC 9449
+// implemented inline (the @atproto/oauth-client dpopFetchWrapper is internal,
+// not exported from the package's public API, and blocked by "exports" in
+// deno compile). Our code handles Authorization header + 401 invalid_token
+// -> refresh -> retry.
 //
 // Layering: impl (cross-concept bridge between atproto-oauth and atproto-helpers).
 
@@ -12,11 +14,123 @@ import { TID } from "@atproto/common";
 import { attestationFor, toStorableEntry } from "@publicdomainrelay/market-atproto";
 import type { AttestationKeypair, InlineAttestation } from "@publicdomainrelay/market-atproto";
 import type { StrongRef } from "@publicdomainrelay/market-common";
-// dpopFetchWrapper is used internally by OAuthSession; import from the
-// implementation module. This is the same DPoP engine the official client uses.
-import { dpopFetchWrapper } from "@atproto/oauth-client/dist/fetch-dpop.js";
 import { base64url } from "multiformats/bases/base64";
 const b64url = (bytes: Uint8Array): string => base64url.baseEncode(bytes);
+
+// Inline dpopFetchWrapper — @atproto/oauth-client does not export this from
+// its public API (it's in dist/fetch-dpop.js, blocked by the package's
+// "exports" field in deno compile). Reimplemented here per RFC 9449.
+
+interface DpopKey {
+  bareJwk: Record<string, string>;
+  algorithms: string[];
+  createJwt(header: Record<string, unknown>, payload: Record<string, unknown>): Promise<string>;
+}
+
+interface DpopNonceStore {
+  get(key: string): Promise<string | undefined>;
+  set(key: string, value: string): Promise<void>;
+  del(key: string): Promise<void>;
+}
+
+function buildHtu(url: string): string {
+  const i = url.indexOf("?");
+  const j = url.indexOf("#");
+  const end = i === -1 ? j : j === -1 ? i : Math.min(i, j);
+  return end === -1 ? url : url.slice(0, end);
+}
+
+function negotiateAlg(key: DpopKey, supportedAlgs?: string[]): string {
+  if (supportedAlgs) {
+    const alg = supportedAlgs.find((a) => key.algorithms.includes(a));
+    if (alg) return alg;
+  } else {
+    const [alg] = key.algorithms;
+    if (alg) return alg;
+  }
+  throw new Error("Key does not match any alg supported by the server");
+}
+
+async function buildProof(
+  key: DpopKey, alg: string, htm: string, htu: string,
+  nonce?: string, ath?: string,
+): Promise<string> {
+  const jwk = key.bareJwk;
+  return key.createJwt(
+    { alg, typ: "dpop+jwt", jwk },
+    { iat: Math.floor(Date.now() / 1e3), jti: Math.random().toString(36).slice(2), htm, htu, nonce, ath },
+  );
+}
+
+async function isUseDpopNonceError(res: Response, isAuthServer?: boolean): Promise<boolean> {
+  if (isAuthServer === undefined || isAuthServer === false) {
+    if (res.status === 401) {
+      const w = res.headers.get("WWW-Authenticate") ?? "";
+      if (w.startsWith("DPoP")) return w.includes('error="use_dpop_nonce"');
+    }
+  }
+  if (isAuthServer === undefined || isAuthServer === true) {
+    if (res.status === 400) {
+      try {
+        const ct = res.headers.get("content-length");
+        if (ct && parseInt(ct) > 10 * 1024) return false;
+        const clone = res.clone();
+        const json = await clone.json();
+        return typeof json === "object" && json?.["error"] === "use_dpop_nonce";
+      } catch { return false; }
+    }
+  }
+  return false;
+}
+
+function createDpopFetch(opts: {
+  key: DpopKey;
+  nonces: DpopNonceStore;
+  supportedAlgs?: string[];
+  sha256: (input: string) => Promise<string>;
+  isAuthServer?: boolean;
+  fetch?: typeof globalThis.fetch;
+}): (url: string, init: RequestInit) => Promise<Response> {
+  const { key, nonces, supportedAlgs, sha256, isAuthServer } = opts;
+  const fetcher = opts.fetch ?? globalThis.fetch;
+  const alg = negotiateAlg(key, supportedAlgs);
+
+  return async function dpopFetch(url: string, init: RequestInit): Promise<Response> {
+    const authHdr = (init.headers as Record<string, string> | undefined)?.["Authorization"] ?? "";
+    const ath = authHdr.startsWith("DPoP ")
+      ? await sha256(authHdr.slice(5))
+      : undefined;
+
+    const htm = init.method ?? "GET";
+    const htu = buildHtu(url);
+    const origin = new URL(url).origin;
+
+    let nonce: string | undefined;
+    try { nonce = await nonces.get(origin); } catch { /* ignore */ }
+
+    const req = new Request(url, init);
+    req.headers.set("DPoP", await buildProof(key, alg, htm, htu, nonce, ath));
+
+    let res = await fetcher(req);
+
+    const nextNonce = res.headers.get("DPoP-Nonce");
+    if (nextNonce && nextNonce !== nonce) {
+      try { await nonces.set(origin, nextNonce); } catch { /* ignore */ }
+      if (await isUseDpopNonceError(res, isAuthServer)) {
+        try { res.body?.cancel(); } catch { /* ignore */ }
+        const retryReq = new Request(url, init);
+        retryReq.headers.set("DPoP", await buildProof(key, alg, htm, htu, nextNonce, ath));
+        res = await fetcher(retryReq);
+        const retryNonce = res.headers.get("DPoP-Nonce");
+        if (retryNonce && retryNonce !== nonce) {
+          try { await nonces.set(origin, retryNonce); } catch { /* ignore */ }
+        }
+      }
+    }
+
+    return res;
+  };
+}
 
 /** Minimal DID-doc resolver shape callService needs — not the full @atproto/identity IdResolver. */
 export interface DidResolverLike {
@@ -41,7 +155,7 @@ export interface OAuthAgentOptions {
 }
 
 // ---------------------------------------------------------------------------
-// OAuthAgent — AtprotoAgentLike backed by official dpopFetchWrapper + our
+// OAuthAgent — AtprotoAgentLike backed by DPoP fetch + our
 // token refresh logic. DPoP nonce tracking, proof generation, ath claims,
 // and use_dpop_nonce retry are all handled by the official implementation.
 // ---------------------------------------------------------------------------
@@ -56,7 +170,7 @@ export function createOAuthAgent(
 
   const { refreshSession, onSessionRefreshed } = opts;
 
-  // SHA-256 returning base64url string — dpopFetchWrapper calls this with
+  // SHA-256 returning base64url string — DPoP proof uses this to compute
   // the access token to compute the ath claim.
   const sha256b64 = async (input: Uint8Array | string): Promise<string> => {
     const bytes: Uint8Array<ArrayBuffer> = typeof input === "string"
@@ -66,7 +180,7 @@ export function createOAuthAgent(
     return b64url(new Uint8Array(digest));
   };
 
-  // Nonce store keyed by origin (per RFC 9449). dpopFetchWrapper reads the
+  // Nonce store keyed by origin (per RFC 9449). DPoP fetch reads the
   // stored nonce for each origin and updates it from response headers.
   const nonceStore = new Map<string, string>();
   const nonces = {
@@ -75,7 +189,7 @@ export function createOAuthAgent(
     async del(key: string) { nonceStore.delete(key); },
   };
 
-  // Build a Key-like object for dpopFetchWrapper. Must provide bareJwk,
+  // Build a Key-like object for DPoP fetch. Must provide bareJwk,
   // algorithms, and createJwt per the @atproto/jwk Key interface.
   const buildDpopKey = () => ({
     get bareJwk(): Record<string, string> {
@@ -100,13 +214,11 @@ export function createOAuthAgent(
     },
   });
 
-  // deno-lint-ignore no-explicit-any
-  let dpopFetchFn = dpopFetchWrapper({
-    key: buildDpopKey() as any,
+  let dpopFetchFn = createDpopFetch({
+    key: buildDpopKey(),
     supportedAlgs: ["ES256"],
     nonces,
-    // deno-lint-ignore no-explicit-any
-    sha256: sha256b64 as any,
+    sha256: sha256b64,
     isAuthServer: false,
   });
 
@@ -120,13 +232,11 @@ export function createOAuthAgent(
         currentSession = await refreshSession();
         onSessionRefreshed?.(currentSession);
         // Rebuild dpopFetchFn with the new session's key material.
-        // deno-lint-ignore no-explicit-any
-        dpopFetchFn = dpopFetchWrapper({
-          key: buildDpopKey() as any,
+        dpopFetchFn = createDpopFetch({
+          key: buildDpopKey(),
           supportedAlgs: ["ES256"],
           nonces,
-          // deno-lint-ignore no-explicit-any
-          sha256: sha256b64 as any,
+          sha256: sha256b64,
           isAuthServer: false,
         });
       } finally {
@@ -146,7 +256,7 @@ export function createOAuthAgent(
         "Authorization": `DPoP ${currentSession.accessJwt}`,
         "Content-Type": "application/json",
       };
-      // dpopFetchWrapper reads the Authorization header, computes ath, adds
+      // createDpopFetch reads the Authorization header, computes ath, adds
       // the DPoP proof header, and handles use_dpop_nonce retry internally.
       return dpopFetchFn(url, {
         method,
