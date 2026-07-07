@@ -80,6 +80,7 @@ export function createComputeContractGateway(
         bidWindowSec: input.bidWindowSec,
         skipSsh: input.skipSsh ?? true,
         keepVm: input.keepVm ?? true,
+        rbac: true,
         vmReadyTimeoutSec: input.vmReadyTimeoutSec,
         execProgram: input.execProgram,
         fedproxyHost,
