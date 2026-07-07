@@ -27,6 +27,8 @@ export function createXrpcRelay(opts: CreateXrpcRelayOpts): RelayRef {
 
   const relay: RelayRef = {
     proxyRef: "",
+    get proxyUrl(): string { return this.proxyRef ? "https://" + this.proxyRef.slice("did:web:".length) : ""; },
+    get proxyHost(): string { return this.proxyRef.startsWith("did:web:") ? this.proxyRef.slice("did:web:".length) : this.proxyRef; },
 
     async onServe(fetch: (req: Request) => Promise<Response>): Promise<void> {
       const { handleRequest } = createSubscriberFactory({ app: { fetch } });
