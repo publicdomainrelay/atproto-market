@@ -1,0 +1,61 @@
+{
+  "name": "compute-contract-gateway",
+  "description": "Compute contract gateway — centralized endpoint over decentralized compute contract API",
+  "options": {
+    "port": {
+      "type": "number",
+      "description": "TCP port to listen on",
+      "env": "PORT"
+    },
+    "hostname": {
+      "type": "string",
+      "description": "Hostname for DID document and service endpoint",
+      "env": "HOSTNAME",
+      "default": "localhost"
+    },
+    "private-key-hex": {
+      "type": "string",
+      "description": "Secp256k1 private key hex for stable DID",
+      "env": "PRIVATE_KEY_HEX"
+    },
+    "private-key-hex-path": {
+      "type": "string",
+      "description": "Path to load/save private key hex",
+      "env": "REPO_PRIVATE_KEY_HEX_PATH"
+    },
+    "pds-state-path": {
+      "type": "string",
+      "description": "Path for persistent PDS state (Deno.Kv SQLite)",
+      "env": "PDS_STATE_PATH"
+    },
+    "plc-directory-url": {
+      "type": "string",
+      "description": "PLC directory URL",
+      "env": "PLC_DIRECTORY_URL",
+      "default": "https://plc.directory"
+    },
+    "dispatcher-host": {
+      "type": "string",
+      "description": "XRPC relay dispatcher host",
+      "env": "DISPATCHER_HOST",
+      "default": "xrpc.fedproxy.com"
+    },
+    "fedproxy-host": {
+      "type": "string",
+      "description": "FedProxy SSH ingress host",
+      "env": "FEDPROXY_HOST",
+      "default": "fedproxy.com"
+    },
+    "relay-urls": {
+      "type": "string",
+      "description": "Comma-separated relay URLs for bidder discovery",
+      "env": "RELAY_URLS",
+      "default": "https://reg.market.fedfork.com"
+    },
+    "storage-path": {
+      "type": "string",
+      "description": "Path for persistent Deno.Kv storage",
+      "env": "STORAGE_PATH"
+    }
+  }
+}

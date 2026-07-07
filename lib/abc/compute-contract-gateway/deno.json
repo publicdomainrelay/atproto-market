@@ -1,0 +1,9 @@
+{
+  "name": "@publicdomainrelay/compute-contract-gateway-abc",
+  "version": "0.0.0",
+  "license": "Unlicense",
+  "exports": "./mod.ts",
+  "imports": {
+    "@publicdomainrelay/compute-contract-gateway-common": "jsr:@publicdomainrelay/compute-contract-gateway-common@^0"
+  }
+}

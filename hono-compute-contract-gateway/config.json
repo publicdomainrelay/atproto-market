@@ -1,0 +1,5 @@
+{
+  "hostname": "localhost",
+  "dispatcher-host": "xrpc.fedproxy.com",
+  "fedproxy-host": "fedproxy.com"
+}
