@@ -130,16 +130,92 @@ export function createComputeContractGateway(
 
     async requestComputeWorkerEphemeral(
       _caller: CallerIdentity,
-      _input: ComputeRequestWorkerInput,
+      input: ComputeRequestWorkerInput,
     ): Promise<GatewayComputeResponse> {
-      return { error: "not implemented" };
+      if (!pds) throw new Error("gateway not started");
+
+      const logger = opts.logger;
+      const { runComputeContract, createSshSessionProvider } = await import(
+        "@publicdomainrelay/requester-xrpc"
+      );
+      const { WORKER_MANIFEST_NSID } = await import(
+        "@publicdomainrelay/compute-deno-common"
+      );
+
+      const vmName = `worker-${crypto.randomUUID().slice(0, 8)}`;
+      const fedproxyHost = opts.fedproxyHost ?? "fedproxy.com";
+      const sshProvider = createSshSessionProvider(logger);
+
+      const result = await runComputeContract(pds, {
+        vmName,
+        bidWindowSec: input.bidWindowSec,
+        skipSsh: true,
+        keepVm: true,
+        fedproxyHost,
+        dispatcherHost: opts.dispatcherHost,
+        sshProvider,
+        logger,
+        extraBidderDids: [],
+        appliesToNsid: WORKER_MANIFEST_NSID,
+      });
+
+      if (result.error) {
+        return { error: result.error, rfpUri: result.rfpUri, rfpCid: result.rfpCid };
+      }
+
+      return {
+        receiptUri: result.receiptUri,
+        receiptCid: result.receiptCid,
+        receiptOk: result.receiptOk,
+        winnerDid: result.winnerDid,
+        rfpUri: result.rfpUri,
+        rfpCid: result.rfpCid,
+      };
     },
 
     async requestComputeWorkerPersistent(
       _caller: CallerIdentity,
-      _input: ComputeRequestWorkerInput,
+      input: ComputeRequestWorkerInput,
     ): Promise<GatewayComputeResponse> {
-      return { error: "not implemented" };
+      if (!pds) throw new Error("gateway not started");
+
+      const logger = opts.logger;
+      const { runComputeContract, createSshSessionProvider } = await import(
+        "@publicdomainrelay/requester-xrpc"
+      );
+      const { WORKER_MANIFEST_NSID } = await import(
+        "@publicdomainrelay/compute-deno-common"
+      );
+
+      const vmName = `worker-${crypto.randomUUID().slice(0, 8)}`;
+      const fedproxyHost = opts.fedproxyHost ?? "fedproxy.com";
+      const sshProvider = createSshSessionProvider(logger);
+
+      const result = await runComputeContract(pds, {
+        vmName,
+        bidWindowSec: input.bidWindowSec,
+        skipSsh: true,
+        keepVm: true,
+        fedproxyHost,
+        dispatcherHost: opts.dispatcherHost,
+        sshProvider,
+        logger,
+        extraBidderDids: [],
+        appliesToNsid: WORKER_MANIFEST_NSID,
+      });
+
+      if (result.error) {
+        return { error: result.error, rfpUri: result.rfpUri, rfpCid: result.rfpCid };
+      }
+
+      return {
+        receiptUri: result.receiptUri,
+        receiptCid: result.receiptCid,
+        receiptOk: result.receiptOk,
+        winnerDid: result.winnerDid,
+        rfpUri: result.rfpUri,
+        rfpCid: result.rfpCid,
+      };
     },
 
     async deleteCompute(

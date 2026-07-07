@@ -110,6 +110,147 @@ ssh -o ProxyCommand='websocat --binary wss://my-vm--did-plc-paeucw23byz57hqwihjm
     root@my-vm--did-plc-paeucw23byz57hqwihjmw4o3.fedproxy.com
 ```
 
+## Request a Deno Worker
+
+### L2 Ephemeral Worker (Hono app, per-request execution)
+
+Create a simple Hono app that responds via `self.onmessage`:
+
+```sh
+mkdir -p my-worker
+cat > my-worker/main.ts << 'EOF'
+import { Hono } from "@hono/hono";
+
+const app = new Hono();
+app.get("/health", (c) => c.json({ status: "ok" }));
+
+let count = 0;
+self.onmessage = async (e) => {
+  count++;
+  const msg = e.data;
+  const req = new Request(`http://localhost${msg.path || "/"}`, {
+    method: msg.method || "GET",
+    body: msg.body ? JSON.stringify(msg.body) : undefined,
+  });
+  const res = await app.fetch(req);
+  const body = await res.json();
+  self.postMessage({ status: res.status, headers: {}, body: { ...body, count } });
+};
+EOF
+
+cat > my-worker/deno.json << 'EOF'
+{ "imports": { "@hono/hono": "jsr:@hono/hono@^4" } }
+EOF
+```
+
+Request via gateway:
+
+```sh
+SOURCE=$(cat my-worker/main.ts)
+DENO_JSON=$(cat my-worker/deno.json)
+
+goat xrpc call \
+  --url "$GATEWAY_URL" \
+  com.publicdomainrelay.temp.gateway.requestComputeWorkerEphemeral \
+  --data '{
+    "source": "'"$(echo "$SOURCE" | jq -Rs .)"'",
+    "denoJson": "'"$(echo "$DENO_JSON" | jq -Rs .)"'",
+    "bidWindowSec": 15
+  }'
+```
+
+### L1 Persistent Worker (in-process compute provider)
+
+Create a worker that hosts other workers:
+
+```sh
+mkdir -p my-bidder
+cat > my-bidder/main.ts << 'EOF'
+import { createDenoBundler, createPersistentDenoWorker } from "@publicdomainrelay/sandbox-deno";
+import {
+  createDenoComputeManifestStore,
+  createDenoComputeInstanceStore,
+  createDenoComputeInstanceRunner,
+} from "@publicdomainrelay/compute-deno-atproto";
+
+const did = "did:plc:l1";
+const records = new Map();
+records.set(did, new Map());
+let seq = 0;
+
+const pds = {
+  async createRecord(repoDid, collection, record) {
+    const rkey = "r" + (++seq).toString(16).padStart(8, "0");
+    const uri = "at://" + repoDid + "/" + collection + "/" + rkey;
+    const hash = new Uint8Array(await crypto.subtle.digest(
+      "SHA-256", new TextEncoder().encode(JSON.stringify(record))));
+    const hex = Array.from(hash.slice(0, 16),
+      b => b.toString(16).padStart(2, "0")).join("");
+    const cid = "bafyrei" + hex;
+    if (!records.has(repoDid)) records.set(repoDid, new Map());
+    records.get(repoDid).set(uri, { uri, cid, value: record });
+    return { uri, cid };
+  },
+  async getRecord(repoDid, collection, rkey) {
+    const recs = records.get(repoDid);
+    if (!recs) return null;
+    return recs.get("at://" + repoDid + "/" + collection + "/" + rkey) || null;
+  },
+};
+
+const bundler = createDenoBundler();
+const manifestStore = createDenoComputeManifestStore(pds, did);
+const instanceStore = createDenoComputeInstanceStore(pds, did);
+const runner = createDenoComputeInstanceRunner({
+  manifestStore, instanceStore, bundler,
+  createWorker: createPersistentDenoWorker,
+});
+
+self.onmessage = async (e) => {
+  const msg = e.data;
+  self.postMessage({ status: 200, headers: {}, body: { status: "ok", level: 1 } });
+};
+EOF
+
+cat > my-bidder/deno.json << 'EOF'
+{
+  "imports": {
+    "@publicdomainrelay/compute-deno-atproto": "jsr:@publicdomainrelay/compute-deno-atproto@^0",
+    "@publicdomainrelay/compute-deno-common": "jsr:@publicdomainrelay/compute-deno-common@^0",
+    "@publicdomainrelay/sandbox-deno": "jsr:@publicdomainrelay/sandbox-deno@^0"
+  }
+}
+EOF
+```
+
+Request via gateway:
+
+```sh
+SOURCE=$(cat my-bidder/main.ts)
+DENO_JSON=$(cat my-bidder/deno.json)
+
+goat xrpc call \
+  --url "$GATEWAY_URL" \
+  com.publicdomainrelay.temp.gateway.requestComputeWorkerPersistent \
+  --data '{
+    "source": "'"$(echo "$SOURCE" | jq -Rs .)"'",
+    "denoJson": "'"$(echo "$DENO_JSON" | jq -Rs .)"'",
+    "bidWindowSec": 15
+  }'
+```
+
+### Execute a running worker
+
+```sh
+goat xrpc call \
+  --url "$WORKER_EXECUTE_URL" \
+  com.publicdomainrelay.temp.compute.deno.executeWorkerInstance \
+  --data '{
+    "instance": { "uri": "'$INSTANCE_URI'", "cid": "'$INSTANCE_CID'" },
+    "request": { "method": "GET", "path": "/health" }
+  }'
+```
+
 ## CLI Options
 
 | Flag | Env | Default | Description |
