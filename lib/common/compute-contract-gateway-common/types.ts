@@ -52,6 +52,7 @@ export interface ComputeRequestWorkerInput {
   denoLock?: string;
   persistent?: boolean;
   bidWindowSec?: number;
+  extraBidderDids?: string[];
   tokens: GatewayTokens;
 }
 

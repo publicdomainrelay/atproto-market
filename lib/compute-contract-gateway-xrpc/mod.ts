@@ -155,8 +155,17 @@ export function createComputeContractGateway(
         dispatcherHost: opts.dispatcherHost,
         sshProvider,
         logger,
-        extraBidderDids: [],
+        extraBidderDids: input.extraBidderDids ?? [],
         appliesToNsid: WORKER_MANIFEST_NSID,
+        payloadFactory: async () => {
+          return pds!.createRepoRecord(WORKER_MANIFEST_NSID, {
+            $type: WORKER_MANIFEST_NSID,
+            lock: input.denoLock ?? "{}",
+            json: input.denoJson,
+            bundle: input.source,
+            createdAt: new Date().toISOString(),
+          });
+        },
       });
 
       if (result.error) {
@@ -202,6 +211,15 @@ export function createComputeContractGateway(
         logger,
         extraBidderDids: [],
         appliesToNsid: WORKER_MANIFEST_NSID,
+        payloadFactory: async () => {
+          return pds!.createRepoRecord(WORKER_MANIFEST_NSID, {
+            $type: WORKER_MANIFEST_NSID,
+            lock: input.denoLock ?? "{}",
+            json: input.denoJson,
+            bundle: input.source,
+            createdAt: new Date().toISOString(),
+          });
+        },
       });
 
       if (result.error) {
