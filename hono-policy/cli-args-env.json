@@ -1,0 +1,33 @@
+{
+  "name": "hono-policy",
+  "description": "Policy engine XRPC server with built-in policy handlers",
+  "options": {
+    "port": {
+      "type": "number",
+      "description": "Port to listen on",
+      "env": "PORT",
+      "default": 2586
+    },
+    "hostname": {
+      "type": "string",
+      "description": "Hostname to bind to",
+      "env": "HOSTNAME",
+      "default": "127.0.0.1"
+    },
+    "policy": {
+      "type": "string",
+      "description": "Comma-separated policy handlers to enable. Built-in: allow-net, deny-all, allow-all. Example: --policy allow-net,deny-all",
+      "env": "POLICIES",
+      "default": "allow-net"
+    },
+    "strict-auth": {
+      "type": "boolean",
+      "description": "Enable strict serviceAuth JWT verification"
+    },
+    "attestation-key-path": {
+      "type": "string",
+      "description": "Path to secp256k1 JWK attestation key for signing",
+      "env": "ATTESTATION_KEY_PATH"
+    }
+  }
+}

@@ -32,13 +32,19 @@
     "lib/market-policy-only-me",
     "lib/market-policy-direct-network",
     "lib/market-policy-workflow-gha",
+    "lib/market-policy-remote",
     "request-vm-ssh",
     "hono-bidder",
     "lib/common/compute-contract-gateway-common",
     "lib/abc/compute-contract-gateway",
     "lib/compute-contract-gateway-xrpc",
     "lib/hono-factory-compute-contract-gateway-xrpc",
-    "hono-compute-contract-gateway"
+    "hono-compute-contract-gateway",
+    "lib/common/policy-common",
+    "lib/abc/policy",
+    "lib/policy-builtin",
+    "lib/hono-factory-policy-builtin",
+    "hono-policy"
   ],
   "nodeModulesDir": "auto",
   "unstable": ["kv"],
@@ -127,6 +133,11 @@
     "@publicdomainrelay/market-policy-only-me": "./lib/market-policy-only-me/mod.ts",
     "@publicdomainrelay/market-policy-direct-network": "./lib/market-policy-direct-network/mod.ts",
     "@publicdomainrelay/market-policy-workflow-gha": "./lib/market-policy-workflow-gha/mod.ts",
+    "@publicdomainrelay/market-policy-remote": "./lib/market-policy-remote/mod.ts",
+    "@publicdomainrelay/policy-common": "./lib/common/policy-common/mod.ts",
+    "@publicdomainrelay/policy-abc": "./lib/abc/policy/mod.ts",
+    "@publicdomainrelay/policy-builtin": "./lib/policy-builtin/mod.ts",
+    "@publicdomainrelay/hono-factory-policy-builtin": "./lib/hono-factory-policy-builtin/mod.ts",
     "@publicdomainrelay/market-settlement-free": "./lib/market-settlement-free/mod.ts",
     "@publicdomainrelay/market-settlement-x402": "./lib/market-settlement-x402/mod.ts",
     "@publicdomainrelay/oidc-issuer-abc": "../hono-compute-provider/lib/abc/oidc-issuer/mod.ts",
@@ -151,7 +162,8 @@
   },
   "tasks": {
     "check": "deno check lib/common/market-lexicons/mod.ts lib/common/market-common/mod.ts lib/abc/market/mod.ts lib/abc/market-bidder/mod.ts lib/market-atproto/mod.ts lib/common/cloud-init-common/mod.ts lib/abc/requester/mod.ts",
-    "generate-lexicons": "goat lex pull com.atproto.repo.strongRef && deno x -A -y npm:@atproto/lex build --override --import-ext \".ts\" --lexicons ./lexicons --out lib/common/market-lexicons"
+    "generate-lexicons": "goat lex pull com.atproto.repo.strongRef && deno x -A -y npm:@atproto/lex build --override --import-ext \".ts\" --lexicons ./lexicons --out lib/common/market-lexicons",
+    "test:readme": "deno test -A test/gateway_readme_smoke_test.ts"
   },
   "fmt": {
     "lineWidth": 100

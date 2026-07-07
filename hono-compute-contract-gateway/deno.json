@@ -11,5 +11,8 @@
   },
   "compile": {
     "include": ["cli-args-env.json", "config.json"]
+  },
+  "tasks": {
+    "test:readme": "deno test -A --config ../deno.json ../test/gateway_readme_smoke_test.ts"
   }
 }

@@ -43,19 +43,16 @@ export function createDirectNetworkPolicy(): FulfillmentPolicy {
     async evaluate(ctx) {
       ctx.log("info", "direct_network evaluate", { subjectDid: ctx.subjectDid, rootRequesterDid: ctx.rootRequesterDid });
 
-      if (ctx.subjectDid === ctx.rootRequesterDid) return true;
+      if (ctx.subjectDid === ctx.rootRequesterDid) return { allow: true, violations: [] };
 
       const operatorDid = await ctx.resolveOperatorDid(ctx.subjectDid);
       if (!operatorDid) {
         ctx.log("info", "direct_network: no operator association", { subjectDid: ctx.subjectDid });
-        return false;
+        return { allow: false, violations: [{ msg: "no operator association", policyId: POLICIES_DIRECT_NETWORK_NSID }] };
       }
 
-      if (operatorDid === ctx.rootRequesterDid) return true;
+      if (operatorDid === ctx.rootRequesterDid) return { allow: true, violations: [] };
 
-      // Use resolve for listRecords via a helper — resolve with a synthetic URI
-      // to get the operator's vouch records. In production, this goes through
-      // the ATProto agent's listRecords.
       try {
         const vouchedDids = await getVouchedDids(
           ctx.rootRequesterDid,
@@ -73,10 +70,11 @@ export function createDirectNetworkPolicy(): FulfillmentPolicy {
           ctx.log("info", "direct_network: operator not in vouch set", {
             operatorDid, rootRequesterDid: ctx.rootRequesterDid, vouchedCount: vouchedDids.size,
           });
+          return { allow: false, violations: [{ msg: "not vouched", policyId: POLICIES_DIRECT_NETWORK_NSID }] };
         }
-        return ok;
-      } catch {
-        return false;
+        return { allow: true, violations: [] };
+      } catch (err) {
+        return { allow: false, violations: [{ msg: String(err), policyId: POLICIES_DIRECT_NETWORK_NSID }] };
       }
     },
   };

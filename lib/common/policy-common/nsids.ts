@@ -1,0 +1,4 @@
+export const GATE_REGISTRY_WORKER_MANIFEST_PERMISSIONS_NSID = "com.publicdomainrelay.temp.compute.deno.gateRegistryWorkerManifestPermissions";
+export const GATE_REGISTRY_WORKER_MANIFEST_PERMISSIONS_LXM = GATE_REGISTRY_WORKER_MANIFEST_PERMISSIONS_NSID;
+export const MARKET_EVALUATE_POLICY_NSID = "com.publicdomainrelay.temp.market.evaluatePolicy";
+export const MARKET_EVALUATE_POLICY_LXM = MARKET_EVALUATE_POLICY_NSID;

@@ -1,7 +1,93 @@
 # Compute Contract Gateway
 
 Centralized Hono service over the decentralized compute contract API. Run one
-gateway, request VMs and Deno workers through it via `goat xrpc call`.
+gateway, request VMs and Deno workers through it via AT Protocol XRPC.
+
+## Start a PDS
+
+Gateway XRPC endpoints require AT Protocol service auth. Start a local PDS,
+create an account, and authenticate:
+
+```sh
+# Start PDS (test harness provides this; for manual testing:)
+deno run -A hono-pds/mod.ts --port 2584 &
+PDS_URL="http://127.0.0.1:2584"
+
+# Create an account
+ATP_PDS_HOST="$PDS_URL" goat account create \
+  --handle alice.test --password test-password --email alice@test
+
+# Login
+ATP_PDS_HOST="$PDS_URL" goat account login \
+  --username alice.test --password test-password
+
+# Get a service auth token for gateway calls
+SVC_TOKEN=$(goat account service-auth --audience "$GATEWAY_DID" | sed -n 's/.*"token":"\([^"]*\)".*/\1/p')
+```
+
+Required environment variables:
+
+```sh
+export PDS_URL="${PDS_URL:-http://127.0.0.1:2584}"
+export GATEWAY_URL="${GATEWAY_URL:-http://127.0.0.1:2586}"
+export GATEWAY_DID="${GATEWAY_DID:-did:key:zExampleGateway}"
+export BIDDER_DID="${BIDDER_DID:-did:plc:xxxxxxxxxxx}"
+```
+
+## Local Test Infrastructure
+
+For local testing you need a PLC directory, an XRPC relay dispatcher, and a
+bidder. The PLC and dispatcher are started by the test harness. Start a bidder
+manually:
+
+```sh
+# Start a bidder with local container compute provider
+deno run -A hono-bidder/mod.ts \
+  --compute-provider-local \
+  --compute-provider-local-container-mode container \
+  --plc-directory-url "$PLC_DIRECTORY_URL" \
+  --relay-dispatcher-host "$DISPATCHER_HOST" \
+  --serve-port 2585 &
+
+# Set bidder DID from bidder startup output
+BIDDER_DID="did:plc:xxxxxxxxxxx"
+```
+
+Required environment variables:
+
+```sh
+export PLC_DIRECTORY_URL="http://127.0.0.1:2582"
+export DISPATCHER_HOST="127.0.0.1:2583"
+export BIDDER_DID="did:plc:xxxxxxxxxxx"
+```
+
+## Gateway-Bidder Association
+
+Before requesting compute, associate your gateway (requester) with a bidder.
+This creates a bidirectional attestation: the gateway writes a `badgeBlueKeys`
+record, and the bidder writes a `bidderAssociation` record pointing back at it.
+
+### Gateway associates with bidder
+
+```sh
+GATEWAY_DID="did:plc:yyyyyyyyyyy"
+
+goat record create \
+  --pds-url "$GATEWAY_PDS_URL" \
+  --collection com.publicdomainrelay.temp.badgeBlueKeys \
+  --record '{
+    "$type": "com.publicdomainrelay.temp.badgeBlueKeys",
+    "keyId": "'$GATEWAY_DID'",
+    "challenge": "'$BIDDER_DID'",
+    "service": "bidder_associate",
+    "createdAt": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"
+  }'
+```
+
+### Bidder acknowledges association
+
+The bidder software automatically creates a `com.publicdomainrelay.temp.market.bidderAssociation`
+record referencing the gateway's `badgeBlueKeys` record. No manual step needed.
 
 ## Quick Start
 
@@ -9,13 +95,14 @@ gateway, request VMs and Deno workers through it via `goat xrpc call`.
 # Start the gateway server
 deno run -A hono-compute-contract-gateway/mod.ts \
   --port 2586 \
-  --dispatcher-host xrpc.fedproxy.com
+  --dispatcher-host "$DISPATCHER_HOST" \
+  --plc-directory-url "$PLC_DIRECTORY_URL"
 
 # Health check via goat
-goat xrpc call --url http://127.0.0.1:2586 com.publicdomainrelay.temp.gateway.health
+goat xrpc query http://127.0.0.1:2586 com.publicdomainrelay.temp.gateway.health
 
 # Get gateway DID
-goat resolve --url http://127.0.0.1:2586
+goat resolve "$GATEWAY_URL"
 ```
 
 ## Request a VM
@@ -37,21 +124,21 @@ ssh-keygen -t ed25519 -N "" -C "root@my-vm" -f ./my-vm-key
 ```sh
 deno run -A hono-compute-contract-gateway/mod.ts \
   --port 2586 \
-  --dispatcher-host xrpc.fedproxy.com \
+  --dispatcher-host "${DISPATCHER_HOST:-xrpc.fedproxy.com}" \
+  --plc-directory-url "${PLC_DIRECTORY_URL:-https://plc.directory}" \
   --private-key-hex-path ~/Documents/requester-private-key.hex \
   --pds-state-path ~/Documents/requester-pds-state.db &
 
-GATEWAY_DID=$(goat xrpc call --url http://127.0.0.1:2586 com.publicdomainrelay.temp.gateway.did | jq -r '.id')
-echo "Gateway DID: $GATEWAY_DID"
+GATEWAY_URL="${GATEWAY_URL:-http://127.0.0.1:2586}"
 ```
 
 ### 3. Associate gateway with bidder
 
 ```sh
-BIDDER_DID="did:plc:5svqtrhheairglgiiyvutzik"
+GATEWAY_DID="did:plc:yyyyyyyyyyy"
 
 goat record create \
-  --pds-url https://your-pds.example.com \
+  --pds-url "$GATEWAY_PDS_URL" \
   --collection com.publicdomainrelay.temp.badgeBlueKeys \
   --record '{
     "$type": "com.publicdomainrelay.temp.badgeBlueKeys",
@@ -66,30 +153,16 @@ goat record create \
 
 ```sh
 PUBKEY=$(cat ./my-vm-key.pub)
-BIDDER_DID="did:plc:5svqtrhheairglgiiyvutzik"
-GATEWAY_URL="http://127.0.0.1:2586"
+BIDDER_DID="${BIDDER_DID:-did:plc:xxxxxxxxxxx}"
+GATEWAY_URL="${GATEWAY_URL:-http://127.0.0.1:2586}"
 
-goat xrpc call \
-  --url "$GATEWAY_URL" \
-  com.publicdomainrelay.temp.gateway.requestComputeVM \
-  --data '{
-    "computeVm": {
-      "$type": "com.publicdomainrelay.temp.compute.vm",
-      "cpus": 1,
-      "mem": "512M",
-      "disk": "10G",
-      "network": "500G",
-      "role": "my-vm"
-    },
-    "sshPublicKey": "'"$PUBKEY"'",
-    "bidWindowSec": 30,
-    "extraBidderDids": ["'"$BIDDER_DID"'"],
-    "tokens": {
-      "submitRfp": "",
-      "submitAccept": "",
-      "createRecord": ""
-    }
-  }'
+goat xrpc procedure "$GATEWAY_URL" com.publicdomainrelay.temp.gateway.requestComputeVM \
+  Authorization:"Bearer $SVC_TOKEN" \
+  sshPublicKey="$PUBKEY" \
+  bidWindowSec:=30 \
+  computeVm:='{"$type":"com.publicdomainrelay.temp.compute.vm","cpus":1,"mem":"512M","disk":"10G","network":"500G","role":"my-vm"}' \
+  extraBidderDids:='["'"$BIDDER_DID"'"]' \
+  tokens:='{"submitRfp":"","submitAccept":"","createRecord":""}'
 ```
 
 ### 5. Connect via SSH
@@ -150,14 +223,12 @@ Request via gateway:
 SOURCE=$(cat my-worker/main.ts)
 DENO_JSON=$(cat my-worker/deno.json)
 
-goat xrpc call \
-  --url "$GATEWAY_URL" \
-  com.publicdomainrelay.temp.gateway.requestComputeWorkerEphemeral \
-  --data '{
-    "source": "'"$(echo "$SOURCE" | jq -Rs .)"'",
-    "denoJson": "'"$(echo "$DENO_JSON" | jq -Rs .)"'",
-    "bidWindowSec": 15
-  }'
+goat xrpc procedure "$GATEWAY_URL" com.publicdomainrelay.temp.gateway.requestComputeWorkerEphemeral \
+  Authorization:"Bearer $SVC_TOKEN" \
+  source="$SOURCE" \
+  denoJson="$DENO_JSON" \
+  bidWindowSec:=15 \
+  extraBidderDids:='["'"$BIDDER_DID"'"]'
 ```
 
 ### L1 Persistent Worker (in-process compute provider)
@@ -231,26 +302,12 @@ Request via gateway:
 SOURCE=$(cat my-bidder/main.ts)
 DENO_JSON=$(cat my-bidder/deno.json)
 
-goat xrpc call \
-  --url "$GATEWAY_URL" \
-  com.publicdomainrelay.temp.gateway.requestComputeWorkerPersistent \
-  --data '{
-    "source": "'"$(echo "$SOURCE" | jq -Rs .)"'",
-    "denoJson": "'"$(echo "$DENO_JSON" | jq -Rs .)"'",
-    "bidWindowSec": 15
-  }'
-```
-
-### Execute a running worker
-
-```sh
-goat xrpc call \
-  --url "$WORKER_EXECUTE_URL" \
-  com.publicdomainrelay.temp.compute.deno.executeWorkerInstance \
-  --data '{
-    "instance": { "uri": "'$INSTANCE_URI'", "cid": "'$INSTANCE_CID'" },
-    "request": { "method": "GET", "path": "/health" }
-  }'
+goat xrpc procedure "$GATEWAY_URL" com.publicdomainrelay.temp.gateway.requestComputeWorkerPersistent \
+  Authorization:"Bearer $SVC_TOKEN" \
+  source="$SOURCE" \
+  denoJson="$DENO_JSON" \
+  bidWindowSec:=15 \
+  extraBidderDids:='["'"$BIDDER_DID"'"]'
 ```
 
 ## CLI Options
@@ -280,6 +337,9 @@ deno test -A --config atproto-market/deno.json atproto-market/test/gateway_reque
 
 # Gateway SSH test (container mode, SSH via websocat)
 deno test -A --config atproto-market/deno.json atproto-market/test/gateway_ssh_integration_test.ts
+
+# README smoke test (runs README shell blocks against local infra)
+deno test -A --config atproto-market/deno.json atproto-market/test/gateway_readme_smoke_test.ts
 ```
 
 ### Requirements

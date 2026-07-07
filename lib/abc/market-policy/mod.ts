@@ -1,5 +1,10 @@
 import type { StrongRef } from "@publicdomainrelay/market-common";
 
+export interface PolicyViolation {
+  msg: string;
+  policyId: string | StrongRef;
+}
+
 /** Cross-cutting dependencies for policy evaluation. */
 export interface PolicyEvalCtx {
   /** DID of the entity being evaluated (bidder's ATProto DID, NOT their did:key). */
@@ -24,6 +29,8 @@ export interface PolicyEvalCtx {
   resolveOperatorDid: (bidderDid: string) => Promise<string | null>;
   /** Logger. */
   log: (level: string, msg: string, meta?: Record<string, unknown>) => void;
+  /** StrongRef to the policy record from the RFP. Set by caller for remote policy evaluation. */
+  policyRef?: StrongRef;
 }
 
 /** A pluggable fulfillment policy — admission criteria for an RFP. */
@@ -45,5 +52,5 @@ export interface FulfillmentPolicy {
    * - by sub-bidders before creating a sub-bid
    * - by the root requester before accepting any bid
    */
-  evaluate(ctx: PolicyEvalCtx): Promise<boolean>;
+  evaluate(ctx: PolicyEvalCtx): Promise<{ allow: boolean; violations: PolicyViolation[] }>;
 }

@@ -1,0 +1,14 @@
+{
+  "version": "0.0.0",
+  "license": "Unlicense",
+  "imports": {
+    "@publicdomainrelay/policy-builtin": "jsr:@publicdomainrelay/policy-builtin@^0",
+    "@publicdomainrelay/hono-factory-policy-builtin": "jsr:@publicdomainrelay/hono-factory-policy-builtin@^0",
+    "@publicdomainrelay/cli-args-env": "jsr:@publicdomainrelay/cli-args-env@^0",
+    "@publicdomainrelay/logger": "jsr:@publicdomainrelay/logger@^0",
+    "@publicdomainrelay/serve": "jsr:@publicdomainrelay/serve@^0"
+  },
+  "compile": {
+    "include": ["cli-args-env.json", "config.json"]
+  }
+}

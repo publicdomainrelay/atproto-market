@@ -1,0 +1,14 @@
+{
+  "name": "@publicdomainrelay/hono-factory-policy-builtin",
+  "version": "0.0.0",
+  "license": "Unlicense",
+  "exports": "./mod.ts",
+  "imports": {
+    "@publicdomainrelay/policy-abc": "jsr:@publicdomainrelay/policy-abc@^0",
+    "@publicdomainrelay/policy-common": "jsr:@publicdomainrelay/policy-common@^0",
+    "@publicdomainrelay/policy-builtin": "jsr:@publicdomainrelay/policy-builtin@^0",
+    "@publicdomainrelay/hono-error-middleware": "jsr:@publicdomainrelay/hono-error-middleware@^0",
+    "@publicdomainrelay/logger": "jsr:@publicdomainrelay/logger@^0",
+    "@hono/hono": "jsr:@hono/hono@^4"
+  }
+}

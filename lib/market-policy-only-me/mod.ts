@@ -15,13 +15,14 @@ export function createOnlyMePolicy(): FulfillmentPolicy {
       ctx.log("info", "only_me evaluate", { subjectDid: ctx.subjectDid, rootRequesterDid: ctx.rootRequesterDid });
 
       const operatorDid = await ctx.resolveOperatorDid(ctx.subjectDid);
-      if (!operatorDid) return false;
+      if (!operatorDid) return { allow: false, violations: [{ msg: "no operator association", policyId: POLICIES_ONLY_ME_NSID }] };
 
       const ok = operatorDid === ctx.rootRequesterDid;
       if (!ok) {
         ctx.log("info", "only_me: operator mismatch", { operatorDid, rootRequesterDid: ctx.rootRequesterDid });
+        return { allow: false, violations: [{ msg: "operator mismatch", policyId: POLICIES_ONLY_ME_NSID }] };
       }
-      return ok;
+      return { allow: true, violations: [] };
     },
   };
 }

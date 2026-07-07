@@ -24,7 +24,7 @@ export function createWorkflowGhaPolicy(): FulfillmentPolicy {
       ctx.log("warn", "workflow_gha policy evaluate not yet implemented", {
         subjectDid: ctx.subjectDid, rootRequesterDid: ctx.rootRequesterDid,
       });
-      return false;
+      return { allow: false, violations: [{ msg: "not yet implemented", policyId: POLICIES_WORKFLOW_GHA_NSID }] };
     },
   };
 }
