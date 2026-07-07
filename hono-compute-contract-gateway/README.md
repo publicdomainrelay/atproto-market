@@ -119,6 +119,7 @@ Create a simple Hono app that responds via `self.onmessage`:
 ```sh
 mkdir -p my-worker
 cat > my-worker/main.ts << 'EOF'
+// @ts-nocheck
 import { Hono } from "@hono/hono";
 
 const app = new Hono();
@@ -166,6 +167,7 @@ Create a worker that hosts other workers:
 ```sh
 mkdir -p my-bidder
 cat > my-bidder/main.ts << 'EOF'
+// @ts-nocheck
 import { createDenoBundler, createPersistentDenoWorker } from "@publicdomainrelay/sandbox-deno";
 import {
   createDenoComputeManifestStore,
@@ -237,6 +239,16 @@ goat xrpc call \
     "denoJson": "'"$(echo "$DENO_JSON" | jq -Rs .)"'",
     "bidWindowSec": 15
   }'
+```
+
+Verify the files compile:
+
+```sh
+# L2 (ephemeral): resolves from JSR — works standalone
+deno check --config my-worker/deno.json my-worker/main.ts
+
+# L1 (persistent): requires monorepo workspace (packages not yet on JSR)
+deno check --config ../deno-worker-sandbox/deno.json my-bidder/main.ts
 ```
 
 ### Execute a running worker
