@@ -241,16 +241,6 @@ goat xrpc call \
   }'
 ```
 
-Verify the files compile:
-
-```sh
-# L2 (ephemeral): resolves from JSR — works standalone
-deno check --config my-worker/deno.json my-worker/main.ts
-
-# L1 (persistent): requires monorepo workspace (packages not yet on JSR)
-deno check --config ../deno-worker-sandbox/deno.json my-bidder/main.ts
-```
-
 ### Execute a running worker
 
 ```sh
