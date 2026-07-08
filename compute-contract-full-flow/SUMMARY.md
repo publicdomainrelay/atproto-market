@@ -4,26 +4,26 @@
 
 | Role | DID |
 |------|-----|
-| Requester | `did:plc:6vccw2ui4tk46zsytpxzes35` |
-| Bidder | `did:plc:l2v5yribzywrncgkrh2zjpk7` |
+| Requester | `did:plc:o3stzy6qojgmdtdzjq6tynqs` |
+| Bidder | `did:plc:qzuhcai2kjxqd2l7tkz73a44` |
 
 ## Result
 
 ```json
 {
   "event": "compute_request_complete",
-  "vmUri": "at://did:plc:6vccw2ui4tk46zsytpxzes35/com.publicdomainrelay.temp.compute.vm/3mpzwdilhdk2a",
-  "vmCid": "bafyreihfivdmlguypz4nxypdkd5lgdhgqauejkthsfkkxg7vim2faxm6ym",
-  "rfpUri": "at://did:plc:6vccw2ui4tk46zsytpxzes35/com.publicdomainrelay.temp.market.rfp/3mpzwdilics2a",
-  "rfpCid": "bafyreigalf6jzbujgvi5kliiliir6rv2z4t44gwc4tuyi6m342pi6bhrty",
-  "acceptUri": "at://did:plc:6vccw2ui4tk46zsytpxzes35/com.publicdomainrelay.temp.market.accept/3mpzwdwvz632a",
-  "acceptCid": "bafyreifesc72g5lgb2gnw7tlvfpjusyuhn3x47zdwrwhravk25camhqm3a",
-  "bidUri": "at://did:plc:l2v5yribzywrncgkrh2zjpk7/com.publicdomainrelay.temp.market.bid/3mpzwdilwxl2a",
-  "bidCid": "bafyreihvbtezemxs4yhmcdu7xldhvv47l5l3b7evzdoilxd3bxevgbiihe",
-  "winnerDid": "did:plc:l2v5yribzywrncgkrh2zjpk7",
-  "receiptUri": "at://did:plc:l2v5yribzywrncgkrh2zjpk7/com.publicdomainrelay.temp.market.receipt/3mpzwdwway32a",
-  "receiptCid": "bafyreidjsnqsopfeu52yljhr36zffrfzlw7nrixcojmcsv7rmp7k53mkwe",
-  "submitEventRef": "https://did-key-zq3shsprdpsumjabky57zuy6byhdipea2pfukykt8itz9zur7.localhost",
+  "vmUri": "at://did:plc:o3stzy6qojgmdtdzjq6tynqs/com.publicdomainrelay.temp.compute.vm/3mq4ger7kwk23",
+  "vmCid": "bafyreievqqvuqeeeyyqbdyzit7oej2eko3hipenlatfyxsxznqtud6eb4y",
+  "rfpUri": "at://did:plc:o3stzy6qojgmdtdzjq6tynqs/com.publicdomainrelay.temp.market.rfp/3mq4ger7lvs23",
+  "rfpCid": "bafyreiehbqq5z3qm2v3lh5xjpmhp2nanomtnifqip6qrsdkstzwpigyx4q",
+  "acceptUri": "at://did:plc:o3stzy6qojgmdtdzjq6tynqs/com.publicdomainrelay.temp.market.accept/3mq4gf7k5qd23",
+  "acceptCid": "bafyreiebpdz5zuya2qz5vk5dg6ue7ngvz7wdz4ephwlclxrqzpb44aweda",
+  "bidUri": "at://did:plc:qzuhcai2kjxqd2l7tkz73a44/com.publicdomainrelay.temp.market.bid/3mq4gera4j323",
+  "bidCid": "bafyreia43knkwqvm7robtvff24eacho2pdk45en7e3g2mg2nknvx7qg62u",
+  "winnerDid": "did:plc:qzuhcai2kjxqd2l7tkz73a44",
+  "receiptUri": "at://did:plc:qzuhcai2kjxqd2l7tkz73a44/com.publicdomainrelay.temp.market.receipt/3mq4gf7kjhd23",
+  "receiptCid": "bafyreicxxvi7qjgxu2lovtyuqc5xpbc623fhvrscauktzamc2jl63cwxzu",
+  "submitEventRef": "https://did-key-zq3shej7x8g4fgi4mkgiaa5vjv9j1juswcc9jd53ex8kt12jw.localhost",
   "receiptOk": true,
   "bids": 1,
   "sshReady": false
@@ -32,8 +32,8 @@
 
 ## Dispatcher
 
-Host: `localhost:62116`
-PLC: `http://localhost:62117`
+Host: `localhost:65118`
+PLC: `http://localhost:65119`
 
 ## AT Protocol Records Created
 
@@ -99,4 +99,4 @@ requester SSH client
           → sshd 127.0.0.1:22
 ```
 
-Generated: 2026-07-07T05:59:20.111Z
+Generated: 2026-07-08T05:51:42.247Z
