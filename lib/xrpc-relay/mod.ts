@@ -18,6 +18,18 @@ export interface CreateXrpcRelayOpts {
    * assigned when the serve starts listening.
    */
   localWsTarget?: () => { hostname: string; port: number } | undefined;
+  /**
+   * When set, inbound relay subscriptions for non-tunnel NSIDs call this
+   * handler directly instead of opening a loopback WebSocket to localWsTarget.
+   * Prefer this when the firehose source is in-process — no TCP listener needed.
+   */
+  directSubscriptionHandler?: (
+    subscriptionId: string,
+    nsid: string,
+    params: Record<string, string>,
+    onEvent: (event: unknown) => void,
+    onData: (data: Uint8Array) => void,
+  ) => (() => void) | void;
 }
 
 export function createXrpcRelay(opts: CreateXrpcRelayOpts): RelayRef {
@@ -49,6 +61,7 @@ export function createXrpcRelay(opts: CreateXrpcRelayOpts): RelayRef {
         dispatcherHost,
         handleRequest,
         wsTarget: opts.localWsTarget,
+        directSubscriptionHandler: opts.directSubscriptionHandler,
       });
 
       relay.proxyRef = handle.proxyRef;
