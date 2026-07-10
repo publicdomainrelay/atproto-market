@@ -372,7 +372,7 @@ async function localTunnelContract(opts: {
         sshAuthorizedKey,
       }),
     sshProxyCommandFn: () =>
-      `websocat -b --ws-c-uri=ws://${guestSub}.localhost:${opts.dispPort}/xrpc/${TUNNEL_NSID} - ws-c:tcp:127.0.0.1:${opts.dispPort}`,
+      `websocat --binary ws://${guestSub}.localhost:${opts.dispPort}/xrpc/${TUNNEL_NSID}`,
   };
 }
 
