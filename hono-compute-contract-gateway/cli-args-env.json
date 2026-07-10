@@ -49,8 +49,7 @@
     "relay-urls": {
       "type": "string",
       "description": "Comma-separated relay URLs for bidder discovery",
-      "env": "RELAY_URLS",
-      "default": "https://reg.market.fedfork.com"
+      "env": "RELAY_URLS"
     },
     "storage-path": {
       "type": "string",
