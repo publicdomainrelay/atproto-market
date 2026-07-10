@@ -1,6 +1,6 @@
-// Integration: full policy_based flow with a local policy engine.
-// Starts dispatcher, fake PLC, policy engine, bidder (acceptScope=policy_based),
-// and requester. The requester creates an RFP with policyMode=policy_based +
+// Integration: full dynamic policy flow with a local policy engine.
+// Starts dispatcher, fake PLC, policy engine, bidder (acceptScope=dynamic),
+// and requester. The requester creates an RFP with policyMode=dynamic +
 // policyEngineEndpoint → did:web:127.0.0.1%3A<port>. The bidder evaluates
 // the policy via the engine before bidding. The requester evaluates after
 // winner selection.
@@ -12,7 +12,7 @@ import { Secp256k1Keypair } from "@atproto/crypto";
 import { Hono } from "@hono/hono";
 import { createLogger } from "@publicdomainrelay/logger";
 import { createServe } from "@publicdomainrelay/serve";
-import { createXrpcRelay } from "@publicdomainrelay/xrpc-relay";
+import { createIngress } from "@publicdomainrelay/did-key-ingress-proxy";
 import { createATProto, createLocalPDSAgent } from "@publicdomainrelay/atproto-helpers";
 import { createBadgeBlueSigner } from "@publicdomainrelay/market-atproto";
 import { createPlcDirectoryClient } from "@publicdomainrelay/did-plc";
@@ -20,8 +20,9 @@ import { createMarketBidder } from "@publicdomainrelay/market-bidder";
 import { createComputeProviderHooks } from "@publicdomainrelay/market-bidder-compute";
 import { createLocalComputeProvider } from "@publicdomainrelay/compute-provider-local";
 import type { ComputeAtproto } from "@publicdomainrelay/compute-provider-abc";
-import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-relay-relayer-xrpc";
+import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc";
 import { createRequesterPDS, runComputeContract } from "@publicdomainrelay/requester-xrpc";
+import { DYNAMIC } from "@publicdomainrelay/market-policy-abc";
 
 function didWebToHttps(s: string): string {
   return s.startsWith("did:web:") ? "https://" + s.slice("did:web:".length) : s;
@@ -75,7 +76,7 @@ function createFakePlc() {
 }
 
 Deno.test({
-  name: "[integration] policy_based — engine allow → bid + accept succeed",
+  name: "[integration] dynamic — engine allow → bid + accept succeed",
   sanitizeOps: false,
   sanitizeResources: false,
 }, async () => {
@@ -103,7 +104,6 @@ Deno.test({
   cleanups.push(() => { try { engineCtl.abort(); } catch { /* */ } });
   const engineDid = `did:web:127.0.0.1%3A${enginePort}`;
 
-  // ── dispatcher (real did-key-relay relayer) ────────────────────────────
   const dispatcherApp = createRelayFactory({ hostname: "localhost" }).createApp();
   const dispatcherCtl = new AbortController();
   const { promise: dispPortReady, resolve: resolveDispPort } = Promise.withResolvers<number>();
@@ -113,7 +113,7 @@ Deno.test({
   );
   const dispPort = await dispPortReady;
   cleanups.push(() => dispatcherCtl.abort());
-  const dispatcherHost = `localhost:${dispPort}`;
+  const ingressProxyHost = `localhost:${dispPort}`;
 
   // ── fake PLC ───────────────────────────────────────────────────────────
   const plc = createFakePlc();
@@ -138,7 +138,7 @@ Deno.test({
 
   try {
 
-    // ── bidder (acceptScope=policy_based) ──────────────────────────────────
+    // ── bidder (acceptScope=dynamic) ──────────────────────────────────
     const bidderKeypair = await Secp256k1Keypair.create({ exportable: true });
     const bidderPrivHex = Array.from(await bidderKeypair.export())
       .map((b) => b.toString(16).padStart(2, "0")).join("");
@@ -146,7 +146,7 @@ Deno.test({
     const pdsAgent = await createLocalPDSAgent({
       logger, keypair: bidderKeypair,
       serve: createServe({ logger }),
-      plcDirectoryUrl, dispatcherHost,
+      plcDirectoryUrl, ingressProxyHost,
     });
     await pdsAgent.beginServe();
 
@@ -159,7 +159,7 @@ Deno.test({
 
     const makeRelay = async () => {
       const kp = await Secp256k1Keypair.create({ exportable: true });
-      return createXrpcRelay({ logger, dispatcherHost, signer: atproto.signer, keypair: kp });
+      return createIngress({ logger, ingressProxyHost, signer: atproto.signer, keypair: kp });
     };
 
     // local compute provider (container mode) on its own relay/serve
@@ -170,18 +170,18 @@ Deno.test({
         logger,
         atproto: atproto as unknown as ComputeAtproto,
         serve: providerServe,
-        getIssuerUrl: () => didWebToHttps(providerRelay.proxyRef),
+        getIssuerUrl: () => didWebToHttps(providerRelay.ingressRef),
         containerMode: "container",
       }),
     });
     await providerServe.beginServe();
 
-    // market bidder with acceptScope=policy_based
+    // market bidder with acceptScope=dynamic
     const bidderRelay = await makeRelay();
     const bidder = await createMarketBidder({
       logger, atproto, providers: [provider], relay: bidderRelay,
       serve: createServe({ logger, tcp: { addr: "127.0.0.1", port: 0 }, relays: [bidderRelay] }),
-      acceptScope: "policy_based",
+      acceptScope: DYNAMIC,
     });
     await bidder.beginServe();
     cleanups.push(() => bidder.shutdown());
@@ -190,7 +190,7 @@ Deno.test({
     const requesterServe = createServe({ logger, tcp: { addr: "127.0.0.1", port: 0 } });
     const requester = await createRequesterPDS({
       logger, serve: requesterServe,
-      plcDirectoryUrl, dispatcherHost, label: "requester",
+      plcDirectoryUrl, ingressProxyHost, label: "requester",
     });
     cleanups.push(() => requesterServe.shutdown());
 
@@ -204,11 +204,11 @@ Deno.test({
 
     await requester.beginServe();
 
-    // ── run the contract with policy_based ─────────────────────────────────
+    // ── run the contract with dynamic policy ─────────────────────────────────
     let contractErr: unknown;
     const contract = runComputeContract(requester, {
       logger,
-      dispatcherHost,
+      ingressProxyHost,
       skipSsh: true,
       keepVm: true,
       bidWindowSec: 10,
@@ -216,7 +216,7 @@ Deno.test({
       execProgram: "true",
       extraBidderDids: [atproto.did],
       denyBidderDids: ["did:plc:centraldefaultbidder000000"],
-      policyMode: "policy_based",
+      policyMode: DYNAMIC,
       policyEngineEndpoint: engineDid,
     }).catch((e) => { contractErr = e; });
     await Promise.race([
@@ -255,7 +255,7 @@ Deno.test({
       `contract should not have errored: ${contractErr}`,
     );
 
-    logger.info("policy_based_integration_ok", {
+    logger.info("dynamic_policy_integration_ok", {
       engineCalls: engineLog.length,
       bids: seenBids.length,
       bidderCalls: bidderCalls.length,

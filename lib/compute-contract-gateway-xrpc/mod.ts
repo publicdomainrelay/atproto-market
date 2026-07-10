@@ -1,6 +1,7 @@
 import type {
   ComputeContractGateway,
 } from "@publicdomainrelay/compute-contract-gateway-abc";
+import { isValidPolicyMode } from "@publicdomainrelay/market-policy-abc";
 import type {
   CallerIdentity,
   ComputeRequestVMInput,
@@ -16,8 +17,8 @@ export interface GatewayOptions {
   serve: ServeHandle;
   privateKeyHex?: string;
   plcDirectoryUrl?: string;
-  dispatcherHost?: string;
-  fedproxyHost?: string;
+  ingressProxyHost?: string;
+  fedingressHost?: string;
   label?: string;
   storagePath?: string;
   relayUrls?: string[];
@@ -43,7 +44,7 @@ export function createComputeContractGateway(
         serve: opts.serve,
         privateKeyHex: opts.privateKeyHex,
         plcDirectoryUrl: opts.plcDirectoryUrl,
-        dispatcherHost: opts.dispatcherHost,
+        ingressProxyHost: opts.ingressProxyHost,
         label: opts.label ?? "compute-contract-gateway",
         storagePath: opts.storagePath,
       });
@@ -71,7 +72,7 @@ export function createComputeContractGateway(
 
       const vmName = (input.computeVm.role as string) ||
         `compute-${crypto.randomUUID().slice(0, 8)}`;
-      const fedproxyHost = opts.fedproxyHost ?? "fedproxy.com";
+      const fedingressHost = opts.fedingressHost ?? "fedproxy.com";
 
       const sshProvider = createSshSessionProvider(logger);
 
@@ -83,12 +84,12 @@ export function createComputeContractGateway(
         rbac: true,
         vmReadyTimeoutSec: input.vmReadyTimeoutSec,
         execProgram: input.execProgram,
-        fedproxyHost,
+        fedingressHost,
         plcUrl: opts.plcDirectoryUrl,
-        dispatcherHost: opts.dispatcherHost,
+        ingressProxyHost: opts.ingressProxyHost,
         sshProvider,
         logger,
-        policyMode: input.policyMode,
+        policyMode: input.policyMode && !isValidPolicyMode(input.policyMode) ? undefined : input.policyMode,
         extraBidderDids: input.extraBidderDids,
         relayUrls: opts.relayUrls,
       });
@@ -102,7 +103,7 @@ export function createComputeContractGateway(
       }
 
       const vmFqdn =
-        `${flattenLabel(vmName)}--${flattenLabel(pds.did)}.${fedproxyHost}`;
+        `${flattenLabel(vmName)}--${flattenLabel(pds.did)}.${fedingressHost}`;
       const websocatUrl = `wss://${vmFqdn}`;
 
       return {
@@ -144,7 +145,7 @@ export function createComputeContractGateway(
       );
 
       const vmName = `worker-${crypto.randomUUID().slice(0, 8)}`;
-      const fedproxyHost = opts.fedproxyHost ?? "fedproxy.com";
+      const fedingressHost = opts.fedingressHost ?? "fedproxy.com";
       const sshProvider = createSshSessionProvider(logger);
 
       const result = await runComputeContract(pds, {
@@ -152,9 +153,9 @@ export function createComputeContractGateway(
         bidWindowSec: input.bidWindowSec,
         skipSsh: true,
         keepVm: true,
-        fedproxyHost,
+        fedingressHost,
         plcUrl: opts.plcDirectoryUrl,
-        dispatcherHost: opts.dispatcherHost,
+        ingressProxyHost: opts.ingressProxyHost,
         sshProvider,
         logger,
         extraBidderDids: input.extraBidderDids ?? [],
@@ -199,7 +200,7 @@ export function createComputeContractGateway(
       );
 
       const vmName = `worker-${crypto.randomUUID().slice(0, 8)}`;
-      const fedproxyHost = opts.fedproxyHost ?? "fedproxy.com";
+      const fedingressHost = opts.fedingressHost ?? "fedproxy.com";
       const sshProvider = createSshSessionProvider(logger);
 
       const result = await runComputeContract(pds, {
@@ -207,9 +208,9 @@ export function createComputeContractGateway(
         bidWindowSec: input.bidWindowSec,
         skipSsh: true,
         keepVm: true,
-        fedproxyHost,
+        fedingressHost,
         plcUrl: opts.plcDirectoryUrl,
-        dispatcherHost: opts.dispatcherHost,
+        ingressProxyHost: opts.ingressProxyHost,
         sshProvider,
         logger,
         extraBidderDids: [],

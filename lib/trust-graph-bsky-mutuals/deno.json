@@ -1,0 +1,9 @@
+{
+  "name": "@publicdomainrelay/trust-graph-bsky-mutuals",
+  "version": "0.0.0",
+  "license": "Unlicense",
+  "imports": {
+    "@publicdomainrelay/trust-graph-abc": "jsr:@publicdomainrelay/trust-graph-abc@^0"
+  },
+  "exports": "./mod.ts"
+}

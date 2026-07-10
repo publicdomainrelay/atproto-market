@@ -10,7 +10,7 @@ import { Secp256k1Keypair } from "@atproto/crypto";
 import { Hono } from "@hono/hono";
 import { createLogger } from "@publicdomainrelay/logger";
 import { createServe } from "@publicdomainrelay/serve";
-import { createXrpcRelay } from "@publicdomainrelay/xrpc-relay";
+import { createIngress } from "@publicdomainrelay/did-key-ingress-proxy";
 import { createATProto, createLocalPDSAgent } from "@publicdomainrelay/atproto-helpers";
 import { createBadgeBlueSigner } from "@publicdomainrelay/market-atproto";
 import { createPlcDirectoryClient } from "@publicdomainrelay/did-plc";
@@ -18,7 +18,7 @@ import { createMarketBidder } from "@publicdomainrelay/market-bidder";
 import { createComputeProviderHooks } from "@publicdomainrelay/market-bidder-compute";
 import { createLocalComputeProvider } from "@publicdomainrelay/compute-provider-local";
 import type { ComputeAtproto } from "@publicdomainrelay/compute-provider-abc";
-import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-relay-relayer-xrpc";
+import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc";
 
 function didWebToHttps(s: string): string {
   return s.startsWith("did:web:") ? "https://" + s.slice("did:web:".length) : s;
@@ -154,7 +154,7 @@ Deno.test({
   cleanups.push(() => dispatcherCtl.abort());
   // Use "localhost" not "127.0.0.1" — relay factory's isControlHost checks
   // hostnameOnly(Host header) against the configured hostname ("localhost").
-  const dispatcherHost = `localhost:${dispPort}`;
+  const ingressProxyHost = `localhost:${dispPort}`;
 
   // ── fake PLC ─────────────────────────────────────────────────────────
   const plc = createFakePlc();
@@ -186,7 +186,7 @@ Deno.test({
     const pdsAgent = await createLocalPDSAgent({
       logger, keypair: bidderKeypair,
       serve: createServe({ logger }),
-      plcDirectoryUrl, dispatcherHost,
+      plcDirectoryUrl, ingressProxyHost,
     });
     await pdsAgent.beginServe();
 
@@ -199,7 +199,7 @@ Deno.test({
 
     const makeRelay = async () => {
       const kp = await Secp256k1Keypair.create({ exportable: true });
-      return createXrpcRelay({ logger, dispatcherHost, signer: atproto.signer, keypair: kp });
+      return createIngress({ logger, ingressProxyHost, signer: atproto.signer, keypair: kp });
     };
 
     const providerRelay = await makeRelay();
@@ -209,7 +209,7 @@ Deno.test({
         logger,
         atproto: atproto as unknown as ComputeAtproto,
         serve: providerServe,
-        getIssuerUrl: () => didWebToHttps(providerRelay.proxyRef),
+        getIssuerUrl: () => didWebToHttps(providerRelay.ingressRef),
         containerMode: "container",
       }),
     });
@@ -308,7 +308,7 @@ Deno.test({
         "--port", String(25860 + Math.floor(Math.random() * 1000)),
         "--hostname", "127.0.0.1",
         "--plc-directory-url", plcDirectoryUrl,
-        "--dispatcher-host", dispatcherHost,
+        "--ingress-proxy-host", ingressProxyHost,
         "--fedproxy-host", "localhost",
         "--pds-state-path", `${gatewayTmp}/pds.db`,
       ],
@@ -412,7 +412,7 @@ Deno.test({
       PDS_URL: pdsUrl,
       SVC_TOKEN: svcToken,
       PLC_DIRECTORY_URL: plcDirectoryUrl,
-      DISPATCHER_HOST: dispatcherHost,
+      INGRESS_PROXY_HOST: ingressProxyHost,
       ATP_PDS_HOST: pdsUrl,
       HOME: Deno.env.get("HOME") ?? "/tmp",
       PATH: Deno.env.get("PATH") ?? "",
@@ -457,7 +457,7 @@ Deno.test({
           // Skip VM request block: gateway subprocess can't resolve the
           // bidder's offering endpointUrl (did:web:*.localhost) because
           // the fetch interceptor only works in-process. The offering is
-          // created with the relay proxyUrl by createMarketBidder.
+          // created with the relay ingressUrl by createMarketBidder.
           // Fix: either start gateway in-process, or patch offering
           // endpointUrl to use direct HTTP URL.
           (b.includes("goat xrpc procedure") && b.includes("requestComputeVM")) ||

@@ -18,7 +18,7 @@ import { Secp256k1Keypair } from "@atproto/crypto";
 import { Hono } from "@hono/hono";
 import { createLogger } from "@publicdomainrelay/logger";
 import { createServe } from "@publicdomainrelay/serve";
-import { createXrpcRelay } from "@publicdomainrelay/xrpc-relay";
+import { createIngress } from "@publicdomainrelay/did-key-ingress-proxy";
 import { createATProto, createLocalPDSAgent } from "@publicdomainrelay/atproto-helpers";
 import { createBadgeBlueSigner } from "@publicdomainrelay/market-atproto";
 import { createPlcDirectoryClient } from "@publicdomainrelay/did-plc";
@@ -26,7 +26,7 @@ import { createMarketBidder } from "@publicdomainrelay/market-bidder";
 import { createComputeProviderHooks } from "@publicdomainrelay/market-bidder-compute";
 import { createLocalComputeProvider } from "@publicdomainrelay/compute-provider-local";
 import type { ComputeAtproto } from "@publicdomainrelay/compute-provider-abc";
-import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-relay-relayer-xrpc";
+import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc";
 import { createComputeContractGateway } from "@publicdomainrelay/compute-contract-gateway-xrpc";
 import { MemoryStorage } from "@publicdomainrelay/atproto-repo-deno";
 import { createRepoFactory } from "@publicdomainrelay/hono-factory-atproto-repo-deno";
@@ -100,7 +100,7 @@ Deno.test(
     });
 
     try {
-      const dispatcherHost = `localhost:${dispPort}`;
+      const ingressProxyHost = `localhost:${dispPort}`;
 
       // ── bidder ─────────────────────────────────────────────────────────
       const bidderKeypair = await Secp256k1Keypair.create({ exportable: true });
@@ -110,7 +110,7 @@ Deno.test(
       const pdsAgent = await createLocalPDSAgent({
         logger, keypair: bidderKeypair,
         serve: createServe({ logger }),
-        plcDirectoryUrl, dispatcherHost,
+        plcDirectoryUrl, ingressProxyHost,
       });
       await pdsAgent.beginServe();
 
@@ -123,7 +123,7 @@ Deno.test(
 
       const makeRelay = async () => {
         const kp = await Secp256k1Keypair.create({ exportable: true });
-        return createXrpcRelay({ logger, dispatcherHost, signer: atproto.signer, keypair: kp });
+        return createIngress({ logger, ingressProxyHost, signer: atproto.signer, keypair: kp });
       };
 
       const providerRelay = await makeRelay();
@@ -132,7 +132,7 @@ Deno.test(
         provider: createLocalComputeProvider({
           logger, atproto: atproto as unknown as ComputeAtproto,
           serve: providerServe,
-          getIssuerUrl: () => didWebToHttps(providerRelay.proxyRef),
+          getIssuerUrl: () => didWebToHttps(providerRelay.ingressRef),
           containerMode: "container",
         }),
       });
@@ -148,7 +148,7 @@ Deno.test(
       // ── caller: ephemeral PDS ──────────────────────────────────────────
       const callerKeypair = await Secp256k1Keypair.create({ exportable: true });
       const callerSigningKeyDid = callerKeypair.did();
-      const epHost = dispatcherHost.replace(/:\d+$/, "");
+      const epHost = ingressProxyHost.replace(/:\d+$/, "");
 
       const callerPlc = new PlcClient({ baseUrl: plcDirectoryUrl });
       const { did: callerDid, op: callerOp } = await createGenesisOp({
@@ -176,10 +176,10 @@ Deno.test(
       const { app: callerApp, api: callerApi } = createRepoFactory({
         storage: new MemoryStorage(),
         signer: callerSigner,
-        baseOrigin: `https://${callerSigningKeyDid.replace(/:/g, "-").toLowerCase()}.${dispatcherHost}`,
+        baseOrigin: `https://${callerSigningKeyDid.replace(/:/g, "-").toLowerCase()}.${ingressProxyHost}`,
       });
-      const callerRelay = createXrpcRelay({
-        logger, dispatcherHost,
+      const callerRelay = createIngress({
+        logger, ingressProxyHost,
         signer: callerSigner,
         keypair: callerKeypair,
         label: "caller",
@@ -196,8 +196,8 @@ Deno.test(
       const gatewayServe = createServe({ logger, tcp: { addr: "127.0.0.1", port: 0 } });
       const gateway = createComputeContractGateway({
         logger, serve: gatewayServe,
-        plcDirectoryUrl, dispatcherHost,
-        fedproxyHost: `localhost:${dispPort}`,
+        plcDirectoryUrl, ingressProxyHost,
+        fedingressHost: `localhost:${dispPort}`,
         label: "gateway-caller-rbac",
       });
       await gateway.beginServe();

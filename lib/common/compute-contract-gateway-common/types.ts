@@ -41,7 +41,7 @@ export interface ComputeRequestVMInput {
   execProgram?: string;
   skipSsh?: boolean;
   keepVm?: boolean;
-  policyMode?: "only_me" | "direct_network" | "policy_based";
+  policyMode?: "only-me" | "tangled-vouch" | "mutuals" | "dynamic";
   extraBidderDids?: string[];
   tokens: GatewayTokens;
 }

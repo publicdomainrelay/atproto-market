@@ -3,7 +3,7 @@ import { Secp256k1Keypair } from "@atproto/crypto";
 import { Hono } from "@hono/hono";
 import { createLogger } from "@publicdomainrelay/logger";
 import { createServe } from "@publicdomainrelay/serve";
-import { createXrpcRelay } from "@publicdomainrelay/xrpc-relay";
+import { createIngress } from "@publicdomainrelay/did-key-ingress-proxy";
 import { createATProto, createLocalPDSAgent } from "@publicdomainrelay/atproto-helpers";
 import { createBadgeBlueSigner } from "@publicdomainrelay/market-atproto";
 import { createPlcDirectoryClient } from "@publicdomainrelay/did-plc";
@@ -11,7 +11,7 @@ import { createMarketBidder } from "@publicdomainrelay/market-bidder";
 import { createComputeProviderHooks } from "@publicdomainrelay/market-bidder-compute";
 import { createLocalComputeProvider } from "@publicdomainrelay/compute-provider-local";
 import type { ComputeAtproto } from "@publicdomainrelay/compute-provider-abc";
-import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-relay-relayer-xrpc";
+import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc";
 import { createComputeContractGateway } from "@publicdomainrelay/compute-contract-gateway-xrpc";
 import { createSshSessionProvider } from "@publicdomainrelay/requester-xrpc";
 
@@ -85,7 +85,7 @@ Deno.test(
     });
 
     try {
-      const dispatcherHost = `localhost:${dispPort}`;
+      const ingressProxyHost = `localhost:${dispPort}`;
 
       const bidderKeypair = await Secp256k1Keypair.create({ exportable: true });
       const bidderPrivHex = Array.from(await bidderKeypair.export())
@@ -97,7 +97,7 @@ Deno.test(
         keypair: bidderKeypair,
         serve: createServe({ logger }),
         plcDirectoryUrl,
-        dispatcherHost,
+        ingressProxyHost,
       });
       await pdsAgent.beginServe();
 
@@ -112,9 +112,9 @@ Deno.test(
 
       const makeRelay = async () => {
         const kp = await Secp256k1Keypair.create({ exportable: true });
-        return createXrpcRelay({
+        return createIngress({
           logger,
-          dispatcherHost,
+          ingressProxyHost,
           signer: atproto.signer,
           keypair: kp,
         });
@@ -131,7 +131,7 @@ Deno.test(
           atproto: atproto as unknown as ComputeAtproto,
           serve: providerServe,
           getIssuerUrl: () =>
-            didWebToHttps(providerRelay.proxyRef),
+            didWebToHttps(providerRelay.ingressRef),
           containerMode: "container",
         }),
       });
@@ -159,8 +159,8 @@ Deno.test(
         logger,
         serve: gatewayServe,
         plcDirectoryUrl,
-        dispatcherHost,
-        fedproxyHost: `localhost:${dispPort}`,
+        ingressProxyHost,
+        fedingressHost: `localhost:${dispPort}`,
         label: "gateway",
       });
       await gateway.beginServe();

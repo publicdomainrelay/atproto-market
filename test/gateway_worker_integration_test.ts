@@ -3,13 +3,13 @@ import { Secp256k1Keypair } from "@atproto/crypto";
 import { Hono } from "@hono/hono";
 import { createLogger } from "@publicdomainrelay/logger";
 import { createServe } from "@publicdomainrelay/serve";
-import { createXrpcRelay } from "@publicdomainrelay/xrpc-relay";
+import { createIngress } from "@publicdomainrelay/did-key-ingress-proxy";
 import { createATProto, createLocalPDSAgent } from "@publicdomainrelay/atproto-helpers";
 import { createBadgeBlueSigner } from "@publicdomainrelay/market-atproto";
 import { createPlcDirectoryClient } from "@publicdomainrelay/did-plc";
 import { createMarketBidder } from "@publicdomainrelay/market-bidder";
 import { createWorkerProviderHooks, createComputeProviderDenoWorker } from "@publicdomainrelay/market-bidder-worker";
-import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-relay-relayer-xrpc";
+import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc";
 import { createComputeContractGateway } from "@publicdomainrelay/compute-contract-gateway-xrpc";
 import { WORKER_MANIFEST_NSID } from "@publicdomainrelay/compute-deno-common";
 
@@ -76,7 +76,7 @@ Deno.test(
     });
 
     try {
-      const dispatcherHost = `localhost:${dispPort}`;
+      const ingressProxyHost = `localhost:${dispPort}`;
 
       // ── worker bidder ─────────────────────────────────────────────────────
       const bidderKeypair = await Secp256k1Keypair.create({ exportable: true });
@@ -86,7 +86,7 @@ Deno.test(
       const pdsAgent = await createLocalPDSAgent({
         logger, keypair: bidderKeypair,
         serve: createServe({ logger }),
-        plcDirectoryUrl, dispatcherHost,
+        plcDirectoryUrl, ingressProxyHost,
       });
       await pdsAgent.beginServe();
 
@@ -99,7 +99,7 @@ Deno.test(
 
       const makeRelay = async () => {
         const kp = await Secp256k1Keypair.create({ exportable: true });
-        return createXrpcRelay({ logger, dispatcherHost, signer: atproto.signer, keypair: kp });
+        return createIngress({ logger, ingressProxyHost, signer: atproto.signer, keypair: kp });
       };
 
       const workerProvider = await createComputeProviderDenoWorker({
@@ -118,8 +118,8 @@ Deno.test(
       const gatewayServe = createServe({ logger, tcp: { addr: "127.0.0.1", port: 0 } });
       const gateway = createComputeContractGateway({
         logger, serve: gatewayServe,
-        plcDirectoryUrl, dispatcherHost,
-        fedproxyHost: `localhost:${dispPort}`,
+        plcDirectoryUrl, ingressProxyHost,
+        fedingressHost: `localhost:${dispPort}`,
         label: "gateway-worker",
       });
       await gateway.beginServe();

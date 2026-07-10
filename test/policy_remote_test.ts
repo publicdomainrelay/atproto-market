@@ -2,12 +2,12 @@ Deno.test("remote policy — engine rejects with allow:false", async () => {
   const { createRemotePolicy } = await import("@publicdomainrelay/market-policy-remote");
   const { MARKET_EVALUATE_POLICY_NSID } = await import("@publicdomainrelay/market-lexicons");
 
-  const engineCalled = Promise.withResolvers<{ body: unknown; auth: string | null }>();
+  const engineCalled = Promise.withResolvers<{ body: Record<string, unknown>; auth: string | null }>();
 
   const ac = new AbortController();
   const server = Deno.serve({ port: 0, signal: ac.signal, onListen() {} }, async (req) => {
     const auth = req.headers.get("authorization");
-    const body = await req.json();
+    const body = await req.json() as Record<string, unknown>;
     engineCalled.resolve({ body, auth });
     return new Response(JSON.stringify({ allow: false, violations: [{ msg: "test rejection", policyId: "test-policy" }] }), {
       headers: { "content-type": "application/json" },
@@ -25,7 +25,8 @@ Deno.test("remote policy — engine rejects with allow:false", async () => {
 
   const policy = createRemotePolicy({ signer });
 
-  const policyRef = { uri: "at://test/policy/1", cid: "testcid" };
+  const { strongRef } = await import("@publicdomainrelay/market-common");
+  const policyRef = strongRef("at://test/policy/1", "testcid");
 
   const resolve = async (_ref: { uri: string; cid: string }) => ({
     $type: "com.publicdomainrelay.temp.market.policies.remote",
@@ -54,12 +55,13 @@ Deno.test("remote policy — engine rejects with allow:false", async () => {
   const called = await engineCalled.promise;
   if (!called.auth) throw new Error("engine not called with auth header");
   if (!called.auth.startsWith("Bearer ")) throw new Error(`expected Bearer token, got ${called.auth}`);
-  if (called.body.subjectDid !== "did:plc:bidder") throw new Error(`wrong subjectDid: ${called.body.subjectDid}`);
-  if (called.body.rootRequesterDid !== "did:plc:requester") throw new Error(`wrong rootRequesterDid: ${called.body.rootRequesterDid}`);
+  if (typeof called.body.subjectDid !== "string" || called.body.subjectDid !== "did:plc:bidder") throw new Error(`wrong subjectDid: ${called.body.subjectDid}`);
+  if (typeof called.body.rootRequesterDid !== "string" || called.body.rootRequesterDid !== "did:plc:requester") throw new Error(`wrong rootRequesterDid: ${called.body.rootRequesterDid}`);
 });
 
 Deno.test("remote policy — engine accepts with allow:true", async () => {
   const { createRemotePolicy } = await import("@publicdomainrelay/market-policy-remote");
+  const { strongRef } = await import("@publicdomainrelay/market-common");
 
   const ac = new AbortController();
   const server = Deno.serve({ port: 0, signal: ac.signal, onListen() {} }, async (_req) => {
@@ -90,7 +92,7 @@ Deno.test("remote policy — engine accepts with allow:true", async () => {
     resolve,
     resolveOperatorDid: async () => null,
     log: () => {},
-    policyRef: { uri: "at://test/policy/2", cid: "testcid2" },
+    policyRef: strongRef("at://test/policy/2", "testcid2"),
   });
 
   ac.abort();
@@ -102,6 +104,7 @@ Deno.test("remote policy — engine accepts with allow:true", async () => {
 
 Deno.test("remote policy — no signer returns violation", async () => {
   const { createRemotePolicy } = await import("@publicdomainrelay/market-policy-remote");
+  const { strongRef } = await import("@publicdomainrelay/market-common");
 
   const policy = createRemotePolicy();
 
@@ -112,7 +115,7 @@ Deno.test("remote policy — no signer returns violation", async () => {
     resolve: async () => ({ policyEngine: "did:web:example.com" }),
     resolveOperatorDid: async () => null,
     log: () => {},
-    policyRef: { uri: "at://test/policy/3", cid: "testcid3" },
+    policyRef: strongRef("at://test/policy/3", "testcid3"),
   });
 
   if (result.allow) throw new Error("expected allow:false when no signer");
@@ -121,6 +124,7 @@ Deno.test("remote policy — no signer returns violation", async () => {
 
 Deno.test("remote policy — no policyEngine returns violation", async () => {
   const { createRemotePolicy } = await import("@publicdomainrelay/market-policy-remote");
+  const { strongRef } = await import("@publicdomainrelay/market-common");
 
   const signer = {
     did() { return "did:key:zTestSigner"; },
@@ -135,7 +139,7 @@ Deno.test("remote policy — no policyEngine returns violation", async () => {
     resolve: async () => ({ $type: "test" }),
     resolveOperatorDid: async () => null,
     log: () => {},
-    policyRef: { uri: "at://test/policy/4", cid: "testcid4" },
+    policyRef: strongRef("at://test/policy/4", "testcid4"),
   });
 
   if (result.allow) throw new Error("expected allow:false when no policyEngine");
@@ -199,7 +203,7 @@ Deno.test("only_me policy returns allow:true when operator matches", async () =>
 });
 
 Deno.test("direct_network policy — self always allowed", async () => {
-  const { createDirectNetworkPolicy } = await import("@publicdomainrelay/market-policy-direct-network");
+  const { createDirectNetworkPolicy } = await import("@publicdomainrelay/market-policy-direct-network-tangled-vouch");
 
   const policy = createDirectNetworkPolicy();
 

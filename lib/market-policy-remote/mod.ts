@@ -38,16 +38,8 @@ export interface RemotePolicyOpts {
 export function createRemotePolicy(opts?: RemotePolicyOpts): FulfillmentPolicy {
   return {
     policyNsid: POLICIES_REMOTE_NSID,
-    label: "Policy-based",
-
-    async createPolicyPayload(ctx) {
-      const record: Record<string, unknown> = {
-        $type: POLICIES_REMOTE_NSID,
-        requesterDid: ctx.subjectDid,
-        createdAt: new Date().toISOString(),
-      };
-      ctx.log("info", "remote policy created", { requesterDid: ctx.subjectDid });
-      return { uri: `at://${ctx.subjectDid}/${POLICIES_REMOTE_NSID}/policy` as never, cid: "" as never };
+    buildPolicyRecord(requesterDid: string, policyEngineEndpoint?: string) {
+      return { $type: this.policyNsid, requesterDid, createdAt: new Date().toISOString(), policyEngine: policyEngineEndpoint ?? "" };
     },
 
     async evaluate(ctx) {

@@ -1,13 +1,13 @@
 import type { StructuredLoggerInterface } from "@publicdomainrelay/logger";
 import { hostnameOnly, hostnameToDid } from "@publicdomainrelay/hostname-helpers";
 import { signServiceAuth } from "@publicdomainrelay/atproto-repo-deno";
-import { createSubscriber } from "@publicdomainrelay/did-key-relay-subscriber-xrpc";
-import { createSubscriberFactory } from "@publicdomainrelay/hono-factory-did-key-relay-subscriber-xrpc";
-import type { RelayRef } from "@publicdomainrelay/serve";
+import { createSubscriber } from "@publicdomainrelay/did-key-ingress-proxy-subscriber-xrpc";
+import { createSubscriberFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-subscriber-xrpc";
+import type { IngressRef } from "@publicdomainrelay/serve";
 
-export interface CreateXrpcRelayOpts {
+export interface CreateIngressOpts {
   logger: StructuredLoggerInterface;
-  dispatcherHost: string;
+  ingressProxyHost: string;
   signer: { did(): string; sign(bytes: Uint8Array): Promise<Uint8Array> };
   keypair: { did(): string; sign(data: Uint8Array): Promise<Uint8Array> };
   label?: string;
@@ -32,44 +32,44 @@ export interface CreateXrpcRelayOpts {
   ) => (() => void) | void;
 }
 
-export function createXrpcRelay(opts: CreateXrpcRelayOpts): RelayRef {
-  const { logger, dispatcherHost, signer, keypair } = opts;
+export function createIngress(opts: CreateIngressOpts): IngressRef {
+  const { logger, ingressProxyHost, signer, keypair } = opts;
   const label = opts.label ?? "bidder";
   let subscriber: { close(): void } | null = null;
 
-  const relay: RelayRef = {
-    proxyRef: "",
-    get proxyUrl(): string { return this.proxyRef ? "https://" + this.proxyRef.slice("did:web:".length) : ""; },
-    get proxyHost(): string { return this.proxyRef.startsWith("did:web:") ? this.proxyRef.slice("did:web:".length) : this.proxyRef; },
+  const relay: IngressRef = {
+    ingressRef: "",
+    get ingressUrl(): string { return this.ingressRef ? "https://" + this.ingressRef.slice("did:web:".length) : ""; },
+    get ingressHost(): string { return this.ingressRef.startsWith("did:web:") ? this.ingressRef.slice("did:web:".length) : this.ingressRef; },
 
     async onServe(fetch: (req: Request) => Promise<Response>): Promise<void> {
       const { handleRequest } = createSubscriberFactory({ app: { fetch } });
 
       async function getServiceAuthToken(lxm: string): Promise<string> {
-        const aud = hostnameToDid(dispatcherHost);
+        const aud = hostnameToDid(ingressProxyHost);
         return await signServiceAuth(signer, { aud, lxm });
       }
 
-      const host = hostnameOnly(dispatcherHost);
+      const host = hostnameOnly(ingressProxyHost);
 
-      logger.info("xrpc-relay connecting", { dispatcherHost });
+      logger.info("xrpc-relay connecting", { ingressProxyHost });
 
       const handle = await createSubscriber({
         label,
         keypair,
         getServiceAuthToken,
-        dispatcherHost,
+        ingressProxyHost,
         handleRequest,
         wsTarget: opts.localWsTarget,
         directSubscriptionHandler: opts.directSubscriptionHandler,
       });
 
-      relay.proxyRef = handle.proxyRef;
+      relay.ingressRef = handle.ingressRef;
       subscriber = handle;
 
       logger.info("xrpc-relay registered", {
         subdomain: handle.subdomain,
-        proxyRef: handle.proxyRef,
+        ingressRef: handle.ingressRef,
       });
     },
 

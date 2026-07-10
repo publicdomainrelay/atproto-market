@@ -10,7 +10,7 @@ import { Secp256k1Keypair } from "@atproto/crypto";
 import { Hono } from "@hono/hono";
 import { createLogger } from "@publicdomainrelay/logger";
 import { createServe } from "@publicdomainrelay/serve";
-import { createXrpcRelay } from "@publicdomainrelay/xrpc-relay";
+import { createIngress } from "@publicdomainrelay/did-key-ingress-proxy";
 import { createATProto, createLocalPDSAgent } from "@publicdomainrelay/atproto-helpers";
 import { createBadgeBlueSigner } from "@publicdomainrelay/market-atproto";
 import { createPlcDirectoryClient } from "@publicdomainrelay/did-plc";
@@ -18,7 +18,7 @@ import { createMarketBidder } from "@publicdomainrelay/market-bidder";
 import { createComputeProviderHooks } from "@publicdomainrelay/market-bidder-compute";
 import { createLocalComputeProvider } from "@publicdomainrelay/compute-provider-local";
 import type { ComputeAtproto } from "@publicdomainrelay/compute-provider-abc";
-import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-relay-relayer-xrpc";
+import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc";
 import { createRequesterPDS, runComputeContract } from "@publicdomainrelay/requester-xrpc";
 
 function didWebToHttps(s: string): string {
@@ -72,7 +72,7 @@ Deno.test({
   sanitizeOps: false,
   sanitizeResources: false,
   // The guest must run buildTunnelUserData's tunnel-subscriber.service, which
-  // `deno run`s jsr:@publicdomainrelay/hono-did-key-relay-tunnel-subscriber
+  // `deno run`s jsr:@publicdomainrelay/hono-did-key-ingress-proxy-tunnel-subscriber
   // via a JSR_URL override — that requires a local hono-jsr registry serving
   // this workspace's packages, reachable from inside the container. That
   // registry harness does not exist yet. Without it the guest never joins
@@ -93,7 +93,7 @@ Deno.test({
   );
   const dispPort = await dispPortReady;
   cleanups.push(() => dispatcherCtl.abort());
-  const dispatcherHost = `localhost:${dispPort}`;
+  const ingressProxyHost = `localhost:${dispPort}`;
 
   // ── fake PLC ────────────────────────────────────────────────────────────
   const plc = createFakePlc();
@@ -135,7 +135,7 @@ Deno.test({
     const pdsAgent = await createLocalPDSAgent({
       logger, keypair: bidderKeypair,
       serve: createServe({ logger }),
-      plcDirectoryUrl, dispatcherHost,
+      plcDirectoryUrl, ingressProxyHost,
     });
     await pdsAgent.beginServe();
 
@@ -148,7 +148,7 @@ Deno.test({
 
     const makeRelay = async () => {
       const kp = await Secp256k1Keypair.create({ exportable: true });
-      return createXrpcRelay({ logger, dispatcherHost, signer: atproto.signer, keypair: kp });
+      return createIngress({ logger, ingressProxyHost, signer: atproto.signer, keypair: kp });
     };
 
     // local compute provider (container mode)
@@ -159,7 +159,7 @@ Deno.test({
         logger,
         atproto: atproto as unknown as ComputeAtproto,
         serve: providerServe,
-        getIssuerUrl: () => didWebToHttps(providerRelay.proxyRef),
+        getIssuerUrl: () => didWebToHttps(providerRelay.ingressRef),
         containerMode: "container",
       }),
     });
@@ -178,7 +178,7 @@ Deno.test({
     const requesterServe = createServe({ logger, tcp: { addr: "127.0.0.1", port: 0 } });
     const requester = await createRequesterPDS({
       logger, serve: requesterServe,
-      plcDirectoryUrl, dispatcherHost, label: "requester",
+      plcDirectoryUrl, ingressProxyHost, label: "requester",
     });
     cleanups.push(() => requesterServe.shutdown());
     await requester.beginServe();
@@ -191,11 +191,11 @@ Deno.test({
     // interception that maps https://*.localhost → http://localhost:PORT
     // doesn't apply.  Use proxyCommandFn to rewrite wss://*.fedproxy.com
     // → ws://localhost:PORT so the tunnel reaches the local dispatcher.
-    const proxyCommandFn = (_fqdn: string) => `websocat --binary ws://${dispatcherHost}`;
+    const proxyCommandFn = (_fqdn: string) => `websocat --binary ws://${ingressProxyHost}`;
 
     const result = await runComputeContract(requester, {
       logger,
-      dispatcherHost,
+      ingressProxyHost,
       sshProxyCommandFn: proxyCommandFn,
       skipSsh: false,
       keepVm: false,

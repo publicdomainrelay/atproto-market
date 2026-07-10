@@ -34,10 +34,10 @@
       "env": "PLC_DIRECTORY_URL",
       "default": "https://plc.directory"
     },
-    "dispatcher-host": {
+    "ingress-proxy-host": {
       "type": "string",
       "description": "XRPC relay dispatcher host",
-      "env": "DISPATCHER_HOST",
+      "env": "INGRESS_PROXY_HOST",
       "default": "xrpc.fedproxy.com"
     },
     "fedproxy-host": {

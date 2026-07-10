@@ -4,11 +4,8 @@ import { POLICIES_ONLY_ME_NSID } from "@publicdomainrelay/market-lexicons";
 export function createOnlyMePolicy(): FulfillmentPolicy {
   return {
     policyNsid: POLICIES_ONLY_ME_NSID,
-    label: "Only Me",
-
-    async createPolicyPayload(ctx) {
-      ctx.log("info", "only_me policy created", { requesterDid: ctx.subjectDid });
-      return { uri: `at://${ctx.subjectDid}/${POLICIES_ONLY_ME_NSID}/policy` as never, cid: "" as never };
+    buildPolicyRecord(requesterDid: string) {
+      return { $type: this.policyNsid, requesterDid, createdAt: new Date().toISOString() };
     },
 
     async evaluate(ctx) {

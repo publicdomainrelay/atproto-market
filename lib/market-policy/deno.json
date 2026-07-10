@@ -5,7 +5,8 @@
   "imports": {
     "@publicdomainrelay/market-policy-abc": "jsr:@publicdomainrelay/market-policy-abc@^0",
     "@publicdomainrelay/market-policy-only-me": "jsr:@publicdomainrelay/market-policy-only-me@^0",
-    "@publicdomainrelay/market-policy-direct-network": "jsr:@publicdomainrelay/market-policy-direct-network@^0",
+    "@publicdomainrelay/market-policy-direct-network-tangled-vouch": "jsr:@publicdomainrelay/market-policy-direct-network-tangled-vouch@^0",
+    "@publicdomainrelay/market-policy-direct-network-bsky-mutual": "jsr:@publicdomainrelay/market-policy-direct-network-bsky-mutual@^0",
     "@publicdomainrelay/market-policy-workflow-gha": "jsr:@publicdomainrelay/market-policy-workflow-gha@^0",
     "@publicdomainrelay/market-policy-remote": "jsr:@publicdomainrelay/market-policy-remote@^0",
     "@publicdomainrelay/market-lexicons": "jsr:@publicdomainrelay/market-lexicons@^0"

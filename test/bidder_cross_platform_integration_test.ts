@@ -11,7 +11,7 @@ import { Secp256k1Keypair } from "@atproto/crypto";
 import { Hono } from "@hono/hono";
 import { createLogger } from "@publicdomainrelay/logger";
 import { createServe } from "@publicdomainrelay/serve";
-import { createXrpcRelay } from "@publicdomainrelay/xrpc-relay";
+import { createIngress } from "@publicdomainrelay/did-key-ingress-proxy";
 import { createATProto, createLocalPDSAgent } from "@publicdomainrelay/atproto-helpers";
 import { createBadgeBlueSigner } from "@publicdomainrelay/market-atproto";
 import { createPlcDirectoryClient } from "@publicdomainrelay/did-plc";
@@ -19,7 +19,7 @@ import { createMarketBidder } from "@publicdomainrelay/market-bidder";
 import { createComputeProviderHooks } from "@publicdomainrelay/market-bidder-compute";
 import { createLocalComputeProvider } from "@publicdomainrelay/compute-provider-local";
 import type { ComputeAtproto } from "@publicdomainrelay/compute-provider-abc";
-import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-relay-relayer-xrpc";
+import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc";
 import {
   createRequesterPDS, ensureWebsocat, runComputeContract,
 } from "@publicdomainrelay/requester-xrpc";
@@ -27,7 +27,7 @@ import type { ContainerBackend } from "@publicdomainrelay/container-backend-abc"
 import { createContainerBackend } from "@publicdomainrelay/container-backend-container";
 import { createDockerBackend } from "@publicdomainrelay/container-backend-docker";
 import { buildTunnelUserData } from "@publicdomainrelay/cloud-init-common";
-import { didToSubdomain, TUNNEL_NSID } from "@publicdomainrelay/did-key-relay-common";
+import { didToSubdomain, TUNNEL_NSID } from "@publicdomainrelay/did-key-ingress-proxy-common";
 import { runPackageRegistry } from "../../hono-jsr/hono-package-registry/main.ts";
 import { installFetchInterceptor } from "./fetch-interceptor.ts";
 
@@ -214,10 +214,10 @@ async function spawnBidder(opts: {
 async function createHonoBidderInline(opts: {
   logger: ReturnType<typeof createLogger>;
   plcDirectoryUrl: string;
-  dispatcherHost: string;
+  ingressProxyHost: string;
   cleanups: Array<() => void>;
 }) {
-  const { logger, plcDirectoryUrl, dispatcherHost, cleanups } = opts;
+  const { logger, plcDirectoryUrl, ingressProxyHost, cleanups } = opts;
 
   const bidderKeypair = await Secp256k1Keypair.create({ exportable: true });
   const bidderPrivHex = Array.from(await bidderKeypair.export())
@@ -226,7 +226,7 @@ async function createHonoBidderInline(opts: {
   const pdsAgent = await createLocalPDSAgent({
     logger, keypair: bidderKeypair,
     serve: createServe({ logger }),
-    plcDirectoryUrl, dispatcherHost,
+    plcDirectoryUrl, ingressProxyHost,
   });
   await pdsAgent.beginServe();
 
@@ -239,7 +239,7 @@ async function createHonoBidderInline(opts: {
 
   async function makeRelay() {
     const kp = await Secp256k1Keypair.create({ exportable: true });
-    return createXrpcRelay({ logger, dispatcherHost, signer: atproto.signer, keypair: kp });
+    return createIngress({ logger, ingressProxyHost, signer: atproto.signer, keypair: kp });
   }
 
   const providerRelay = await makeRelay();
@@ -249,7 +249,7 @@ async function createHonoBidderInline(opts: {
       logger,
       atproto: atproto as unknown as ComputeAtproto,
       serve: providerServe,
-      getIssuerUrl: () => didWebToHttps(providerRelay.proxyRef),
+      getIssuerUrl: () => didWebToHttps(providerRelay.ingressRef),
       containerMode: "container",
     }),
   });
@@ -269,13 +269,13 @@ async function createHonoBidderInline(opts: {
 async function createDesktopBidderInline(opts: {
   logger: ReturnType<typeof createLogger>;
   plcDirectoryUrl: string;
-  dispatcherHost: string;
+  ingressProxyHost: string;
   cleanups: Array<() => void>;
 }) {
-  const { logger, plcDirectoryUrl, dispatcherHost, cleanups } = opts;
+  const { logger, plcDirectoryUrl, ingressProxyHost, cleanups } = opts;
 
   const [
-    { createXrpcRelay: ciXrpcRelay },
+    { createIngress: ciXrpcRelay },
     { createMarketBidder: ciMarketBidder },
     { createComputeProviderHooks: ciProviderHooks },
     { createLocalComputeProvider: ciLocalCompute },
@@ -284,7 +284,7 @@ async function createDesktopBidderInline(opts: {
     { buildStandardChain },
     { createRbacProvisioner: ciRbac },
   ] = await Promise.all([
-    import("../../atproto-market/lib/xrpc-relay/mod.ts"),
+    import("../../atproto-market/lib/did-key-ingress-proxy/mod.ts"),
     import("../../atproto-market/lib/market-bidder/mod.ts"),
     import("../../atproto-market/lib/market-bidder-compute/mod.ts"),
     import("../../hono-compute-provider/lib/compute-provider-local/mod.ts"),
@@ -306,7 +306,7 @@ async function createDesktopBidderInline(opts: {
   const pdsAgent = await createLocalPDSAgent({
     logger, keypair: pdsKeypair,
     serve: createServe({ logger }),
-    plcDirectoryUrl, dispatcherHost,
+    plcDirectoryUrl, ingressProxyHost,
   });
   await pdsAgent.beginServe();
 
@@ -319,7 +319,7 @@ async function createDesktopBidderInline(opts: {
 
   async function makeRelay() {
     const kp = await Secp256k1Keypair.create({ exportable: true });
-    return ciXrpcRelay({ logger, dispatcherHost, signer: atproto.signer, keypair: kp });
+    return ciXrpcRelay({ logger, ingressProxyHost, signer: atproto.signer, keypair: kp });
   }
 
   const providerRelay = await makeRelay();
@@ -329,7 +329,7 @@ async function createDesktopBidderInline(opts: {
       logger,
       atproto: atproto as unknown as ComputeAtproto,
       serve: providerServe,
-      getIssuerUrl: () => didWebToHttps(providerRelay.proxyRef),
+      getIssuerUrl: () => didWebToHttps(providerRelay.ingressRef),
       containerMode: "container",
       rbacProvisioner: ciRbac(),
     }),
@@ -360,12 +360,12 @@ async function localTunnelContract(opts: {
   const guestPrivHex = Array.from(await guestKp.export())
     .map((b) => b.toString(16).padStart(2, "0")).join("");
   const guestSub = didToSubdomain(guestKp.did());
-  const dispatcherHost = `localhost:${opts.dispPort}`;
+  const ingressProxyHost = `localhost:${opts.dispPort}`;
   return {
-    fedproxyHost: dispatcherHost,
+    fedingressHost: ingressProxyHost,
     userDataFactory: (sshAuthorizedKey: string) =>
       buildTunnelUserData({
-        dispatcherHost: `${opts.gateway}:${opts.dispPort}`,
+        ingressProxyHost: `${opts.gateway}:${opts.dispPort}`,
         audHost: "localhost",
         privateKeyHex: guestPrivHex,
         jsrUrl: `${opts.gateway}:${opts.registry.tcpPort}`,
@@ -410,7 +410,7 @@ Deno.test({
   const dispAc = new AbortController();
   const dispPort = await serveOnPort0(dispatcherApp.fetch, dispAc, "0.0.0.0");
   cleanups.push(() => dispAc.abort());
-  const dispatcherHost = `localhost:${dispPort}`;
+  const ingressProxyHost = `localhost:${dispPort}`;
 
   // ── Shared infra: fake PLC ────────────────────────────────────────────
   const plc = createFakePlc();
@@ -440,7 +440,7 @@ Deno.test({
     const requesterServe = createServe({ logger, tcp: { addr: "127.0.0.1", port: 0 } });
     const requester = await createRequesterPDS({
       logger, serve: requesterServe,
-      plcDirectoryUrl, dispatcherHost, label: "requester",
+      plcDirectoryUrl, ingressProxyHost, label: "requester",
     });
     cleanups.push(() => requesterServe.shutdown());
     await requester.beginServe();
@@ -454,7 +454,7 @@ Deno.test({
 
     const contract = runComputeContract(requester, {
       logger,
-      dispatcherHost,
+      ingressProxyHost,
       skipSsh: true,
       keepVm: true,
       bidWindowSec: 8,
@@ -482,14 +482,14 @@ Deno.test({
   await t.step("[bidder:hono-bidder] core bid flow (container mode)", async () => {
     await runCoreBidFlow({
       label: "hono-bidder",
-      createBidder: () => createHonoBidderInline({ logger, plcDirectoryUrl, dispatcherHost, cleanups }),
+      createBidder: () => createHonoBidderInline({ logger, plcDirectoryUrl, ingressProxyHost, cleanups }),
     });
   });
 
   await t.step("[bidder:hono-desktop] core bid flow (container mode)", async () => {
     await runCoreBidFlow({
       label: "hono-desktop",
-      createBidder: () => createDesktopBidderInline({ logger, plcDirectoryUrl, dispatcherHost, cleanups }),
+      createBidder: () => createDesktopBidderInline({ logger, plcDirectoryUrl, ingressProxyHost, cleanups }),
     });
   });
 
@@ -522,7 +522,7 @@ Deno.test({
     const requesterServe = createServe({ logger, tcp: { addr: "127.0.0.1", port: 0 } });
     const requester = await createRequesterPDS({
       logger, serve: requesterServe,
-      plcDirectoryUrl, dispatcherHost,
+      plcDirectoryUrl, ingressProxyHost,
       label: `requester-${flattenLabel(opts.label)}`,
     });
     cleanups.push(() => requesterServe.shutdown());
@@ -530,7 +530,7 @@ Deno.test({
 
     const result = await runComputeContract(requester, {
       logger,
-      dispatcherHost,
+      ingressProxyHost,
       skipSsh: false,
       keepVm: false,
       bidWindowSec: 8,
@@ -555,7 +555,7 @@ Deno.test({
       spawnConfig: {
         modPath: HONO_BIDDER,
         args: [
-          "--relay-dispatcher-host", dispatcherHost,
+          "--ingress-proxy-host", ingressProxyHost,
           "--plc-directory-url", plcDirectoryUrl,
           "--compute-provider-local",
           "--compute-provider-local-container-mode", "container",

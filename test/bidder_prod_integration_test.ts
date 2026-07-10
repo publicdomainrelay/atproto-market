@@ -11,7 +11,7 @@ import { assert } from "@std/assert";
 import { Secp256k1Keypair } from "@atproto/crypto";
 import { createLogger } from "@publicdomainrelay/logger";
 import { createServe } from "@publicdomainrelay/serve";
-import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-relay-relayer-xrpc";
+import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc";
 import {
   createRequesterPDS, ensureWebsocat, runComputeContract,
 } from "@publicdomainrelay/requester-xrpc";
@@ -213,7 +213,7 @@ Deno.test({
     const proc = await spawnBidder({
       modPath: HONO_BIDDER,
       args: [
-        "--relay-dispatcher-host", PROD_DISPATCHER,
+        "--ingress-proxy-host", PROD_DISPATCHER,
         "--plc-directory-url", PROD_PLC,
         "--compute-provider-local",
         "--compute-provider-local-container-mode", "container",
@@ -227,7 +227,7 @@ Deno.test({
     const requester = await createRequesterPDS({
       logger, serve: requesterServe,
       plcDirectoryUrl: PROD_PLC,
-      dispatcherHost: PROD_DISPATCHER,
+      ingressProxyHost: PROD_DISPATCHER,
       label: "requester-prod-ssh",
     });
     cleanups.push(() => requesterServe.shutdown());
@@ -235,8 +235,8 @@ Deno.test({
 
     const result = await runComputeContract(requester, {
       logger,
-      dispatcherHost: PROD_DISPATCHER,
-      fedproxyHost: PROD_FEDPROXY,
+      ingressProxyHost: PROD_DISPATCHER,
+      fedingressHost: PROD_FEDPROXY,
       rbac: true,
       skipSsh: false,
       keepVm: false,

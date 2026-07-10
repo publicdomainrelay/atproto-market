@@ -46,7 +46,7 @@ deno run -A hono-bidder/mod.ts \
   --compute-provider-local \
   --compute-provider-local-container-mode container \
   --plc-directory-url "$PLC_DIRECTORY_URL" \
-  --relay-dispatcher-host "$DISPATCHER_HOST" \
+  --relay-dispatcher-host "$INGRESS_PROXY_HOST" \
   --serve-port 2585 &
 
 # Set bidder DID from bidder startup output
@@ -57,7 +57,7 @@ Required environment variables:
 
 ```sh
 export PLC_DIRECTORY_URL="http://127.0.0.1:2582"
-export DISPATCHER_HOST="127.0.0.1:2583"
+export INGRESS_PROXY_HOST="127.0.0.1:2583"
 export BIDDER_DID="did:plc:xxxxxxxxxxx"
 ```
 
@@ -95,7 +95,7 @@ record referencing the gateway's `badgeBlueKeys` record. No manual step needed.
 # Start the gateway server
 deno run -A hono-compute-contract-gateway/mod.ts \
   --port 2586 \
-  --dispatcher-host "$DISPATCHER_HOST" \
+  --dispatcher-host "$INGRESS_PROXY_HOST" \
   --plc-directory-url "$PLC_DIRECTORY_URL"
 
 # Health check via goat
@@ -124,7 +124,7 @@ ssh-keygen -t ed25519 -N "" -C "root@my-vm" -f ./my-vm-key
 ```sh
 deno run -A hono-compute-contract-gateway/mod.ts \
   --port 2586 \
-  --dispatcher-host "${DISPATCHER_HOST:-xrpc.fedproxy.com}" \
+  --dispatcher-host "${INGRESS_PROXY_HOST:-xrpc.fedproxy.com}" \
   --plc-directory-url "${PLC_DIRECTORY_URL:-https://plc.directory}" \
   --private-key-hex-path ~/Documents/requester-private-key.hex \
   --pds-state-path ~/Documents/requester-pds-state.db &
@@ -320,7 +320,7 @@ goat xrpc procedure "$GATEWAY_URL" com.publicdomainrelay.temp.gateway.requestCom
 | `--private-key-hex-path` | `REPO_PRIVATE_KEY_HEX_PATH` | -- | Path to load/save private key hex |
 | `--pds-state-path` | `PDS_STATE_PATH` | -- | Path for persistent PDS state (Deno.Kv SQLite) |
 | `--plc-directory-url` | `PLC_DIRECTORY_URL` | `https://plc.directory` | PLC directory |
-| `--dispatcher-host` | `DISPATCHER_HOST` | `xrpc.fedproxy.com` | XRPC relay |
+| `--dispatcher-host` | `INGRESS_PROXY_HOST` | `xrpc.fedproxy.com` | XRPC relay |
 | `--fedproxy-host` | `FEDPROXY_HOST` | `fedproxy.com` | SSH ingress |
 | `--relay-urls` | `RELAY_URLS` | `https://reg.market.fedfork.com` | Bidder discovery |
 

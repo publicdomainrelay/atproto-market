@@ -1,5 +1,5 @@
 {
-  "name": "@publicdomainrelay/market-registry-abc",
+  "name": "@publicdomainrelay/trust-graph-abc",
   "version": "0.0.0",
   "license": "Unlicense",
   "exports": "./mod.ts"

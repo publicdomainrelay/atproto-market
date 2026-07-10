@@ -23,6 +23,6 @@
     "@publicdomainrelay/requester-abc": "jsr:@publicdomainrelay/requester-abc@^0",
     "@publicdomainrelay/requester-xrpc": "jsr:@publicdomainrelay/requester-xrpc@^0",
     "@publicdomainrelay/serve": "jsr:@publicdomainrelay/serve@^0",
-    "@publicdomainrelay/xrpc-relay": "jsr:@publicdomainrelay/xrpc-relay@^0"
+    "@publicdomainrelay/did-key-ingress-proxy": "jsr:@publicdomainrelay/did-key-ingress-proxy@^0"
   }
 }

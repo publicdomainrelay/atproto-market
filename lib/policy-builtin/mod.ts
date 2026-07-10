@@ -1,5 +1,4 @@
 import type { PolicyHandler, PolicyResult } from "@publicdomainrelay/policy-abc";
-import { GATE_REGISTRY_WORKER_MANIFEST_PERMISSIONS_NSID } from "@publicdomainrelay/policy-common";
 
 export function createDenyAllPolicy(): PolicyHandler {
   return {

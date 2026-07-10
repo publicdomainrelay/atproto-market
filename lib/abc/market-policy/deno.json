@@ -2,6 +2,8 @@
   "name": "@publicdomainrelay/market-policy-abc",
   "version": "0.0.0",
   "license": "Unlicense",
-  "imports": {},
+  "imports": {
+    "@publicdomainrelay/market-common": "jsr:@publicdomainrelay/market-common@^0"
+  },
   "exports": "./mod.ts"
 }

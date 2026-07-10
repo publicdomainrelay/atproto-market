@@ -3,7 +3,7 @@ import { Secp256k1Keypair } from "@atproto/crypto";
 import { Hono } from "@hono/hono";
 import { createLogger } from "@publicdomainrelay/logger";
 import { createServe } from "@publicdomainrelay/serve";
-import { createXrpcRelay } from "@publicdomainrelay/xrpc-relay";
+import { createIngress } from "@publicdomainrelay/did-key-ingress-proxy";
 import { createATProto, createLocalPDSAgent } from "@publicdomainrelay/atproto-helpers";
 import { createBadgeBlueSigner } from "@publicdomainrelay/market-atproto";
 import { createPlcDirectoryClient } from "@publicdomainrelay/did-plc";
@@ -11,7 +11,7 @@ import { createMarketBidder } from "@publicdomainrelay/market-bidder";
 import { createComputeProviderHooks } from "@publicdomainrelay/market-bidder-compute";
 import { createLocalComputeProvider } from "@publicdomainrelay/compute-provider-local";
 import type { ComputeAtproto } from "@publicdomainrelay/compute-provider-abc";
-import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-relay-relayer-xrpc";
+import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc";
 import { createRequesterPDS, runComputeContract, createSshSessionProvider } from "@publicdomainrelay/requester-xrpc";
 function installFetchInterceptor(opts: {
   realFetch: typeof globalThis.fetch;
@@ -119,8 +119,8 @@ async function main() {
   );
   const dispPort = await dispPortReady;
   cleanups.push(() => dispatcherCtl.abort());
-  const dispatcherHost = `localhost:${dispPort}`;
-  log(`dispatcher listening on ${dispatcherHost}`);
+  const ingressProxyHost = `localhost:${dispPort}`;
+  log(`dispatcher listening on ${ingressProxyHost}`);
 
   const plc = createFakePlc();
   const plcCtl = new AbortController();
@@ -151,7 +151,7 @@ async function main() {
   const pdsAgent = await createLocalPDSAgent({
     logger, keypair: bidderKeypair,
     serve: bidderPdsServe,
-    plcDirectoryUrl, dispatcherHost,
+    plcDirectoryUrl, ingressProxyHost,
   });
   await pdsAgent.beginServe();
   log(`bidder PDS ready: did=${pdsAgent.did}`);
@@ -165,7 +165,7 @@ async function main() {
 
   const makeRelay = async () => {
     const kp = await Secp256k1Keypair.create({ exportable: true });
-    return createXrpcRelay({ logger, dispatcherHost, signer: atproto.signer, keypair: kp });
+    return createIngress({ logger, ingressProxyHost, signer: atproto.signer, keypair: kp });
   };
 
   const providerRelay = await makeRelay();
@@ -175,14 +175,14 @@ async function main() {
     logger,
     atproto: atproto as unknown as ComputeAtproto,
     serve: providerServe,
-    getIssuerUrl: () => didWebToHttps(providerRelay.proxyRef),
+    getIssuerUrl: () => didWebToHttps(providerRelay.ingressRef),
     containerMode: "container",
     xrpcRelay: false,
   });
 
   const provider = createComputeProviderHooks({ provider: computeProvider });
   await providerServe.beginServe();
-  log(`provider relay ready: proxyRef=${providerRelay.proxyRef}`);
+  log(`provider relay ready: ingressRef=${providerRelay.ingressRef}`);
 
   const bidderRelay = await makeRelay();
   const bidderServe = createServe({ logger, tcp: { addr: "127.0.0.1", port: 0 }, relays: [bidderRelay] });
@@ -195,17 +195,17 @@ async function main() {
   });
   await marketBidder.beginServe();
   cleanups.push(() => marketBidder.shutdown());
-  log(`bidder ready: did=${atproto.did} proxyRef=${bidderRelay.proxyRef}`);
+  log(`bidder ready: did=${atproto.did} ingressRef=${bidderRelay.ingressRef}`);
 
   // ── requester ───────────────────────────────────────────
   const requesterServe = createServe({ logger, tcp: { addr: "127.0.0.1", port: 0 } });
   const requester = await createRequesterPDS({
     logger, serve: requesterServe,
-    plcDirectoryUrl, dispatcherHost, label: "requester",
+    plcDirectoryUrl, ingressProxyHost, label: "requester",
   });
   cleanups.push(() => requesterServe.shutdown());
   await requester.beginServe();
-  log(`requester ready: did=${requester.did} proxyRef=${requester.proxyRef}`);
+  log(`requester ready: did=${requester.did} ingressRef=${requester.ingressRef}`);
 
   // ── collect ALL atproto records from both repos ──────────
   async function collectRecords(label: string, pdsApi: { listRecords(did: string, collection: string, opts?: { limit?: number; cursor?: string }): Promise<{ records: Array<{ uri: string; cid: string; value: Record<string, unknown> }>; cursor?: string }> }, did: string) {
@@ -252,7 +252,7 @@ async function main() {
 
   const contract = await runComputeContract(requester, {
     logger,
-    dispatcherHost,
+    ingressProxyHost,
     skipSsh: false,
     keepVm: true,
     bidWindowSec: 15,
@@ -307,7 +307,7 @@ ${JSON.stringify(contract, null, 2)}
 
 ## Dispatcher
 
-Host: \`${dispatcherHost}\`
+Host: \`${ingressProxyHost}\`
 PLC: \`${plcDirectoryUrl}\`
 
 ## AT Protocol Records Created
@@ -362,7 +362,7 @@ runComputeContract()
 \`\`\`
 requester SSH client
   ProxyCommand websocat --binary wss://<service>--did-plc-<key>.localhost
-    → dispatcher (did-key-relay, routes by SNI subdomain)
+    → dispatcher (xrpc relay, routes by SNI subdomain)
       → relay WebSocket → bidder PDS → guest container
         → websocat ws-l:127.0.0.1:8080
           → sshd 127.0.0.1:22
