@@ -2,6 +2,7 @@
   "workspace": [
     "lib/atproto-attestation-port",
     "lib/atproto-helpers",
+    "lib/atproto-oauth-helpers",
     "lib/utils-attestation-key",
     "lib/did-plc",
     "lib/common/market-lexicons",
@@ -72,6 +73,7 @@
     "@ipld/dag-cbor": "npm:@ipld/dag-cbor@^9.2.0",
     "@publicdomainrelay/atproto-attestation-port": "./lib/atproto-attestation-port/mod.ts",
     "@publicdomainrelay/atproto-helpers": "./lib/atproto-helpers/mod.ts",
+    "@publicdomainrelay/atproto-oauth-helpers": "./lib/atproto-oauth-helpers/mod.ts",
     "@publicdomainrelay/atproto-repo-abc": "../hono-pds/lib/abc/atproto-repo/mod.ts",
     "@publicdomainrelay/atproto-repo-common": "../hono-pds/lib/common/mod.ts",
     "@publicdomainrelay/atproto-relay-abc": "../atproto-relay/lib/abc/atproto-relay/mod.ts",
