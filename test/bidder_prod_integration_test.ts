@@ -166,13 +166,7 @@ Deno.test({
   name: "prod fedproxy.com SSH relay",
   sanitizeOps: false,
   sanitizeResources: false,
-  ignore: (() => {
-    // Auto-detect reachability at declaration time. When unreachable the test
-    // is `ignore: true`. Set DENO_TEST_PROD=1 to force-enable regardless.
-    if (Deno.env.get("DENO_TEST_PROD") === "1") return false;
-    // Probe at runtime via step skip instead — use ignore as a fallback hint.
-    return false;
-  })(),
+  ignore: Deno.env.get("DENO_TEST_PROD") !== "1",
 }, async (t) => {
   // ── Reachability probes ───────────────────────────────────────────────
   const plcRtt = await probeRtt(`${PROD_PLC}/`);

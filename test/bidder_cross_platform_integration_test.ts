@@ -557,8 +557,9 @@ Deno.test({
         args: [
           "--ingress-proxy-host", ingressProxyHost,
           "--plc-directory-url", plcDirectoryUrl,
+          "--relay-url", `http://127.0.0.1:${dispPort}`,
           "--compute-provider-local",
-          "--compute-provider-local-container-mode", "container",
+          "--compute-provider-local-container-image", "container",
           "--serve-port", "0",
         ],
       },
