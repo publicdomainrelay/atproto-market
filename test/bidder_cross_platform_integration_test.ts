@@ -21,14 +21,11 @@ import { createLocalComputeProvider } from "@publicdomainrelay/compute-provider-
 import type { ComputeAtproto } from "@publicdomainrelay/compute-provider-abc";
 import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc";
 import {
-  createRequesterPDS, ensureWebsocat, runComputeContract,
+  createRequesterPDS, runComputeContract,
 } from "@publicdomainrelay/requester-xrpc";
 import type { ContainerBackend } from "@publicdomainrelay/container-backend-abc";
 import { createContainerBackend } from "@publicdomainrelay/container-backend-container";
 import { createDockerBackend } from "@publicdomainrelay/container-backend-docker";
-import { buildTunnelUserData } from "@publicdomainrelay/cloud-init-common";
-import { didToSubdomain, TUNNEL_NSID } from "@publicdomainrelay/did-key-ingress-proxy-common";
-import { runPackageRegistry } from "../../hono-jsr/hono-package-registry/main.ts";
 import { installFetchInterceptor } from "./fetch-interceptor.ts";
 
 // ===========================================================================
@@ -57,15 +54,6 @@ function serveOnPort0(
     fetch,
   );
   return promise;
-}
-
-async function hasCommand(cmd: string): Promise<boolean> {
-  try {
-    const { code } = await new Deno.Command("which", {
-      args: [cmd], stdout: "null", stderr: "null",
-    }).output();
-    return code === 0;
-  } catch { return false; }
 }
 
 function createFakePlc() {
@@ -348,35 +336,6 @@ async function createDesktopBidderInline(opts: {
 }
 
 // ===========================================================================
-// Local tunnel contract — guest uses buildTunnelUserData (tunnel-subscriber)
-// ===========================================================================
-
-async function localTunnelContract(opts: {
-  registry: { tcpPort: number };
-  gateway: string;
-  dispPort: number;
-}): Promise<Record<string, unknown>> {
-  const guestKp = await Secp256k1Keypair.create({ exportable: true });
-  const guestPrivHex = Array.from(await guestKp.export())
-    .map((b) => b.toString(16).padStart(2, "0")).join("");
-  const guestSub = didToSubdomain(guestKp.did());
-  const ingressProxyHost = `localhost:${opts.dispPort}`;
-  return {
-    fedingressHost: ingressProxyHost,
-    userDataFactory: (sshAuthorizedKey: string) =>
-      buildTunnelUserData({
-        ingressProxyHost: `${opts.gateway}:${opts.dispPort}`,
-        audHost: "localhost",
-        privateKeyHex: guestPrivHex,
-        jsrUrl: `${opts.gateway}:${opts.registry.tcpPort}`,
-        sshAuthorizedKey,
-      }),
-    sshProxyCommandFn: () =>
-      `websocat --binary ws://${guestSub}.localhost:${opts.dispPort}/xrpc/${TUNNEL_NSID}`,
-  };
-}
-
-// ===========================================================================
 // Test
 // ===========================================================================
 
@@ -494,23 +453,12 @@ Deno.test({
   });
 
   // =====================================================================
-  // Local SSH relay — hono-bidder CLI subprocess + buildTunnelUserData
+  // Local SSH relay — hono-bidder CLI subprocess, standard flow
   // =====================================================================
-
-  await ensureWebsocat(logger).catch(() => {});
-  const websocatOk = await hasCommand("websocat");
-  let jsrRegistry: { tcpPort: number; shutdown(): void } | null = null;
-  async function ensureJsrRegistry(): Promise<{ tcpPort: number }> {
-    if (jsrRegistry) return jsrRegistry;
-    jsrRegistry = await runPackageRegistry({ port: 0, baseDir: ORG });
-    cleanups.push(() => jsrRegistry?.shutdown());
-    return jsrRegistry;
-  }
 
   async function runSshStep(opts: {
     label: string;
     spawnConfig: { modPath: string; args: string[] };
-    contract: Record<string, unknown>;
   }) {
     const proc = await spawnBidder({
       modPath: opts.spawnConfig.modPath,
@@ -538,7 +486,6 @@ Deno.test({
       execProgram: "echo SSH_OK_VIA_RELAY && uname -a",
       extraBidderDids: [proc.did],
       denyBidderDids: ["did:plc:centraldefaultbidder000000"],
-      ...opts.contract,
     });
 
     assert(result.event === "compute_request_complete",
@@ -548,8 +495,6 @@ Deno.test({
   }
 
   await t.step("[bidder:hono-bidder] ssh via local xrpc relay", async () => {
-    if (!websocatOk) { console.log("[SKIP] websocat not installed"); return; }
-    const registry = await ensureJsrRegistry();
     await runSshStep({
       label: "hono-bidder-local-ssh",
       spawnConfig: {
@@ -564,7 +509,6 @@ Deno.test({
           "--serve-port", "0",
         ],
       },
-      contract: await localTunnelContract({ registry, gateway, dispPort }),
     });
   });
 
