@@ -696,7 +696,14 @@ export function createSshSessionProvider(
         log("vm_ssh_ready", { fqdn, attempt });
         return true;
       }
-      log("vm_ssh_poll", { fqdn, attempt, code, error: new TextDecoder().decode(stderr).trim().slice(0, 200) });
+      const errText = new TextDecoder().decode(stderr).trim().slice(0, 200);
+      log("vm_ssh_poll", { fqdn, attempt, code, error: errText });
+      // Permanent failures: guest never registered on relay, relay not reachable,
+      // or relay returned an error that retrying won't fix. Bail immediately.
+      if (errText.includes("no active subscriber") || errText.includes("NotFound") || errText.includes("404 Not Found")) {
+        log("vm_ssh_permanent_failure", { fqdn, attempt, error: errText });
+        return false;
+      }
       await new Promise((r) => setTimeout(r, 5000));
     }
     log("vm_ssh_timeout", { fqdn, timeoutMs });
