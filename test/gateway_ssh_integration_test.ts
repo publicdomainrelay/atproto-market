@@ -183,6 +183,7 @@ Deno.test(
           sshPublicKey: publicKey,
           bidWindowSec: 15,
           skipSsh: false,
+          transport: "fedproxy",
           keepVm: true,
           vmReadyTimeoutSec: 30,
           execProgram: "echo hello-from-gateway-ssh && whoami",

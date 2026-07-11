@@ -72,7 +72,7 @@ export function createComputeContractGateway(
 
       const vmName = (input.computeVm.role as string) ||
         `compute-${crypto.randomUUID().slice(0, 8)}`;
-      const fedingressHost = opts.fedingressHost ?? "fedproxy.com";
+      const fedingressHost = opts.fedingressHost;
 
       const sshProvider = createSshSessionProvider(logger);
 
@@ -145,7 +145,7 @@ export function createComputeContractGateway(
       );
 
       const vmName = `worker-${crypto.randomUUID().slice(0, 8)}`;
-      const fedingressHost = opts.fedingressHost ?? "fedproxy.com";
+      const fedingressHost = opts.fedingressHost;
       const sshProvider = createSshSessionProvider(logger);
 
       const result = await runComputeContract(pds, {
@@ -200,7 +200,7 @@ export function createComputeContractGateway(
       );
 
       const vmName = `worker-${crypto.randomUUID().slice(0, 8)}`;
-      const fedingressHost = opts.fedingressHost ?? "fedproxy.com";
+      const fedingressHost = opts.fedingressHost;
       const sshProvider = createSshSessionProvider(logger);
 
       const result = await runComputeContract(pds, {

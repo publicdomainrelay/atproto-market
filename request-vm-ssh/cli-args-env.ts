@@ -59,19 +59,28 @@ export default {
     },
     "ingress-proxy-host": {
       type: "string" as const,
-      description: "XRPC relay dispatcher host",
+      description: "XRPC relay dispatcher host (required for --transport fedproxy and --transport tunnel-subscriber)",
       env: "INGRESS_PROXY_HOST",
-      default: "xrpc.fedproxy.com",
     },
     "no-ingress-proxy": {
       type: "boolean" as const,
       description: "Disable XRPC relay (rely on firehose-only for bid/accept/event delivery)",
     },
+    "transport": {
+      type: "string" as const,
+      description: "Guest transport: iroh (P2P, default), fedproxy (websocat + fedproxy-client), tunnel-subscriber (xrpc relay tunnel)",
+      env: "TRANSPORT",
+      default: "iroh",
+    },
     "fedproxy-host": {
       type: "string" as const,
-      description: "FedProxy SSH-tunnel host where the guest publishes itself for SSH (vmName--did-plc-<key>.<fedproxy-host>)",
+      description: "FedProxy SSH-tunnel host where the guest publishes itself for SSH (required for --transport fedproxy)",
       env: "FEDPROXY_HOST",
-      default: "fedproxy.com",
+    },
+    "tunnel-subscriber-aud-host": {
+      type: "string" as const,
+      description: "Relay hostname for JWT service-auth audience (did:web:<audHost>). Auto-derived from ingress-proxy-host (strip port) when unset. Only used with --transport tunnel-subscriber.",
+      env: "TUNNEL_SUBSCRIBER_AUD_HOST",
     },
     "label": {
       type: "string" as const,
@@ -88,7 +97,7 @@ export default {
       type: "number" as const,
       description: "Seconds to wait for bids after submitting RFP",
       env: "BID_WINDOW_SEC",
-      default: 30,
+      default: 10,
     },
     "exec": {
       type: "string" as const,

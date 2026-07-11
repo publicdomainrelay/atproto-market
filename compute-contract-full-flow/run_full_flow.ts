@@ -254,6 +254,7 @@ async function main() {
     logger,
     ingressProxyHost,
     skipSsh: false,
+    transport: "fedproxy",
     keepVm: true,
     bidWindowSec: 15,
     vmReadyTimeoutSec: 60,
@@ -338,26 +339,27 @@ Requester                    AT Protocol (PDS/relay)              Bidder        
 ────────                     ──────────────────────              ──────                    ───────────────
 runComputeContract()
   ├─ ssh-keygen ed25519
-  ├─ buildDefaultUserData()  ──►  compute.vm record
+  ├─ buildIrohUserData()     ──►  compute.vm record               (transport: "iroh" — default)
+  │  (or buildDefaultUserData for transport:"fedproxy")
   ├─ createSignedRepoRecord  ──►  market.rfp (signed)
   ├─ discoverBidders         ──►  relay index + extraBidderDids
   ├─ submitRfp XRPC          ──►  ──►  rfpCallback → bid
   │                                    ├─ onAccept → provision
   │                                    │    ├─ OIDC enrichment
   │                                    │    ├─ runContainer()
-  │                                    │    └─ cloud-init: sshd + websocat
+  │                                    │    └─ cloud-init: sshd + iroh (or websocat for fedproxy)
   │                                    └─ eventCallbacks
   ├─ wait bidWindowSec (15s)
   ├─ pick lowest-cost bid
   ├─ createSignedRepoRecord  ──►  market.accept
   ├─ submitAccept XRPC       ──►  ──►  provision guest
   ├─ verify receipt
-  ├─ pollReady → SSH         ──►  ──►  websocat ws:// → sshd
+  ├─ pollReady → SSH         ──►  ──►  iroh P2P → sshd  (or websocat ws:// for fedproxy)
   │  └─ exec 'hostname'
   └─ vm.delete event         ──►  ──►  destroy()
 \`\`\`
 
-## SSH Tunnel Path
+## SSH Tunnel Path (fedproxy transport)
 
 \`\`\`
 requester SSH client

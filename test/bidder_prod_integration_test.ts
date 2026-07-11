@@ -233,6 +233,7 @@ Deno.test({
       fedingressHost: PROD_FEDPROXY,
       rbac: true,
       skipSsh: false,
+      transport: "fedproxy",
       keepVm: false,
       bidWindowSec: 15,
       vmReadyTimeoutSec: 300,

@@ -48,7 +48,7 @@ const gateway = createComputeContractGateway({
   privateKeyHex,
   plcDirectoryUrl: options.plcDirectoryUrl as string | undefined,
   ingressProxyHost: options.ingressProxyHost as string | undefined,
-  fedingressHost: options.fedingressHost as string | undefined,
+  fedingressHost: options.fedproxyHost as string | undefined,
   label: "compute-contract-gateway",
   storagePath,
   relayUrls: relayUrlsStr

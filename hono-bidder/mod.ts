@@ -51,7 +51,7 @@ const keypair = resolvedPrivateKeyHex
 const privateKeyHex = resolvedPrivateKeyHex ??
   Array.from(await keypair.export()).map((b) => b.toString(16).padStart(2, "0")).join("");
 
-const ingressProxyHost = (options.ingressProxyHost as string) || "xrpc.fedproxy.com";
+const ingressProxyHost = (options.ingressProxyHost as string);
 // Set in OAuth QR path — bidder's did:plc (owns local keypair).
 let oauthPlcDid: string | undefined;
 
@@ -61,11 +61,11 @@ const plcDirectoryUrl = (options.plcDirectoryUrl as string) || "https://plc.dire
 // reachable at a local host, patch fetch so the bidder can resolve the
 // requester's PDS endpoints (also on *.localhost) through the relay.
 // Also patches plc.directory → local PLC when plcDirectoryUrl is local.
-const isLocalDev = ingressProxyHost.includes("localhost") || ingressProxyHost.startsWith("127.");
+const isLocalDev = ingressProxyHost?.includes("localhost") || ingressProxyHost?.startsWith("127.") || false;
 const _plcHost = (() => { try { return new URL(plcDirectoryUrl).hostname; } catch { return plcDirectoryUrl; } })();
 const isLocalPlc = _plcHost === "localhost" || _plcHost.startsWith("127.") || _plcHost === "0.0.0.0";
 if (isLocalDev || isLocalPlc) {
-  const patchPort = ingressProxyHost.includes(":") ? ingressProxyHost.split(":").pop()! : "80";
+  const patchPort = ingressProxyHost?.includes(":") ? ingressProxyHost.split(":").pop()! : "80";
   const realFetch = globalThis.fetch;
   globalThis.fetch = ((input: string | URL | Request, init?: RequestInit) => {
     let url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
@@ -265,6 +265,25 @@ if ((options.atprotoOauth as boolean)) {
   if (relayHost) {
     pdsHostname = relayHost;
   }
+} else {
+  // Default: local PDS with just the keypair (no remote credentials).
+  const pdsStatePath = options.pdsStatePath as string | undefined;
+  const pdsServe = createServe({ logger });
+  atprotoAgent = await createLocalPDSAgent({
+    logger, keypair,
+    serve: pdsServe,
+    plcDirectoryUrl,
+    ingressProxyHost,
+    storagePath: pdsStatePath,
+    associateServiceId: BIDDER_ASSOC_SERVICE,
+  });
+  await atprotoAgent.beginServe();
+  _deferredPdsPort = pdsServe.tcpPort;
+  isLocal = true;
+  const relayHost: string = (atprotoAgent as { relay?: { ingressHost?: string } }).relay?.ingressHost ?? "";
+  if (relayHost) {
+    pdsHostname = relayHost;
+  }
 }
 
 if (!atprotoAgent) {
@@ -381,7 +400,7 @@ const offeringRefreshSec = (options.offeringRefreshSec as number) ?? 300;
 
 // Market factory gets its own relay/serve (own keypair -> own subdomain/FQDN).
 // Skip ingress in OAuth mode — PDS is remote, no relay subscriber needed.
-const bidderIngress = (options.noIngressProxy || isOAuth) ? undefined : await cliCreateIngress();
+const bidderIngress = (options.noIngressProxy || isOAuth || !ingressProxyHost) ? undefined : await cliCreateIngress();
 const bidderServe = createServe({
   logger,
   tcp: { addr: (options.serveAddr as string) || "0.0.0.0", port: (options.servePort as number) ?? 0 },

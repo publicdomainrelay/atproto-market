@@ -198,6 +198,7 @@ Deno.test({
       ingressProxyHost,
       sshProxyCommandFn: proxyCommandFn,
       skipSsh: false,
+      transport: "fedproxy",
       keepVm: false,
       bidWindowSec: 8,
       vmReadyTimeoutSec: 120,

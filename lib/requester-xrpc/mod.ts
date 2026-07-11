@@ -48,7 +48,7 @@ import {
 } from "@publicdomainrelay/market-common";
 import type { StrongRef } from "@publicdomainrelay/market-common";
 import { DYNAMIC } from "@publicdomainrelay/market-policy-abc";
-import { buildDefaultUserData, patchDefaultUserData, flattenLabel, type CloudInitContext } from "@publicdomainrelay/cloud-init-common";
+import { buildDefaultUserData, buildIrohUserData, buildTunnelUserData, patchDefaultUserData, flattenLabel, type CloudInitContext, type TunnelCloudInitContext } from "@publicdomainrelay/cloud-init-common";
 import {
   FEDPROXY_RBAC_NSID,
   buildSshKeyRbacRecord,
@@ -276,7 +276,7 @@ export async function createRequesterPDS(
   const serve = opts.serve;
   const privateKeyHex = opts.privateKeyHex ?? "";
   const plcDirectoryUrl = opts.plcDirectoryUrl ?? "https://plc.directory";
-  const ingressProxyHost = opts.ingressProxyHost ?? "xrpc.fedproxy.com";
+  const ingressProxyHost = opts.ingressProxyHost as string | undefined;
   const label = opts.label ?? "requester";
 
   // ── keypair ──────────────────────────────────────────────────────────
@@ -296,7 +296,7 @@ export async function createRequesterPDS(
 
   const plc = new PlcClient({ baseUrl: plcDirectoryUrl });
   const signingKeyDid = keypair.did();
-  const epHost = ingressProxyHost.replace(/:\d+$/, "");
+  const epHost = (ingressProxyHost ?? "localhost").replace(/:\d+$/, "");
 
   const { did, op } = await createGenesisOp({
     rotationKeys: [signingKeyDid],
@@ -375,7 +375,7 @@ export async function createRequesterPDS(
 
   // ── repo factory ─────────────────────────────────────────────────────
 
-  const baseOrigin = `https://${keypair.did().replace(/:/g, "-").toLowerCase()}.${ingressProxyHost}`;
+  const baseOrigin = `https://${keypair.did().replace(/:/g, "-").toLowerCase()}.${ingressProxyHost ?? "localhost"}`;
 
   const store = opts.storagePath
     ? await DenoKvStorage.create(opts.storagePath)
@@ -408,9 +408,10 @@ export async function createRequesterPDS(
   // ── relay (WS connect deferred to serve.beginServe -> relay.onServe) ──
 
   const skipIngress = opts.skipIngress ?? false;
-  const relay = skipIngress
+  const noHost = !ingressProxyHost;
+  const relay = (skipIngress || noHost)
     ? { ingressRef: "", ingressUrl: "", ingressHost: "", close() {}, onServe: async () => {} } as IngressRef
-    : createIngress({ logger, ingressProxyHost, signer, keypair, label });
+    : createIngress({ logger, ingressProxyHost: ingressProxyHost!, signer, keypair, label });
 
   // ── submitBid handler ────────────────────────────────────────────────
 
@@ -429,7 +430,7 @@ export async function createRequesterPDS(
     deps: {
       hostname: (req: Request) => {
         const host = req.headers.get("host") ?? req.headers.get("x-forwarded-host");
-        return host ? host.split(":")[0] : (relay.ingressHost || ingressProxyHost);
+        return host ? host.split(":")[0] : (relay.ingressHost || ingressProxyHost || "localhost");
       },
       idResolver,
       resolve: createRecordResolver(idResolver),
@@ -444,7 +445,7 @@ export async function createRequesterPDS(
 
   const submitEventHandler = createSubmitEventHandler({
     deps: {
-      hostname: (req) => relay.ingressHost || ingressProxyHost,
+      hostname: (req) => relay.ingressHost || ingressProxyHost || "localhost",
       idResolver,
       resolve: createRecordResolver(idResolver),
       audienceDids: [did],
@@ -490,7 +491,7 @@ export async function createRequesterPDS(
     try {
       const auth = await verifyServiceAuth({
         authHeader,
-        hostname: relay.ingressHost || ingressProxyHost,
+        hostname: relay.ingressHost || ingressProxyHost || "localhost",
         lxm: ASSOCIATE_CONFIRM_NSID,
         serviceIds: ["requester_associate"],
         extraAudienceDids: [did],
@@ -724,6 +725,21 @@ export function createSshSessionProvider(
   return { generateKeypair, pollReady, runSession };
 }
 
+/**
+ * iroh P2P SSH session provider — replaces the websocat ProxyCommand with
+ * `iroh connect`. The "fqdn" parameter in pollReady/runSession is the iroh
+ * node ID (or ticket) of the guest's iroh endpoint.
+ *
+ * Requires the `iroh` binary on the host PATH.
+ */
+export function createIrohSshSessionProvider(
+  logger?: StructuredLoggerInterface,
+): SshSessionProvider {
+  const proxyCommandFn = (nodeId: string) =>
+    `iroh connect --bridge %h:%p ${nodeId}`;
+  return createSshSessionProvider(logger, { proxyCommandFn });
+}
+
 // ---------------------------------------------------------------------------
 // websocat bootstrap
 // ---------------------------------------------------------------------------
@@ -852,51 +868,93 @@ export async function runComputeContract(
   }
 
   // Relay WS connect happens in serve.beginServe(); ingressRef is set by then.
-  const ingressRef = pds.relay.ingressRef;
-  const ingressProxyHost = opts.ingressProxyHost ??
-    (pds.relaySubdomain.includes(".")
-      ? pds.relaySubdomain.substring(pds.relaySubdomain.indexOf(".") + 1)
-      : "xrpc.fedproxy.com");
-  const relaySubdomain = pds.relaySubdomain.endsWith("." + ingressProxyHost)
-    ? pds.relaySubdomain.slice(0, pds.relaySubdomain.length - ingressProxyHost.length - 1)
-    : pds.relaySubdomain.split(".")[0];
-  const fedingressHost = opts.fedingressHost ?? "fedproxy.com";
+  const ingressRef = pds.relay?.ingressRef;
+  const transport = opts.transport ?? "iroh";
 
-  log("relay_ready_for_rfp", { ingressRef });
+  // ingressProxyHost and related values. When the relay is active, derive from
+  // relay state; otherwise use the caller-supplied value. iroh transport does
+  // not require a relay for SSH.
+  const ingressProxyHost: string | undefined = opts.ingressProxyHost ??
+    (pds.relaySubdomain?.includes(".")
+      ? pds.relaySubdomain.substring(pds.relaySubdomain.indexOf(".") + 1)
+      : undefined);
+  const relaySubdomain: string | undefined = ingressProxyHost && pds.relaySubdomain?.endsWith("." + ingressProxyHost)
+    ? pds.relaySubdomain.slice(0, pds.relaySubdomain.length - ingressProxyHost.length - 1)
+    : pds.relaySubdomain?.split(".")[0];
+
+  // fedingressHost is only meaningful for fedproxy transport.
+  const fedingressHost = transport === "fedproxy" ? (opts.fedingressHost ?? undefined) : undefined;
+
+  // Validate transport requirements.
+  if (transport === "fedproxy" && !ingressProxyHost) {
+    throw new Error("--transport fedproxy requires ingressProxyHost (relay dispatcher host)");
+  }
+  if (transport === "tunnel-subscriber" && !ingressProxyHost) {
+    throw new Error("--transport tunnel-subscriber requires ingressProxyHost (relay dispatcher host)");
+  }
+
+  log("relay_ready_for_rfp", { ingressRef, transport, ingressProxyHost });
 
   let cloudInit = "";
   let privateKeyPath = "";
   let vmFqdn = "";
 
   if (!skipSsh) {
-    vmFqdn = `${flattenLabel(vmName)}--${flattenLabel(pds.did)}.${fedingressHost}`;
     const ssh = await sshProvider.generateKeypair(vmName);
     privateKeyPath = ssh.privateKeyPath;
     log("ssh_keypair_generated", {
       privateKeyPath,
       publicKey: ssh.publicKey,
-      vmFqdn,
-      hint: `ssh -i ${privateKeyPath} -o ProxyCommand='websocat --binary wss://${vmFqdn}' root@${vmFqdn}`,
+      transport,
     });
 
-    const didPlcKey = pds.did.startsWith("did:plc:")
-      ? pds.did.slice("did:plc:".length)
-      : pds.did;
-    const ctx: CloudInitContext = {
-      vmName,
-      didPlc: pds.did,
-      didPlcKey,
-      relayHost: ingressProxyHost,
-      xrpcRelaySubdomain: relaySubdomain,
-      sshAuthorizedKey: ssh.publicKey,
-    };
-    cloudInit = opts.baseUserData
-      ? patchDefaultUserData(opts.baseUserData, ctx)
-      : buildDefaultUserData(ctx);
+    // Select cloud-init builder based on transport.
     if (opts.userDataFactory) {
-      // userDataFactory replaces the default cloud-init — caller builds the
-      // guest transport replacement.
+      // Caller-supplied factory replaces everything (backward compat).
       cloudInit = opts.userDataFactory(ssh.publicKey);
+    } else if (transport === "fedproxy") {
+      // FedProxy transport: websocat + fedproxy-client (requires relay).
+      vmFqdn = fedingressHost
+        ? `${flattenLabel(vmName)}--${flattenLabel(pds.did)}.${fedingressHost}`
+        : `${flattenLabel(vmName)}--${flattenLabel(pds.did)}.${ingressProxyHost}`;
+      const didPlcKey = pds.did.startsWith("did:plc:")
+        ? pds.did.slice("did:plc:".length)
+        : pds.did;
+      const ctx: CloudInitContext = {
+        vmName,
+        didPlc: pds.did,
+        didPlcKey,
+        relayHost: ingressProxyHost!,
+        xrpcRelaySubdomain: relaySubdomain!,
+        sshAuthorizedKey: ssh.publicKey,
+      };
+      cloudInit = opts.baseUserData
+        ? patchDefaultUserData(opts.baseUserData, ctx)
+        : buildDefaultUserData(ctx);
+    } else if (transport === "tunnel-subscriber") {
+      // Tunnel-subscriber transport: Deno-based, bridges relay tunnel bytes to sshd.
+      const audHost = opts.tunnelSubscriberAudHost ?? (ingressProxyHost!.includes(":") ? ingressProxyHost!.split(":")[0] : ingressProxyHost!);
+      const tunnelCtx: TunnelCloudInitContext = {
+        ingressProxyHost: ingressProxyHost!,
+        audHost,
+        privateKeyHex: pds.privateKeyHex,
+        jsrUrl: "localhost:5556",
+        sshAuthorizedKey: ssh.publicKey,
+      };
+      cloudInit = buildTunnelUserData(tunnelCtx);
+    } else {
+      // iroh transport (default): P2P, no relay needed for SSH.
+      const didPlcKey = pds.did.startsWith("did:plc:")
+        ? pds.did.slice("did:plc:".length)
+        : pds.did;
+      const irohCtx: TunnelCloudInitContext = {
+        ingressProxyHost: ingressProxyHost ?? "localhost",
+        audHost: ingressProxyHost?.includes(":") ? ingressProxyHost.split(":")[0] : (ingressProxyHost ?? "localhost"),
+        privateKeyHex: pds.privateKeyHex,
+        jsrUrl: "localhost:5556",
+        sshAuthorizedKey: ssh.publicKey,
+      };
+      cloudInit = buildIrohUserData(irohCtx);
     }
   } else {
     cloudInit = `#cloud-config

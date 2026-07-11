@@ -323,8 +323,23 @@ runcmd:
 `;
 }
 
+/**
+ * iroh transport: P2P endpoint that bridges connections to sshd.
+ *
+ * The iroh binary (external project: n0-computer/iroh) is expected to be
+ * pre-installed in the VM base image. At boot, iroh starts a P2P endpoint
+ * and bridges incoming connections to sshd on 127.0.0.1:${targetPort}.
+ * No fedproxy-client, no websocat, no websocket relay — direct P2P transport.
+ *
+ * The requester connects via `iroh connect <node-id>` (see
+ * createIrohSshSessionProvider for host-side connection).
+ */
 export function buildIrohUserData(ctx: TunnelCloudInitContext): string {
-  const sshAuthorizedKey = ctx.sshAuthorizedKey ?? "";
+  const { sshAuthorizedKey } = ctx;
+  const targetPort = ctx.targetPort ?? 22;
+  // iroh endpoint binds a P2P listener and bridges accepted streams to the
+  // local sshd. The `--bridge` flag maps incoming iroh connections to the TCP
+  // target (replaces the websocat ws→tcp bridge in the fedproxy transport).
   return `#cloud-config
 packages:
   - openssh-server
@@ -345,26 +360,33 @@ write_files:
     owner: root:root
     permissions: '0644'
     content: |
+      # Key-only root login; reached through iroh P2P transport.
       PermitRootLogin prohibit-password
       PasswordAuthentication no
 
   - path: /etc/systemd/system/iroh.service
+    owner: root:root
     permissions: '0644'
     content: |
       [Unit]
-      Description=iroh P2P endpoint
-      After=network-online.target sshd.service
+      Description=iroh P2P transport (bridge to sshd)
+      After=network-online.target sshd.service ssh.service
+      Wants=network-online.target
       [Service]
       Type=simple
-      ExecStart=/usr/local/bin/iroh endpoint --bind 0.0.0.0:9876
+      User=root
+      ExecStart=/usr/local/bin/iroh endpoint --bind 0.0.0.0:9876 --bridge tcp/127.0.0.1:${targetPort}
       Restart=always
       RestartSec=5
+      TimeoutStopSec=10
+      StandardOutput=journal
+      StandardError=journal
       [Install]
       WantedBy=multi-user.target
 
 runcmd:
   - systemctl daemon-reload
-  - systemctl enable --now ssh
+  - systemctl enable --now ssh || systemctl enable --now sshd
   - systemctl enable --now iroh.service
 `;
 }

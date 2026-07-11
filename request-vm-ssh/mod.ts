@@ -7,6 +7,7 @@ import {
   createOAuthRequester,
   runComputeContract,
   createSshSessionProvider,
+  createIrohSshSessionProvider,
   ensureWebsocat,
 } from "@publicdomainrelay/requester-xrpc";
 import { pollForOAuthSession, createOAuthAgentFromSession, tryRestoreOAuthQRSession, saveOAuthQRSession } from "@publicdomainrelay/atproto-helpers";
@@ -27,11 +28,11 @@ const { options } = await new Command("CONFIG_PATH_REQUEST_VM_SSH", cliArgsEnv, 
 const label = (options.label as string) ?? "request-vm-ssh";
 const logger = createLogger({ serviceName: label });
 
-const ingressProxyHost = (options.ingressProxyHost as string) || "xrpc.fedproxy.com";
+const ingressProxyHost = options.ingressProxyHost as string | undefined;
 
 // Auto-detect local dev: *.localhost isn't in DNS.  Patch fetch so the
 // requester can reach the bidder's PDS endpoints (also on *.localhost).
-if (ingressProxyHost.includes("localhost") || ingressProxyHost.startsWith("127.")) {
+if (ingressProxyHost && (ingressProxyHost.includes("localhost") || ingressProxyHost.startsWith("127."))) {
   const patchPort = ingressProxyHost.includes(":") ? ingressProxyHost.split(":").pop()! : "80";
   const realFetch = globalThis.fetch;
   globalThis.fetch = ((input: string | URL | Request, init?: RequestInit) => {
@@ -415,10 +416,28 @@ const policyModeRaw = options.policyMode as string | undefined;
 const policyMode = isValidPolicyMode(policyModeRaw) ? policyModeRaw : undefined;
 const policyEngineEndpoint = (policyMode === DYNAMIC) ? options.policyEngineEndpoint as string | undefined : undefined;
 
+const transport = (options.transport as string) || "iroh";
+const tunnelSubscriberAudHost = options.tunnelSubscriberAudHost as string | undefined;
+const fedingressHost = options.fedproxyHost as string | undefined;
+
+// Validate transport prerequisites.
+if (transport === "fedproxy" && !ingressProxyHost) {
+  logger.error("transport_fedproxy_requires_ingress_proxy_host", { hint: "set --ingress-proxy-host or INGRESS_PROXY_HOST" });
+  Deno.exit(1);
+}
+if (transport === "fedproxy" && !fedingressHost) {
+  logger.error("transport_fedproxy_requires_fedproxy_host", { hint: "set --fedproxy-host or FEDPROXY_HOST" });
+  Deno.exit(1);
+}
+if (transport === "tunnel-subscriber" && !ingressProxyHost) {
+  logger.error("transport_tunnel_subscriber_requires_ingress_proxy_host", { hint: "set --ingress-proxy-host or INGRESS_PROXY_HOST" });
+  Deno.exit(1);
+}
+
 const result = await runComputeContract(pds, {
   logger,
   ingressProxyHost,
-  fedingressHost: options.fedingressHost as string | undefined,
+  fedingressHost,
   vmName: options.vmName as string | undefined,
   bidWindowSec: options.bidWindowSec as number,
   skipSsh: options.skipSsh as boolean,
@@ -434,7 +453,9 @@ const result = await runComputeContract(pds, {
   policyEngineEndpoint,
   offeringWatcherDids: () => [...offeringDids],
   eventStreams,
-  sshProvider: createSshSessionProvider(logger),
+  transport: transport as "iroh" | "fedproxy" | "tunnel-subscriber",
+  tunnelSubscriberAudHost,
+  sshProvider: transport === "iroh" ? createIrohSshSessionProvider(logger) : undefined,
   onSshStart: () => pauseConsole(),
   onSshEnd: () => resumeConsole(),
 });

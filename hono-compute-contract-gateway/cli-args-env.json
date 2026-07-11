@@ -37,14 +37,18 @@
     "ingress-proxy-host": {
       "type": "string",
       "description": "XRPC relay dispatcher host",
-      "env": "INGRESS_PROXY_HOST",
-      "default": "xrpc.fedproxy.com"
+      "env": "INGRESS_PROXY_HOST"
     },
     "fedproxy-host": {
       "type": "string",
       "description": "FedProxy SSH ingress host",
-      "env": "FEDPROXY_HOST",
-      "default": "fedproxy.com"
+      "env": "FEDPROXY_HOST"
+    },
+    "transport": {
+      "type": "string",
+      "description": "Transport protocol for compute contract gateways",
+      "env": "TRANSPORT",
+      "default": "iroh"
     },
     "relay-urls": {
       "type": "string",

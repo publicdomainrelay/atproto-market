@@ -73,6 +73,17 @@ export interface ContractFlowOptions {
   appliesToNsid?: string;
   policyMode?: import("@publicdomainrelay/market-policy-abc").PolicyMode;
   policyEngineEndpoint?: string;
+  /**
+   * Guest transport: "iroh" (P2P, default), "fedproxy" (websocat + fedproxy-client),
+   * or "tunnel-subscriber" (xrpc relay tunnel).
+   */
+  transport?: "iroh" | "fedproxy" | "tunnel-subscriber";
+  /**
+   * Relay hostname for JWT service-auth audience (did:web:<audHost>).
+   * Only used with transport=tunnel-subscriber. Auto-derived from
+   * ingressProxyHost (strip port) when unset.
+   */
+  tunnelSubscriberAudHost?: string;
 }
 
 export interface PDSOptions {

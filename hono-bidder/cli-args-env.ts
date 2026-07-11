@@ -51,7 +51,6 @@ export default {
       type: "string" as const,
       description: "XRPC relay dispatcher host",
       env: "INGRESS_PROXY_HOST",
-      default: "xrpc.fedproxy.com",
     },
     "relay-url": {
       type: "string" as const,
