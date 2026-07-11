@@ -481,17 +481,14 @@ Deno.test({
     const result = await runComputeContract(requester, {
       logger,
       ingressProxyHost,
-      fedingressHost: ingressProxyHost,
       skipSsh: false,
-      transport: "fedproxy",
+      transport: "iroh",
       keepVm: false,
       bidWindowSec: 8,
       vmReadyTimeoutSec: 240,
       execProgram: "echo SSH_OK_VIA_RELAY && uname -a",
       extraBidderDids: [proc.did],
       denyBidderDids: ["did:plc:centraldefaultbidder000000"],
-      // Use ws:// for localhost — the dispatcher doesn't serve WSS
-      sshProxyCommandFn: (fqdn: string) => `websocat --binary ws://${fqdn}`,
     });
 
     assert(result.event === "compute_request_complete",

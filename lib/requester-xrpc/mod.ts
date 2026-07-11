@@ -700,7 +700,7 @@ export function createSshSessionProvider(
       log("vm_ssh_poll", { fqdn, attempt, code, error: errText });
       // Permanent failures: guest never registered on relay, relay not reachable,
       // or relay returned an error that retrying won't fix. Bail immediately.
-      if (errText.includes("no active subscriber") || errText.includes("NotFound") || errText.includes("404 Not Found")) {
+      if (errText.includes("no active subscriber") || errText.includes("NotFound") || errText.includes("404 Not Found") || errText.includes("empty host")) {
         log("vm_ssh_permanent_failure", { fqdn, attempt, error: errText });
         return false;
       }
@@ -821,9 +821,11 @@ export async function runComputeContract(
   const denyBidderDids = opts.denyBidderDids ?? [];
   const policyMode = opts.policyMode;
   const policyEngineEndpoint = opts.policyEngineEndpoint;
-  const sshProvider = opts.sshProvider ?? createSshSessionProvider(
-    opts.logger,
-    { proxyCommandFn: opts.sshProxyCommandFn },
+  const transport = opts.transport ?? "iroh";
+  const sshProvider = opts.sshProvider ?? (
+    transport === "iroh"
+      ? createIrohSshSessionProvider(opts.logger)
+      : createSshSessionProvider(opts.logger, { proxyCommandFn: opts.sshProxyCommandFn })
   );
   const relayUrl = opts.relayUrl;
   const relayUrls = opts.relayUrls ?? (relayUrl ? [relayUrl] : []);
@@ -876,7 +878,6 @@ export async function runComputeContract(
 
   // Relay WS connect happens in serve.beginServe(); ingressRef is set by then.
   const ingressRef = pds.relay?.ingressRef;
-  const transport = opts.transport ?? "iroh";
 
   // ingressProxyHost and related values. When the relay is active, derive from
   // relay state; otherwise use the caller-supplied value. iroh transport does
@@ -1347,6 +1348,9 @@ runcmd:
     // tests / headless: skip SSH.
   } else if (!receiptOk) {
     log("vm_poll_bailed", { reason: "no valid receipt", receiptUri, receiptCid });
+  } else if (!vmFqdn) {
+    // iroh transport: no node ID discovered yet, skip SSH polling.
+    log("vm_ssh_skipped_no_fqdn", { transport, hint: "iroh node ID discovery not yet implemented" });
   } else {
     log("vm_ssh_waiting", { vmFqdn, timeoutSec: vmReadyTimeoutSec });
     const ready = await sshProvider.pollReady(privateKeyPath, vmFqdn, vmReadyTimeoutSec * 1000);

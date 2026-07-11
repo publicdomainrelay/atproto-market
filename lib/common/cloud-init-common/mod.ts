@@ -337,9 +337,6 @@ runcmd:
 export function buildIrohUserData(ctx: TunnelCloudInitContext): string {
   const { sshAuthorizedKey } = ctx;
   const targetPort = ctx.targetPort ?? 22;
-  // iroh endpoint binds a P2P listener and bridges accepted streams to the
-  // local sshd. The `--bridge` flag maps incoming iroh connections to the TCP
-  // target (replaces the websocat ws→tcp bridge in the fedproxy transport).
   return `#cloud-config
 packages:
   - openssh-server
@@ -352,26 +349,64 @@ ssh_pwauth: false
 write_files:
   - path: /root/.ssh/authorized_keys
     owner: root:root
-    permissions: '0600'
+    permissions: '0600\'
     content: |
       ${sshAuthorizedKey}
 
   - path: /etc/ssh/sshd_config.d/10-iroh.conf
     owner: root:root
-    permissions: '0644'
+    permissions: '0644\'
     content: |
       # Key-only root login; reached through iroh P2P transport.
       PermitRootLogin prohibit-password
       PasswordAuthentication no
 
+  - path: /usr/local/bin/setup-iroh.sh
+    owner: root:root
+    permissions: '0755\'
+    content: |
+      #!/bin/bash
+      set -x
+      STAMP=/var/lib/setup-iroh.done
+      STAMP=/var/lib/setup-iroh.done
+      [ -f "\\\${STAMP}" ] && exit 0
+      retry() { n=0; delay=5; until "\\$@"; do n=$((n + 1)); echo "command failed (attempt $n): $*; retrying in \\\${delay}s" >&2; sleep "\\$delay"; done }
+      _arch=$(uname -m)
+      case "$_arch" in x86_64|amd64) _arch=x86_64-unknown-linux-musl ;; aarch64|arm64) _arch=aarch64-unknown-linux-musl ;; esac
+      retry sh -c "curl -sfL 'https://github.com/n0-computer/iroh/releases/latest/download/iroh-\\\${_arch}.tar.gz' -o /tmp/iroh.tar.gz"
+      tar -xzf /tmp/iroh.tar.gz -C /usr/local/bin
+      chmod +x /usr/local/bin/iroh
+      rm -f /tmp/iroh.tar.gz
+      systemctl enable iroh.service
+      systemctl start --no-block iroh.service
+      touch "\\\${STAMP}"
+
+  - path: /etc/systemd/system/setup-iroh.service
+    owner: root:root
+    permissions: '0644\'
+    content: |
+      [Unit]
+      Description=First-boot iroh setup (install binary)
+      After=network-online.target
+      Wants=network-online.target
+      ConditionPathExists=!/var/lib/setup-iroh.done
+      [Service]
+      Type=oneshot
+      User=root
+      ExecStart=/usr/local/bin/setup-iroh.sh
+      StandardOutput=journal
+      StandardError=journal
+      [Install]
+      WantedBy=multi-user.target
+
   - path: /etc/systemd/system/iroh.service
     owner: root:root
-    permissions: '0644'
+    permissions: '0644\'
     content: |
       [Unit]
       Description=iroh P2P transport (bridge to sshd)
-      After=network-online.target sshd.service ssh.service
-      Wants=network-online.target
+      After=network-online.target sshd.service ssh.service setup-iroh.service
+      Wants=network-online.target setup-iroh.service
       [Service]
       Type=simple
       User=root
@@ -387,6 +422,6 @@ write_files:
 runcmd:
   - systemctl daemon-reload
   - systemctl enable --now ssh || systemctl enable --now sshd
-  - systemctl enable --now iroh.service
+  - systemctl enable --now setup-iroh.service
 `;
 }
