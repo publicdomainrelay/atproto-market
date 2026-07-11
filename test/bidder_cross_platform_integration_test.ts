@@ -493,18 +493,15 @@ Deno.test({
 
     assert(result.event === "compute_request_complete",
       `[${opts.label}] expected compute_request_complete, got ${result.event}: ${result.error ?? ""}`);
-    // SSH readiness requires container→host networking. When the container
-    // runtime doesn't bridge host localhost, the guest can't register its
-    // relay subscriber. The RFP→bid→accept→provision flow is the primary
-    // validation for subprocess bidder tests; SSH tunnel validation is
-    // covered by the tunnel-specific integration tests.
-    if (result.sshReady !== true) {
-      logger.warn("ssh_not_ready_container_networking", {
-        label: opts.label,
-        hint: "container networking may not bridge host localhost — SSH skipped",
-        sshReady: result.sshReady,
-        sshExitCode: result.sshExitCode,
-      });
+    // iroh transport: requires `iroh` binary on host for SSH.
+    // If iroh is available, assert SSH works end-to-end via P2P.
+    // If not (e.g. CI without iroh installed), warn and skip.
+    const hasIroh = await new Deno.Command("which", { args: ["iroh"], stdout: "null", stderr: "null" }).output().then((o) => o.code === 0).catch(() => false);
+    if (hasIroh) {
+      assert(result.sshReady === true, `[${opts.label}] iroh SSH must be reachable: ${result.error ?? "iroh node ID may not have been discovered"}`);
+      assert(result.sshExitCode === 0, `[${opts.label}] ssh session exited ${result.sshExitCode}`);
+    } else {
+      logger.warn("iroh_binary_missing_on_host", { label: opts.label, hint: "install iroh (n0-computer/iroh) for full SSH validation" });
     }
   }
 

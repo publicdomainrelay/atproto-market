@@ -38,7 +38,7 @@ import {
   type Logger,
   type StrongRef,
 } from "@publicdomainrelay/market-common";
-import { COMPUTE_VM_NSID, COMPUTE_EVENTS_VM_DELETE_NSID, COMPUTE_EVENTS_VM_ONNETWORK_NSID } from "@publicdomainrelay/market-common";
+import { COMPUTE_VM_NSID, COMPUTE_EVENTS_VM_DELETE_NSID, COMPUTE_EVENTS_VM_ONNETWORK_NSID, COMPUTE_EVENTS_VM_REGISTER_IDENTITY_NSID } from "@publicdomainrelay/market-common";
 
 export interface VmBidderDeps {
   did: string;
@@ -197,9 +197,9 @@ export function createVmBidderCallbacks(deps: VmBidderDeps): {
             _uri: payloadRef.uri,
             _cid: payloadRef.cid,
           };
-          const result = await computeProvider.provision(vmWithBundle as Parameters<ComputeProvider["provision"]>[0], issuerDid);
-          cbLog("info", "bidder provisioned VM", { providerId: result.providerId });
-          return result.providerId;
+          const provisionResult = await computeProvider.provision(vmWithBundle as Parameters<ComputeProvider["provision"]>[0], issuerDid);
+          cbLog("info", "bidder provisioned VM", { providerId: provisionResult.providerId });
+          return provisionResult.providerId;
         })(),
         new Promise<undefined>((_, reject) =>
           setTimeout(() => reject(new Error("provisioning timed out after 10 minutes")), 600_000)
@@ -275,6 +275,35 @@ export function createVmBidderCallbacks(deps: VmBidderDeps): {
             cbLog("error", "vm.onNetwork record creation failed", { receiptKey: rk, error: String(err) });
           });
         }
+      }
+
+      // Submit registerIdentity with iroh nodeId if available.
+      if (providerId && computeProvider.getNodeId) {
+        computeProvider.getNodeId(String(providerId)).then((nodeId) => {
+          if (!nodeId) return;
+          return createRepoRecord(COMPUTE_EVENTS_VM_REGISTER_IDENTITY_NSID, {
+            $type: COMPUTE_EVENTS_VM_REGISTER_IDENTITY_NSID,
+            computeIdentity: { nodeId },
+            createdAt: new Date().toISOString(),
+          }).then(({ uri: identUri, cid: identCid }) => {
+            return createSignedRepoRecord(EVENT_NSID, {
+              $type: EVENT_NSID,
+              receipt: strongRef(receiptUri, receiptCid),
+              payload: strongRef(identUri, identCid),
+            }, relay.ingressRef);
+          }).then(({ uri: eventUri, cid: eventCid, record: eventRecord }) => {
+            const submitEventUrl = (accept as { submitEvent?: string }).submitEvent;
+            if (submitEventUrl) {
+              return callService(submitEventUrl, SUBMIT_EVENT_NSID, SUBMIT_EVENT_LXM, {
+                uri: eventUri, cid: eventCid, record: eventRecord,
+              });
+            }
+          }).then(() => {
+            cbLog("info", "registerIdentity submitted with iroh nodeId", { receiptKey: rk, nodeId });
+          }).catch((err: unknown) => {
+            cbLog("error", "registerIdentity submission failed", { receiptKey: rk, error: String(err) });
+          });
+        }).catch(() => { /* getNodeId best-effort */ });
       }
     });
 

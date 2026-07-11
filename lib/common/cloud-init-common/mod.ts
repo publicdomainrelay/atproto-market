@@ -414,10 +414,32 @@ write_files:
       Restart=always
       RestartSec=5
       TimeoutStopSec=10
-      StandardOutput=journal
-      StandardError=journal
+      StandardOutput=file:/var/log/iroh.log
+      StandardError=file:/var/log/iroh.log
+      ExecStartPost=/usr/local/bin/iroh-node-id-writer.sh
       [Install]
       WantedBy=multi-user.target
+
+  - path: /usr/local/bin/iroh-node-id-writer.sh
+    owner: root:root
+    permissions: '0755'
+    content: |
+      #!/bin/bash
+      set -e
+      # Wait for iroh to produce a node ID in its log
+      for i in $(seq 1 30); do
+        NODE_ID=$(grep -o '"node_id"[[:space:]]*:[[:space:]]*"[^"]*"' /var/log/iroh.log 2>/dev/null | head -1 | sed 's/.*: *"//;s/"//')
+        if [ -n "$NODE_ID" ]; then
+          echo "$NODE_ID" > /root/secrets/iroh-node-id
+          echo "iroh node-id written: $NODE_ID"
+          exit 0
+        fi
+        sleep 1
+      done
+      # Fallback: use container IP + port as node ID
+      NODE_ID=$(hostname -I 2>/dev/null | awk '{print $1}' || echo "127.0.0.1")
+      echo "\${NODE_ID}:9876" > /root/secrets/iroh-node-id
+      echo "iroh node-id fallback: \${NODE_ID}:9876"
 
 runcmd:
   - systemctl daemon-reload

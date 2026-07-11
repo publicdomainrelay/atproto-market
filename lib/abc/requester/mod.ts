@@ -110,6 +110,8 @@ export interface RequesterPDS {
   /** Valid only after beginServe(). Returns "" before relay connects. */
   ingressHost: string;
   beginServe(): Promise<void>;
+  /** Resolves with iroh node ID when vm.onNetwork event arrives with nodeId. */
+  irohNodeId: Promise<string>;
   pendingBids: Map<string, CollectedBid[]>;
   createRepoRecord(collection: string, record: Record<string, unknown>): Promise<{ uri: string; cid: string }>;
   createSignedRepoRecord(

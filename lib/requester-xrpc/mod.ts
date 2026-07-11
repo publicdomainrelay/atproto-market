@@ -351,6 +351,8 @@ export async function createRequesterPDS(
   // ── pending bids ─────────────────────────────────────────────────────
 
   const pendingBids: Map<string, CollectedBid[]> = new Map();
+  let _irohNodeIdResolve: ((nodeId: string) => void) | null = null;
+  const irohNodeId = new Promise<string>((resolve) => { _irohNodeIdResolve = resolve; });
 
   // ── contract state (vm identity tracking) ───────────────────────────
 
@@ -468,10 +470,15 @@ export async function createRequesterPDS(
             state = { receiptUri: evt.receipt.uri, receiptCid: evt.receipt.cid, winnerDid: ctx.issuerDid, identities: [], revoked: [] };
             activeContracts.set(receiptKey, state);
           }
-          // Rotate: old identities become revoked, new becomes active
           if (state.identities.length > 0) state.revoked.push(...state.identities);
           state.identities = [identity];
           logger.info("registerIdentity: updated contract state", { receiptKey, identity });
+
+          // Resolve iroh nodeId promise so runComputeContract can use it for SSH.
+          if (identity.nodeId && _irohNodeIdResolve) {
+            _irohNodeIdResolve(String(identity.nodeId));
+            _irohNodeIdResolve = null;
+          }
         },
         // Handle vm.onNetwork events
         "com.publicdomainrelay.temp.compute.events.vm.onNetwork": async (ctx) => {
@@ -613,6 +620,7 @@ export async function createRequesterPDS(
     get ingressHost(): string { return relay.ingressHost; },
     get relaySubdomain(): string { return relay.ingressHost; },
     beginServe: () => serve.beginServe(),
+    irohNodeId,
     pendingBids,
     createRepoRecord,
     createSignedRepoRecord,
@@ -1348,9 +1356,20 @@ runcmd:
     // tests / headless: skip SSH.
   } else if (!receiptOk) {
     log("vm_poll_bailed", { reason: "no valid receipt", receiptUri, receiptCid });
-  } else if (!vmFqdn) {
-    // iroh transport: no node ID discovered yet, skip SSH polling.
-    log("vm_ssh_skipped_no_fqdn", { transport, hint: "iroh node ID discovery not yet implemented" });
+  } else if (!vmFqdn && transport === "iroh") {
+    // iroh transport: await node ID from vm.onNetwork event.
+    try {
+      vmFqdn = await Promise.race([
+        pds.irohNodeId,
+        new Promise<string>((_, reject) => setTimeout(() => reject(new Error("iroh node ID timeout")), vmReadyTimeoutSec * 1000)),
+      ]);
+      log("iroh_node_id_received", { nodeId: vmFqdn });
+    } catch (err) {
+      log("iroh_node_id_timeout", { error: String(err) });
+    }
+  }
+  if (!vmFqdn) {
+    log("vm_ssh_skipped_no_fqdn", { transport });
   } else {
     log("vm_ssh_waiting", { vmFqdn, timeoutSec: vmReadyTimeoutSec });
     const ready = await sshProvider.pollReady(privateKeyPath, vmFqdn, vmReadyTimeoutSec * 1000);
@@ -1479,6 +1498,7 @@ export async function createOAuthRequester(opts: CreateOAuthRequesterOpts): Prom
     get did() { return _did; },
     serve: { tcpPort: 0, onConnected() {}, beginServe: async () => {}, shutdown() {}, app: { route() {}, fetch: async () => new Response() } } as unknown as ServeHandle,
     relay: { ingressRef: "", ingressUrl: "", ingressHost: "", close() {}, onServe: async () => {} } as IngressRef,
+    irohNodeId: new Promise<string>(() => {}), // OAuth requester: no in-process event handler
     ingressRef: "",
     relaySubdomain: "",
     get ingressUrl() { return ""; },
