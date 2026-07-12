@@ -478,8 +478,10 @@ Deno.test({
 
     const result = await runComputeContract(requester, {
       logger,
-      ingressProxyHost,
-      fedingressHost: ingressProxyHost,
+      // Use gateway IP so the guest container can reach the relay dispatcher.
+      // "localhost" inside the container = container's own loopback, not the host.
+      ingressProxyHost: `${gateway}:${dispPort}`,
+      fedingressHost: `${gateway}:${dispPort}`,
       skipSsh: false,
       keepVm: false,
       bidWindowSec: 8,
@@ -509,6 +511,7 @@ Deno.test({
           "--policy-mode", "DYNAMIC",
           "--compute-provider-local",
           "--serve-port", "0",
+          "--skip-qr",
         ],
       },
     });
