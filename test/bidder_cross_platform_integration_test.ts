@@ -481,7 +481,8 @@ Deno.test({
       // Use gateway IP so the guest container can reach the relay dispatcher.
       // "localhost" inside the container = container's own loopback, not the host.
       ingressProxyHost: `${gateway}:${dispPort}`,
-      fedingressHost: `${gateway}:${dispPort}`,
+      // audHost for JWT — must match relay's hostname (localhost), not gateway IP
+      fedingressHost: "localhost",
       skipSsh: false,
       keepVm: false,
       bidWindowSec: 8,
