@@ -169,6 +169,7 @@
     "@publicdomainrelay/serve": "../typescript-helpers/lib/serve/mod.ts",
     "@publicdomainrelay/did-key-ingress-proxy": "./lib/did-key-ingress-proxy/mod.ts",
     "@publicdomainrelay/hostname-helpers": "../typescript-helpers/lib/hostname-helpers/mod.ts",
+    "@publicdomainrelay/tls-localhost": "../typescript-helpers/lib/tls-localhost/mod.ts",
     "@publicdomainrelay/package-store-abc": "../hono-jsr/lib/abc/package-store/mod.ts",
     "@publicdomainrelay/package-store-local-fs": "../hono-jsr/lib/package-store-local-fs/mod.ts",
     "@publicdomainrelay/package-store-remote-git": "../hono-jsr/lib/package-store-remote-git/mod.ts",

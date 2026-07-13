@@ -26,6 +26,7 @@ import {
 import type { ContainerBackend } from "@publicdomainrelay/container-backend-abc";
 import { createContainerBackend } from "@publicdomainrelay/container-backend-container";
 import { createDockerBackend } from "@publicdomainrelay/container-backend-docker";
+import { generateLocalhostTlsCert } from "@publicdomainrelay/tls-localhost";
 import { installFetchInterceptor } from "./fetch-interceptor.ts";
 
 // ===========================================================================
@@ -118,10 +119,12 @@ async function spawnBidder(opts: {
   modPath: string;
   args: string[];
   label: string;
+  env?: Record<string, string>;
 }): Promise<BidderProcess> {
   const decoder = new TextDecoder();
   const cmd = new Deno.Command("deno", {
     args: ["run", "-A", opts.modPath, ...opts.args],
+    env: opts.env,
     stdout: "piped",
     stderr: "piped",
   });
@@ -170,11 +173,11 @@ async function spawnBidder(opts: {
           const line = buf.slice(0, nl).trim();
           buf = buf.slice(nl + 1);
           if (!line) continue;
+          Deno.stderr.writeSync(encoder.encode(`[${opts.label}:out] ${line}\n`));
           try {
             const parsed = JSON.parse(line);
             if (parsed.event === "bidder_ready" && parsed.did) {
               resolve(parsed.did);
-              return;
             }
           } catch { /* not JSON, skip */ }
         }
@@ -364,15 +367,28 @@ Deno.test({
   console.log(`[platform] ${Deno.build.os}, backend: ${backend.type}`);
   const gateway = await backend.defaultGateway();
 
+  // ── TLS cert for dispatcher (OIDC/onNetwork require HTTPS) ─────────────
+  // Two-label base (relay.localhost) so the cert SAN is *.relay.localhost —
+  // OpenSSL and rustls both reject single-label wildcards like *.localhost.
+  const { caCertPem, serverCertPem, serverKeyPem } = await generateLocalhostTlsCert({
+    extraDnsSans: ["relay.localhost", "*.relay.localhost"],
+  });
+
   // ── Shared infra: dispatcher ──────────────────────────────────────────
   const dispatcherApp = createRelayFactory({
-    hostname: "localhost",
+    hostname: "relay.localhost",
     additionalHosts: [gateway],
   }).createApp();
+  // Dual listeners on the same app: plain HTTP for in-process components
+  // (no way to inject a CA into this process's WebSocket/fetch after start),
+  // TLS for the subprocess bidder (DENO_CERT) and guest containers (cloud-init
+  // CA injection) — OIDC prove/onNetwork require HTTPS.
   const dispAc = new AbortController();
   const dispPort = await serveOnPort0(dispatcherApp.fetch, dispAc, "0.0.0.0");
-  cleanups.push(() => dispAc.abort());
-  const ingressProxyHost = `localhost:${dispPort}`;
+  const dispTlsAc = new AbortController();
+  const dispTlsPort = await serveOnPort0(dispatcherApp.fetch, dispTlsAc, "0.0.0.0", serverCertPem, serverKeyPem);
+  cleanups.push(() => { dispAc.abort(); dispTlsAc.abort(); });
+  const ingressProxyHost = `relay.localhost:${dispPort}`;
 
   // ── Shared infra: fake PLC ────────────────────────────────────────────
   const plc = createFakePlc();
@@ -467,6 +483,7 @@ Deno.test({
       modPath: opts.spawnConfig.modPath,
       args: opts.spawnConfig.args,
       label: opts.label,
+      env: { CA_CERT_PEM: caCertPem },
     });
     cleanups.push(proc.cleanup);
 
@@ -485,7 +502,7 @@ Deno.test({
       // "localhost" inside the container = container's own loopback, not the host.
       ingressProxyHost: `${gateway}:${dispPort}`,
       // audHost for JWT — must match relay's hostname (localhost), not gateway IP
-      fedingressHost: "localhost",
+      fedingressHost: "relay.localhost",
       skipSsh: false,
       keepVm: false,
       bidWindowSec: 8,
@@ -493,8 +510,16 @@ Deno.test({
       execProgram: "echo SSH_OK_VIA_RELAY && uname -a",
       extraBidderDids: [proc.did],
       denyBidderDids: ["did:plc:centraldefaultbidder000000"],
-      // Use ws:// for localhost — the dispatcher doesn't serve WSS
-      sshProxyCommandFn: (fqdn: string) => `websocat --binary ws://${fqdn}`,
+      // The guest announces its fqdn as <sub>.<gateway-ip>:<port> (reachable
+      // from inside the container network). On the host, rewrite to
+      // <sub>.relay.localhost:<port> — resolves to loopback and the Host
+      // header matches the dispatcher's subdomain routing. Plain listener:
+      // only guest OIDC needs the TLS one.
+      sshProxyCommandFn: (fqdn: string) => {
+        const sub = fqdn.split(".")[0];
+        const port = fqdn.includes(":") ? fqdn.slice(fqdn.lastIndexOf(":") + 1) : "80";
+        return `websocat --binary ws://${sub}.relay.localhost:${port}/xrpc/com.fedproxy.temp.xrpc.tunnel`;
+      },
     });
 
     assert(result.event === "compute_request_complete",
@@ -511,7 +536,8 @@ Deno.test({
         args: [
           "--ingress-proxy-host", ingressProxyHost,
           "--plc-directory-url", plcDirectoryUrl,
-          "--relay-url", `http://127.0.0.1:${dispPort}`,
+          "--relay-url", `http://localhost:${dispPort}`,
+          "--guest-tls-port", String(dispTlsPort),
           "--policy-mode", "DYNAMIC",
           "--compute-provider-local",
           "--serve-port", "0",
