@@ -46,11 +46,14 @@ function serveOnPort0(
   fetch: (req: Request) => Response | Promise<Response>,
   ac: AbortController,
   hostname = "127.0.0.1",
+  cert?: string,
+  key?: string,
 ): Promise<number> {
   const { promise, resolve } = Promise.withResolvers<number>();
+  const tlsOpts = cert && key ? { cert, key } : {};
   Deno.serve(
     { port: 0, hostname, signal: ac.signal,
-      onListen: (addr) => resolve((addr as Deno.NetAddr).port) },
+      onListen: (addr) => resolve((addr as Deno.NetAddr).port), ...tlsOpts },
     fetch,
   );
   return promise;
