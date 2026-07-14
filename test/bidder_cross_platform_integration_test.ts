@@ -21,7 +21,7 @@ import { createLocalComputeProvider } from "@publicdomainrelay/compute-provider-
 import type { ComputeAtproto } from "@publicdomainrelay/compute-provider-abc";
 import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc";
 import {
-  createRequesterPDS, runComputeContract,
+  createRequesterPDS, ensureWebsocat, runComputeContract,
 } from "@publicdomainrelay/requester-xrpc";
 import type { ContainerBackend } from "@publicdomainrelay/container-backend-abc";
 import { createContainerBackend } from "@publicdomainrelay/container-backend-container";
@@ -527,6 +527,9 @@ Deno.test({
     assert(result.sshReady === true, `[${opts.label}] guest never reachable over ssh relay`);
     assert(result.sshExitCode === 0, `[${opts.label}] ssh session exited ${result.sshExitCode}`);
   }
+
+  // websocat needed for SSH ProxyCommand tunnel — CI runners may not have it.
+  await ensureWebsocat(logger).catch(() => {});
 
   await t.step("[bidder:hono-bidder] ssh via local xrpc relay", async () => {
     await runSshStep({
