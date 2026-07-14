@@ -295,7 +295,10 @@ async function createDesktopBidderInline(opts: {
   const secretStore = buildStandardChain({ filesystemStore: fsStore, logger });
   const { keypair: marketKp, hex } = await loadOrCreateMarketKeypair(secretStore);
 
-  const pdsKeypair = await Secp256k1Keypair.create({ exportable: true });
+  // Use the same private key for PDS and attestation so bindKeys verification
+  // finds the signing did:key in the PLC DID's verificationMethods.
+  // desktop uses noble/curves Secp256k1Keypair; agent needs @atproto/crypto.
+  const pdsKeypair = await Secp256k1Keypair.import(marketKp.exportHex(), { exportable: true });
 
   const pdsAgent = await createLocalPDSAgent({
     logger, keypair: pdsKeypair,
