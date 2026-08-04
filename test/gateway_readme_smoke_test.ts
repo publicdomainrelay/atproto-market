@@ -1,4 +1,4 @@
-// README code block verification test — full flow.
+// README code block verification test -- full flow.
 // Starts local infra (PLC, dispatcher, bidder) in-process, starts the gateway
 // as a subprocess, parses README.md shell blocks, and runs them via bash -e
 // with env vars resolving to the live infra. Does NOT reproduce shell commands
@@ -24,7 +24,7 @@ function didWebToHttps(s: string): string {
   return s.startsWith("did:web:") ? "https://" + s.slice("did:web:".length) : s;
 }
 
-// ── fake PLC with service endpoint overrides ─────────────────────────────
+// -- fake PLC with service endpoint overrides -----------------------------
 
 interface ServiceOverride { type: string; endpoint: string }
 
@@ -95,7 +95,7 @@ function createFakePlc() {
   };
 }
 
-// ── helpers ──────────────────────────────────────────────────────────────
+// -- helpers --------------------------------------------------------------
 
 interface Section { heading: string; level: number; blocks: string[] }
 
@@ -132,7 +132,7 @@ async function bash(
 
 const readmePath = new URL("../hono-compute-contract-gateway/README.md", import.meta.url).pathname;
 
-// ── test ─────────────────────────────────────────────────────────────────
+// -- test -----------------------------------------------------------------
 
 Deno.test({
   name: "[readme] all shell blocks execute via bash -e against live infra",
@@ -142,7 +142,7 @@ Deno.test({
   const logger = createLogger({ serviceName: "readme-test" });
   const cleanups: Array<() => void> = [];
 
-  // ── dispatcher ──────────────────────────────────────────────────────
+  // -- dispatcher ------------------------------------------------------
   const dispatcherApp = createRelayFactory({ hostname: "localhost" }).createApp();
   const dispatcherCtl = new AbortController();
   const { promise: dispPortReady, resolve: resolveDispPort } = Promise.withResolvers<number>();
@@ -152,11 +152,11 @@ Deno.test({
   );
   const dispPort = await dispPortReady;
   cleanups.push(() => dispatcherCtl.abort());
-  // Use "localhost" not "127.0.0.1" — relay factory's isControlHost checks
+  // Use "localhost" not "127.0.0.1" -- relay factory's isControlHost checks
   // hostnameOnly(Host header) against the configured hostname ("localhost").
   const ingressProxyHost = `localhost:${dispPort}`;
 
-  // ── fake PLC ─────────────────────────────────────────────────────────
+  // -- fake PLC ---------------------------------------------------------
   const plc = createFakePlc();
   const plcCtl = new AbortController();
   const { promise: plcPortReady, resolve: resolvePlcPort } = Promise.withResolvers<number>();
@@ -168,7 +168,7 @@ Deno.test({
   cleanups.push(() => plcCtl.abort());
   const plcDirectoryUrl = `http://127.0.0.1:${plcPort}`;
 
-  // ── fetch interceptor (bidder is in-process, needs relay routing) ────
+  // -- fetch interceptor (bidder is in-process, needs relay routing) ----
   const { installFetchInterceptor } = await import("./fetch-interceptor.ts");
   const restoreFetch = installFetchInterceptor({
     realFetch: globalThis.fetch,
@@ -178,7 +178,7 @@ Deno.test({
   cleanups.push(restoreFetch);
 
   try {
-    // ── bidder (in-process) ────────────────────────────────────────────
+    // -- bidder (in-process) --------------------------------------------
     const bidderKeypair = await Secp256k1Keypair.create({ exportable: true });
     const bidderPrivHex = Array.from(await bidderKeypair.export())
       .map((b) => b.toString(16).padStart(2, "0")).join("");
@@ -238,7 +238,7 @@ Deno.test({
     plc.overrideService(bidderDid, "pdr_temp_compute_event", directEndpoint);
     plc.overrideService(bidderDid, "AtprotoPersonalDataServer", directEndpoint);
 
-    // ── PDS subprocess ──────────────────────────────────────────────────
+    // -- PDS subprocess --------------------------------------------------
     const pdsTmp = await Deno.makeTempDir({ prefix: "pds-" });
     cleanups.push(() => Deno.remove(pdsTmp, { recursive: true }).catch(() => {}));
     const pdsLogPath = `${pdsTmp}/pds.log`;
@@ -293,7 +293,7 @@ Deno.test({
     assert(pdsPort > 0, `PDS port not captured. Stderr: ${await Deno.readTextFile(pdsErrPath).catch(() => "(none)")}. Log: ${await Deno.readTextFile(pdsLogPath).catch(() => "(none)")}`);
     const pdsUrl = `http://127.0.0.1:${pdsPort}`;
 
-    // ── gateway subprocess ──────────────────────────────────────────────
+    // -- gateway subprocess ----------------------------------------------
     const gatewayTmp = await Deno.makeTempDir({ prefix: "gateway-" });
     cleanups.push(() => Deno.remove(gatewayTmp, { recursive: true }).catch(() => {}));
     const gatewayLogPath = `${gatewayTmp}/gateway.log`;
@@ -357,7 +357,7 @@ Deno.test({
       `Gateway port not captured. Stderr: ${await Deno.readTextFile(gatewayErrPath).catch(() => "(none)")}`);
     const gatewayUrl = `http://127.0.0.1:${gatewayPort}`;
 
-    // ── set up goat auth via PDS ────────────────────────────────────────
+    // -- set up goat auth via PDS ----------------------------------------
     const authTmp = await Deno.makeTempDir({ prefix: "goat-auth-" });
     cleanups.push(() => Deno.remove(authTmp, { recursive: true }).catch(() => {}));
     const pdsEnv: Record<string, string> = {
@@ -404,7 +404,7 @@ Deno.test({
     }
     console.log(`pds auth: create=${createAcct.code} login=${login.code} svcToken=${svcToken ? "yes(" + svcToken.length + ")" : "no"}`);
 
-    // ── env vars for bash blocks ────────────────────────────────────────
+    // -- env vars for bash blocks ----------------------------------------
     const blockEnv: Record<string, string> = {
       GATEWAY_URL: gatewayUrl,
       BIDDER_DID: bidderDid,
@@ -418,7 +418,7 @@ Deno.test({
       PATH: Deno.env.get("PATH") ?? "",
     };
 
-    // ── parse README & run blocks ───────────────────────────────────────
+    // -- parse README & run blocks ---------------------------------------
     const md = await Deno.readTextFile(readmePath);
     const sections = parseSections(md);
     const tmp = await Deno.makeTempDir({ prefix: "readme-" });
@@ -445,7 +445,7 @@ Deno.test({
         // - deno test blocks (recursion)
         // - goat resolve with hardcoded URLs (uses $GATEWAY_URL now)
         // - goat xrpc procedure blocks with multiline source (goat puts source
-        //   in HTTP header, newlines break the request — known goat limitation)
+        //   in HTTP header, newlines break the request -- known goat limitation)
         if (
           (b.includes("ssh ") && (b.includes("websocat") || b.includes("ProxyCommand"))) ||
           b.includes("goat record create") ||
@@ -469,7 +469,7 @@ Deno.test({
           continue;
         }
 
-        // goat lex subcommands — skip (lexicon management, not runtime)
+        // goat lex subcommands -- skip (lexicon management, not runtime)
         if (b.includes("goat lex ")) continue;
 
         const r = await bash(b, blockEnv, tmp);

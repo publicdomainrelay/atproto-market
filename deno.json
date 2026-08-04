@@ -25,15 +25,16 @@
     "lib/abc/requester",
     "lib/requester-xrpc",
     "lib/hono-factory-requester-xrpc",
-
     "lib/did-key-ingress-proxy",
     "lib/cocore-api",
+    "lib/common/market-policy-common",
     "lib/abc/market-policy",
-    "lib/market-policy",
     "lib/market-policy-only-me",
     "lib/market-policy-direct-network-tangled-vouch",
-    "lib/market-policy-workflow-gha",
-    "lib/market-policy-remote",
+    "lib/market-policy-registry",
+    "lib/market-policy-engine-worker",
+    "lib/market-policy-engine-service",
+    "lib/market-policy",
     "request-vm-ssh",
     "hono-bidder",
     "lib/common/compute-contract-gateway-common",
@@ -48,6 +49,11 @@
     "hono-policy",
     "lib/operator-discovery-badge-blue-keys",
     "lib/market-policy-direct-network-bsky-mutual",
+    "lib/abc/market-policy-trust",
+    "lib/market-policy-trust-cache",
+    "lib/market-policy-work",
+    "lib/market-policy-host-xrpc",
+    "lib/hono-factory-market-policy-host",
     "lib/abc/trust-graph",
     "lib/trust-graph-tangled-graph",
     "lib/trust-graph-bsky-mutuals",
@@ -55,7 +61,8 @@
   ],
   "nodeModulesDir": "auto",
   "unstable": [
-    "kv"
+    "kv",
+    "worker-options"
   ],
   "imports": {
     "@atiproto/atproto-attestation": "./lib/atproto-attestation-port/mod.ts",
@@ -63,7 +70,7 @@
     "@atproto/api": "npm:@atproto/api@^0.20.8",
     "@atproto/common": "npm:@atproto/common@^0.5.0",
     "@atproto/common-web": "npm:@atproto/common-web@^0.5.0",
-    "@atproto/crypto": "npm:@atproto/crypto@^0.4.4",
+    "@atproto/crypto": "npm:@atproto/crypto@^0.5.0",
     "@atproto/identity": "npm:@atproto/identity@^0.5.0",
     "@atproto/jwk": "npm:@atproto/jwk@^0.7.2",
     "@atproto/lex": "npm:@atproto/lex@^0.1.3",
@@ -148,14 +155,15 @@
     "@publicdomainrelay/market-bidder-worker": "./lib/market-bidder-worker/mod.ts",
     "@publicdomainrelay/market-bidder-agent": "./lib/market-bidder-agent/mod.ts",
     "@publicdomainrelay/market-common": "./lib/common/market-common/mod.ts",
-
     "@publicdomainrelay/market-lexicons": "./lib/common/market-lexicons/mod.ts",
     "@publicdomainrelay/market-policy-abc": "./lib/abc/market-policy/mod.ts",
     "@publicdomainrelay/market-policy": "./lib/market-policy/mod.ts",
     "@publicdomainrelay/market-policy-only-me": "./lib/market-policy-only-me/mod.ts",
-    "@publicdomainrelay/market-policy-direct-network": "./lib/market-policy-direct-network-tangled-vouch/mod.ts",
-    "@publicdomainrelay/market-policy-workflow-gha": "./lib/market-policy-workflow-gha/mod.ts",
-    "@publicdomainrelay/market-policy-remote": "./lib/market-policy-remote/mod.ts",
+    "@publicdomainrelay/market-policy-direct-network-tangled-vouch": "./lib/market-policy-direct-network-tangled-vouch/mod.ts",
+    "@publicdomainrelay/market-policy-common": "./lib/common/market-policy-common/mod.ts",
+    "@publicdomainrelay/market-policy-registry": "./lib/market-policy-registry/mod.ts",
+    "@publicdomainrelay/market-policy-engine-worker": "./lib/market-policy-engine-worker/mod.ts",
+    "@publicdomainrelay/market-policy-engine-service": "./lib/market-policy-engine-service/mod.ts",
     "@publicdomainrelay/policy-common": "./lib/common/policy-common/mod.ts",
     "@publicdomainrelay/policy-abc": "./lib/abc/policy/mod.ts",
     "@publicdomainrelay/policy-builtin": "./lib/policy-builtin/mod.ts",
@@ -169,6 +177,7 @@
     "@publicdomainrelay/requester-xrpc": "./lib/requester-xrpc/mod.ts",
     "@publicdomainrelay/sandbox-abc": "../deno-worker-sandbox/lib/abc/sandbox/mod.ts",
     "@publicdomainrelay/sandbox-deno": "../deno-worker-sandbox/lib/sandbox-deno/mod.ts",
+    "@publicdomainrelay/sandbox-common": "../deno-worker-sandbox/lib/common/sandbox-common/mod.ts",
     "@publicdomainrelay/serve": "../typescript-helpers/lib/serve/mod.ts",
     "@publicdomainrelay/did-key-ingress-proxy": "./lib/did-key-ingress-proxy/mod.ts",
     "@publicdomainrelay/hostname-helpers": "../typescript-helpers/lib/hostname-helpers/mod.ts",
@@ -181,12 +190,18 @@
     "hono": "npm:hono@^4.12.23",
     "@std/assert": "jsr:@std/assert@^1",
     "multiformats": "npm:multiformats@^13.3.0",
-    "multiformats/bases/base32": "npm:multiformats@^13.3.0/bases/base32"
+    "multiformats/bases/base32": "npm:multiformats@^13.3.0/bases/base32",
+    "@publicdomainrelay/market-policy-trust-abc": "./lib/abc/market-policy-trust/mod.ts",
+    "@publicdomainrelay/market-policy-trust-cache": "./lib/market-policy-trust-cache/mod.ts",
+    "@publicdomainrelay/market-policy-work": "./lib/market-policy-work/mod.ts",
+    "@publicdomainrelay/market-policy-host-xrpc": "./lib/market-policy-host-xrpc/mod.ts",
+    "@publicdomainrelay/hono-factory-market-policy-host": "./lib/hono-factory-market-policy-host/mod.ts"
   },
   "tasks": {
     "check": "deno check lib/common/market-lexicons/mod.ts lib/common/market-common/mod.ts lib/abc/market/mod.ts lib/abc/market-bidder/mod.ts lib/market-atproto/mod.ts lib/common/cloud-init-common/mod.ts lib/abc/requester/mod.ts",
     "generate-lexicons": "goat lex pull com.atproto.repo.strongRef && deno x -A -y npm:@atproto/lex build --override --import-ext \".ts\" --lexicons ./lexicons --out lib/common/market-lexicons",
-    "test:readme": "deno test -A test/gateway_readme_smoke_test.ts"
+    "test:readme": "deno test -A test/gateway_readme_smoke_test.ts",
+    "build-policy-bundle": "deno run -A scripts/build-policy-bundle.ts"
   },
   "fmt": {
     "lineWidth": 100

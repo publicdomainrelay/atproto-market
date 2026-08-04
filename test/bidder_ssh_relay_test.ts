@@ -1,6 +1,6 @@
 // Integration: validate full SSH shell via relay tunnel.
 // Same harness as bidder_container_integration_test but with SSH enabled.
-// Validates: RFP flow → container provisioned → SSH via relay websocket tunnel.
+// Validates: RFP flow -> container provisioned -> SSH via relay websocket tunnel.
 //
 // Run:
 //   deno test --allow-all test/bidder_ssh_relay_test.ts
@@ -25,7 +25,7 @@ function didWebToHttps(s: string): string {
   return s.startsWith("did:web:") ? "https://" + s.slice("did:web:".length) : s;
 }
 
-// ── fake PLC ──────────────────────────────────────────────────────────────
+// -- fake PLC --------------------------------------------------------------
 
 function createFakePlc() {
   const ops = new Map<string, Record<string, unknown>>();
@@ -73,7 +73,7 @@ Deno.test({
   sanitizeResources: false,
   // The guest must run buildTunnelUserData's tunnel-subscriber.service, which
   // `deno run`s jsr:@publicdomainrelay/hono-did-key-ingress-proxy-tunnel-subscriber
-  // via a JSR_URL override — that requires a local hono-jsr registry serving
+  // via a JSR_URL override -- that requires a local hono-jsr registry serving
   // this workspace's packages, reachable from inside the container. That
   // registry harness does not exist yet. Without it the guest never joins
   // the relay tunnel, so the ssh assertions below correctly fail rather than
@@ -83,7 +83,7 @@ Deno.test({
   const logger = createLogger({ serviceName: "ssh-relay-it" });
   const cleanups: Array<() => void> = [];
 
-  // ── dispatcher ────────────────────────────────────────────────────────
+  // -- dispatcher --------------------------------------------------------
   const dispatcherApp = createRelayFactory({ hostname: "localhost" }).createApp();
   const dispatcherCtl = new AbortController();
   const { promise: dispPortReady, resolve: resolveDispPort } = Promise.withResolvers<number>();
@@ -95,7 +95,7 @@ Deno.test({
   cleanups.push(() => dispatcherCtl.abort());
   const ingressProxyHost = `localhost:${dispPort}`;
 
-  // ── fake PLC ────────────────────────────────────────────────────────────
+  // -- fake PLC ------------------------------------------------------------
   const plc = createFakePlc();
   const plcCtl = new AbortController();
   const { promise: plcPortReady, resolve: resolvePlcPort } = Promise.withResolvers<number>();
@@ -107,7 +107,7 @@ Deno.test({
   cleanups.push(() => plcCtl.abort());
   const plcDirectoryUrl = `http://localhost:${plcPort}`;
 
-  // ── fetch interception ────────────────────────────────────────────────
+  // -- fetch interception ------------------------------------------------
   const realFetch = globalThis.fetch;
   globalThis.fetch = ((input: string | URL | Request, init?: RequestInit) => {
     let url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
@@ -127,7 +127,7 @@ Deno.test({
   cleanups.push(() => { globalThis.fetch = realFetch; });
 
   try {
-    // ── bidder ──────────────────────────────────────────────────────────
+    // -- bidder ----------------------------------------------------------
     const bidderKeypair = await Secp256k1Keypair.create({ exportable: true });
     const bidderPrivHex = Array.from(await bidderKeypair.export())
       .map((b) => b.toString(16).padStart(2, "0")).join("");
@@ -174,7 +174,7 @@ Deno.test({
     await bidder.beginServe();
     cleanups.push(() => bidder.shutdown());
 
-    // ── requester ───────────────────────────────────────────────────────
+    // -- requester -------------------------------------------------------
     const requesterServe = createServe({ logger, tcp: { addr: "127.0.0.1", port: 0 } });
     const requester = await createRequesterPDS({
       logger, serve: requesterServe,
@@ -183,14 +183,14 @@ Deno.test({
     cleanups.push(() => requesterServe.shutdown());
     await requester.beginServe();
 
-    // ── run contract WITH SSH ───────────────────────────────────────────
+    // -- run contract WITH SSH -------------------------------------------
     // execProgram runs on the guest via SSH through the relay websocket tunnel.
-    // A successful exit proves the full path: relay websocket → VM sshd → shell.
+    // A successful exit proves the full path: relay websocket -> VM sshd -> shell.
     const startTime = Date.now();
     // The SSH tunnel uses websocat directly (not fetch), so the fetch
-    // interception that maps https://*.localhost → http://localhost:PORT
+    // interception that maps https://*.localhost -> http://localhost:PORT
     // doesn't apply.  Use proxyCommandFn to rewrite wss://*.fedproxy.com
-    // → ws://localhost:PORT so the tunnel reaches the local dispatcher.
+    // -> ws://localhost:PORT so the tunnel reaches the local dispatcher.
     const proxyCommandFn = (_fqdn: string) => `websocat --binary ws://${ingressProxyHost}`;
 
     const result = await runComputeContract(requester, {
@@ -199,7 +199,7 @@ Deno.test({
       sshProxyCommandFn: proxyCommandFn,
       skipSsh: false,
       keepVm: false,
-      bidWindowSec: 8,
+      policy: { name: "open", args: { bidWindowSec: 8 } },
       vmReadyTimeoutSec: 120,
       execProgram: "echo SSH_OK_VIA_RELAY && uname -a && whoami && hostname",
       extraBidderDids: [atproto.did],
@@ -212,7 +212,7 @@ Deno.test({
 
     const elapsed = Date.now() - startTime;
     console.log(`\nSSH relay test completed in ${(elapsed / 1000).toFixed(1)}s`);
-    console.log("All assertions passed — SSH shell via relay tunnel verified");
+    console.log("All assertions passed -- SSH shell via relay tunnel verified");
   } finally {
     for (const c of cleanups.reverse()) {
       try { c(); } catch { /* best effort */ }

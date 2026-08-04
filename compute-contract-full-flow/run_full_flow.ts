@@ -142,7 +142,7 @@ async function main() {
   });
   cleanups.push(restoreFetch);
 
-  // ── bidder ──────────────────────────────────────────────
+  // -- bidder ----------------------------------------------
   const bidderKeypair = await Secp256k1Keypair.create({ exportable: true });
   const bidderPrivHex = Array.from(await bidderKeypair.export())
     .map((b) => b.toString(16).padStart(2, "0")).join("");
@@ -177,7 +177,6 @@ async function main() {
     serve: providerServe,
     getIssuerUrl: () => didWebToHttps(providerRelay.ingressRef),
     containerMode: "container",
-    xrpcRelay: false,
   });
 
   const provider = createComputeProviderHooks({ provider: computeProvider });
@@ -189,7 +188,6 @@ async function main() {
 
   const marketBidder = await createMarketBidder({
     logger, atproto, providers: [provider], relay: bidderRelay,
-    rfpWatcherFactory: undefined,
     offeringRefreshMs: undefined,
     serve: bidderServe,
   });
@@ -197,7 +195,7 @@ async function main() {
   cleanups.push(() => marketBidder.shutdown());
   log(`bidder ready: did=${atproto.did} ingressRef=${bidderRelay.ingressRef}`);
 
-  // ── requester ───────────────────────────────────────────
+  // -- requester -------------------------------------------
   const requesterServe = createServe({ logger, tcp: { addr: "127.0.0.1", port: 0 } });
   const requester = await createRequesterPDS({
     logger, serve: requesterServe,
@@ -207,8 +205,8 @@ async function main() {
   await requester.beginServe();
   log(`requester ready: did=${requester.did} ingressRef=${requester.ingressRef}`);
 
-  // ── collect ALL atproto records from both repos ──────────
-  async function collectRecords(label: string, pdsApi: { listRecords(did: string, collection: string, opts?: { limit?: number; cursor?: string }): Promise<{ records: Array<{ uri: string; cid: string; value: Record<string, unknown> }>; cursor?: string }> }, did: string) {
+  // -- collect ALL atproto records from both repos ----------
+  async function collectRecords(label: string, pdsApi: { listRecords(did: string, collection: string, opts?: { limit?: number; cursor?: string }): Promise<{ records: Array<{ uri: string; cid: string; value: unknown }>; cursor?: string }> }, did: string) {
     const collections = [
       "com.publicdomainrelay.temp.market.offering",
       "com.publicdomainrelay.temp.market.rfp",
@@ -243,7 +241,7 @@ async function main() {
     }
   }
 
-  // ── run the contract flow ────────────────────────────────
+  // -- run the contract flow --------------------------------
   log("=== starting compute contract flow ===");
   log(`requester did: ${requester.did}`);
   log(`bidder did: ${atproto.did}`);
@@ -255,7 +253,7 @@ async function main() {
     ingressProxyHost,
     skipSsh: false,
     keepVm: true,
-    bidWindowSec: 15,
+    policy: { name: "only-me", args: { bidWindowSec: 15 } },
     vmReadyTimeoutSec: 60,
     execProgram: "hostname",
     extraBidderDids: [atproto.did],
@@ -265,7 +263,7 @@ async function main() {
 
   log(`contract result: ${JSON.stringify(contract)}`);
 
-  // ── collect records post-flow ────────────────────────────
+  // -- collect records post-flow ----------------------------
   try {
     await collectRecords("requester", requester.api, requester.did);
   } catch (err) {
@@ -277,7 +275,7 @@ async function main() {
     log(`collect bidder records error: ${String(err)}`);
   }
 
-  // ── write outputs ────────────────────────────────────────
+  // -- write outputs ----------------------------------------
   await Deno.writeTextFile(LOG_FILE, logLines.join("\n") + "\n");
   log(`log written to ${LOG_FILE}`);
 
@@ -290,7 +288,7 @@ async function main() {
     (recordsByCollection[col] ??= []).push(r);
   }
 
-  const summary = `# Compute Contract Full Flow — Summary
+  const summary = `# Compute Contract Full Flow -- Summary
 
 ## Participants
 
@@ -335,26 +333,26 @@ deno run --allow-all compute-contract-full-flow/run_full_flow.ts
 
 \`\`\`
 Requester                    AT Protocol (PDS/relay)              Bidder                    Guest Container
-────────                     ──────────────────────              ──────                    ───────────────
+--------                     ----------------------              ------                    ---------------
 runComputeContract()
-  ├─ ssh-keygen ed25519
-  ├─ buildDefaultUserData()  ──►  compute.vm record
-  ├─ createSignedRepoRecord  ──►  market.rfp (signed)
-  ├─ discoverBidders         ──►  relay index + extraBidderDids
-  ├─ submitRfp XRPC          ──►  ──►  rfpCallback → bid
-  │                                    ├─ onAccept → provision
-  │                                    │    ├─ OIDC enrichment
-  │                                    │    ├─ runContainer()
-  │                                    │    └─ cloud-init: sshd + websocat
-  │                                    └─ eventCallbacks
-  ├─ wait bidWindowSec (15s)
-  ├─ pick lowest-cost bid
-  ├─ createSignedRepoRecord  ──►  market.accept
-  ├─ submitAccept XRPC       ──►  ──►  provision guest
-  ├─ verify receipt
-  ├─ pollReady → SSH         ──►  ──►  websocat ws:// → sshd
-  │  └─ exec 'hostname'
-  └─ vm.delete event         ──►  ──►  destroy()
+  ├- ssh-keygen ed25519
+  ├- buildDefaultUserData()  --►  compute.vm record
+  ├- createSignedRepoRecord  --►  market.rfp (signed)
+  ├- discoverBidders         --►  relay index + extraBidderDids
+  ├- submitRfp XRPC          --►  --►  rfpCallback -> bid
+  │                                    ├- onAccept -> provision
+  │                                    │    ├- OIDC enrichment
+  │                                    │    ├- runContainer()
+  │                                    │    └- cloud-init: sshd + websocat
+  │                                    └- eventCallbacks
+  ├- wait bidWindowSec (15s)
+  ├- pick lowest-cost bid
+  ├- createSignedRepoRecord  --►  market.accept
+  ├- submitAccept XRPC       --►  --►  provision guest
+  ├- verify receipt
+  ├- pollReady -> SSH         --►  --►  websocat ws:// -> sshd
+  │  └- exec 'hostname'
+  └- vm.delete event         --►  --►  destroy()
 \`\`\`
 
 ## SSH Tunnel Path
@@ -362,10 +360,10 @@ runComputeContract()
 \`\`\`
 requester SSH client
   ProxyCommand websocat --binary wss://<service>--did-plc-<key>.localhost
-    → dispatcher (xrpc relay, routes by SNI subdomain)
-      → relay WebSocket → bidder PDS → guest container
-        → websocat ws-l:127.0.0.1:8080
-          → sshd 127.0.0.1:22
+    -> dispatcher (xrpc relay, routes by SNI subdomain)
+      -> relay WebSocket -> bidder PDS -> guest container
+        -> websocat ws-l:127.0.0.1:8080
+          -> sshd 127.0.0.1:22
 \`\`\`
 
 Generated: ${new Date().toISOString()}
@@ -374,7 +372,7 @@ Generated: ${new Date().toISOString()}
   await Deno.writeTextFile(SUMMARY_FILE, summary);
   log(`summary written to ${SUMMARY_FILE}`);
 
-  // ── cleanup ──────────────────────────────────────────────
+  // -- cleanup ----------------------------------------------
   for (const c of cleanups.reverse()) {
     try { c(); } catch { /* best effort */ }
   }

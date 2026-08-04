@@ -1,7 +1,7 @@
 // Integration: full dynamic policy flow with a local policy engine.
-// Starts dispatcher, fake PLC, policy engine, bidder (acceptScope=dynamic),
-// and requester. The requester creates an RFP with policyMode=dynamic +
-// policyEngineEndpoint → did:web:127.0.0.1%3A<port>. The bidder evaluates
+// Starts dispatcher, fake PLC, policy engine, bidder (a service policy),
+// and requester. The requester creates an RFP with a policies.service record +
+// policyEngineEndpoint -> did:web:127.0.0.1%3A<port>. The bidder evaluates
 // the policy via the engine before bidding. The requester evaluates after
 // winner selection.
 //
@@ -22,7 +22,6 @@ import { createLocalComputeProvider } from "@publicdomainrelay/compute-provider-
 import type { ComputeAtproto } from "@publicdomainrelay/compute-provider-abc";
 import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc";
 import { createRequesterPDS, runComputeContract } from "@publicdomainrelay/requester-xrpc";
-import { DYNAMIC } from "@publicdomainrelay/market-policy-abc";
 
 function didWebToHttps(s: string): string {
   return s.startsWith("did:web:") ? "https://" + s.slice("did:web:".length) : s;
@@ -76,7 +75,7 @@ function createFakePlc() {
 }
 
 Deno.test({
-  name: "[integration] dynamic — engine allow → bid + accept succeed",
+  name: "[integration] dynamic -- engine allow -> bid + accept succeed",
   sanitizeOps: false,
   sanitizeResources: false,
 }, async () => {
@@ -84,7 +83,7 @@ Deno.test({
 
   const cleanups: Array<() => void> = [];
 
-  // ── policy engine (local HTTP server) ────────────────────────────────────
+  // -- policy engine (local HTTP server) ------------------------------------
   const engineLog: Array<{ body: unknown; auth: string | null }> = [];
   const engineCtl = new AbortController();
   const { promise: enginePortReady, resolve: resolveEnginePort } = Promise.withResolvers<number>();
@@ -94,7 +93,7 @@ Deno.test({
       const auth = req.headers.get("authorization");
       const body = await req.json();
       engineLog.push({ body, auth });
-      // Allow all — the policy engine is permissive in this test
+      // Allow all -- the policy engine is permissive in this test
       return new Response(JSON.stringify({ allow: true, violations: [] }), {
         headers: { "content-type": "application/json" },
       });
@@ -115,7 +114,7 @@ Deno.test({
   cleanups.push(() => dispatcherCtl.abort());
   const ingressProxyHost = `localhost:${dispPort}`;
 
-  // ── fake PLC ───────────────────────────────────────────────────────────
+  // -- fake PLC -----------------------------------------------------------
   const plc = createFakePlc();
   const plcCtl = new AbortController();
   const { promise: plcPortReady, resolve: resolvePlcPort } = Promise.withResolvers<number>();
@@ -127,7 +126,7 @@ Deno.test({
   cleanups.push(() => plcCtl.abort());
   const plcDirectoryUrl = `http://localhost:${plcPort}`;
 
-  // ── Fetch interception ─────────────────────────────────────────────────
+  // -- Fetch interception -------------------------------------------------
   const { installFetchInterceptor } = await import("./fetch-interceptor.ts");
   const restoreFetch = installFetchInterceptor({
     realFetch: globalThis.fetch,
@@ -138,7 +137,7 @@ Deno.test({
 
   try {
 
-    // ── bidder (acceptScope=dynamic) ──────────────────────────────────
+    // -- bidder (a service policy) ----------------------------------
     const bidderKeypair = await Secp256k1Keypair.create({ exportable: true });
     const bidderPrivHex = Array.from(await bidderKeypair.export())
       .map((b) => b.toString(16).padStart(2, "0")).join("");
@@ -176,17 +175,16 @@ Deno.test({
     });
     await providerServe.beginServe();
 
-    // market bidder with acceptScope=dynamic
+    // market bidder with a service policy
     const bidderRelay = await makeRelay();
     const bidder = await createMarketBidder({
       logger, atproto, providers: [provider], relay: bidderRelay,
       serve: createServe({ logger, tcp: { addr: "127.0.0.1", port: 0 }, relays: [bidderRelay] }),
-      acceptScope: DYNAMIC,
     });
     await bidder.beginServe();
     cleanups.push(() => bidder.shutdown());
 
-    // ── requester ─────────────────────────────────────────────────────────
+    // -- requester ---------------------------------------------------------
     const requesterServe = createServe({ logger, tcp: { addr: "127.0.0.1", port: 0 } });
     const requester = await createRequesterPDS({
       logger, serve: requesterServe,
@@ -204,27 +202,26 @@ Deno.test({
 
     await requester.beginServe();
 
-    // ── run the contract with dynamic policy ─────────────────────────────────
+    // -- run the contract with a service policy ---------------------------------
     let contractErr: unknown;
     const contract = runComputeContract(requester, {
       logger,
       ingressProxyHost,
       skipSsh: true,
       keepVm: true,
-      bidWindowSec: 10,
       vmReadyTimeoutSec: 1,
       execProgram: "true",
       extraBidderDids: [atproto.did],
       denyBidderDids: ["did:plc:centraldefaultbidder000000"],
-      policyMode: DYNAMIC,
-      policyEngineEndpoint: engineDid,
+      policy: { name: "only-me", args: { bidWindowSec: 10 } },
+      policyEngine: engineDid,
     }).catch((e) => { contractErr = e; });
     await Promise.race([
       contract,
       new Promise((r) => setTimeout(r, 40_000)),
     ]);
 
-    // ── assertions ────────────────────────────────────────────────────────
+    // -- assertions --------------------------------------------------------
     // Bidder should have evaluated policy and created a bid
     const ourBids = seenBids.filter((b) => b.did === atproto.did);
     assert(

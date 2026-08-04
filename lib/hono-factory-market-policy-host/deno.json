@@ -1,0 +1,11 @@
+{
+  "name": "@publicdomainrelay/hono-factory-market-policy-host",
+  "version": "0.0.0",
+  "license": "Unlicense",
+  "imports": {
+    "@hono/hono": "jsr:@hono/hono@^4",
+    "@publicdomainrelay/market-policy-common": "jsr:@publicdomainrelay/market-policy-common@^0",
+    "@publicdomainrelay/policy-common": "jsr:@publicdomainrelay/policy-common@^0"
+  },
+  "exports": "./mod.ts"
+}

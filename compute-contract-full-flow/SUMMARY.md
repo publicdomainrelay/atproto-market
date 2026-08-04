@@ -1,4 +1,4 @@
-# Compute Contract Full Flow — Summary
+# Compute Contract Full Flow -- Summary
 
 ## Participants
 
@@ -66,26 +66,26 @@ deno run --allow-all compute-contract-full-flow/run_full_flow.ts
 
 ```
 Requester                    AT Protocol (PDS/relay)              Bidder                    Guest Container
-────────                     ──────────────────────              ──────                    ───────────────
+--------                     ----------------------              ------                    ---------------
 runComputeContract()
-  ├─ ssh-keygen ed25519
-  ├─ buildDefaultUserData()  ──►  compute.vm record
-  ├─ createSignedRepoRecord  ──►  market.rfp (signed)
-  ├─ discoverBidders         ──►  relay index + extraBidderDids
-  ├─ submitRfp XRPC          ──►  ──►  rfpCallback → bid
-  │                                    ├─ onAccept → provision
-  │                                    │    ├─ OIDC enrichment
-  │                                    │    ├─ runContainer()
-  │                                    │    └─ cloud-init: sshd + websocat
-  │                                    └─ eventCallbacks
-  ├─ wait bidWindowSec (15s)
-  ├─ pick lowest-cost bid
-  ├─ createSignedRepoRecord  ──►  market.accept
-  ├─ submitAccept XRPC       ──►  ──►  provision guest
-  ├─ verify receipt
-  ├─ pollReady → SSH         ──►  ──►  websocat ws:// → sshd
-  │  └─ exec 'hostname'
-  └─ vm.delete event         ──►  ──►  destroy()
+  ├- ssh-keygen ed25519
+  ├- buildDefaultUserData()  --►  compute.vm record
+  ├- createSignedRepoRecord  --►  market.rfp (signed)
+  ├- discoverBidders         --►  relay index + extraBidderDids
+  ├- submitRfp XRPC          --►  --►  rfpCallback -> bid
+  │                                    ├- onAccept -> provision
+  │                                    │    ├- OIDC enrichment
+  │                                    │    ├- runContainer()
+  │                                    │    └- cloud-init: sshd + websocat
+  │                                    └- eventCallbacks
+  ├- wait bidWindowSec (15s)
+  ├- pick lowest-cost bid
+  ├- createSignedRepoRecord  --►  market.accept
+  ├- submitAccept XRPC       --►  --►  provision guest
+  ├- verify receipt
+  ├- pollReady -> SSH         --►  --►  websocat ws:// -> sshd
+  │  └- exec 'hostname'
+  └- vm.delete event         --►  --►  destroy()
 ```
 
 ## SSH Tunnel Path
@@ -93,10 +93,10 @@ runComputeContract()
 ```
 requester SSH client
   ProxyCommand websocat --binary wss://<service>--did-plc-<key>.localhost
-    → dispatcher (did-key-relay, routes by SNI subdomain)
-      → relay WebSocket → bidder PDS → guest container
-        → websocat ws-l:127.0.0.1:8080
-          → sshd 127.0.0.1:22
+    -> dispatcher (did-key-relay, routes by SNI subdomain)
+      -> relay WebSocket -> bidder PDS -> guest container
+        -> websocat ws-l:127.0.0.1:8080
+          -> sshd 127.0.0.1:22
 ```
 
 Generated: 2026-07-08T05:51:42.247Z

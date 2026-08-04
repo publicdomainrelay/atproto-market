@@ -181,7 +181,7 @@ Deno.test(
             role: "gateway-ssh-test",
           },
           sshPublicKey: publicKey,
-          bidWindowSec: 15,
+          policy: { name: "open", args: { bidWindowSec: 15 } },
           skipSsh: false,
           keepVm: true,
           vmReadyTimeoutSec: 30,

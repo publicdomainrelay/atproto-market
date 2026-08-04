@@ -10,14 +10,26 @@ import {
   GATE_REGISTRY_WORKER_MANIFEST_PERMISSIONS_LXM,
   MARKET_EVALUATE_POLICY_NSID,
   MARKET_EVALUATE_POLICY_LXM,
+  MARKET_POLICY_DESCRIBE_NSID,
+  MARKET_POLICY_DESCRIBE_LXM,
+  MARKET_POLICY_CHECK_SCOPE_NSID,
+  MARKET_POLICY_CHECK_SCOPE_LXM,
 } from "@publicdomainrelay/policy-common";
 import { resolvePolicies } from "@publicdomainrelay/policy-builtin";
+import type { Policy } from "@publicdomainrelay/market-policy-abc";
+import { createPolicyRegistry } from "@publicdomainrelay/market-policy-registry";
 
 export interface PolicyEngineFactoryOptions {
   hostname: string;
   policies: string[];
   extraHandlers?: PolicyHandler[];
   strictAuth?: boolean;
+  /** Extra named market policies beyond the first-party registry. */
+  extraMarketPolicies?: Policy[];
+  /** Record resolution for market policies evaluated here. */
+  resolve?: (ref: { uri: string; cid: string }) => Promise<Record<string, unknown>>;
+  resolveOperatorDid?: (bidderDid: string) => Promise<string | null>;
+  getVouchedDids?: (did: string) => Promise<Set<string>>;
 }
 
 function verifyServiceAuthToken(authHeader: string | null, hostname: string, lxm: string, strictAuth?: boolean): void {
@@ -49,6 +61,7 @@ export function createPolicyEngineFactory(opts: PolicyEngineFactoryOptions) {
   const { hostname, strictAuth } = opts;
   const log = createLogger({ serviceName: "policy-engine" });
   const handlers = [...resolvePolicies(opts.policies), ...(opts.extraHandlers ?? [])];
+  const marketPolicies = createPolicyRegistry(opts.extraMarketPolicies);
 
   function requireAuth(lxm: string) {
     return async (c: Context, next: Next) => {
@@ -81,6 +94,7 @@ export function createPolicyEngineFactory(opts: PolicyEngineFactoryOptions) {
           id: `did:web:${host}`,
           service: [
             { id: "#market_evaluate_policy", type: "PolicyEngineService", serviceEndpoint: `https://${host}` },
+            { id: "#market_policy_describe", type: "PolicyEngineService", serviceEndpoint: `https://${host}` },
             { id: "#gate_registry_worker_manifest_permissions", type: "PolicyEngineService", serviceEndpoint: `https://${host}` },
           ],
         });
@@ -92,6 +106,41 @@ export function createPolicyEngineFactory(opts: PolicyEngineFactoryOptions) {
         if (!body.subjectDid || !body.rootRequesterDid) {
           throw new PolicyError("subjectDid and rootRequesterDid are required", 400, "InvalidRequest");
         }
+
+        // A policies.service record names a policy; run it out of the same
+        // registry local execution uses, so a name means the same thing either
+        // side of the wire.
+        const name = typeof body.name === "string" ? body.name : "";
+        if (name) {
+          const named = marketPolicies.get(name);
+          if (!named) {
+            return c.json({
+              allow: false,
+              violations: [{ msg: `unknown policy: ${name}`, policyId: name }],
+            });
+          }
+          const args = (body.args ?? {}) as Record<string, unknown>;
+          try {
+            const result = await named.evaluate({
+              policyName: name,
+              args,
+              perspective: (body.perspective === "requester" ? "requester" : "bidder"),
+              selfDid: (body.selfDid ?? body.rootRequesterDid) as string,
+              subjectDid: body.subjectDid as string,
+              rootRequesterDid: body.rootRequesterDid as string,
+              counterpartyDid: (body.counterpartyDid ?? body.subjectDid) as string,
+              resolve: opts.resolve ?? (async () => ({})),
+              resolveOperatorDid: opts.resolveOperatorDid ?? (async () => null),
+              getVouchedDids: opts.getVouchedDids ?? (async () => new Set<string>()),
+              log: (level, msg, meta) => log[level as "info" | "warn" | "error"]?.(msg, meta),
+              policyRef: body.policyRef as { uri: string; cid: string } | undefined,
+            });
+            return c.json(result);
+          } catch (err) {
+            return c.json({ allow: false, violations: [{ msg: `policy ${name} threw: ${err}`, policyId: name }] });
+          }
+        }
+
         if (handlers.length === 0) return c.json({ allow: false, violations: [{ msg: "no policy handlers configured", policyId: "no-handlers" }] });
         for (const handler of handlers) {
           let result;
@@ -99,6 +148,53 @@ export function createPolicyEngineFactory(opts: PolicyEngineFactoryOptions) {
           if (!result.allow) return c.json(result);
         }
         return c.json({ allow: true, violations: [] });
+      });
+
+      app.post(`/xrpc/${MARKET_POLICY_CHECK_SCOPE_NSID}`, requireAuth(MARKET_POLICY_CHECK_SCOPE_LXM), async (c) => {
+        let body: Record<string, unknown>;
+        try { body = await c.req.json(); } catch { throw new PolicyError("Invalid JSON body", 400, "InvalidRequest"); }
+        const name = typeof body.name === "string" ? body.name : "";
+        const p = marketPolicies.get(name);
+        if (!p || p.kind !== "trust") {
+          return c.json({ allow: false, violations: [{ msg: `no trust policy named ${name}`, policyId: name }] });
+        }
+        // Fast trust-only decision: run the trust policy's evaluate with no
+        // workload context. Hosts may substitute a sync decide() over their
+        // TrustSet when one is available.
+        const selfDid = (body.selfDid ?? body.rootRequesterDid) as string;
+        const counterpartyDid = (body.counterpartyDid ?? body.subjectDid) as string;
+        try {
+          const result = await p.evaluate({
+            policyName: name,
+            args: (body.args ?? {}) as Record<string, unknown>,
+            perspective: (body.perspective === "requester" ? "requester" : "bidder"),
+            selfDid,
+            subjectDid: body.subjectDid as string,
+            rootRequesterDid: body.rootRequesterDid as string,
+            counterpartyDid,
+            resolve: opts.resolve ?? (async () => ({})),
+            resolveOperatorDid: opts.resolveOperatorDid ?? (async () => null),
+            getVouchedDids: opts.getVouchedDids ?? (async () => new Set<string>()),
+            log: (level, msg, meta) => log[level as "info" | "warn" | "error"]?.(msg, meta),
+          });
+          return c.json(result);
+        } catch (err) {
+          return c.json({ allow: false, violations: [{ msg: `checkScope threw: ${err}`, policyId: name }] });
+        }
+      });
+
+      app.post(`/xrpc/${MARKET_POLICY_DESCRIBE_NSID}`, requireAuth(MARKET_POLICY_DESCRIBE_LXM), (c) => {
+        const policies = [...marketPolicies.names()].map((name) => {
+          const p = marketPolicies.get(name);
+          if (!p) return null;
+          return {
+            name,
+            kind: p.kind,
+            description: p.description,
+            ...(p.kind === "work" ? { perspectives: p.perspectives } : {}),
+          };
+        }).filter((x): x is NonNullable<typeof x> => x !== null);
+        return c.json({ policies });
       });
 
       app.post(`/xrpc/${GATE_REGISTRY_WORKER_MANIFEST_PERMISSIONS_NSID}`, requireAuth(GATE_REGISTRY_WORKER_MANIFEST_PERMISSIONS_LXM), async (c) => {

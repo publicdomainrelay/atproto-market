@@ -33,17 +33,23 @@ export interface GatewayEventEntry {
   timestamp: string;
 }
 
+export interface GatewayPolicySpec {
+  name: string;
+  description?: string;
+  args?: Record<string, unknown>;
+}
+
 export interface ComputeRequestVMInput {
   computeVm: Record<string, unknown>;
   sshPublicKey: string;
-  bidWindowSec?: number;
   vmReadyTimeoutSec?: number;
   execProgram?: string;
   skipSsh?: boolean;
   keepVm?: boolean;
-  policyMode?: "only-me" | "tangled-vouch" | "mutuals" | "dynamic";
+  policy?: GatewayPolicySpec;
+  policyEngine?: string;
   extraBidderDids?: string[];
-  tokens: GatewayTokens;
+  tokens?: GatewayTokens;
 }
 
 export interface ComputeRequestWorkerInput {
@@ -51,9 +57,10 @@ export interface ComputeRequestWorkerInput {
   denoJson: string;
   denoLock?: string;
   persistent?: boolean;
-  bidWindowSec?: number;
+  policy?: GatewayPolicySpec;
+  policyEngine?: string;
   extraBidderDids?: string[];
-  tokens: GatewayTokens;
+  tokens?: GatewayTokens;
 }
 
 export interface GatewayTokens {

@@ -44,7 +44,7 @@ goat lex pull com.atproto.repo.strongRef
 Each Lexicon domain needs an A/AAAA record pointing to a server that serves
 the Lexicon JSON. For `com.publicdomainrelay.temp.*`:
 
-- DNS: `publicdomainrelay.com` → HTTP server
+- DNS: `publicdomainrelay.com` -> HTTP server
 - Server: serves `https://publicdomainrelay.com/xrpc/com.atproto.lexicon.schema?lexiconId=<nsid>`
 - Response: the Lexicon JSON document with `Content-Type: application/json`
 

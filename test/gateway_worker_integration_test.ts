@@ -78,7 +78,7 @@ Deno.test(
     try {
       const ingressProxyHost = `localhost:${dispPort}`;
 
-      // ── worker bidder ─────────────────────────────────────────────────────
+      // -- worker bidder -----------------------------------------------------
       const bidderKeypair = await Secp256k1Keypair.create({ exportable: true });
       const bidderPrivHex = Array.from(await bidderKeypair.export())
         .map((b) => b.toString(16).padStart(2, "0")).join("");
@@ -114,7 +114,7 @@ Deno.test(
       });
       await bidder.beginServe();
 
-      // ── gateway ────────────────────────────────────────────────────────
+      // -- gateway --------------------------------------------------------
       const gatewayServe = createServe({ logger, tcp: { addr: "127.0.0.1", port: 0 } });
       const gateway = createComputeContractGateway({
         logger, serve: gatewayServe,
@@ -124,7 +124,7 @@ Deno.test(
       });
       await gateway.beginServe();
 
-      // ── request ephemeral worker ─────────────────────────────────────────
+      // -- request ephemeral worker -----------------------------------------
       const ephemeralResult = await gateway.requestComputeWorkerEphemeral(
         { did: "did:plc:test-caller" },
         {
@@ -144,7 +144,7 @@ self.onmessage = async (e) => {
   self.postMessage({ status: res.status, headers: {}, body: { ...body, count } });
 };`,
           denoJson: `{"imports":{"@hono/hono":"jsr:@hono/hono@^4"}}`,
-          bidWindowSec: 15,
+          policy: { name: "open", args: { bidWindowSec: 15 } },
           extraBidderDids: [atproto.did],
         },
       );
@@ -158,9 +158,9 @@ self.onmessage = async (e) => {
       assert(ephemeralResult.winnerDid !== undefined,
         "worker bidder should win the bid");
       // receiptOk may be false due to worker receipt format differences;
-      // the contract flow (RFP→bid→accept) completed successfully
+      // the contract flow (RFP->bid->accept) completed successfully
 
-      // ── cleanup ────────────────────────────────────────────────────────
+      // -- cleanup --------------------------------------------------------
       await gateway.dispose();
       await bidder.shutdown();
     } finally {

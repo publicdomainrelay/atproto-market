@@ -17,7 +17,7 @@ import type { StrongRef } from "@publicdomainrelay/market-common";
 import { base64url } from "multiformats/bases/base64";
 const b64url = (bytes: Uint8Array): string => base64url.baseEncode(bytes);
 
-// Inline dpopFetchWrapper — @atproto/oauth-client does not export this from
+// Inline dpopFetchWrapper -- @atproto/oauth-client does not export this from
 // its public API (it's in dist/fetch-dpop.js, blocked by the package's
 // "exports" field in deno compile). Reimplemented here per RFC 9449.
 
@@ -132,13 +132,13 @@ function createDpopFetch(opts: {
   };
 }
 
-/** Minimal DID-doc resolver shape callService needs — not the full @atproto/identity IdResolver. */
+/** Minimal DID-doc resolver shape callService needs -- not the full @atproto/identity IdResolver. */
 export interface DidResolverLike {
   did: { resolve(did: string): Promise<Record<string, unknown> | null> };
 }
 
 // ---------------------------------------------------------------------------
-// Minimal session shape — avoids importing from deno-macos-runner-desktop
+// Minimal session shape -- avoids importing from deno-macos-runner-desktop
 // ---------------------------------------------------------------------------
 
 export interface OAuthAgentSession {
@@ -155,7 +155,7 @@ export interface OAuthAgentOptions {
 }
 
 // ---------------------------------------------------------------------------
-// OAuthAgent — AtprotoAgentLike backed by DPoP fetch + our
+// OAuthAgent -- AtprotoAgentLike backed by DPoP fetch + our
 // token refresh logic. DPoP nonce tracking, proof generation, ath claims,
 // and use_dpop_nonce retry are all handled by the official implementation.
 // ---------------------------------------------------------------------------
@@ -170,7 +170,7 @@ export function createOAuthAgent(
 
   const { refreshSession, onSessionRefreshed } = opts;
 
-  // SHA-256 returning base64url string — DPoP proof uses this to compute
+  // SHA-256 returning base64url string -- DPoP proof uses this to compute
   // the access token to compute the ath claim.
   const sha256b64 = async (input: Uint8Array | string): Promise<string> => {
     const bytes: Uint8Array<ArrayBuffer> = typeof input === "string"
@@ -267,7 +267,7 @@ export function createOAuthAgent(
 
     let res = await makeRequest();
     // 401 with WWW-Authenticate: Bearer/DPoP error="invalid_token" means
-    // the access token is expired. Refresh and retry up to 2 times — auth
+    // the access token is expired. Refresh and retry up to 2 times -- auth
     // server and PDS may have clock skew, so a fresh token can still fail
     // exp claim check on the first attempt.
     if (res.status === 401) {
@@ -408,7 +408,7 @@ export function createOAuthAgent(
 }
 
 // ---------------------------------------------------------------------------
-// createDesktopATProto — thin wrapper around createATProto
+// createDesktopATProto -- thin wrapper around createATProto
 // ---------------------------------------------------------------------------
 
 export async function createDesktopATProto(

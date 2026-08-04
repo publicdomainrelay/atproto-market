@@ -4,7 +4,7 @@
 
 Write a single integration test that:
 
-1. **Sets up local infrastructure** — fake PLC, XRPC relay dispatcher, bidder
+1. **Sets up local infrastructure** -- fake PLC, XRPC relay dispatcher, bidder
    (worker + VM), and gateway server. All local, no external network.
 
 2. **Starts the gateway CLI** (`deno run -A hono-compute-contract-gateway/mod.ts`)
@@ -14,7 +14,7 @@ Write a single integration test that:
    `GATEWAY_URL=http://127.0.0.1:<port>`, `BIDDER_DID=<local bidder DID>`,
    `PUBKEY=<generated ssh key>`.
 
-4. **Parses README.md** — extracts shell code blocks by section heading
+4. **Parses README.md** -- extracts shell code blocks by section heading
    (Quick Start, Request a VM, Request a Deno Worker).
 
 5. **Runs each shell block via `bash -e`** with the env vars from step 3.

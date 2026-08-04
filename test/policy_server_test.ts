@@ -1,7 +1,7 @@
 import { createPolicyEngineFactory } from "@publicdomainrelay/hono-factory-policy-builtin";
 import { MARKET_EVALUATE_POLICY_NSID, GATE_REGISTRY_WORKER_MANIFEST_PERMISSIONS_NSID } from "@publicdomainrelay/policy-common";
 
-Deno.test("policy server — allow-net accepts manifest with net only", async () => {
+Deno.test("policy server -- allow-net accepts manifest with net only", async () => {
   const factory = createPolicyEngineFactory({ hostname: "localhost", policies: ["allow-net"] });
   const ac = new AbortController();
   const { promise: portReady, resolve: resolvePort } = Promise.withResolvers<number>();
@@ -21,7 +21,7 @@ Deno.test("policy server — allow-net accepts manifest with net only", async ()
   if (body.violations.length !== 0) throw new Error(`expected 0 violations, got ${body.violations.length}`);
 });
 
-Deno.test("policy server — allow-net denies manifest with read permission", async () => {
+Deno.test("policy server -- allow-net denies manifest with read permission", async () => {
   const factory = createPolicyEngineFactory({ hostname: "localhost", policies: ["allow-net"] });
   const ac = new AbortController();
   const { promise: portReady, resolve: resolvePort } = Promise.withResolvers<number>();
@@ -41,7 +41,7 @@ Deno.test("policy server — allow-net denies manifest with read permission", as
   if (!body.violations[0]?.msg.includes("read")) throw new Error(`unexpected msg: ${body.violations[0]?.msg}`);
 });
 
-Deno.test("policy server — market evaluate returns allow with no handlers", async () => {
+Deno.test("policy server -- market evaluate returns allow with no handlers", async () => {
   const factory = createPolicyEngineFactory({ hostname: "localhost", policies: ["allow-all"] });
   const ac = new AbortController();
   const { promise: portReady, resolve: resolvePort } = Promise.withResolvers<number>();
@@ -60,7 +60,7 @@ Deno.test("policy server — market evaluate returns allow with no handlers", as
   if (!body.allow) throw new Error(`expected allow:true, got ${JSON.stringify(body)}`);
 });
 
-Deno.test("policy server — deny-all blocks everything", async () => {
+Deno.test("policy server -- deny-all blocks everything", async () => {
   const factory = createPolicyEngineFactory({ hostname: "localhost", policies: ["deny-all"] });
   const ac = new AbortController();
   const { promise: portReady, resolve: resolvePort } = Promise.withResolvers<number>();
@@ -80,7 +80,7 @@ Deno.test("policy server — deny-all blocks everything", async () => {
   if (body.violations.length === 0) throw new Error("expected violations from deny-all");
 });
 
-Deno.test("policy server — DID document serves service entries", async () => {
+Deno.test("policy server -- DID document serves service entries", async () => {
   const factory = createPolicyEngineFactory({ hostname: "localhost", policies: ["allow-net"] });
   const ac = new AbortController();
   const { promise: portReady, resolve: resolvePort } = Promise.withResolvers<number>();
@@ -96,7 +96,7 @@ Deno.test("policy server — DID document serves service entries", async () => {
   if (!doc.service.some((s) => s.id === "#gate_registry_worker_manifest_permissions")) throw new Error("missing gate_registry_worker_manifest_permissions service entry");
 });
 
-Deno.test("policy server — empty handlers default-deny", async () => {
+Deno.test("policy server -- empty handlers default-deny", async () => {
   const factory = createPolicyEngineFactory({ hostname: "localhost", policies: [] });
   const ac = new AbortController();
   const { promise: portReady, resolve: resolvePort } = Promise.withResolvers<number>();
@@ -115,7 +115,7 @@ Deno.test("policy server — empty handlers default-deny", async () => {
   if (!body.violations[0]?.msg.includes("no policy handlers")) throw new Error(`unexpected: ${body.violations[0]?.msg}`);
 });
 
-Deno.test("policy server — handler throw becomes violation", async () => {
+Deno.test("policy server -- handler throw becomes violation", async () => {
   const throwingHandler = { name: "thrower", async evaluate(_ctx: Record<string, unknown>) { throw new Error("boom"); } };
   const factory = createPolicyEngineFactory({ hostname: "localhost", policies: [], extraHandlers: [throwingHandler] });
   const ac = new AbortController();
@@ -135,7 +135,7 @@ Deno.test("policy server — handler throw becomes violation", async () => {
   if (!body.violations[0]?.msg.includes("thrower threw")) throw new Error(`unexpected: ${body.violations[0]?.msg}`);
 });
 
-Deno.test("policy server — allow-net reads permissions from full manifest", async () => {
+Deno.test("policy server -- allow-net reads permissions from full manifest", async () => {
   const factory = createPolicyEngineFactory({ hostname: "localhost", policies: ["allow-net"] });
   const ac = new AbortController();
   const { promise: portReady, resolve: resolvePort } = Promise.withResolvers<number>();

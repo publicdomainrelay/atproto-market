@@ -168,7 +168,7 @@ Deno.test({
   sanitizeResources: false,
   ignore: Deno.env.get("DENO_TEST_PROD") !== "1",
 }, async (t) => {
-  // ── Reachability probes ───────────────────────────────────────────────
+  // -- Reachability probes -----------------------------------------------
   const plcRtt = await probeRtt(`${PROD_PLC}/`);
   const dispRtt = await probeRtt(`https://${PROD_DISPATCHER}/.well-known/did.json`);
   const fedproxyRtt = await probeRtt(`https://${PROD_FEDPROXY}/`);
@@ -187,7 +187,7 @@ Deno.test({
   const logger = createLogger({ serviceName: "prod-matrix" });
   const cleanups: Array<() => void> = [];
 
-  // ── Container backend ─────────────────────────────────────────────────
+  // -- Container backend -------------------------------------------------
   const backend: ContainerBackend = Deno.build.os === "darwin"
     ? createContainerBackend()
     : createDockerBackend();
@@ -234,7 +234,7 @@ Deno.test({
       rbac: true,
       skipSsh: false,
       keepVm: false,
-      bidWindowSec: 15,
+      policy: { name: "open", args: { bidWindowSec: 15 } },
       vmReadyTimeoutSec: 300,
       execProgram: "echo SSH_OK_VIA_FEDPROXY && uname -a",
       extraBidderDids: [proc.did],

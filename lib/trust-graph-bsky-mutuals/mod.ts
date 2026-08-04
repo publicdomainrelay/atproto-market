@@ -19,5 +19,14 @@ export function createBskyMutualsVouchResolver(opts: BskyMutualsVouchResolverOpt
         return new Set();
       }
     },
+
+    async isVouched(voucher: string, vouchee: string): Promise<boolean> {
+      try {
+        return (await getFollows(voucher)).has(vouchee);
+      } catch (err) {
+        logFn("warn", "bsky-mutuals follow lookup failed", { did: voucher, error: String(err) });
+        return false;
+      }
+    },
   };
 }

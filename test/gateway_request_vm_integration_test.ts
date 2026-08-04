@@ -91,7 +91,7 @@ Deno.test(
     try {
       const ingressProxyHost = `localhost:${dispPort}`;
 
-      // ── bidder ─────────────────────────────────────────────────────────
+      // -- bidder ---------------------------------------------------------
       const bidderKeypair = await Secp256k1Keypair.create({ exportable: true });
       const bidderPrivHex = Array.from(await bidderKeypair.export())
         .map((b) => b.toString(16).padStart(2, "0"))
@@ -156,7 +156,7 @@ Deno.test(
       });
       await bidder.beginServe();
 
-      // ── gateway ────────────────────────────────────────────────────────
+      // -- gateway --------------------------------------------------------
       const gatewayServe = createServe({
         logger,
         tcp: { addr: "127.0.0.1", port: 0 },
@@ -172,7 +172,7 @@ Deno.test(
       });
       await gateway.beginServe();
 
-      // ── request compute ────────────────────────────────────────────────
+      // -- request compute ------------------------------------------------
       const { createSshSessionProvider } = await import(
         "@publicdomainrelay/requester-xrpc"
       );
@@ -192,7 +192,7 @@ Deno.test(
             role: "gateway-test-vm",
           },
           sshPublicKey: publicKey,
-          bidWindowSec: 15,
+          policy: { name: "open", args: { bidWindowSec: 15 } },
           extraBidderDids: [atproto.did],
           tokens: {
             submitRfp: "",

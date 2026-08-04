@@ -1,7 +1,7 @@
 import type {
   ComputeContractGateway,
 } from "@publicdomainrelay/compute-contract-gateway-abc";
-import { isValidPolicyMode } from "@publicdomainrelay/market-policy-abc";
+import { parsePolicyArgs, type PolicySpec } from "@publicdomainrelay/market-policy-abc";
 import type {
   CallerIdentity,
   ComputeRequestVMInput,
@@ -11,6 +11,11 @@ import type {
 import type { StructuredLoggerInterface } from "@publicdomainrelay/logger";
 import type { RequesterPDS } from "@publicdomainrelay/requester-abc";
 import type { ServeHandle } from "@publicdomainrelay/serve";
+
+function toPolicySpec(raw: { name: string; description?: string; args?: Record<string, unknown> } | undefined): PolicySpec | undefined {
+  if (!raw?.name) return undefined;
+  return { name: raw.name, description: raw.description, args: parsePolicyArgs(raw.args) };
+}
 
 export interface GatewayOptions {
   logger: StructuredLoggerInterface;
@@ -78,7 +83,8 @@ export function createComputeContractGateway(
 
       const result = await runComputeContract(pds, {
         vmName,
-        bidWindowSec: input.bidWindowSec,
+        policy: toPolicySpec(input.policy),
+        policyEngine: input.policyEngine,
         skipSsh: input.skipSsh ?? true,
         keepVm: input.keepVm ?? true,
         rbac: true,
@@ -89,7 +95,6 @@ export function createComputeContractGateway(
         ingressProxyHost: opts.ingressProxyHost,
         sshProvider,
         logger,
-        policyMode: input.policyMode && !isValidPolicyMode(input.policyMode) ? undefined : input.policyMode,
         extraBidderDids: input.extraBidderDids,
         relayUrls: opts.relayUrls,
       });
@@ -150,7 +155,8 @@ export function createComputeContractGateway(
 
       const result = await runComputeContract(pds, {
         vmName,
-        bidWindowSec: input.bidWindowSec,
+        policy: toPolicySpec(input.policy),
+        policyEngine: input.policyEngine,
         skipSsh: true,
         keepVm: true,
         fedingressHost,
@@ -205,7 +211,8 @@ export function createComputeContractGateway(
 
       const result = await runComputeContract(pds, {
         vmName,
-        bidWindowSec: input.bidWindowSec,
+        policy: toPolicySpec(input.policy),
+        policyEngine: input.policyEngine,
         skipSsh: true,
         keepVm: true,
         fedingressHost,

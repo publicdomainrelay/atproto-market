@@ -110,7 +110,7 @@ goat resolve "$GATEWAY_URL"
 ### Prerequisites
 
 - Running bidder with container/VM compute provider
-- Gateway DID associated with bidder (bidder policy: `only_me` or `direct_network`)
+- Gateway DID associated with bidder (bidder policy: `only-me` or `tangled-vouch`)
 - Your own AT Protocol PDS for minting service auth tokens
 
 ### 1. Generate SSH keypair

@@ -1,0 +1,14 @@
+{
+  "name": "@publicdomainrelay/market-policy-engine-worker",
+  "version": "0.0.0",
+  "license": "Unlicense",
+  "imports": {
+    "@publicdomainrelay/market-policy-abc": "jsr:@publicdomainrelay/market-policy-abc@^0",
+    "@publicdomainrelay/market-policy-common": "jsr:@publicdomainrelay/market-policy-common@^0",
+    "@publicdomainrelay/market-policy-registry": "jsr:@publicdomainrelay/market-policy-registry@^0",
+    "@publicdomainrelay/sandbox-deno": "../../../deno-worker-sandbox/lib/sandbox-deno/mod.ts",
+    "@publicdomainrelay/sandbox-abc": "../../../deno-worker-sandbox/lib/abc/sandbox/mod.ts",
+    "@publicdomainrelay/sandbox-common": "../../../deno-worker-sandbox/lib/common/sandbox-common/mod.ts"
+  },
+  "exports": "./mod.ts"
+}

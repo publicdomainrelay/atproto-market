@@ -34,7 +34,7 @@ if (!privateKeyHex && keyPath) {
   try {
     privateKeyHex = (await Deno.readTextFile(keyPath)).trim();
     logger.info("key_loaded_from_path", { path: keyPath, len: privateKeyHex.length });
-  } catch { /* file doesn't exist yet — will be generated */ }
+  } catch { /* file doesn't exist yet -- will be generated */ }
 }
 
 const storagePath = (options.pdsStatePath as string | undefined) ??

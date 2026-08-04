@@ -1,5 +1,5 @@
 // Cross-platform bidder integration test matrix.
-// Validates: RFP → bid → accept → container provision.
+// Validates: RFP -> bid -> accept -> container provision.
 // Two bidder variants: hono-bidder (static imports for core flow) +
 // hono-bidder CLI subprocess (local ssh-xrpc-relay).
 // Runs on macOS (container CLI), Linux (docker), WSL2 (docker), Windows (wsl docker).
@@ -202,7 +202,7 @@ async function spawnBidder(opts: {
 }
 
 // ===========================================================================
-// Inline bidder factories — core bid flow (skipSsh: true)
+// Inline bidder factories -- core bid flow (skipSsh: true)
 // ===========================================================================
 
 async function createHonoBidderInline(opts: {
@@ -359,7 +359,7 @@ Deno.test({
   const logger = createLogger({ serviceName: "matrix" });
   const cleanups: Array<() => void> = [];
 
-  // ── Container backend ─────────────────────────────────────────────────
+  // -- Container backend -------------------------------------------------
   const backend: ContainerBackend = Deno.build.os === "darwin"
     ? createContainerBackend()
     : createDockerBackend();
@@ -370,14 +370,14 @@ Deno.test({
   console.log(`[platform] ${Deno.build.os}, backend: ${backend.type}`);
   const gateway = await backend.defaultGateway();
 
-  // ── TLS cert for dispatcher (OIDC/onNetwork require HTTPS) ─────────────
-  // Two-label base (relay.localhost) so the cert SAN is *.relay.localhost —
+  // -- TLS cert for dispatcher (OIDC/onNetwork require HTTPS) -------------
+  // Two-label base (relay.localhost) so the cert SAN is *.relay.localhost --
   // OpenSSL and rustls both reject single-label wildcards like *.localhost.
   const { caCertPem, serverCertPem, serverKeyPem } = await generateLocalhostTlsCert({
     extraDnsSans: ["relay.localhost", "*.relay.localhost"],
   });
 
-  // ── Shared infra: dispatcher ──────────────────────────────────────────
+  // -- Shared infra: dispatcher ------------------------------------------
   const dispatcherApp = createRelayFactory({
     hostname: "relay.localhost",
     additionalHosts: [gateway],
@@ -385,7 +385,7 @@ Deno.test({
   // Dual listeners on the same app: plain HTTP for in-process components
   // (no way to inject a CA into this process's WebSocket/fetch after start),
   // TLS for the subprocess bidder (DENO_CERT) and guest containers (cloud-init
-  // CA injection) — OIDC prove/onNetwork require HTTPS.
+  // CA injection) -- OIDC prove/onNetwork require HTTPS.
   const dispAc = new AbortController();
   const dispPort = await serveOnPort0(dispatcherApp.fetch, dispAc, "0.0.0.0");
   const dispTlsAc = new AbortController();
@@ -393,14 +393,14 @@ Deno.test({
   cleanups.push(() => { dispAc.abort(); dispTlsAc.abort(); });
   const ingressProxyHost = `relay.localhost:${dispPort}`;
 
-  // ── Shared infra: fake PLC ────────────────────────────────────────────
+  // -- Shared infra: fake PLC --------------------------------------------
   const plc = createFakePlc();
   const plcAc = new AbortController();
   const plcPort = await serveOnPort0(plc.app.fetch, plcAc);
   cleanups.push(() => plcAc.abort());
   const plcDirectoryUrl = `http://127.0.0.1:${plcPort}`;
 
-  // ── Fetch interception ────────────────────────────────────────────────
+  // -- Fetch interception ------------------------------------------------
   const restoreFetch = installFetchInterceptor({
     realFetch: globalThis.fetch,
     plcDirectoryUrl,
@@ -409,7 +409,7 @@ Deno.test({
   cleanups.push(restoreFetch);
 
   // =====================================================================
-  // Core bid flow (skipSsh: true) — inline helpers
+  // Core bid flow (skipSsh: true) -- inline helpers
   // =====================================================================
 
   async function runCoreBidFlow(opts: {
@@ -438,7 +438,7 @@ Deno.test({
       ingressProxyHost,
       skipSsh: true,
       keepVm: true,
-      bidWindowSec: 8,
+      policy: { name: "open", args: { bidWindowSec: 8 } },
       vmReadyTimeoutSec: 1,
       execProgram: "true",
       extraBidderDids: [bidder.atproto.did],
@@ -475,7 +475,7 @@ Deno.test({
   });
 
   // =====================================================================
-  // Local SSH relay — hono-bidder CLI subprocess, standard flow
+  // Local SSH relay -- hono-bidder CLI subprocess, standard flow
   // =====================================================================
 
   async function runSshStep(opts: {
@@ -504,18 +504,18 @@ Deno.test({
       // Use gateway IP so the guest container can reach the relay dispatcher.
       // "localhost" inside the container = container's own loopback, not the host.
       ingressProxyHost: `${gateway}:${dispPort}`,
-      // audHost for JWT — must match relay's hostname (localhost), not gateway IP
+      // audHost for JWT -- must match relay's hostname (localhost), not gateway IP
       fedingressHost: "relay.localhost",
       skipSsh: false,
       keepVm: false,
-      bidWindowSec: 8,
+      policy: { name: "open", args: { bidWindowSec: 8 } },
       vmReadyTimeoutSec: 240,
       execProgram: "echo SSH_OK_VIA_RELAY && uname -a",
       extraBidderDids: [proc.did],
       denyBidderDids: ["did:plc:centraldefaultbidder000000"],
       // The guest announces its fqdn as <sub>.<gateway-ip>:<port> (reachable
       // from inside the container network). On the host, rewrite to
-      // <sub>.relay.localhost:<port> — resolves to loopback and the Host
+      // <sub>.relay.localhost:<port> -- resolves to loopback and the Host
       // header matches the dispatcher's subdomain routing. Plain listener:
       // only guest OIDC needs the TLS one.
       sshProxyCommandFn: (fqdn: string) => {
@@ -531,7 +531,7 @@ Deno.test({
     assert(result.sshExitCode === 0, `[${opts.label}] ssh session exited ${result.sshExitCode}`);
   }
 
-  // websocat needed for SSH ProxyCommand tunnel — CI runners may not have it.
+  // websocat needed for SSH ProxyCommand tunnel -- CI runners may not have it.
   await ensureWebsocat(logger).catch(() => {});
 
   await t.step("[bidder:hono-bidder] ssh via local xrpc relay", async () => {
@@ -544,10 +544,10 @@ Deno.test({
           "--plc-directory-url", plcDirectoryUrl,
           "--relay-url", `http://localhost:${dispPort}`,
           "--guest-tls-port", String(dispTlsPort),
-          "--policy-mode", "DYNAMIC",
           "--compute-provider-local",
           "--serve-port", "0",
           "--skip-qr",
+          "--policy", "open",
         ],
       },
     });

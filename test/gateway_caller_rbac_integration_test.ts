@@ -7,7 +7,7 @@
 //  4. After VM provisions, fedproxy-client calls /v1/oidc/issue with
 //     caller-scoped sub and aud
 //  5. VM uses issued OIDC token to write to caller's ephemeral PDS
-//  6. Caller's PDS checks RBAC: sub matches → authorized
+//  6. Caller's PDS checks RBAC: sub matches -> authorized
 //
 // The trick: /v1/oidc/issue allows ANY sub starting with "actx:{bidderPlc}:",
 // not just the workload token's sub. fedproxy-client reads accept.json to
@@ -102,7 +102,7 @@ Deno.test(
     try {
       const ingressProxyHost = `localhost:${dispPort}`;
 
-      // ── bidder ─────────────────────────────────────────────────────────
+      // -- bidder ---------------------------------------------------------
       const bidderKeypair = await Secp256k1Keypair.create({ exportable: true });
       const bidderPrivHex = Array.from(await bidderKeypair.export())
         .map((b) => b.toString(16).padStart(2, "0")).join("");
@@ -145,7 +145,7 @@ Deno.test(
       });
       await bidder.beginServe();
 
-      // ── caller: ephemeral PDS ──────────────────────────────────────────
+      // -- caller: ephemeral PDS ------------------------------------------
       const callerKeypair = await Secp256k1Keypair.create({ exportable: true });
       const callerSigningKeyDid = callerKeypair.did();
       const epHost = ingressProxyHost.replace(/:\d+$/, "");
@@ -192,7 +192,7 @@ Deno.test(
       callerServe.app.route("/", callerApp as never);
       await callerServe.beginServe();
 
-      // ── gateway ────────────────────────────────────────────────────────
+      // -- gateway --------------------------------------------------------
       const gatewayServe = createServe({ logger, tcp: { addr: "127.0.0.1", port: 0 } });
       const gateway = createComputeContractGateway({
         logger, serve: gatewayServe,
@@ -202,7 +202,7 @@ Deno.test(
       });
       await gateway.beginServe();
 
-      // ── request VM via gateway ─────────────────────────────────────────
+      // -- request VM via gateway -----------------------------------------
       const { createSshSessionProvider } = await import("@publicdomainrelay/requester-xrpc");
       const sshProvider = createSshSessionProvider(logger);
       const ssh = await sshProvider.generateKeypair("gw-caller-vm");
@@ -217,7 +217,7 @@ Deno.test(
             role: "gw-caller-vm",
           },
           sshPublicKey: publicKey,
-          bidWindowSec: 15,
+          policy: { name: "open", args: { bidWindowSec: 15 } },
           skipSsh: true,
           keepVm: true,
           extraBidderDids: [atproto.did],
@@ -232,7 +232,7 @@ Deno.test(
 
       assert(result.receiptOk === true, "receiptOk should be true");
 
-      // ── caller creates RBAC in ephemeral PDS ──────────────────────────
+      // -- caller creates RBAC in ephemeral PDS --------------------------
       // The VM's workload token sub is:
       //   actx:{bidderPlc}:plc:{requesterPlc}:role:{role}
       // where requester = gateway DID.
@@ -262,7 +262,7 @@ Deno.test(
 
       logger.info("caller_rbac_created", {
         callerDid,
-        sub: rbacRecord.roles["gw-caller-vm"]?.definition?.sub,
+        sub: (rbacRecord.roles as Record<string, { definition?: { sub?: string } }>)["gw-caller-vm"]?.definition?.sub,
       } as Record<string, unknown>);
 
       // Verify the RBAC record is readable
@@ -278,7 +278,7 @@ Deno.test(
         `RBAC sub should match: ${roles["gw-caller-vm"]?.definition?.sub} vs ${expectedSub}`,
       );
 
-      // ── cleanup ────────────────────────────────────────────────────────
+      // -- cleanup --------------------------------------------------------
       await gateway.dispose();
       await bidder.shutdown();
     } finally {

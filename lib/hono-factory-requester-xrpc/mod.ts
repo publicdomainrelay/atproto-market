@@ -1,4 +1,4 @@
-// Hono factory for requester — wires createSubmitBidHandler into a Hono app.
+// Hono factory for requester -- wires createSubmitBidHandler into a Hono app.
 // Composed, not subclassed. Takes pre-built deps from the impl/CLI layer.
 
 import { IdResolver } from "@atproto/identity";
@@ -27,7 +27,7 @@ export interface RequesterFactoryOptions {
   audienceDids?: string[];
   /** Service IDs for submitBid routing. */
   serviceIds?: string[];
-  /** Callback when a bid is received — pushes to pendingBids map. */
+  /** Callback when a bid is received -- pushes to pendingBids map. */
   onBid: SubmitBidCallback;
   /** Logger (callable Logger type, for compatibility with market-atproto handlers). */
   log?: Logger | LoggerInterface;
