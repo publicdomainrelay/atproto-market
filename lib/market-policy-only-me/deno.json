@@ -1,9 +1,0 @@
-{
-  "name": "@publicdomainrelay/market-policy-only-me",
-  "version": "0.0.0",
-  "license": "Unlicense",
-  "imports": {
-    "@publicdomainrelay/market-policy-abc": "jsr:@publicdomainrelay/market-policy-abc@^0"
-  },
-  "exports": "./mod.ts"
-}

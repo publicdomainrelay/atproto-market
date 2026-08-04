@@ -19,10 +19,10 @@
     "@publicdomainrelay/market-abc": "jsr:@publicdomainrelay/market-abc@^0",
     "@publicdomainrelay/market-common": "jsr:@publicdomainrelay/market-common@^0",
     "@publicdomainrelay/market-lexicons": "jsr:@publicdomainrelay/market-lexicons@^0",
-    "@publicdomainrelay/market-policy": "jsr:@publicdomainrelay/market-policy@^0",
     "@publicdomainrelay/requester-abc": "jsr:@publicdomainrelay/requester-abc@^0",
     "@publicdomainrelay/requester-xrpc": "jsr:@publicdomainrelay/requester-xrpc@^0",
     "@publicdomainrelay/serve": "jsr:@publicdomainrelay/serve@^0",
-    "@publicdomainrelay/did-key-ingress-proxy": "jsr:@publicdomainrelay/did-key-ingress-proxy@^0"
+    "@publicdomainrelay/did-key-ingress-proxy": "jsr:@publicdomainrelay/did-key-ingress-proxy@^0",
+    "@publicdomainrelay/policy-engine-cli-options": "jsr:@publicdomainrelay/policy-engine-cli-options@^0"
   }
 }

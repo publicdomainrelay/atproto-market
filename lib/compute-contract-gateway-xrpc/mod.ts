@@ -1,7 +1,7 @@
 import type {
   ComputeContractGateway,
 } from "@publicdomainrelay/compute-contract-gateway-abc";
-import { parsePolicyArgs, type PolicySpec } from "@publicdomainrelay/market-policy-abc";
+import { parsePolicyArgs } from "@publicdomainrelay/policy-engine-cli-options";
 import type {
   CallerIdentity,
   ComputeRequestVMInput,
@@ -11,6 +11,12 @@ import type {
 import type { StructuredLoggerInterface } from "@publicdomainrelay/logger";
 import type { RequesterPDS } from "@publicdomainrelay/requester-abc";
 import type { ServeHandle } from "@publicdomainrelay/serve";
+
+interface PolicySpec {
+  name: string;
+  description?: string;
+  args: Record<string, unknown>;
+}
 
 function toPolicySpec(raw: { name: string; description?: string; args?: Record<string, unknown> } | undefined): PolicySpec | undefined {
   if (!raw?.name) return undefined;
