@@ -148,6 +148,7 @@
     "@publicdomainrelay/market-bidder-agent": "./lib/market-bidder-agent/mod.ts",
     "@publicdomainrelay/market-common": "./lib/common/market-common/mod.ts",
     "@publicdomainrelay/market-lexicons": "./lib/common/market-lexicons/mod.ts",
+    "@publicdomainrelay/oauth-scope": "../typescript-helpers/lib/oauth-scope/mod.ts",
     "@publicdomainrelay/policy-common": "../policy-engine/lib/common/policy-common/mod.ts",
     "@publicdomainrelay/market-settlement-free": "./lib/market-settlement-free/mod.ts",
     "@publicdomainrelay/market-settlement-x402": "./lib/market-settlement-x402/mod.ts",
