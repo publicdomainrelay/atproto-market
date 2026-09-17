@@ -386,11 +386,7 @@ export function createOAuthAgent(
     const params = new URLSearchParams({ aud });
     if (lxm) params.set("lxm", lxm);
     const url = `${currentSession.pds}/xrpc/com.atproto.server.getServiceAuth?${params}`;
-    let res = await dpopFetch("GET", url);
-    if (res.status === 401) {
-      await refreshLock();
-      res = await dpopFetch("GET", url);
-    }
+    const res = await dpopFetch("GET", url);
     if (!res.ok) {
       const err = await res.text().catch(() => "");
       throw new Error(`getServiceAuth failed: ${res.status} ${err}`);
