@@ -1171,3 +1171,18 @@ system_contexts:
   id: sc.test
   name: test
   upstream: self
+- code:
+  - test/fixtures/cloud-init/fedproxy-ssh.yaml
+  - test/fixtures/cloud-init/fedproxy-web-wootty.yaml
+  - test/fixtures/cloud-init/tunnel-secrets.yaml
+  - test/fixtures/cloud-init/tunnel.yaml
+  codeRefIndex:
+  - file:test/fixtures/cloud-init/fedproxy-ssh.yaml fedproxy-ssh.yaml@test/fixtures/cloud-init/fedproxy-ssh.yaml
+  - file:test/fixtures/cloud-init/fedproxy-web-wootty.yaml fedproxy-web-wootty.yaml@test/fixtures/cloud-init/fedproxy-web-wootty.yaml
+  - file:test/fixtures/cloud-init/tunnel-secrets.yaml tunnel-secrets.yaml@test/fixtures/cloud-init/tunnel-secrets.yaml
+  - file:test/fixtures/cloud-init/tunnel.yaml tunnel.yaml@test/fixtures/cloud-init/tunnel.yaml
+  depends_on:
+  - sc.atproto-market
+  id: sc.test-fixtures-cloud-init
+  name: test-fixtures-cloud-init
+  upstream: self

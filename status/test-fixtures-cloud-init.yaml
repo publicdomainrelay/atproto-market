@@ -1,0 +1,23 @@
+conditions:
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - test/fixtures/cloud-init/fedproxy-ssh.yaml
+  - test/fixtures/cloud-init/fedproxy-web-wootty.yaml
+  - test/fixtures/cloud-init/tunnel-secrets.yaml
+  - test/fixtures/cloud-init/tunnel.yaml
+  fingerprint: 90bc41d2a298b40ce81144b1c4ff8b1a982e9c0995bc3a4aeef15cb19f165ba3
+realizedSpecHash: 4d7681284a661124d42a581bf8d0715cabe2713db8a0c86ce105b48f037a29c3
+syncedFingerprint: 90bc41d2a298b40ce81144b1c4ff8b1a982e9c0995bc3a4aeef15cb19f165ba3

@@ -1,0 +1,15 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:test/fixtures/cloud-init/fedproxy-ssh.yaml fedproxy-ssh.yaml@test/fixtures/cloud-init/fedproxy-ssh.yaml
+- file:test/fixtures/cloud-init/fedproxy-web-wootty.yaml fedproxy-web-wootty.yaml@test/fixtures/cloud-init/fedproxy-web-wootty.yaml
+- file:test/fixtures/cloud-init/tunnel-secrets.yaml tunnel-secrets.yaml@test/fixtures/cloud-init/tunnel-secrets.yaml
+- file:test/fixtures/cloud-init/tunnel.yaml tunnel.yaml@test/fixtures/cloud-init/tunnel.yaml
+kind: SystemContext
+metadata:
+  name: test-fixtures-cloud-init
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self
