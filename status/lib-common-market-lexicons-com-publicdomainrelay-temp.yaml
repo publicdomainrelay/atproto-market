@@ -24,7 +24,7 @@ observed:
   - lib/common/market-lexicons/com/publicdomainrelay/temp/requester.ts
   - lib/common/market-lexicons/com/publicdomainrelay/temp/tangled.ts
   fingerprint: 26538b0336f61695aba5186d04750d680c2a4c1568ba8dad14b75c94692b6507
-observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
+observedCommit: 857b94a22ea058825611b4f155cdc639e3c0139d
 realizedSpecHash: d8a9602e23e8495cd6944ec4cc32be686c75879068d7d779a9cc789f319b5d3e
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 26538b0336f61695aba5186d04750d680c2a4c1568ba8dad14b75c94692b6507

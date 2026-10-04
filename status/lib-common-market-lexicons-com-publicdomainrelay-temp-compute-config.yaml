@@ -16,7 +16,7 @@ observed:
   files:
   - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config/wif.ts
   fingerprint: 6afbeeeef3c81633ee72149dd9441a9ffb041ed429c238c7f24508d4cd123ee8
-observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
+observedCommit: 857b94a22ea058825611b4f155cdc639e3c0139d
 realizedSpecHash: 5496d496eb1d69b0685cbb1d7234c38d336cd910771c9c083b15b218154ff55c
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 6afbeeeef3c81633ee72149dd9441a9ffb041ed429c238c7f24508d4cd123ee8
