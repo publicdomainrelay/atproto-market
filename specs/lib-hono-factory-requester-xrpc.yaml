@@ -1,6 +1,9 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
 codeRefIndex:
+- file:lib/hono-factory-requester-xrpc/deno.json deno.json@lib/hono-factory-requester-xrpc/deno.json
 - file:lib/hono-factory-requester-xrpc/mod.ts mod.ts@lib/hono-factory-requester-xrpc/mod.ts
+- function:4adb00e3e75b63bbad98d6f295adf81c createRequesterFactory@lib/hono-factory-requester-xrpc/mod.ts:57
+- interface:24e3920dde2766781bd325714476a696 RequesterFactoryOptions@lib/hono-factory-requester-xrpc/mod.ts:17
 kind: SystemContext
 metadata:
   name: lib-hono-factory-requester-xrpc
@@ -8,5 +11,109 @@ metadata:
 spec:
   dependsOn:
   - sc.atproto-market
+  intent: 'This context exists so a requester process can mount the inbound submitBid
+    endpoint without hand-writing the handler wiring each time: it bridges the market-atproto
+    handler implementation (createSubmitBidHandler, createRecordResolver) to whatever
+    Hono app the caller already runs, keeping the transport-specific registration
+    in one small factory that the CLI entrypoint calls. It isolates the defaulting
+    rules (service IDs, audience DIDs, hostname extraction, logger shape) so every
+    requester applies the same auth audience and routing conventions.'
+  interfaces:
+  - file: lib/hono-factory-requester-xrpc/mod.ts
+    kind: interface
+    name: RequesterFactoryOptions
+    signature: 'interface RequesterFactoryOptions { app: { post(path: string, handler:
+      (c: HonoContext) => Response | Promise<Response>): void }; idResolver: IdResolver;
+      did: string; hostname?: (req: Request) => string; audienceDids?: string[]; serviceIds?:
+      string[]; onBid: SubmitBidCallback; log?: Logger | LoggerInterface }'
+  - file: lib/hono-factory-requester-xrpc/mod.ts
+    kind: function
+    name: createRequesterFactory
+    signature: '(opts: RequesterFactoryOptions): Promise<{ stop: () => void }>'
   repository: atproto-market
+  requirements:
+  - codeRefs:
+    - function:4adb00e3e75b63bbad98d6f295adf81c
+    id: r.async-factory
+    level: SHOULD
+    text: The factory is async and resolves to the stop handle, leaving room for setup
+      that must be awaited before the route is usable without changing the call shape.
+  - codeRefs:
+    - file:lib/hono-factory-requester-xrpc/mod.ts
+    - function:4adb00e3e75b63bbad98d6f295adf81c
+    id: r.audience-dids-include-self
+    level: MUST
+    text: The factory must always build the inbound service-auth audience set with
+      this requester's own did first, appending any caller-supplied audienceDids after
+      it, so tokens minted for the requester itself and for the extra audiences both
+      verify.
+  - codeRefs:
+    - file:lib/hono-factory-requester-xrpc/mod.ts
+    - function:4adb00e3e75b63bbad98d6f295adf81c
+    id: r.default-hostname-extractor
+    level: MUST
+    text: When hostname is omitted the factory must default to an extractor that reads
+      the request's `host` header, tolerating a missing header as the empty string,
+      and strips any port by taking the substring before the first colon.
+  - codeRefs:
+    - file:lib/hono-factory-requester-xrpc/mod.ts
+    - function:4adb00e3e75b63bbad98d6f295adf81c
+    id: r.default-service-ids
+    level: MUST
+    text: When serviceIds is omitted the factory must fall back to the single service
+      id `pdr_temp_market`, and must pass that resolved list through to createSubmitBidHandler
+      for submitBid routing.
+  - codeRefs:
+    - file:lib/hono-factory-requester-xrpc/mod.ts
+    - interface:24e3920dde2766781bd325714476a696
+    id: r.export-factory-options
+    level: MUST
+    text: The module must export RequesterFactoryOptions, the single options bag the
+      factory accepts, whose required members are app (any object with a post(path,
+      handler) method), idResolver (the DID resolver used for service-auth audience
+      verification), did (this requester's did:plc) and onBid (SubmitBidCallback invoked
+      when a bid is received), and whose optional members are hostname, audienceDids,
+      serviceIds and log.
+  - codeRefs:
+    - file:lib/hono-factory-requester-xrpc/mod.ts
+    - function:4adb00e3e75b63bbad98d6f295adf81c
+    id: r.handler-deps-wiring
+    level: MUST
+    text: The factory must construct the submitBid handler with deps carrying the
+      resolved hostname, the idResolver, a record resolver derived from that same
+      idResolver, the resolved audienceDids and the normalized log, together with
+      the resolved serviceIds and the caller's onBid callback.
+  - codeRefs:
+    - function:4adb00e3e75b63bbad98d6f295adf81c
+    id: r.logger-normalization
+    level: MUST
+    text: When log is supplied the factory must normalize it to a callable logger,
+      passing a function-valued log through unchanged and otherwise adapting an object
+      logger by dispatching each call to the method named by the level and silently
+      doing nothing when that method is absent; when log is omitted the deps carry
+      no logger.
+  - codeRefs:
+    - file:lib/hono-factory-requester-xrpc/deno.json
+    - file:lib/hono-factory-requester-xrpc/mod.ts
+    id: r.package-metadata
+    level: SHOULD
+    text: The package ships its own Deno configuration at lib/hono-factory-requester-xrpc/deno.json
+      alongside the single mod.ts entrypoint.
+  - codeRefs:
+    - file:lib/hono-factory-requester-xrpc/mod.ts
+    - function:4adb00e3e75b63bbad98d6f295adf81c
+    id: r.register-submitbid-route
+    level: MUST
+    text: createRequesterFactory must register exactly one route on the supplied app
+      by calling app.post with the path `/xrpc/${SUBMIT_BID_NSID}`, and the registered
+      handler must translate the Hono context into the raw Request (c.req.raw) that
+      the submitBid handler consumes.
+  - codeRefs:
+    - file:lib/hono-factory-requester-xrpc/mod.ts
+    - function:4adb00e3e75b63bbad98d6f295adf81c
+    id: r.return-stop-handle
+    level: MUST
+    text: createRequesterFactory must return a handle object exposing a stop function,
+      and that stop function is a no-op because the route already registered on the
+      caller's app is not unregistered.
   upstream: self

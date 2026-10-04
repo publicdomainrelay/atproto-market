@@ -1,7 +1,8 @@
 conditions:
-- message: 'undeclared: RequesterFactoryOptions, createRequesterFactory'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -32,5 +33,5 @@ observed:
       ): Promise<{ stop: () => void }>
   treeFiles:
   - lib/hono-factory-requester-xrpc/deno.json
-realizedSpecHash: 7fa28551fc3d9207cd1966905c6770831ccc0770b125e8ff8f0d1871be5ac62f
+realizedSpecHash: e95cb5dd61faa36545e58398a6e13f93517b49c95f5e52a33598b307dc484a80
 syncedFingerprint: f0becfeadc3d2372da177a4b9e8342ec9f2ba1d78585787d6f03e7032924544d

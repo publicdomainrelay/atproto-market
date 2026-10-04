@@ -1,0 +1,26 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-market-bidder-c2s-d20070c3bfb0-d20070c3bfb0
+  namespace: default
+spec:
+  delta: {}
+  direction: CodeToSpec
+  fromCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
+  systemContext: lib-market-bidder
+  toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
+status:
+  agentLog: 'lib/market-bidder/mod.ts is the Deno/TypeScript factory module that builds
+    a market bidder: a long-lived service identity that advertises an offering record,
+    watches for RFPs and accept/event records, gates engagement through a policy engine,
+    and dispatches matched work into provider-supplied callbacks. createMarketBidder
+    takes a MarketBidderConfig (logger, serve handle, atproto client, optional relay,
+    providers, policy settings, event-streams client) and returns a MarketBidder whose
+    beginServe() wires routes, firehose watchers, offering setup and refresh, while
+    shutdown() tears all of it down. The module deliberately owns no I/O: it never
+    calls Deno.serve, never installs signal handlers, and never connects a websocket
+    itself; it borrows the caller''s ServeHandle, ATProto client and event-streams
+    client, which is what lets the same factory serve a CLI daemon and a desktop app
+    that already runs its own HTTP server.'
+  message: wrote 21 requirement(s) and 8 interface(s) for lib-market-bidder
+  phase: Succeeded

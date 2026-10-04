@@ -1,8 +1,8 @@
 conditions:
-- message: 'undeclared: MarketBidder, MarketBidderConfig, beginServe, buildOffering,
-    createMarketBidder, ensureOffering, ensureOperatorAllowlist, shutdown'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -65,5 +65,5 @@ observed:
     signature: '(): void'
   treeFiles:
   - lib/market-bidder/deno.json
-realizedSpecHash: 262a29205921a1ac110705aa638bbeec9f8534e1f0b5a401c136889d86c80afa
+realizedSpecHash: b24a9f4c22671134465fda79aa0cdebc4f6b2f4378384a742865ad6aa63476d9
 syncedFingerprint: 4b44f720d53132ed76693466a2ed553d7bd11cd8d652a1f12190630e48cfc6a3
