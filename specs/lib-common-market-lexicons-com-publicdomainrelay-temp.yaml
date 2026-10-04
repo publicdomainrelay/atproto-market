@@ -1,0 +1,21 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent.ts agent.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/agent.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/auth.ts auth.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/auth.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.defs.ts
+  badgeBlueKeys.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.ts badgeBlueKeys.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute.ts compute.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway.ts gateway.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market.ts market.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/requester.ts requester.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/requester.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/tangled.ts tangled.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/tangled.ts
+kind: SystemContext
+metadata:
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

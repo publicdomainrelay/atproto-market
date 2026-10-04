@@ -14,10 +14,9 @@ conditions:
   type: SpecValid
 observed:
   files:
-  - lib/common/market-lexicons/com/atproto/repo/strongRef.defs.ts
-  - lib/common/market-lexicons/com/atproto/repo/strongRef.ts
-  fingerprint: 53b9a56b2115e608498b5861187a6bbfc20439da4c37012bcb8e6aaa9d5141e8
+  - lib/common/market-lexicons/com/fedproxy/temp/xrpc.ts
+  fingerprint: e38774350ff4e287142c3a1a72edcd13c33914700bb3c36f74e0f966316390fe
 observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-realizedSpecHash: a98befe0743a6d958f723e504aa7159a523a53eca54d9806ad6740b4c1c7d126
+realizedSpecHash: 58373fbbda7521ea06ea039c1d0bf071368a5a764f2ba8ee7b2ebf53ab2eb87f
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 53b9a56b2115e608498b5861187a6bbfc20439da4c37012bcb8e6aaa9d5141e8
+syncedFingerprint: e38774350ff4e287142c3a1a72edcd13c33914700bb3c36f74e0f966316390fe

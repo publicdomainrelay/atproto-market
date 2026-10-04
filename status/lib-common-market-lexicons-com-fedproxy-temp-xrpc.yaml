@@ -1,0 +1,57 @@
+conditions:
+- message: 'undeclared: $Input, $InputBody, $Message, $Output, $OutputBody, $Params'
+  reason: InterfacesMissing
+  status: "False"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/common/market-lexicons/com/fedproxy/temp/xrpc/getRegistrationNonce.defs.ts
+  - lib/common/market-lexicons/com/fedproxy/temp/xrpc/getRegistrationNonce.ts
+  - lib/common/market-lexicons/com/fedproxy/temp/xrpc/registration.defs.ts
+  - lib/common/market-lexicons/com/fedproxy/temp/xrpc/registration.ts
+  - lib/common/market-lexicons/com/fedproxy/temp/xrpc/subscribe.defs.ts
+  - lib/common/market-lexicons/com/fedproxy/temp/xrpc/subscribe.ts
+  fingerprint: bc77c932daaee34a5ff37ca0bfe2b02ded9c142eb0c9b249f05a4d9409563444
+  interfaces:
+  - codegraphId: type_alias:13a4eac8a7e8131e9bbbc8e98105b8f6
+    file: lib/common/market-lexicons/com/fedproxy/temp/xrpc/getRegistrationNonce.defs.ts
+    kind: type_alias
+    line: 14
+    name: $Params
+  - codegraphId: type_alias:ad1db68c5d41455a259d27b7ad72252d
+    file: lib/common/market-lexicons/com/fedproxy/temp/xrpc/getRegistrationNonce.defs.ts
+    kind: type_alias
+    line: 23
+    name: $Input
+  - codegraphId: type_alias:ff2e223fce27544e3cc74fa5d48acd0b
+    file: lib/common/market-lexicons/com/fedproxy/temp/xrpc/getRegistrationNonce.defs.ts
+    kind: type_alias
+    line: 24
+    name: $InputBody
+  - codegraphId: type_alias:f7d12788676fbb2d13b0c099c544510f
+    file: lib/common/market-lexicons/com/fedproxy/temp/xrpc/getRegistrationNonce.defs.ts
+    kind: type_alias
+    line: 33
+    name: $Output
+  - codegraphId: type_alias:0692219625b3f28978097f2b3163e271
+    file: lib/common/market-lexicons/com/fedproxy/temp/xrpc/getRegistrationNonce.defs.ts
+    kind: type_alias
+    line: 34
+    name: $OutputBody
+  - codegraphId: type_alias:121d4d034292a36860fe8a628cbedaa9
+    file: lib/common/market-lexicons/com/fedproxy/temp/xrpc/subscribe.defs.ts
+    kind: type_alias
+    line: 26
+    name: $Message
+observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
+realizedSpecHash: a0c8147b8b0c1e67978e36066cf8aa7659ff7f2d239170ec6dae7c3eaf330d63
+syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
+syncedFingerprint: bc77c932daaee34a5ff37ca0bfe2b02ded9c142eb0c9b249f05a4d9409563444

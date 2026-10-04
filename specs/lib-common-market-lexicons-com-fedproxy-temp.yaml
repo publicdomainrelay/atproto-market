@@ -1,0 +1,12 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/common/market-lexicons/com/fedproxy/temp/xrpc.ts xrpc.ts@lib/common/market-lexicons/com/fedproxy/temp/xrpc.ts
+kind: SystemContext
+metadata:
+  name: lib-common-market-lexicons-com-fedproxy-temp
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

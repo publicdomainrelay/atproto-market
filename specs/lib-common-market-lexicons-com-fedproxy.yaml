@@ -1,0 +1,16 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/common/market-lexicons/com/fedproxy/rbac.defs.ts rbac.defs.ts@lib/common/market-lexicons/com/fedproxy/rbac.defs.ts
+- file:lib/common/market-lexicons/com/fedproxy/rbac.ts rbac.ts@lib/common/market-lexicons/com/fedproxy/rbac.ts
+- file:lib/common/market-lexicons/com/fedproxy/sshPublicKey.defs.ts sshPublicKey.defs.ts@lib/common/market-lexicons/com/fedproxy/sshPublicKey.defs.ts
+- file:lib/common/market-lexicons/com/fedproxy/sshPublicKey.ts sshPublicKey.ts@lib/common/market-lexicons/com/fedproxy/sshPublicKey.ts
+- file:lib/common/market-lexicons/com/fedproxy/temp.ts temp.ts@lib/common/market-lexicons/com/fedproxy/temp.ts
+kind: SystemContext
+metadata:
+  name: lib-common-market-lexicons-com-fedproxy
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

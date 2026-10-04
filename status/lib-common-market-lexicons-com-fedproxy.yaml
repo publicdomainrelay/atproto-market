@@ -14,10 +14,13 @@ conditions:
   type: SpecValid
 observed:
   files:
-  - lib/common/market-lexicons/com/atproto/repo/strongRef.defs.ts
-  - lib/common/market-lexicons/com/atproto/repo/strongRef.ts
-  fingerprint: 53b9a56b2115e608498b5861187a6bbfc20439da4c37012bcb8e6aaa9d5141e8
+  - lib/common/market-lexicons/com/fedproxy/rbac.defs.ts
+  - lib/common/market-lexicons/com/fedproxy/rbac.ts
+  - lib/common/market-lexicons/com/fedproxy/sshPublicKey.defs.ts
+  - lib/common/market-lexicons/com/fedproxy/sshPublicKey.ts
+  - lib/common/market-lexicons/com/fedproxy/temp.ts
+  fingerprint: 8af9c4881ed1aa5cbd51d438dd0713e7acf1846de4d5fcb7dcf77432875a7c11
 observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-realizedSpecHash: a98befe0743a6d958f723e504aa7159a523a53eca54d9806ad6740b4c1c7d126
+realizedSpecHash: 83624b14a532f04b79ec13345db0af23f889fb99f0af87abc7a930caf4be560a
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 53b9a56b2115e608498b5861187a6bbfc20439da4c37012bcb8e6aaa9d5141e8
+syncedFingerprint: 8af9c4881ed1aa5cbd51d438dd0713e7acf1846de4d5fcb7dcf77432875a7c11

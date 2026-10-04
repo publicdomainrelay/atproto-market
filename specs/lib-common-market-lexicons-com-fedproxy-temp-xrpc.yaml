@@ -1,0 +1,18 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/common/market-lexicons/com/fedproxy/temp/xrpc/getRegistrationNonce.defs.ts
+  getRegistrationNonce.defs.ts@lib/common/market-lexicons/com/fedproxy/temp/xrpc/getRegistrationNonce.defs.ts
+- file:lib/common/market-lexicons/com/fedproxy/temp/xrpc/getRegistrationNonce.ts getRegistrationNonce.ts@lib/common/market-lexicons/com/fedproxy/temp/xrpc/getRegistrationNonce.ts
+- file:lib/common/market-lexicons/com/fedproxy/temp/xrpc/registration.defs.ts registration.defs.ts@lib/common/market-lexicons/com/fedproxy/temp/xrpc/registration.defs.ts
+- file:lib/common/market-lexicons/com/fedproxy/temp/xrpc/registration.ts registration.ts@lib/common/market-lexicons/com/fedproxy/temp/xrpc/registration.ts
+- file:lib/common/market-lexicons/com/fedproxy/temp/xrpc/subscribe.defs.ts subscribe.defs.ts@lib/common/market-lexicons/com/fedproxy/temp/xrpc/subscribe.defs.ts
+- file:lib/common/market-lexicons/com/fedproxy/temp/xrpc/subscribe.ts subscribe.ts@lib/common/market-lexicons/com/fedproxy/temp/xrpc/subscribe.ts
+kind: SystemContext
+metadata:
+  name: lib-common-market-lexicons-com-fedproxy-temp-xrpc
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

@@ -259,11 +259,86 @@ system_contexts:
   id: sc.lib-common-market-lexicons-com-atproto
   name: lib-common-market-lexicons-com-atproto
   upstream: self
-- codeRefIndex:
+- code:
+  - lib/common/market-lexicons/com/atproto/repo/strongRef.defs.ts
+  - lib/common/market-lexicons/com/atproto/repo/strongRef.ts
+  codeRefIndex:
   - file:lib/common/market-lexicons/com/atproto/repo/strongRef.defs.ts strongRef.defs.ts@lib/common/market-lexicons/com/atproto/repo/strongRef.defs.ts
   - file:lib/common/market-lexicons/com/atproto/repo/strongRef.ts strongRef.ts@lib/common/market-lexicons/com/atproto/repo/strongRef.ts
   depends_on:
   - sc.atproto-market
   id: sc.lib-common-market-lexicons-com-atproto-repo
   name: lib-common-market-lexicons-com-atproto-repo
+  upstream: self
+- code:
+  - lib/common/market-lexicons/com/fedproxy/rbac.defs.ts
+  - lib/common/market-lexicons/com/fedproxy/rbac.ts
+  - lib/common/market-lexicons/com/fedproxy/sshPublicKey.defs.ts
+  - lib/common/market-lexicons/com/fedproxy/sshPublicKey.ts
+  - lib/common/market-lexicons/com/fedproxy/temp.ts
+  codeRefIndex:
+  - file:lib/common/market-lexicons/com/fedproxy/rbac.defs.ts rbac.defs.ts@lib/common/market-lexicons/com/fedproxy/rbac.defs.ts
+  - file:lib/common/market-lexicons/com/fedproxy/rbac.ts rbac.ts@lib/common/market-lexicons/com/fedproxy/rbac.ts
+  - file:lib/common/market-lexicons/com/fedproxy/sshPublicKey.defs.ts sshPublicKey.defs.ts@lib/common/market-lexicons/com/fedproxy/sshPublicKey.defs.ts
+  - file:lib/common/market-lexicons/com/fedproxy/sshPublicKey.ts sshPublicKey.ts@lib/common/market-lexicons/com/fedproxy/sshPublicKey.ts
+  - file:lib/common/market-lexicons/com/fedproxy/temp.ts temp.ts@lib/common/market-lexicons/com/fedproxy/temp.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-lexicons-com-fedproxy
+  name: lib-common-market-lexicons-com-fedproxy
+  upstream: self
+- code:
+  - lib/common/market-lexicons/com/fedproxy/temp/xrpc.ts
+  codeRefIndex:
+  - file:lib/common/market-lexicons/com/fedproxy/temp/xrpc.ts xrpc.ts@lib/common/market-lexicons/com/fedproxy/temp/xrpc.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-lexicons-com-fedproxy-temp
+  name: lib-common-market-lexicons-com-fedproxy-temp
+  upstream: self
+- code:
+  - lib/common/market-lexicons/com/fedproxy/temp/xrpc/getRegistrationNonce.defs.ts
+  - lib/common/market-lexicons/com/fedproxy/temp/xrpc/getRegistrationNonce.ts
+  - lib/common/market-lexicons/com/fedproxy/temp/xrpc/registration.defs.ts
+  - lib/common/market-lexicons/com/fedproxy/temp/xrpc/registration.ts
+  - lib/common/market-lexicons/com/fedproxy/temp/xrpc/subscribe.defs.ts
+  - lib/common/market-lexicons/com/fedproxy/temp/xrpc/subscribe.ts
+  codeRefIndex:
+  - file:lib/common/market-lexicons/com/fedproxy/temp/xrpc/getRegistrationNonce.defs.ts
+    getRegistrationNonce.defs.ts@lib/common/market-lexicons/com/fedproxy/temp/xrpc/getRegistrationNonce.defs.ts
+  - file:lib/common/market-lexicons/com/fedproxy/temp/xrpc/getRegistrationNonce.ts
+    getRegistrationNonce.ts@lib/common/market-lexicons/com/fedproxy/temp/xrpc/getRegistrationNonce.ts
+  - file:lib/common/market-lexicons/com/fedproxy/temp/xrpc/registration.defs.ts registration.defs.ts@lib/common/market-lexicons/com/fedproxy/temp/xrpc/registration.defs.ts
+  - file:lib/common/market-lexicons/com/fedproxy/temp/xrpc/registration.ts registration.ts@lib/common/market-lexicons/com/fedproxy/temp/xrpc/registration.ts
+  - file:lib/common/market-lexicons/com/fedproxy/temp/xrpc/subscribe.defs.ts subscribe.defs.ts@lib/common/market-lexicons/com/fedproxy/temp/xrpc/subscribe.defs.ts
+  - file:lib/common/market-lexicons/com/fedproxy/temp/xrpc/subscribe.ts subscribe.ts@lib/common/market-lexicons/com/fedproxy/temp/xrpc/subscribe.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-lexicons-com-fedproxy-temp-xrpc
+  name: lib-common-market-lexicons-com-fedproxy-temp-xrpc
+  upstream: self
+- code:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp.ts
+  codeRefIndex:
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp.ts temp.ts@lib/common/market-lexicons/com/publicdomainrelay/temp.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-lexicons-com-publicdomainrelay
+  name: lib-common-market-lexicons-com-publicdomainrelay
+  upstream: self
+- codeRefIndex:
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent.ts agent.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/agent.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/auth.ts auth.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/auth.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.defs.ts
+    badgeBlueKeys.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.defs.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.ts badgeBlueKeys.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute.ts compute.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway.ts gateway.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market.ts market.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/requester.ts requester.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/requester.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/tangled.ts tangled.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/tangled.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-lexicons-com-publicdomainrelay-temp
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp
   upstream: self

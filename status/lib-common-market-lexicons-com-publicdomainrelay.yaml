@@ -4,8 +4,8 @@ conditions:
   reason: InterfacesObserved
   status: "True"
   type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- message: no synced fingerprint has been recorded yet
+  reason: NotSyncedYet
   status: "False"
   type: Drifted
 - message: the spec passes the validator
@@ -14,10 +14,9 @@ conditions:
   type: SpecValid
 observed:
   files:
-  - lib/common/market-lexicons/com/atproto/repo/strongRef.defs.ts
-  - lib/common/market-lexicons/com/atproto/repo/strongRef.ts
-  fingerprint: 53b9a56b2115e608498b5861187a6bbfc20439da4c37012bcb8e6aaa9d5141e8
+  - lib/common/market-lexicons/com/publicdomainrelay/temp.ts
+  fingerprint: 862119747c68a60c8a9ae7a42f27a20711c5bf0c856c5997358770ed76c2d0b8
 observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-realizedSpecHash: a98befe0743a6d958f723e504aa7159a523a53eca54d9806ad6740b4c1c7d126
+realizedSpecHash: 0e8de19b2f330b96937445fe5e0e3496fbeff4415f8f94e4f0bb2d86dcb535b0
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 53b9a56b2115e608498b5861187a6bbfc20439da4c37012bcb8e6aaa9d5141e8
+syncedFingerprint: 862119747c68a60c8a9ae7a42f27a20711c5bf0c856c5997358770ed76c2d0b8
