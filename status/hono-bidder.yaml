@@ -20,5 +20,5 @@ observed:
   treeFiles:
   - hono-bidder/config.json
   - hono-bidder/deno.json
-realizedSpecHash: f6d7d52e26dedd3d0ca86a803a83f8bdd954c9670671c8aec0d0223bdf21c2c9
+realizedSpecHash: 0654d60dcaa3c8f994b420f8c63756db4aa57a84af9e1feb325e06d8797aa924
 syncedFingerprint: 117e1f5a39ba7b56fe8e6e265f60d22dce9b9d4ca01cc0cadeb6b9cf9f18dcae

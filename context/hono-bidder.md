@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+It exists so an operator can run a bidder as a single process — pick an identity/auth mode, enable compute backends, serve XRPC over TCP/Unix with an optional fedproxy ingress, and stay discoverable on AT Protocol relays — without writing any glue code. The declarative config file keeps every flag, env var and default in one auditable place, and mod.ts is the only place that interprets them.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 
