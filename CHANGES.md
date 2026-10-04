@@ -256,6 +256,19 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.verify-jwt-unimplemented` (MUST): "WebCryptoKey.verifyJwt must be declared with the token and options parameters but must always throw an Error reading "WebCryptoKey.verifyJwt not implemented"; this key is used for signing only, and verification is not part of this helper."
 - added `r.web-crypto-key-extends-jwk-key` (MUST): "WebCryptoKey must extend @atproto/jwk's abstract Key, passing to super a JWK merged from the public and private JWK arguments plus the alg and kid, with use fixed to "sig" and key_ops fixed to ["sign", "verify"], while keeping the CryptoKey, the alg string and the public JWK in private fields."
 
+### lib-cocore-api
+
+- intent: "" -> "This context exists so callers elsewhere in atproto-market can manage cocore API keys without hand-rolling XRPC plumbing or service-auth signing. It isolates the cocore-specific details — the default AppView host, the did:web audience derivation, the three api-key NSIDs, and the error convention — behind a small typed surface, and keeps token minting injectable so the caller supplies getServiceAuth rather than the module owning credentials."
+- added `r.create-api-key` (MUST): "CocoreClient.createApiKey takes a name, posts it to the create-api-key NSID, and resolves to a CreateApiKeyResponse carrying the new token string and the ApiKey that was created."
+- added `r.default-appview-url` (MUST): "createCocoreClient resolves the base URL from opts.appviewUrl and falls back to https://appview.cocore.dev when it is absent, stripping any trailing slashes from the result before use."
+- added `r.delete-api-key` (MUST): "CocoreClient.deleteApiKey takes a key id, posts it to the delete-api-key NSID, and resolves to void once the call succeeds."
+- added `r.error-on-non-ok` (MUST): "A non-ok response throws an Error whose message includes the NSID, the HTTP status, and the response body text, rather than returning the failed response."
+- added `r.injectable-fetch` (SHOULD): "The helper performs its fetch through opts.fetch when provided and falls back to globalThis.fetch otherwise, so callers can substitute the transport."
+- added `r.list-api-keys` (MUST): "CocoreClient.listApiKeys calls the list-api-keys NSID with no body and resolves to a ListApiKeysResponse whose keys array holds ApiKey entries with id, name, createdAt and an optional lastUsedAt."
+- added `r.service-auth-audience` (MUST): "Every request derives its service-auth audience as did:web:<host> from the parsed base URL and obtains a token by awaiting opts.getServiceAuth(aud, nsid) with that audience and the NSID being called."
+- added `r.single-module-package` (MAY): "The package ships as a single-entry Deno module, with every type and the factory exported from lib/cocore-api/mod.ts and its manifest alongside at lib/cocore-api/deno.json."
+- added `r.transport-post-json` (MUST): "The internal call helper issues an HTTP POST to <base>/xrpc/<nsid> with content-type application/json and an authorization header of Bearer <token>, attaching a JSON-stringified body only when a body argument was supplied, and parses the response as JSON."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance |
@@ -275,5 +288,5 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-atproto-attestation-port-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-atproto-helpers-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-atproto-oauth-helpers-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-cocore-api-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-cocore-api-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-common-cloud-init-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |

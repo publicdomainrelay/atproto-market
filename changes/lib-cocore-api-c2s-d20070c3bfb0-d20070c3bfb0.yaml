@@ -10,5 +10,19 @@ spec:
   systemContext: lib-cocore-api
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-cocore-api
-  phase: Running
+  agentLog: lib/cocore-api is a single-module TypeScript client for the cocore AppView's
+    API-key XRPC methods. lib/cocore-api/mod.ts exports a CocoreClientOptions shape
+    carrying an optional appviewUrl and fetch plus a required getServiceAuth callback,
+    three response/value interfaces (ApiKey, CreateApiKeyResponse, ListApiKeysResponse),
+    a CocoreClient interface exposing createApiKey/listApiKeys/deleteApiKey, and the
+    createCocoreClient factory that builds it. The factory normalizes the base URL
+    (defaulting to https://appview.cocore.dev, trailing slashes stripped), derives
+    a service-auth audience of did:web:<host>, and funnels every method through an
+    internal call helper that mints a Bearer token via getServiceAuth and POSTs JSON
+    to <base>/xrpc/<nsid>, throwing a descriptive Error on any non-2xx response. A
+    deno.json manifest sits alongside the module.
+  message: wrote 9 requirement(s) and 6 interface(s) for lib-cocore-api; interface
+    CocoreClient.createApiKey is not in the observed facts; dropped; interface CocoreClient.listApiKeys
+    is not in the observed facts; dropped; interface CocoreClient.deleteApiKey is
+    not in the observed facts; dropped
+  phase: Succeeded
