@@ -1,0 +1,46 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: test-fixtures-cloud-init-s2c-5bdeb2bf7f6b
+  namespace: default
+spec:
+  delta:
+    intent:
+      from: 'These fixtures exist so the generated cloud-config for each module combination
+        is pinned: the snapshot test renders each composition and asserts exact equality,
+        so any accidental change to the composer''s emitted YAML (escaping, unit contents,
+        ordering, hardening flags) fails loudly. They also serve as the readable reference
+        for what each module emits on the guest, since the composed strings are otherwise
+        only visible at runtime.'
+      to: 'These fixtures exist so the generated cloud-config for each module combination
+        is pinned: the snapshot test renders each composition and asserts exact equality,
+        so any accidental change to the composer''s emitted YAML (escaping, unit contents,
+        ordering, hardening flags) fails loudly. They also serve as the readable reference
+        for what each module emits on the guest, since the composed strings are otherwise
+        only visible at runtime. The iroh fixture pins the dumbpipe listener transport
+        that replaced the did-key-ingress-proxy tunnel-subscriber.'
+    requirements:
+    - id: r.iroh-fixture
+      op: added
+      to:
+        codeRefs:
+        - file:test/fixtures/cloud-init/iroh.yaml
+        id: r.iroh-fixture
+        level: MUST
+        text: 'A new fixture test/fixtures/cloud-init/iroh.yaml must be the byte-exact
+          composer output of buildUserData({ctx: CTX, modules: [''iroh'']}) with the
+          shared CTX, so it starts with the ''#cloud-config'' header and pins: /root/.ssh/authorized_keys
+          built from ctx.sshAuthorizedKey, the key-only sshd drop-in (PermitRootLogin
+          prohibit-password, PasswordAuthentication no, no ListenAddress), the dumbpipe
+          install step using the dumbpipe release archive, the dumbpipe-listen systemd
+          unit running listen-tcp --host 127.0.0.1:22, and the runcmd that writes
+          the captured ticket to /root/secrets/iroh-node-id. This fixture must be
+          generated from the composer output (never hand-written), and the existing
+          tunnel.yaml, tunnel-secrets.yaml, fedproxy-ssh.yaml and fedproxy-web-wootty.yaml
+          fixtures must remain unchanged and green.'
+  direction: SpecToCode
+  fromSpecHash: 435acf45538c81c2a23f5d8e7a0be73e6b16b5d36f1fe75d6cd5500b9bc6b98a
+  systemContext: test-fixtures-cloud-init
+  toSpecHash: 5bdeb2bf7f6b155cebc82b79f8d5cefd212dfa4806f336a963ff841a4f118185
+status:
+  phase: Pending

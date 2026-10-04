@@ -1,8 +1,7 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
+- message: 'unresolved requirement code refs: r.iroh-fixture: file:test/fixtures/cloud-init/iroh.yaml'
+  reason: CodeRefsUnresolved
+  status: "False"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual

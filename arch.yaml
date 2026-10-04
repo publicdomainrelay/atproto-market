@@ -13010,6 +13010,7 @@ system_contexts:
   codeRefIndex:
   - file:test/fixtures/cloud-init/fedproxy-ssh.yaml fedproxy-ssh.yaml@test/fixtures/cloud-init/fedproxy-ssh.yaml
   - file:test/fixtures/cloud-init/fedproxy-web-wootty.yaml fedproxy-web-wootty.yaml@test/fixtures/cloud-init/fedproxy-web-wootty.yaml
+  - file:test/fixtures/cloud-init/iroh.yaml iroh.yaml@test/fixtures/cloud-init/iroh.yaml
   - file:test/fixtures/cloud-init/tunnel-secrets.yaml tunnel-secrets.yaml@test/fixtures/cloud-init/tunnel-secrets.yaml
   - file:test/fixtures/cloud-init/tunnel.yaml tunnel.yaml@test/fixtures/cloud-init/tunnel.yaml
   depends_on:
@@ -13020,7 +13021,8 @@ system_contexts:
     so any accidental change to the composer''s emitted YAML (escaping, unit contents,
     ordering, hardening flags) fails loudly. They also serve as the readable reference
     for what each module emits on the guest, since the composed strings are otherwise
-    only visible at runtime.'
+    only visible at runtime. The iroh fixture pins the dumbpipe listener transport
+    that replaced the did-key-ingress-proxy tunnel-subscriber.'
   name: test-fixtures-cloud-init
   requirements:
   - codeRefs:
@@ -13043,6 +13045,21 @@ system_contexts:
       role, reads the password from the com.fedproxy.ttydCredentials record over the
       xrpc relay, and writes it as WOOTTY_AUTH_TOKEN into a 0600 agent-owned env file;
       the config keeps ssh_pwauth: false and disable_root: false.'
+  - codeRefs:
+    - file:test/fixtures/cloud-init/iroh.yaml
+    id: r.iroh-fixture
+    level: MUST
+    text: 'A new fixture test/fixtures/cloud-init/iroh.yaml must be the byte-exact
+      composer output of buildUserData({ctx: CTX, modules: [''iroh'']}) with the shared
+      CTX, so it starts with the ''#cloud-config'' header and pins: /root/.ssh/authorized_keys
+      built from ctx.sshAuthorizedKey, the key-only sshd drop-in (PermitRootLogin
+      prohibit-password, PasswordAuthentication no, no ListenAddress), the dumbpipe
+      install step using the dumbpipe release archive, the dumbpipe-listen systemd
+      unit running listen-tcp --host 127.0.0.1:22, and the runcmd that writes the
+      captured ticket to /root/secrets/iroh-node-id. This fixture must be generated
+      from the composer output (never hand-written), and the existing tunnel.yaml,
+      tunnel-secrets.yaml, fedproxy-ssh.yaml and fedproxy-web-wootty.yaml fixtures
+      must remain unchanged and green.'
   - codeRefs:
     - file:test/fixtures/cloud-init/fedproxy-ssh.yaml
     - file:test/fixtures/cloud-init/fedproxy-web-wootty.yaml
