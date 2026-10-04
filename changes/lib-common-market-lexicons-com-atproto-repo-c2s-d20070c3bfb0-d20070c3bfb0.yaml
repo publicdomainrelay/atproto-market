@@ -10,5 +10,27 @@ spec:
   systemContext: lib-common-market-lexicons-com-atproto-repo
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-common-market-lexicons-com-atproto-repo
-  phase: Running
+  agentLog: This context covers the generated AT Protocol lexicon bindings for `com.atproto.repo.strongRef`
+    under `lib/common/market-lexicons/com/atproto/repo/`. `strongRef.defs.ts` declares
+    the NSID, the `Main` record type (a `cid` plus `uri` reference pair), a `l.typedObject`
+    schema, and the standard `@atproto/lex` codec/validator helpers bound to that
+    object; `strongRef.ts` is a thin barrel that re-exports everything from the defs
+    file and re-exports `main` as the module default. Both files are emitted by the
+    `@atproto/lex` code generator and carry a do-not-edit banner. The context exists
+    so the rest of the `atproto-market` codebase can import a single, validated strong-reference
+    type (used to point at a record by AT-URI and CID) rather than re-deriving the
+    shape or hand-writing validation.
+  message: wrote 7 requirement(s) and 0 interface(s) for lib-common-market-lexicons-com-atproto-repo;
+    interface $nsid is not in the observed facts; dropped; interface $type is not
+    in the observed facts; dropped; interface Main is not in the observed facts; dropped;
+    interface main is not in the observed facts; dropped; interface $isTypeOf is not
+    in the observed facts; dropped; interface $build is not in the observed facts;
+    dropped; interface $assert is not in the observed facts; dropped; interface $check
+    is not in the observed facts; dropped; interface $cast is not in the observed
+    facts; dropped; interface $ifMatches is not in the observed facts; dropped; interface
+    $matches is not in the observed facts; dropped; interface $parse is not in the
+    observed facts; dropped; interface $safeParse is not in the observed facts; dropped;
+    interface $validate is not in the observed facts; dropped; interface $safeValidate
+    is not in the observed facts; dropped; interface default is not in the observed
+    facts; dropped
+  phase: Succeeded
