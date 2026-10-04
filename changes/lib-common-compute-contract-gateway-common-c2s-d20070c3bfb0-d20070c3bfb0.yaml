@@ -10,5 +10,17 @@ spec:
   systemContext: lib-common-compute-contract-gateway-common
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-common-compute-contract-gateway-common
-  phase: Running
+  agentLog: 'This context is the shared, transport-agnostic TypeScript package lib/common/compute-contract-gateway-common,
+    published as @publicdomainrelay/compute-contract-gateway-common with mod.ts as
+    its single export entrypoint. mod.ts re-exports two modules: nsids.ts, which pins
+    the five gateway XRPC NSID strings (requestComputeVM, requestComputeWorkerEphemeral,
+    requestComputeWorkerPersistent, deleteCompute, subscribeComputeEvents), their
+    LXM aliases, and the default service id compute_contract_gateway; and types.ts,
+    which declares the nine interfaces that both the gateway implementation (lib/abc/compute-contract-gateway)
+    and the XRPC transport (lib/compute-contract-gateway-xrpc) share. Those types
+    carry the caller identity, the contract state machine (bidding, winner_selected,
+    accepted, receipt_verified, terminated) with its bid and event ledgers, the policy
+    spec, the two compute request payloads for VMs and workers, the capability tokens,
+    and the response shape returned to the caller.'
+  message: wrote 14 requirement(s) and 9 interface(s) for lib-common-compute-contract-gateway-common
+  phase: Succeeded
