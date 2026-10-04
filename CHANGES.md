@@ -206,3 +206,4 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-abc-requester-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-abc-trust-graph-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-atproto-attestation-port-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-atproto-helpers-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
