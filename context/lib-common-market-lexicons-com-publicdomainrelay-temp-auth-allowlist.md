@@ -9,5 +9,6 @@ _The resolved code references are regenerated on every run. Cite the ids above r
 <!-- SPECD_MANAGED_BEGIN -->
 ## Resolved code references
 
-_None yet._
+- `file:lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist/rbacDid.defs.ts` file rbacDid.defs.ts (lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist/rbacDid.defs.ts)
+- `file:lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist/rbacDid.ts` file rbacDid.ts (lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist/rbacDid.ts)
 <!-- SPECD_MANAGED_END -->

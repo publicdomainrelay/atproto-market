@@ -1,22 +1,30 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: 26538b0336f61695aba5186d04750d680c2a4c1568ba8dad14b75c94692b6507
+realizedSpecHash: d8a9602e23e8495cd6944ec4cc32be686c75879068d7d779a9cc789f319b5d3e
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: CodeRefsUnresolved
-  message: 'unresolved requirement code refs: r.badge-blue-keys-purpose: file:lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.defs.ts,
-    r.barrel-namespace-reexports: file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent.ts,
-    r.barrel-namespace-reexports: file:lib/common/market-lexicons/com/publicdomainrelay/temp/auth.ts,
-    r.barrel-namespace-reexports: file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute.ts,
-    r.barrel-namespace-reexports: file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway.ts,
-    r.barrel-namespace-reexports: file:lib/common/market-lexicons/com/publicdomainrelay/temp/requester.ts,
-    r.barrel-namespace-reexports: file:lib/common/market-lexicons/com/publicdomainrelay/temp/tangled.ts,
-    r.defs-barrel-default-export: file:lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.ts,
-    r.generated-not-hand-edited: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market.ts'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
-  reason: NotSyncedYet
-  message: no synced fingerprint has been recorded yet
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed
   message: the spec passes the validator
-observed: {}
+observed:
+  files:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/agent.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/auth.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/requester.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/tangled.ts
+  fingerprint: 26538b0336f61695aba5186d04750d680c2a4c1568ba8dad14b75c94692b6507

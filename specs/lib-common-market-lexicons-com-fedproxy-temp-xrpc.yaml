@@ -143,3 +143,9 @@ codeRefIndex:
 - file:lib/common/market-lexicons/com/fedproxy/temp/xrpc/registration.ts registration.ts@lib/common/market-lexicons/com/fedproxy/temp/xrpc/registration.ts
 - file:lib/common/market-lexicons/com/fedproxy/temp/xrpc/subscribe.defs.ts subscribe.defs.ts@lib/common/market-lexicons/com/fedproxy/temp/xrpc/subscribe.defs.ts
 - file:lib/common/market-lexicons/com/fedproxy/temp/xrpc/subscribe.ts subscribe.ts@lib/common/market-lexicons/com/fedproxy/temp/xrpc/subscribe.ts
+- type_alias:0692219625b3f28978097f2b3163e271 $OutputBody@lib/common/market-lexicons/com/fedproxy/temp/xrpc/getRegistrationNonce.defs.ts:34
+- type_alias:121d4d034292a36860fe8a628cbedaa9 $Message@lib/common/market-lexicons/com/fedproxy/temp/xrpc/subscribe.defs.ts:26
+- type_alias:13a4eac8a7e8131e9bbbc8e98105b8f6 $Params@lib/common/market-lexicons/com/fedproxy/temp/xrpc/getRegistrationNonce.defs.ts:14
+- type_alias:ad1db68c5d41455a259d27b7ad72252d $Input@lib/common/market-lexicons/com/fedproxy/temp/xrpc/getRegistrationNonce.defs.ts:23
+- type_alias:f7d12788676fbb2d13b0c099c544510f $Output@lib/common/market-lexicons/com/fedproxy/temp/xrpc/getRegistrationNonce.defs.ts:33
+- type_alias:ff2e223fce27544e3cc74fa5d48acd0b $InputBody@lib/common/market-lexicons/com/fedproxy/temp/xrpc/getRegistrationNonce.defs.ts:24
