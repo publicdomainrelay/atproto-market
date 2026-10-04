@@ -20,5 +20,5 @@ observed:
   - compute-contract-full-flow/SUMMARY.md
   - compute-contract-full-flow/atproto-records.json
   - compute-contract-full-flow/full-flow.log
-realizedSpecHash: 186f491ffa12d9ca403de64b62fe579a1434afbc916126a7bd88aaea637bff11
+realizedSpecHash: 404d17fb7477a1206427fc799f26c27e5eb185c7b1bdc92f7f4329ec40940f9d
 syncedFingerprint: ef71721badee95829280be26787af6ff04b37a16da6de725063016a2695d9f65

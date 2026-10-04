@@ -10,5 +10,19 @@ spec:
   systemContext: compute-contract-full-flow
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing compute-contract-full-flow
-  phase: Running
+  agentLog: '`compute-contract-full-flow` is a single self-contained Deno script,
+    `compute-contract-full-flow/run_full_flow.ts`, that stands up an entire AT Protocol
+    compute-market round trip in one process and records what happened. It binds a
+    dispatcher (relay factory) and a fake in-memory PLC directory on ephemeral loopback
+    ports, installs a global `fetch` interceptor that reroutes `https://plc.directory/*`
+    to the fake PLC and any `*.localhost` host to the dispatcher port, then boots
+    a bidder PDS agent with its ingress relay, a local compute provider behind a provider
+    relay, a market bidder, and a requester PDS. With all participants live it calls
+    `runComputeContract` against the requester with a fixed `only-me` policy (15-second
+    bid window), collects every record from a fixed list of market/compute/auth collections
+    in both the requester and bidder repos, and writes three artifacts next to itself:
+    `full-flow.log`, `atproto-records.json`, and a generated `SUMMARY.md` containing
+    participants, the contract result JSON, record counts per collection, and an architecture/SSH-tunnel
+    description. Server handles are torn down in reverse order at the end.'
+  message: wrote 10 requirement(s) and 0 interface(s) for compute-contract-full-flow
+  phase: Succeeded
