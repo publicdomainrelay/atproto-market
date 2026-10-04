@@ -26,5 +26,57 @@ spec:
   systemContext: test
   toSpecHash: 02610595978aabda028e0ae82f7b959d79a6436bcfc68ec0dbfb5063a01283b9
 status:
-  message: the agent is realizing test in a batch of 6 led by lib-did-key-ingress-proxy
-  phase: Running
+  agentLog: "...est.ts` ok.\n\n⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY
+    or another auth source is set and takes precedence over your claude.ai login ·
+    Unset it to load your organization's connectors\n[claude-code:unrecognized_model]
+    {\"model\":\"deepseek-v4-flash\",\"query_source\":\"sdk\"}\n\e[0m\e[38;5;245mrunning
+    17 tests from ./test/cloud_init_snapshot_test.ts\e[0m\ncomposer snapshots match
+    fixtures ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(18ms)\e[0m\nsecrets module composes
+    with the transport ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(1ms)\e[0m\nsecrets
+    module discovers provider paths at runtime, not build time ... \e[0m\e[32mok\e[0m
+    \e[0m\e[38;5;245m(456µs)\e[0m\nsecrets module echoes the provider-assigned subject
+    ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(367µs)\e[0m\nsecrets module fails loud
+    ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(490µs)\e[0m\nsecrets module writes secrets
+    0600 under a 0700 parent ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(383µs)\e[0m\nsecrets
+    module carries no secret values ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(351µs)\e[0m\nbug
+    fixes baked into fedproxy-ssh ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(683µs)\e[0m\ntunnel
+    has no ListenAddress (direct-TCP probe) ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(373µs)\e[0m\niroh
+    dumbpipe listener replaces the tunnel subscriber ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(438µs)\e[0m\nwootty
+    combo carries token handoff + hardening ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(1ms)\e[0m\ndeprecated
+    wrappers equal composer outputs ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(1ms)\e[0m\nmerge
+    semantics: base + module append, dedupe, override ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(6ms)\e[0m\nruncmdPrepend
+    ordering + acceptBundleModule ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(1ms)\e[0m\nunparseable
+    / empty base -> fresh build ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(6ms)\e[0m\ninjectJsrUrl
+    adds JSR_URL env to tunnel unit ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(473µs)\e[0m\nregistry:
+    built-ins present, unknown id throws ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(432µs)\e[0m\n\n\e[0m\e[32mok\e[0m
+    | 17 passed | 0 failed \e[0m\e[38;5;245m(53ms)\e[0m"
+  branch: spec/lib-did-key-ingress-proxy/5c608600
+  commit: b9c1b77496359eeb9b266c536b964f1249aac4d1
+  filesTouched:
+  - lib/abc/requester/mod.ts
+  - lib/common/compute-contract-gateway-common/types.ts
+  - lib/compute-contract-gateway-xrpc/mod.ts
+  - lib/market-bidder-compute/mod.ts
+  - lib/requester-xrpc/mod.ts
+  - request-vm-ssh/cli-args-env.ts
+  - request-vm-ssh/mod.ts
+  - test/gateway_request_vm_integration_test.ts
+  - test/gateway_ssh_integration_test.ts
+  message: 'realized test in a batch of 6 led by lib-did-key-ingress-proxy on spec/lib-did-key-ingress-proxy/5c608600:
+    9 file(s) touched, verify exit 0'
+  phase: Succeeded
+  progress:
+  - at: "2026-10-04T22:17:53Z"
+    files:
+    - lib/abc/requester/mod.ts
+    - lib/common/compute-contract-gateway-common/types.ts
+    - lib/compute-contract-gateway-xrpc/mod.ts
+    - lib/market-bidder-compute/mod.ts
+    - lib/requester-xrpc/mod.ts
+    - request-vm-ssh/cli-args-env.ts
+    - request-vm-ssh/mod.ts
+    - test/gateway_request_vm_integration_test.ts
+    - test/gateway_ssh_integration_test.ts
+    note: batch of 6 led by lib-did-key-ingress-proxy, commit b9c1b774
+    tool: realize
+    turn: 1
