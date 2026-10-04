@@ -1,18 +1,26 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: 8af9c4881ed1aa5cbd51d438dd0713e7acf1846de4d5fcb7dcf77432875a7c11
+realizedSpecHash: b74677907159a2b37ad40c113c96f429c92cf1b41d2803e3a107fc0f0a86a688
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: CodeRefsUnresolved
-  message: 'unresolved requirement code refs: r.generated-not-hand-edited: file:lib/common/market-lexicons/com/fedproxy/rbac.defs.ts,
-    r.generated-not-hand-edited: file:lib/common/market-lexicons/com/fedproxy/sshPublicKey.defs.ts,
-    r.generated-not-hand-edited: file:lib/common/market-lexicons/com/fedproxy/temp.ts,
-    r.generated-sidecar-reexports: file:lib/common/market-lexicons/com/fedproxy/rbac.ts,
-    r.generated-sidecar-reexports: file:lib/common/market-lexicons/com/fedproxy/sshPublicKey.ts'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
-  reason: NotSyncedYet
-  message: no synced fingerprint has been recorded yet
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed
   message: the spec passes the validator
-observed: {}
+observed:
+  files:
+  - lib/common/market-lexicons/com/fedproxy/rbac.defs.ts
+  - lib/common/market-lexicons/com/fedproxy/rbac.ts
+  - lib/common/market-lexicons/com/fedproxy/sshPublicKey.defs.ts
+  - lib/common/market-lexicons/com/fedproxy/sshPublicKey.ts
+  - lib/common/market-lexicons/com/fedproxy/temp.ts
+  fingerprint: 8af9c4881ed1aa5cbd51d438dd0713e7acf1846de4d5fcb7dcf77432875a7c11

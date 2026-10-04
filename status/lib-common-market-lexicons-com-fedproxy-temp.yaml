@@ -1,14 +1,22 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: e38774350ff4e287142c3a1a72edcd13c33914700bb3c36f74e0f966316390fe
+realizedSpecHash: d1af2d98d19503b0a067e6e1b13228091deab6a0cc56a4ff319c57aeea99b87a
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: CodeRefsUnresolved
-  message: 'unresolved requirement code refs: r.generated-do-not-edit: file:lib/common/market-lexicons/com/fedproxy/temp/xrpc.ts'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
-  reason: NotSyncedYet
-  message: no synced fingerprint has been recorded yet
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed
   message: the spec passes the validator
-observed: {}
+observed:
+  files:
+  - lib/common/market-lexicons/com/fedproxy/temp/xrpc.ts
+  fingerprint: e38774350ff4e287142c3a1a72edcd13c33914700bb3c36f74e0f966316390fe

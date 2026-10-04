@@ -9,5 +9,6 @@ _The resolved code references are regenerated on every run. Cite the ids above r
 <!-- SPECD_MANAGED_BEGIN -->
 ## Resolved code references
 
-_None yet._
+- `file:lib/common/market-lexicons/com/atproto/repo/strongRef.defs.ts` file strongRef.defs.ts (lib/common/market-lexicons/com/atproto/repo/strongRef.defs.ts)
+- `file:lib/common/market-lexicons/com/atproto/repo/strongRef.ts` file strongRef.ts (lib/common/market-lexicons/com/atproto/repo/strongRef.ts)
 <!-- SPECD_MANAGED_END -->
