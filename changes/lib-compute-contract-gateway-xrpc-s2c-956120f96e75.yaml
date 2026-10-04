@@ -1,0 +1,77 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-compute-contract-gateway-xrpc-s2c-956120f96e75
+  namespace: default
+spec:
+  delta:
+    intent:
+      from: This context exists to give consumers of the compute-contract gateway
+        a transport-agnostic implementation that speaks the ComputeContractGateway
+        abstraction on top of the requester-XRPC package, so that a Hono/gateway front
+        end (and its integration tests) can create a gateway, start it, and issue
+        VM or worker compute requests without knowing how the underlying requester
+        PDS, SSH session provider, fedproxy ingress naming or worker manifest publication
+        work. It centralizes option defaulting, lazy PDS lifecycle, and the mapping
+        from runComputeContract results to GatewayComputeResponse.
+      to: This context exists to give consumers of the compute-contract gateway a
+        transport-agnostic implementation that speaks the ComputeContractGateway abstraction
+        on top of the requester-XRPC package, so that a Hono/gateway front end (and
+        its integration tests) can create a gateway, start it, and issue VM or worker
+        compute requests without knowing how the underlying requester PDS, SSH session
+        provider, fedproxy ingress naming or worker manifest publication work. It
+        centralizes option defaulting, lazy PDS lifecycle, and the mapping from runComputeContract
+        results to GatewayComputeResponse. It must report the actual SSH transport
+        (the iroh ticket by default) rather than assuming the websocat/relay plane.
+    requirements:
+    - id: r.request-vm-iroh-transport
+      op: added
+      to:
+        codeRefs:
+        - file:lib/compute-contract-gateway-xrpc/mod.ts
+        - function:03370a182fd0653c2e57c9c946423ce7
+        id: r.request-vm-iroh-transport
+        level: MUST
+        text: 'The gateway must report the SSH transport that was actually used instead
+          of assuming the websocat/relay plane: under the default iroh transport the
+          VM response must carry the iroh ticket from the runComputeContract result
+          (an optional ticket field on GatewayComputeResponse, with transport set
+          to "iroh"), and the vmFqdn/websocatUrl pair must be populated only when
+          the fedproxy-ssh transport was explicitly selected. This requires ContractFlowResult
+          (lib/abc/requester/mod.ts) to expose the resolved iroh ticket and transport
+          kind, and lib/common/compute-contract-gateway-common/types.ts to add optional
+          ticket and transport fields to the response type. The gateway must not synthesize
+          a wss:// URL from the fedproxy FQDN formula when the iroh transport is in
+          use, and must keep returning the receipt, winner, RFP and bid fields unchanged.'
+    - fields:
+      - text
+      from:
+        codeRefs:
+        - file:lib/compute-contract-gateway-xrpc/mod.ts
+        - function:03370a182fd0653c2e57c9c946423ce7
+        id: r.request-vm-response
+        level: MUST
+        text: When the VM contract returns an error, requestComputeVM must return
+          that error together with the RFP uri and cid; otherwise it must return the
+          receipt uri, cid and ok flag, the ssh readiness and exit code, the winner
+          DID and bid uri and cid, the RFP uri and cid, and a VM fqdn of <flat vm
+          name>--<flat DID>.<fedingressHost> with websocatUrl of wss://<vmFqdn>.
+      id: r.request-vm-response
+      op: changed
+      to:
+        codeRefs:
+        - file:lib/compute-contract-gateway-xrpc/mod.ts
+        - function:03370a182fd0653c2e57c9c946423ce7
+        id: r.request-vm-response
+        level: MUST
+        text: When the VM contract returns an error, requestComputeVM must return
+          that error together with the RFP uri and cid; otherwise it must return the
+          receipt uri, cid and ok flag, the ssh readiness and exit code, the winner
+          DID and bid uri and cid, the RFP uri and cid, and the transport information
+          for the transport actually used.
+  direction: SpecToCode
+  fromSpecHash: 6ca1791600a9ce1b84f0256fa15d4329a55e3697c8c2974399d0ed116b8e2b47
+  systemContext: lib-compute-contract-gateway-xrpc
+  toSpecHash: 956120f96e752c11992df4b6497774606a2901aceb42d35f8a77c18f46d88af2
+status:
+  phase: Pending
