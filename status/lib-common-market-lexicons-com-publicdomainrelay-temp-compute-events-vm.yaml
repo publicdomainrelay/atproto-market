@@ -23,5 +23,5 @@ observed:
   - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.defs.ts
   - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.ts
   fingerprint: a3d17fa1c39b52e8f0a497aca48f34b40103bbe8b6f65e2e8f7b764d93bafc17
-realizedSpecHash: 929481d0aecc96472f8ac46959f805fd8d63b8578149458c1242333d5db51434
+realizedSpecHash: 3cc76dec47f05c6923d3725546c05efba131776f03c963e37ff4a0d1e29c613f
 syncedFingerprint: a3d17fa1c39b52e8f0a497aca48f34b40103bbe8b6f65e2e8f7b764d93bafc17

@@ -503,6 +503,17 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.reexport-started-and-on-network` (MUST): "The module must re-export the started and onNetwork event variants as namespace exports bound to the sibling modules ./vm/started.ts and ./vm/onNetwork.ts respectively, alongside the delete variant described above."
 - added `r.sibling-modules-must-resolve` (MUST): "The three sibling modules the barrel points at — vm/delete.ts, vm/started.ts, and vm/onNetwork.ts, resolved relative to this file — must exist and export the namespace members the barrel forwards, so that importing this entrypoint never fails to resolve."
 
+### lib-common-market-lexicons-com-publicdomainrelay-temp-compute-events-vm
+
+- intent: "" -> "These lexicons exist so a requester and a provider can exchange VM lifecycle facts over atproto: started says a VM began booting, onNetwork says it came up and is reachable, registerIdentity carries the guest's DID and relay FQDN, and delete asks the provider to tear the VM down when the requester observes a terminal condition the provider cannot see itself. The context is the vocabulary layer only; it defines the record shapes and their validators, and leaves all dispatch or handling to the market event callback code elsewhere in the repository."
+- added `r.barrel-default-export` (MUST): "Each sibling .ts barrel must re-export everything from its .defs.ts module and re-export the main record as the module default, so the lexicon can be imported either by name or as the default record."
+- added `r.delete-record` (MUST): "Define the record lexicon com.publicdomainrelay.temp.compute.events.vm.delete, whose Main type requires a reason string (for example 'workflow_complete' or 'policy_engine_never_came_up') plus createdAt, is built as an l.record with rkey type 'tid', and asks the provider to delete or tear down a provisioned VM; the requester sends it because the provider treats the VM as a black box and cannot observe those conditions itself."
+- added `r.generated-not-edited` (SHOULD): "Every file in this context carries the '@atproto/lex' generated-by header and must be regenerated from the source lexicon rather than hand-edited, so the NSIDs, field sets and validators stay in sync with the generator output."
+- added `r.on-network-record` (MUST): "Define the record lexicon com.publicdomainrelay.temp.compute.events.vm.onNetwork, whose Main type carries an optional address string (hostname or IP the VM is reachable at) plus a required createdAt datetime, is built as an l.record with rkey type 'tid', and reports that a provisioned VM has come up on the network and is reachable."
+- added `r.register-identity-record` (MUST): "Define the record lexicon com.publicdomainrelay.temp.compute.events.vm.registerIdentity, whose Main type requires a did string (did:plc or did:key) and an fqdn string reachable through the relay dispatcher, accepts an optional transport string ('tunnel' or 'fedproxy'), requires createdAt, is built as an l.record with rkey type 'tid', and reports a guest compute identity so the requester can reach the guest through the relay."
+- added `r.shared-validator-exports` (MUST): "Each defs module must export the bound record-builder validators $type, $isTypeOf, $build, $assert, $check, $cast, $ifMatches, $matches, $parse, $safeParse, $validate and $safeValidate derived from the main record, so callers can type-check, build, parse and validate these events without touching the raw record definition."
+- added `r.started-record` (MUST): "Define the record lexicon com.publicdomainrelay.temp.compute.events.vm.started, whose Main type has the literal $type and a required createdAt datetime string, is built as an l.record with rkey type 'tid', and reports that a provisioned VM has started booting."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance |
@@ -543,5 +554,6 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-common-market-lexicons-com-publicdomainrelay-temp-compute-config-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-common-market-lexicons-com-publicdomainrelay-temp-compute-config-wif-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-common-market-lexicons-com-publicdomainrelay-temp-compute-events-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-common-market-lexicons-com-publicdomainrelay-temp-compute-events-vm-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-common-market-lexicons-com-publicdomainrelay-temp-compute-events-vm-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-common-market-lexicons-com-publicdomainrelay-temp-gateway-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-common-market-lexicons-com-publicdomainrelay-temp-market-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
