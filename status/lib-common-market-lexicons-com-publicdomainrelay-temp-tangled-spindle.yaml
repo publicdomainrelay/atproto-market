@@ -1,0 +1,46 @@
+conditions:
+- message: 'undeclared: $Input, $InputBody, $Output, $OutputBody, $Params'
+  reason: InterfacesMissing
+  status: "False"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.ts
+  fingerprint: f441dd91ea02c023b934404b53f946b60d0981c9ad4c301896b2952c635b65db
+  interfaces:
+  - codegraphId: type_alias:635b87d49390c20cc0c03a3b2717fce8
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.defs.ts
+    kind: type_alias
+    line: 13
+    name: $Params
+  - codegraphId: type_alias:2384d850334f4824332256cd26c0e1e0
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.defs.ts
+    kind: type_alias
+    line: 25
+    name: $Input
+  - codegraphId: type_alias:7b015485c5d41aa955d7da0515ea7cbc
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.defs.ts
+    kind: type_alias
+    line: 26
+    name: $InputBody
+  - codegraphId: type_alias:35f9b05be484c9db3e66293938e0c7fc
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.defs.ts
+    kind: type_alias
+    line: 38
+    name: $Output
+  - codegraphId: type_alias:5b2e55e12944df104929ddb029ab7366
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.defs.ts
+    kind: type_alias
+    line: 39
+    name: $OutputBody
+realizedSpecHash: ac05dc90e2a1cf6cf7bd50efccbb2f0833439bafe6fd2910da1c6446c5fee154
+syncedFingerprint: f441dd91ea02c023b934404b53f946b60d0981c9ad4c301896b2952c635b65db

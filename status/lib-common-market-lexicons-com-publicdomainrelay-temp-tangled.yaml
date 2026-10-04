@@ -1,0 +1,20 @@
+conditions:
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle.ts
+  fingerprint: 78c049a7dad82b04a7f91af773ab7e5d469111e9cb16fb0ea9eba68c30cf201d
+realizedSpecHash: dc3a53c1118e391929a74a44d5f76391b440cbc20268038b381018dab46ee162
+syncedFingerprint: 78c049a7dad82b04a7f91af773ab7e5d469111e9cb16fb0ea9eba68c30cf201d

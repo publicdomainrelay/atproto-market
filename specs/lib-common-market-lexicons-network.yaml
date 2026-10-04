@@ -1,0 +1,12 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/common/market-lexicons/network/attested.ts attested.ts@lib/common/market-lexicons/network/attested.ts
+kind: SystemContext
+metadata:
+  name: lib-common-market-lexicons-network
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

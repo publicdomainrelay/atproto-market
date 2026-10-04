@@ -684,3 +684,67 @@ system_contexts:
   id: sc.lib-common-market-lexicons-com-publicdomainrelay-temp-market-policies
   name: lib-common-market-lexicons-com-publicdomainrelay-temp-market-policies
   upstream: self
+- code:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/free.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/free.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/x402.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/x402.ts
+  codeRefIndex:
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/free.defs.ts
+    free.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/free.defs.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/free.ts
+    free.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/free.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/x402.defs.ts
+    x402.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/x402.defs.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/x402.ts
+    x402.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/x402.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-lexicons-com-publicdomainrelay-temp-market-receipts
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-market-receipts
+  upstream: self
+- code:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.ts
+  codeRefIndex:
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.defs.ts
+    associateConfirm.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.defs.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.ts
+    associateConfirm.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-lexicons-com-publicdomainrelay-temp-requester
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-requester
+  upstream: self
+- code:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle.ts
+  codeRefIndex:
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle.ts
+    spindle.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-lexicons-com-publicdomainrelay-temp-tangled
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-tangled
+  upstream: self
+- code:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.ts
+  codeRefIndex:
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.defs.ts
+    trigger.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.defs.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.ts
+    trigger.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-lexicons-com-publicdomainrelay-temp-tangled-spindle
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-tangled-spindle
+  upstream: self
+- code:
+  - lib/common/market-lexicons/network/attested.ts
+  codeRefIndex:
+  - file:lib/common/market-lexicons/network/attested.ts attested.ts@lib/common/market-lexicons/network/attested.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-lexicons-network
+  name: lib-common-market-lexicons-network
+  upstream: self

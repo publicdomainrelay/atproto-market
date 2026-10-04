@@ -1,0 +1,15 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.defs.ts
+  trigger.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.ts
+  trigger.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.ts
+kind: SystemContext
+metadata:
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-tangled-spindle
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

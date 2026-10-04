@@ -1,0 +1,23 @@
+conditions:
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/free.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/free.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/x402.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/x402.ts
+  fingerprint: 7d29ff3803417edf3460861465e233438678703a3773e0f86e238bfa2268e9de
+realizedSpecHash: 664b294cc3845d3f3d5d2bebc42b6712dcd3f3fc6b9c00157ccf3df0dea27170
+syncedFingerprint: 7d29ff3803417edf3460861465e233438678703a3773e0f86e238bfa2268e9de

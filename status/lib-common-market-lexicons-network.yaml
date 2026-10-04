@@ -1,0 +1,20 @@
+conditions:
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
+  type: CodeSynced
+- message: no synced fingerprint has been recorded yet
+  reason: NotSyncedYet
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/common/market-lexicons/network/attested.ts
+  fingerprint: c7673c041255edfe8b6bcc2bc8e94c707cc2f12e17eba8f9994e766d5e478d36
+realizedSpecHash: 97612fa1f7540b4f0fa7d2cf919c5d12e5dbc3d3ca11e87b6bec15f2c207d6e0
+syncedFingerprint: c7673c041255edfe8b6bcc2bc8e94c707cc2f12e17eba8f9994e766d5e478d36

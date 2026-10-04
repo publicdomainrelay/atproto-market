@@ -1,0 +1,46 @@
+conditions:
+- message: 'undeclared: $Input, $InputBody, $Output, $OutputBody, $Params'
+  reason: InterfacesMissing
+  status: "False"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.ts
+  fingerprint: 3e461cc9438f84270e573524881415bf524e24317ee55d4a300a886d4e267264
+  interfaces:
+  - codegraphId: type_alias:32f59c1292407af850d8f6ada5d5959c
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.defs.ts
+    kind: type_alias
+    line: 13
+    name: $Params
+  - codegraphId: type_alias:4dbf76aa5eeb2f760aaaf03852a93725
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.defs.ts
+    kind: type_alias
+    line: 17
+    name: $Input
+  - codegraphId: type_alias:6f696a9a6d16f191e192c7a8a2082268
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.defs.ts
+    kind: type_alias
+    line: 18
+    name: $InputBody
+  - codegraphId: type_alias:9084d44b6d89c358d343bab398e2af81
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.defs.ts
+    kind: type_alias
+    line: 25
+    name: $Output
+  - codegraphId: type_alias:cc503c95f2423ace5dd97fd68005cd2d
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.defs.ts
+    kind: type_alias
+    line: 26
+    name: $OutputBody
+realizedSpecHash: 0e7783c991506da1ad8064d6e28a77ef4707e39c4d35fb6806c14524f15b0904
+syncedFingerprint: 3e461cc9438f84270e573524881415bf524e24317ee55d4a300a886d4e267264
