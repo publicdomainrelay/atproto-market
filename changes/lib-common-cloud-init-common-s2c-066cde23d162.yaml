@@ -74,5 +74,65 @@ spec:
   systemContext: lib-common-cloud-init-common
   toSpecHash: 066cde23d1625274f4ecc509619e3058bbb411a14cc9b42f2cad58c57a80d608
 status:
-  message: the agent is realizing lib-common-cloud-init-common
-  phase: Running
+  agentLog: "...f untouched).\n\n⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY
+    or another auth source is set and takes precedence over your claude.ai login ·
+    Unset it to load your organization's connectors\n[claude-code:unrecognized_model]
+    {\"model\":\"deepseek-v4-flash\",\"query_source\":\"sdk\"}\n\e[0m\e[38;5;245mrunning
+    17 tests from ./test/cloud_init_snapshot_test.ts\e[0m\ncomposer snapshots match
+    fixtures ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(27ms)\e[0m\nsecrets module composes
+    with the transport ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(1ms)\e[0m\nsecrets
+    module discovers provider paths at runtime, not build time ... \e[0m\e[32mok\e[0m
+    \e[0m\e[38;5;245m(440µs)\e[0m\nsecrets module echoes the provider-assigned subject
+    ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(446µs)\e[0m\nsecrets module fails loud
+    ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(813µs)\e[0m\nsecrets module writes secrets
+    0600 under a 0700 parent ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(727µs)\e[0m\nsecrets
+    module carries no secret values ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(406µs)\e[0m\nbug
+    fixes baked into fedproxy-ssh ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(1ms)\e[0m\ntunnel
+    has no ListenAddress (direct-TCP probe) ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(1ms)\e[0m\niroh
+    dumbpipe listener replaces the tunnel subscriber ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(839µs)\e[0m\nwootty
+    combo carries token handoff + hardening ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(2ms)\e[0m\ndeprecated
+    wrappers equal composer outputs ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(1ms)\e[0m\nmerge
+    semantics: base + module append, dedupe, override ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(16ms)\e[0m\nruncmdPrepend
+    ordering + acceptBundleModule ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(887µs)\e[0m\nunparseable
+    / empty base -> fresh build ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(2ms)\e[0m\ninjectJsrUrl
+    adds JSR_URL env to tunnel unit ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(404µs)\e[0m\nregistry:
+    built-ins present, unknown id throws ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(375µs)\e[0m\n\n\e[0m\e[32mok\e[0m
+    | 17 passed | 0 failed \e[0m\e[38;5;245m(75ms)\e[0m"
+  branch: spec/lib-common-cloud-init-common/066cde23
+  commit: 857b94a22ea058825611b4f155cdc639e3c0139d
+  filesTouched:
+  - lib/common/cloud-init-common/mod.ts
+  - test/fixtures/cloud-init/iroh.yaml
+  message: 'realized lib-common-cloud-init-common on spec/lib-common-cloud-init-common/066cde23:
+    2 file(s) touched, verify exit 0'
+  phase: Succeeded
+  progress:
+  - at: "2026-10-04T22:04:59Z"
+    files:
+    - lib/common/cloud-init-common/mod.ts
+    tool: Read
+  - at: "2026-10-04T22:05:02Z"
+    files:
+    - test/cloud_init_snapshot_test.ts
+    tool: Read
+  - at: "2026-10-04T22:05:02Z"
+    files:
+    - test/fixtures/cloud-init/iroh.yaml
+    tool: Read
+  - at: "2026-10-04T22:05:39Z"
+    files:
+    - lib/common/cloud-init-common/mod.ts
+    tool: Edit
+  - at: "2026-10-04T22:05:57Z"
+    files:
+    - .tmp-iroh.yaml
+    tool: Read
+  - at: "2026-10-04T22:06:08Z"
+    files:
+    - test/fixtures/cloud-init/iroh.yaml
+    tool: Write
+  - at: "2026-10-04T22:06:25Z"
+    note: turn
+  - at: "2026-10-04T22:06:26Z"
+    note: turn
+    turn: 1
