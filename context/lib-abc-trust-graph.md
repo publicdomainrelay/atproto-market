@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so that trust-graph consumers depend on shape rather than on any particular trust source. Concrete implementations live outside this package: createBskyMutualsVouchResolver and createTangledGraphVouchResolver satisfy VouchResolver, createBadgeBlueKeysOperatorDiscovery satisfies OperatorDiscovery, and createBadgeBlueKeysDelegatedTrustResolver satisfies DelegatedTrustResolver, with consumers such as createMarketBidder composing them. Keeping the interfaces here in one comment-free mod.ts lets those implementations and consumers share a single contract without a dependency cycle, and keeps the dependency direction one-way: this package depends only on atproto-market and imports nothing from its implementors.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

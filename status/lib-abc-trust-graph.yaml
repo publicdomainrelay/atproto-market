@@ -1,7 +1,8 @@
 conditions:
-- message: 'undeclared: DelegatedTrustResolver, OperatorDiscovery, VouchResolver'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -33,5 +34,5 @@ observed:
     name: DelegatedTrustResolver
   treeFiles:
   - lib/abc/trust-graph/deno.json
-realizedSpecHash: ede1e60bb6191d33171807e6a9dfb6b97998d3eb2d8265251eb617fdb61336bc
+realizedSpecHash: 172446476c0902c26bc1cd523d9026f4648ce86f8dd5d299fb38bf0ceb27201e
 syncedFingerprint: c4474a949fb36c0f188293dac3f1a5bc5f8fac71e52316d2fcb728490b334834

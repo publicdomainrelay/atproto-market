@@ -1409,11 +1409,94 @@ system_contexts:
 - code:
   - lib/abc/trust-graph/mod.ts
   codeRefIndex:
+  - file:lib/abc/trust-graph/deno.json deno.json@lib/abc/trust-graph/deno.json
   - file:lib/abc/trust-graph/mod.ts mod.ts@lib/abc/trust-graph/mod.ts
+  - interface:38a3bf6bf78442c7b5b45b6d9bf4808a DelegatedTrustResolver@lib/abc/trust-graph/mod.ts:10
+  - interface:b2933b2ab4555371bb0e5ec335ba619e VouchResolver@lib/abc/trust-graph/mod.ts:1
+  - interface:f67ff70cf97f5034470e6129668b747a OperatorDiscovery@lib/abc/trust-graph/mod.ts:6
   depends_on:
   - sc.atproto-market
   id: sc.lib-abc-trust-graph
+  intent: 'This context exists so that trust-graph consumers depend on shape rather
+    than on any particular trust source. Concrete implementations live outside this
+    package: createBskyMutualsVouchResolver and createTangledGraphVouchResolver satisfy
+    VouchResolver, createBadgeBlueKeysOperatorDiscovery satisfies OperatorDiscovery,
+    and createBadgeBlueKeysDelegatedTrustResolver satisfies DelegatedTrustResolver,
+    with consumers such as createMarketBidder composing them. Keeping the interfaces
+    here in one comment-free mod.ts lets those implementations and consumers share
+    a single contract without a dependency cycle, and keeps the dependency direction
+    one-way: this package depends only on atproto-market and imports nothing from
+    its implementors.'
+  interfaces:
+  - file: lib/abc/trust-graph/mod.ts
+    kind: interface
+    name: DelegatedTrustResolver
+    signature: interface DelegatedTrustResolver
+  - file: lib/abc/trust-graph/mod.ts
+    kind: interface
+    name: OperatorDiscovery
+    signature: interface OperatorDiscovery
+  - file: lib/abc/trust-graph/mod.ts
+    kind: interface
+    name: VouchResolver
+    signature: interface VouchResolver
   name: lib-abc-trust-graph
+  requirements:
+  - codeRefs:
+    - interface:38a3bf6bf78442c7b5b45b6d9bf4808a
+    - interface:b2933b2ab4555371bb0e5ec335ba619e
+    - interface:f67ff70cf97f5034470e6129668b747a
+    id: r.consumer-interchangeability
+    level: SHOULD
+    text: The three contracts are independent, so a consumer may supply any mix of
+      implementations, such as a vouch resolver drawn from Bluesky mutuals or from
+      a tangled graph alongside an operator discovery drawn from blue-keys badges,
+      without the interfaces requiring a particular trust source.
+  - codeRefs:
+    - file:lib/abc/trust-graph/mod.ts
+    - interface:38a3bf6bf78442c7b5b45b6d9bf4808a
+    id: r.delegated-trust-contract
+    level: MUST
+    text: DelegatedTrustResolver exposes getDelegatedTrustedDids, which takes the
+      self DID of the delegating party and resolves to a Set of the DIDs it trusts
+      by delegation, including trust inherited through operators it has associated
+      with.
+  - codeRefs:
+    - file:lib/abc/trust-graph/mod.ts
+    id: r.no-implementation-dependency
+    level: SHOULD
+    text: The module declares only interfaces and contains no concrete trust logic
+      or imports of the packages that implement them, so the dependency direction
+      stays one-way from implementations and consumers into this ABC layer, and this
+      package depends only on atproto-market.
+  - codeRefs:
+    - file:lib/abc/trust-graph/mod.ts
+    - interface:f67ff70cf97f5034470e6129668b747a
+    id: r.operator-discovery-contract
+    level: MUST
+    text: OperatorDiscovery exposes discoverOperatorDids, which takes an atproto DID
+      and resolves to an array of the DIDs that operate it, so a caller can map a
+      single account identity onto zero or more operator identities.
+  - codeRefs:
+    - file:lib/abc/trust-graph/deno.json
+    - file:lib/abc/trust-graph/mod.ts
+    id: r.single-export-entrypoint
+    level: MUST
+    text: The package keeps its whole surface in a single module, lib/abc/trust-graph/mod.ts,
+      which exports only these three interfaces as types; consumers import them from
+      that one entrypoint rather than from deep paths, and the package manifest deno.json
+      declares the module.
+  - codeRefs:
+    - file:lib/abc/trust-graph/mod.ts
+    - interface:b2933b2ab4555371bb0e5ec335ba619e
+    id: r.vouch-resolver-contract
+    level: MUST
+    text: 'VouchResolver requires two asynchronous operations over DID strings: getVouchedDids
+      takes a DID and resolves to a Set of the DIDs it vouches for, and isVouched
+      takes a voucher and a vouchee and resolves to a boolean stating whether that
+      vouch exists. Implementations resolve to empty results rather than throwing
+      when a vouch source is unavailable, so callers may treat a missing vouch as
+      a non-vouch.'
   upstream: self
 - code:
   - lib/atproto-attestation-port/attestation.ts

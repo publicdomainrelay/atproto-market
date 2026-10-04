@@ -151,6 +151,16 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.policy-exec-options` (SHOULD): "PolicyExecOptions SHOULD parameterise how a bidder policy is executed, holding the execution options separately from the policy itself so callers can vary execution without changing the policy."
 - added `r.provider-ref` (MUST): "MarketBidderProviderRef MUST name a provider reference resolvable by the bidder, so that compute and worker bidder implementations share one type for identifying the provider a contract runs on."
 
+### lib-abc-trust-graph
+
+- intent: "" -> "This context exists so that trust-graph consumers depend on shape rather than on any particular trust source. Concrete implementations live outside this package: createBskyMutualsVouchResolver and createTangledGraphVouchResolver satisfy VouchResolver, createBadgeBlueKeysOperatorDiscovery satisfies OperatorDiscovery, and createBadgeBlueKeysDelegatedTrustResolver satisfies DelegatedTrustResolver, with consumers such as createMarketBidder composing them. Keeping the interfaces here in one comment-free mod.ts lets those implementations and consumers share a single contract without a dependency cycle, and keeps the dependency direction one-way: this package depends only on atproto-market and imports nothing from its implementors."
+- added `r.consumer-interchangeability` (SHOULD): "The three contracts are independent, so a consumer may supply any mix of implementations, such as a vouch resolver drawn from Bluesky mutuals or from a tangled graph alongside an operator discovery drawn from blue-keys badges, without the interfaces requiring a particular trust source."
+- added `r.delegated-trust-contract` (MUST): "DelegatedTrustResolver exposes getDelegatedTrustedDids, which takes the self DID of the delegating party and resolves to a Set of the DIDs it trusts by delegation, including trust inherited through operators it has associated with."
+- added `r.no-implementation-dependency` (SHOULD): "The module declares only interfaces and contains no concrete trust logic or imports of the packages that implement them, so the dependency direction stays one-way from implementations and consumers into this ABC layer, and this package depends only on atproto-market."
+- added `r.operator-discovery-contract` (MUST): "OperatorDiscovery exposes discoverOperatorDids, which takes an atproto DID and resolves to an array of the DIDs that operate it, so a caller can map a single account identity onto zero or more operator identities."
+- added `r.single-export-entrypoint` (MUST): "The package keeps its whole surface in a single module, lib/abc/trust-graph/mod.ts, which exports only these three interfaces as types; consumers import them from that one entrypoint rather than from deep paths, and the package manifest deno.json declares the module."
+- added `r.vouch-resolver-contract` (MUST): "VouchResolver requires two asynchronous operations over DID strings: getVouchedDids takes a DID and resolves to a Set of the DIDs it vouches for, and isVouched takes a voucher and a vouchee and resolves to a boolean stating whether that vouch exists. Implementations resolve to empty results rather than throwing when a vouch source is unavailable, so callers may treat a missing vouch as a non-vouch."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance |
@@ -166,4 +176,4 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-abc-market-bidder-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-abc-market-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-abc-requester-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
-| lib-abc-trust-graph-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-abc-trust-graph-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
