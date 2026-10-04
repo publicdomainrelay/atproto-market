@@ -64,3 +64,4 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | compute-contract-full-flow-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | hono-bidder-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | hono-compute-contract-gateway-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| hono-market-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
