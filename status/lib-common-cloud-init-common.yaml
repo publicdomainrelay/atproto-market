@@ -16,7 +16,7 @@ conditions:
 observed:
   files:
   - lib/common/cloud-init-common/mod.ts
-  fingerprint: 9ec59512cab38134c7582a3463393e1435f3ea48697504f5423edd73a3c9aeaa
+  fingerprint: 576545057cf681595711c4cf2d6801ece94776c014b287f6a7ef8eddf4cd1967
   interfaces:
   - codegraphId: interface:0bccaee64ad56c10f80842c828570d30
     file: lib/common/cloud-init-common/mod.ts
@@ -89,27 +89,27 @@ observed:
         acceptPathVm: string,
         bundle: Record<string, unknown>,
       ): UserDataModule
-  - codegraphId: function:c3bfd001f17c82c59255dc767d4864d6
+  - codegraphId: function:41125c28a19276b5d0ddf7a9f51b7436
     file: lib/common/cloud-init-common/mod.ts
     kind: function
-    line: 964
+    line: 966
     name: buildDefaultUserData
     signature: '(ctx: CloudInitContext): string'
-  - codegraphId: function:86a846ba5c67bc050b3357f75785d2a4
+  - codegraphId: function:72e17ff6735f25edb8145acd0e2f1775
     file: lib/common/cloud-init-common/mod.ts
     kind: function
-    line: 972
+    line: 974
     name: buildTunnelUserData
     signature: '(ctx: TunnelCloudInitContext): string'
-  - codegraphId: function:3e73d1016ca2863c978570327927ad3c
+  - codegraphId: function:1035b4e24ba8cc3a1902d474bcfe3dae
     file: lib/common/cloud-init-common/mod.ts
     kind: function
-    line: 977
+    line: 979
     name: injectJsrUrl
     signature: '(userData: string, jsrUrl: string): string'
   treeFiles:
   - lib/common/cloud-init-common/deno.json
-observedCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
-realizedSpecHash: 066cde23d1625274f4ecc509619e3058bbb411a14cc9b42f2cad58c57a80d608
-syncedCommit: 857b94a22ea058825611b4f155cdc639e3c0139d
-syncedFingerprint: 9ec59512cab38134c7582a3463393e1435f3ea48697504f5423edd73a3c9aeaa
+observedCommit: 4f1174f584309d08e68d7a1b42a7c61665b1d732
+realizedSpecHash: 4291659ed8752249ae19c8fcabdd2f3b24e0df8c20426cdc87ac27333f4b76e2
+syncedCommit: 4f1174f584309d08e68d7a1b42a7c61665b1d732
+syncedFingerprint: 576545057cf681595711c4cf2d6801ece94776c014b287f6a7ef8eddf4cd1967

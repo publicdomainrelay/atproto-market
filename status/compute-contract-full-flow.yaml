@@ -20,7 +20,7 @@ observed:
   - compute-contract-full-flow/SUMMARY.md
   - compute-contract-full-flow/atproto-records.json
   - compute-contract-full-flow/full-flow.log
-observedCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
+observedCommit: 4f1174f584309d08e68d7a1b42a7c61665b1d732
 realizedSpecHash: 404d17fb7477a1206427fc799f26c27e5eb185c7b1bdc92f7f4329ec40940f9d
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: ef71721badee95829280be26787af6ff04b37a16da6de725063016a2695d9f65

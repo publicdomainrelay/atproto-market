@@ -19,7 +19,7 @@ observed:
   - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.defs.ts
   - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.ts
   fingerprint: 87fd1b3952ed7ac1a598565ce45029a38fad5d99ae1372b9253d624278dae1fa
-observedCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
+observedCommit: 4f1174f584309d08e68d7a1b42a7c61665b1d732
 realizedSpecHash: 16aa90ce66172b46a79d750b4fab38bfeacb2ea0e504da0279076599541bf695
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 87fd1b3952ed7ac1a598565ce45029a38fad5d99ae1372b9253d624278dae1fa

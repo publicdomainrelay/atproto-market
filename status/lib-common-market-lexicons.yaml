@@ -21,7 +21,7 @@ observed:
   fingerprint: fa7c4f8269cea48b0d1e42cf82b1234e3b5ca2d053a8361b61f054daccaf8cdf
   treeFiles:
   - lib/common/market-lexicons/deno.json
-observedCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
+observedCommit: 4f1174f584309d08e68d7a1b42a7c61665b1d732
 realizedSpecHash: a5a80175244774a44d30d36092dc66c46a581da59793de0bc660f654e81145b3
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: fa7c4f8269cea48b0d1e42cf82b1234e3b5ca2d053a8361b61f054daccaf8cdf

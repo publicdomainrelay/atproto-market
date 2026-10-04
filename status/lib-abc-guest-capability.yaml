@@ -67,7 +67,7 @@ observed:
     signature: '(v: unknown): v is WifSimpleConfig'
   treeFiles:
   - lib/abc/guest-capability/deno.json
-observedCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
+observedCommit: 4f1174f584309d08e68d7a1b42a7c61665b1d732
 realizedSpecHash: 90075edc5a35858f16eb60521c61d97c01e611392aef924a686c12cb5026fe12
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: da59922f5887beb5930682b6acaad0c3a3204dd9cafb48151ba50fe2b48b00e8
