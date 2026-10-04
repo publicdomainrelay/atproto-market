@@ -9,7 +9,16 @@ spec:
   verify:
   - bash
   - -lc
-  - deno check && deno test -A test/cloud_init_snapshot_test.ts
+  - deno check && deno test -A test/cloud_init_snapshot_test.ts test/iroh_dumbpipe_install_test.ts
+    test/iroh_transport_test.ts test/iroh_private_report_test.ts
+  acceptance:
+  - name: acceptance
+    command:
+    - bash
+    - -lc
+    - deno test --allow-all test/bidder_container_integration_test.ts
+    timeoutSeconds: 1800
+    gate: true
   populate:
     partition: directory
     summarize: true
