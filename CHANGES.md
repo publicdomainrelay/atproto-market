@@ -56,6 +56,13 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.relay-visibility-check` (SHOULD): "When relay URLs and a visibility hostname are available, verifyRelayVisibility is run against the offering collection for the bidder DID; a positive result logs the indexing relays and a negative result logs a warning with the hint that requester-side listReposByCollection discovery will not find this bidder. Failure never aborts boot."
 - added `r.worker-permission-mode` (MUST): "The Deno worker provider defaults worker permission mode to "deny-all"; only the value "allow-net" installs a permission policy handler, loaded dynamically."
 
+### hono-market
+
+- intent: "" -> "This context marks the reserved hono-market package: a namespace and manifest created so the Hono-facing market layer has a declared home in the monorepo's package layout, kept intentionally empty until that layer is implemented here. It exists to hold the module boundary and versioning metadata for the package rather than to provide behaviour today, which is why the entry file is a no-op export and the config carries no dependencies or tasks."
+- added `r.empty-entry-module` (MUST): "The package entry module hono-market/mod.ts is a valid ES module whose only statement is an empty `export {}`; it must not export any values, types, factory, or side effects, so importing the package yields nothing."
+- added `r.no-reimplementation` (SHOULD): "While the entry module stays empty, market HTTP behaviour must continue to come from the existing repository packages rather than from this package, so no Hono factory, XRPC handler, or client is duplicated into hono-market."
+- added `r.package-manifest` (MUST): "The package manifest hono-market/deno.json declares the package identity as version "0.0.0" under the "Unlicense" license, and carries no imports, tasks, or export mappings, so the stub package resolves with Deno's defaults."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance |
@@ -63,5 +70,6 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | atproto-market-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | compute-contract-full-flow-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | hono-bidder-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| hono-compute-contract-gateway-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
-| hono-market-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| hono-compute-contract-gateway-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
+| hono-market-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
+| hono-plc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |

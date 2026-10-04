@@ -10,5 +10,31 @@ spec:
   systemContext: hono-compute-contract-gateway
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing hono-compute-contract-gateway
-  phase: Running
+  agentLog: hono-compute-contract-gateway is the runnable Deno CLI that boots a compute
+    contract gateway server in the atproto-market monorepo. Its single index-covered
+    file, hono-compute-contract-gateway/mod.ts, loads options through the shared cli-args-env
+    Command using the CONFIG_PATH_HONO_COMPUTE_CONTRACT_GATEWAY config path, an optional
+    neighboring config.json, and cli-args-env.json, resolves the Secp256k1 private
+    key either inline or from a file path, picks a storage path from pds-state-path
+    falling back to storage-path, splits the comma-separated relay URL list, then
+    builds the gateway through createComputeContractGateway with the label compute-contract-gateway
+    and starts it. It then constructs an IdResolver against the PLC directory, wraps
+    the running gateway in createComputeContractGatewayFactory's Hono app, mounts
+    that app at the root of the serve instance, begins serving HTTP, logs a gateway_cli_ready
+    event carrying the gateway DID, and disposes the gateway on SIGINT or SIGTERM
+    before exiting. The package also carries GOAL.md and README.md, which describe
+    an integration smoke test that starts this CLI as a subprocess and runs the README
+    shell blocks through bash -e, and deno.json, which wires that test up as the test:readme
+    task.
+  message: wrote 14 requirement(s) and 0 interface(s) for hono-compute-contract-gateway;
+    dropped 4 unresolved code ref(s); interface createComputeContractGateway is not
+    in the observed facts; dropped; interface createComputeContractGatewayFactory
+    is not in the observed facts; dropped; interface ComputeContractGateway is not
+    in the observed facts; dropped; interface ComputeContractGateway.beginServe is
+    not in the observed facts; dropped; interface ComputeContractGateway.dispose is
+    not in the observed facts; dropped; interface ComputeContractGateway.requestComputeVM
+    is not in the observed facts; dropped; interface ComputeContractGateway.requestComputeWorkerEphemeral
+    is not in the observed facts; dropped; interface ComputeContractGateway.requestComputeWorkerPersistent
+    is not in the observed facts; dropped; interface ComputeContractGateway.deleteCompute
+    is not in the observed facts; dropped
+  phase: Succeeded
