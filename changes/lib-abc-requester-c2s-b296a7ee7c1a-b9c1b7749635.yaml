@@ -1,0 +1,241 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-abc-requester-c2s-b296a7ee7c1a-b9c1b7749635
+  namespace: default
+spec:
+  delta:
+    observed:
+      fingerprint:
+        from: f4232113afcf8cbf0951b8165475e61e9c1b2780ee80b51fde48555708cbc003
+        to: 8bbf7722ad641a1c6848f442eb829b36f11eff2d77fba6f279c4e3601b1d28a4
+      interfaces:
+      - fields:
+        - codegraphId
+        - line
+        from:
+          codegraphId: class:d0e1d0e94e5fa98abad7a4bef86cd7e9
+          file: lib/abc/requester/mod.ts
+          kind: class
+          line: 272
+          name: BidCollector
+        name: BidCollector
+        op: changed
+        to:
+          codegraphId: class:b0511bdf9205af51070904ceb3cebe46
+          file: lib/abc/requester/mod.ts
+          kind: class
+          line: 276
+          name: BidCollector
+      - fields:
+        - codegraphId
+        - line
+        from:
+          codegraphId: method:62c0c6e164372e0419aa3bdf9c4e099c
+          file: lib/abc/requester/mod.ts
+          kind: method
+          line: 290
+          name: BidCollector.add
+          signature: '(bid: CollectedBid): void'
+        name: BidCollector.add
+        op: changed
+        to:
+          codegraphId: method:1b90a2bdcee27c1bcd4ebf1f441f2df6
+          file: lib/abc/requester/mod.ts
+          kind: method
+          line: 294
+          name: BidCollector.add
+          signature: '(bid: CollectedBid): void'
+      - fields:
+        - codegraphId
+        - line
+        from:
+          codegraphId: method:1955dcbb0a7ec4cad7548a90704f4dc7
+          file: lib/abc/requester/mod.ts
+          kind: method
+          line: 309
+          name: BidCollector.addAll
+          signature: '(bids: CollectedBid[]): void'
+        name: BidCollector.addAll
+        op: changed
+        to:
+          codegraphId: method:3a8fc16e97f5c00ee9afe0af3a6cf4ec
+          file: lib/abc/requester/mod.ts
+          kind: method
+          line: 313
+          name: BidCollector.addAll
+          signature: '(bids: CollectedBid[]): void'
+      - fields:
+        - codegraphId
+        - line
+        from:
+          codegraphId: method:0ee6f18c9c4217757293e46a21ad2e53
+          file: lib/abc/requester/mod.ts
+          kind: method
+          line: 313
+          name: BidCollector.all
+          signature: '(): CollectedBid[]'
+        name: BidCollector.all
+        op: changed
+        to:
+          codegraphId: method:b7337014e6d88bef850d60a5bc2eb6b7
+          file: lib/abc/requester/mod.ts
+          kind: method
+          line: 317
+          name: BidCollector.all
+          signature: '(): CollectedBid[]'
+      - fields:
+        - codegraphId
+        - line
+        from:
+          codegraphId: method:3ebe83ceae74fd8f138b031fc90cd91c
+          file: lib/abc/requester/mod.ts
+          kind: method
+          line: 280
+          name: BidCollector.constructor
+          signature: '(readonly opts: BidCollectorOptions)'
+        name: BidCollector.constructor
+        op: changed
+        to:
+          codegraphId: method:6c9c2a66e9549e7c40c1877f02054f45
+          file: lib/abc/requester/mod.ts
+          kind: method
+          line: 284
+          name: BidCollector.constructor
+          signature: '(readonly opts: BidCollectorOptions)'
+      - fields:
+        - codegraphId
+        - line
+        from:
+          codegraphId: method:90e2b0d4cadd0775b029dd00b174b22c
+          file: lib/abc/requester/mod.ts
+          kind: method
+          line: 318
+          name: BidCollector.drain
+          signature: '(): Promise<void>'
+        name: BidCollector.drain
+        op: changed
+        to:
+          codegraphId: method:d99d03b741c7fe79db2a1d2d5830cec3
+          file: lib/abc/requester/mod.ts
+          kind: method
+          line: 322
+          name: BidCollector.drain
+          signature: '(): Promise<void>'
+      - fields:
+        - codegraphId
+        - line
+        from:
+          codegraphId: method:048fbde4089370fa13db8f85fd68ec7b
+          file: lib/abc/requester/mod.ts
+          kind: method
+          line: 286
+          name: BidCollector.isFree
+          signature: '(bid: CollectedBid): boolean'
+        name: BidCollector.isFree
+        op: changed
+        to:
+          codegraphId: method:16f9f058b4ad22665924e3c9caad330a
+          file: lib/abc/requester/mod.ts
+          kind: method
+          line: 290
+          name: BidCollector.isFree
+          signature: '(bid: CollectedBid): boolean'
+      - fields:
+        - codegraphId
+        - line
+        from:
+          codegraphId: interface:9073696cc3ba5f419a6eb2cfc60ea8fa
+          file: lib/abc/requester/mod.ts
+          kind: interface
+          line: 254
+          name: BidCollectorOptions
+        name: BidCollectorOptions
+        op: changed
+        to:
+          codegraphId: interface:3ca1df3473768560238d9bf874a7007d
+          file: lib/abc/requester/mod.ts
+          kind: interface
+          line: 258
+          name: BidCollectorOptions
+      - fields:
+        - codegraphId
+        - line
+        from:
+          codegraphId: interface:28d26b20f1990d47d11aeed4fba9731d
+          file: lib/abc/requester/mod.ts
+          kind: interface
+          line: 232
+          name: ConsoleBuffer
+        name: ConsoleBuffer
+        op: changed
+        to:
+          codegraphId: interface:22b6dbdf25ff617b21276922dddd9172
+          file: lib/abc/requester/mod.ts
+          kind: interface
+          line: 236
+          name: ConsoleBuffer
+      - fields:
+        - codegraphId
+        - line
+        from:
+          codegraphId: function:b652e236b155653ea2712ef7a9ee1aad
+          file: lib/abc/requester/mod.ts
+          kind: function
+          line: 244
+          name: bidCost
+          signature: '(bid: CollectedBid): number'
+        name: bidCost
+        op: changed
+        to:
+          codegraphId: function:7d2178c8391b536975f479eb6f18b574
+          file: lib/abc/requester/mod.ts
+          kind: function
+          line: 248
+          name: bidCost
+          signature: '(bid: CollectedBid): number'
+      - fields:
+        - codegraphId
+        - line
+        from:
+          codegraphId: function:aab4fa241c5018327a4034e6bf0e690f
+          file: lib/abc/requester/mod.ts
+          kind: function
+          line: 237
+          name: bidPayloadNsid
+          signature: '(bid: CollectedBid): string'
+        name: bidPayloadNsid
+        op: changed
+        to:
+          codegraphId: function:357285344d5e1ed273ccb6b4a83e6f58
+          file: lib/abc/requester/mod.ts
+          kind: function
+          line: 241
+          name: bidPayloadNsid
+          signature: '(bid: CollectedBid): string'
+      - fields:
+        - codegraphId
+        - line
+        from:
+          codegraphId: function:daac3a41e10595e1d6748a9bfaa04248
+          file: lib/abc/requester/mod.ts
+          kind: function
+          line: 249
+          name: selectWinner
+          signature: '(bids: CollectedBid[]): CollectedBid | undefined'
+        name: selectWinner
+        op: changed
+        to:
+          codegraphId: function:7f9e9285bf0541c78508fac23abb0f6a
+          file: lib/abc/requester/mod.ts
+          kind: function
+          line: 253
+          name: selectWinner
+          signature: '(bids: CollectedBid[]): CollectedBid | undefined'
+  direction: CodeToSpec
+  fromCommit: b296a7ee7c1aae256a81c378b419bf16b3a3aca6
+  systemContext: lib-abc-requester
+  toCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
+status:
+  message: the agent is summarizing lib-abc-requester
+  phase: Running

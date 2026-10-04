@@ -90,7 +90,7 @@ observed:
     signature: '(uri: string, cid: string): StrongRef'
   treeFiles:
   - lib/common/market-common/deno.json
-observedCommit: b296a7ee7c1aae256a81c378b419bf16b3a3aca6
+observedCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
 realizedSpecHash: 29a2ab5c1ecc810b1718e861ef9ac025eb5af3804d47b6f5b4dc2a72ac0ceaea
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 45b9b8260b4d7a8e89d8374490a616ec2b976315211f46bd754cafb73a751879
