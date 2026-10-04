@@ -829,6 +829,17 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.op-by-cid-lookup` (MUST): "getOpByCid must return the first entry recorded for the DID whose cid equals the requested CID, regardless of whether that entry is nullified, and must return null when the DID is unknown or no entry matches."
 - added `r.store-port` (MUST): "PlcStore must declare exactly six asynchronous operations over per-DID operation logs — getCurrentOps, getAuditLog, getOpByCid, insertOp, nullifyOps, and exportLogs — all delivering LogEntry values, so that consumers depend on the port and not on a concrete backend."
 
+### lib-hono-factory-market-atproto
+
+- intent: "" -> "This context exists so that market server implementations (for example the bidder entrypoint) can obtain a ready Hono app exposing the market XRPC surface without re-wiring routing, error handling and dependency injection each time. It separates the transport-side wiring (routes, context variables, error boundary) from the handler construction in lib/market-atproto/server.ts, letting a caller opt into only the XRPC methods it actually serves by populating the corresponding optional fields of MarketFactoryHandlers."
+- added `r.bid-accept-event-routes` (MUST): "Each of handlers.bid, handlers.accept and handlers.event independently gates its POST /xrpc/{SUBMIT_BID_NSID,SUBMIT_ACCEPT_NSID,SUBMIT_EVENT_NSID} route, constructed by spreading the handler config (serviceIds plus the per-method callback) together with the deps into createSubmitBidHandler, createSubmitAcceptHandler and createSubmitEventHandler respectively."
+- added `r.deps-on-context` (MUST): "createMarketFactory installs a middleware that sets the MarketServerDeps it was given on the Hono context variable marketDeps before calling the next handler, so every route can read the deps from the context."
+- added `r.env-typed` (MUST): "MarketEnv must stay a Hono environment type whose Variables include marketDeps typed as MarketServerDeps, matching what the deps middleware writes and what the factory's routes read."
+- added `r.error-boundary` (MUST): "The factory registers an app-level error handler that logs the failure with the request path, method and stringified error through deps.log, then responds 500 with the JSON body {"ok": false, "error": "internal error"} rather than leaking the error to the client."
+- added `r.handlers-optional` (MUST): "createMarketFactory accepts handlers as an optional second argument, so calling it with deps alone yields a factory serving only the always-on verify route, and every handler field (rfp, rfpScopeFilter, bid, accept, event) is optional and independently scoped."
+- added `r.rfp-route` (MUST): "When handlers.rfp is supplied, the factory registers POST /xrpc/SUBmit_RFP_NSID built from createSubmitRfpHandler with the deps, the rfp callbacks, and handlers.rfpScopeFilter as acceptScopeFilter; when handlers.rfp is absent the route is not registered at all."
+- added `r.verify-route` (MUST): "The verify route is registered unconditionally as GET /xrpc/NETWORK_ATTESTED_VERIFY_NSID, using a createVerifyHandler configured with deps.idResolver, a did:key resolver from createDidKeyResolver(), and deps.log."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance |
@@ -895,5 +906,5 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-hono-factory-compute-contract-gateway-xrpc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-hono-factory-did-plc-directory-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-hono-factory-did-plc-directory-storage-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-hono-factory-market-atproto-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-hono-factory-market-atproto-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-hono-factory-market-settlement-free-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |

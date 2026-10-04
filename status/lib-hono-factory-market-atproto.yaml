@@ -1,7 +1,8 @@
 conditions:
-- message: 'undeclared: MarketEnv, MarketFactoryHandlers, createMarketFactory'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -38,5 +39,5 @@ observed:
       )
   treeFiles:
   - lib/hono-factory-market-atproto/deno.json
-realizedSpecHash: a3936df272c062d1894f7a592d813d773c565469bfc8337282fceaf1b5676107
+realizedSpecHash: 895246b05198472b6e0f88bfd30d73c86dbd599c10e4bb0acea970716395681c
 syncedFingerprint: b65a7d98db73cca6a40d38dee5b38259cbd7b330a90527f53e83826f1b143408

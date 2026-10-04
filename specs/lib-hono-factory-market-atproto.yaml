@@ -1,6 +1,9 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
 codeRefIndex:
 - file:lib/hono-factory-market-atproto/mod.ts mod.ts@lib/hono-factory-market-atproto/mod.ts
+- function:800a02055445c67608223d52523a4f52 createMarketFactory@lib/hono-factory-market-atproto/mod.ts:44
+- interface:8e5a087b65382c18eeeb71bed01f210a MarketFactoryHandlers@lib/hono-factory-market-atproto/mod.ts:35
+- type_alias:7760b83d04c47b7681b47b9d97351064 MarketEnv@lib/hono-factory-market-atproto/mod.ts:29
 kind: SystemContext
 metadata:
   name: lib-hono-factory-market-atproto
@@ -8,5 +11,84 @@ metadata:
 spec:
   dependsOn:
   - sc.atproto-market
+  intent: This context exists so that market server implementations (for example the
+    bidder entrypoint) can obtain a ready Hono app exposing the market XRPC surface
+    without re-wiring routing, error handling and dependency injection each time.
+    It separates the transport-side wiring (routes, context variables, error boundary)
+    from the handler construction in lib/market-atproto/server.ts, letting a caller
+    opt into only the XRPC methods it actually serves by populating the corresponding
+    optional fields of MarketFactoryHandlers.
+  interfaces:
+  - file: lib/hono-factory-market-atproto/mod.ts
+    kind: type_alias
+    name: MarketEnv
+    signature: ()
+  - file: lib/hono-factory-market-atproto/mod.ts
+    kind: interface
+    name: MarketFactoryHandlers
+    signature: ()
+  - file: lib/hono-factory-market-atproto/mod.ts
+    kind: function
+    name: createMarketFactory
+    signature: '(deps: MarketServerDeps, handlers?: MarketFactoryHandlers)'
   repository: atproto-market
+  requirements:
+  - codeRefs:
+    - function:800a02055445c67608223d52523a4f52
+    - interface:8e5a087b65382c18eeeb71bed01f210a
+    id: r.bid-accept-event-routes
+    level: MUST
+    text: Each of handlers.bid, handlers.accept and handlers.event independently gates
+      its POST /xrpc/{SUBMIT_BID_NSID,SUBMIT_ACCEPT_NSID,SUBMIT_EVENT_NSID} route,
+      constructed by spreading the handler config (serviceIds plus the per-method
+      callback) together with the deps into createSubmitBidHandler, createSubmitAcceptHandler
+      and createSubmitEventHandler respectively.
+  - codeRefs:
+    - function:800a02055445c67608223d52523a4f52
+    - type_alias:7760b83d04c47b7681b47b9d97351064
+    id: r.deps-on-context
+    level: MUST
+    text: createMarketFactory installs a middleware that sets the MarketServerDeps
+      it was given on the Hono context variable marketDeps before calling the next
+      handler, so every route can read the deps from the context.
+  - codeRefs:
+    - type_alias:7760b83d04c47b7681b47b9d97351064
+    id: r.env-typed
+    level: MUST
+    text: MarketEnv must stay a Hono environment type whose Variables include marketDeps
+      typed as MarketServerDeps, matching what the deps middleware writes and what
+      the factory's routes read.
+  - codeRefs:
+    - function:800a02055445c67608223d52523a4f52
+    id: r.error-boundary
+    level: MUST
+    text: 'The factory registers an app-level error handler that logs the failure
+      with the request path, method and stringified error through deps.log, then responds
+      500 with the JSON body {"ok": false, "error": "internal error"} rather than
+      leaking the error to the client.'
+  - codeRefs:
+    - function:800a02055445c67608223d52523a4f52
+    - interface:8e5a087b65382c18eeeb71bed01f210a
+    id: r.handlers-optional
+    level: MUST
+    text: createMarketFactory accepts handlers as an optional second argument, so
+      calling it with deps alone yields a factory serving only the always-on verify
+      route, and every handler field (rfp, rfpScopeFilter, bid, accept, event) is
+      optional and independently scoped.
+  - codeRefs:
+    - function:800a02055445c67608223d52523a4f52
+    - interface:8e5a087b65382c18eeeb71bed01f210a
+    id: r.rfp-route
+    level: MUST
+    text: When handlers.rfp is supplied, the factory registers POST /xrpc/SUBmit_RFP_NSID
+      built from createSubmitRfpHandler with the deps, the rfp callbacks, and handlers.rfpScopeFilter
+      as acceptScopeFilter; when handlers.rfp is absent the route is not registered
+      at all.
+  - codeRefs:
+    - function:800a02055445c67608223d52523a4f52
+    id: r.verify-route
+    level: MUST
+    text: The verify route is registered unconditionally as GET /xrpc/NETWORK_ATTESTED_VERIFY_NSID,
+      using a createVerifyHandler configured with deps.idResolver, a did:key resolver
+      from createDidKeyResolver(), and deps.log.
   upstream: self
