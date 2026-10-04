@@ -1,7 +1,7 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
 kind: SpecChange
 metadata:
-  name: lib-hono-factory-market-settlement-free-c2s-d20070c3bfb0-d20070c3bfb0
+  name: lib-hono-factory-market-settlement-free-c2s-d20070c3bfb0-d20070c3bfb0-a2
   namespace: default
 spec:
   delta: {}
@@ -10,7 +10,10 @@ spec:
   systemContext: lib-hono-factory-market-settlement-free
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  agentLog: |-
+  message: the agent is summarizing lib-hono-factory-market-settlement-free
+  phase: Running
+superseded:
+- message: |-
     ...ext": "The handler must derive the accept inputs by calling `parseGrantPath(c.req.path, \`${path}/\`)` and use the resulting `acceptsUri` and `acceptsCid` as the lookup keys for the mint, so the trailing segments of the request path identify the accept being settled.",
           "codeRefs": [
             "function:7bbe9c9808ae3467009f796d9d61f7a7"
@@ -55,49 +58,5 @@ status:
         }
       ]
     }
-  message: |-
-    ...ext": "The handler must derive the accept inputs by calling `parseGrantPath(c.req.path, \`${path}/\`)` and use the resulting `acceptsUri` and `acceptsCid` as the lookup keys for the mint, so the trailing segments of the request path identify the accept being settled.",
-          "codeRefs": [
-            "function:7bbe9c9808ae3467009f796d9d61f7a7"
-          ]
-        },
-        {
-          "id": "r.mint-grant-and-return-strong-ref",
-          "level": "MUST",
-          "text": "The handler must await `mintGrantForAccepts` with `agent`, `resolve`, `acceptsUri`, `acceptsCid` and `signer` and respond with `c.json({ uri, cid })` carrying the minted strong ref's `uri` and `cid`.",
-          "codeRefs": [
-            "function:7bbe9c9808ae3467009f796d9d61f7a7"
-          ]
-        },
-        {
-          "id": "r.env-variables-agent-resolve",
-          "level": "MUST",
-          "text": "`FreeSettlementEnv` must declare `Variables` containing an `agent: Agent` and a `resolve: RecordResolver`, so downstream middleware and handlers typed against this env can read the request-scoped agent and resolver.",
-          "codeRefs": [
-            "type_alias:259f1f8ce12ab1cae693c13fa0c86028",
-            "file:lib/hono-factory-market-settlement-free/mod.ts"
-          ]
-        }
-      ],
-      "interfaces": [
-        {
-          "name": "FreeSettlementEnv",
-          "kind": "type_alias",
-          "signature": "type FreeSettlementEnv = { Variables: { agent: Agent; resolve: RecordResolver } }",
-          "file": "lib/hono-factory-market-settlement-free/mod.ts"
-        },
-        {
-          "name": "FreeSettlementConfig",
-          "kind": "interface",
-          "signature": "interface FreeSettlementConfig { getAgent: () => Agent; resolve: RecordResolver; getSigner: () => RecordSigner; log?: Logger; path?: string }",
-          "file": "lib/hono-factory-market-settlement-free/mod.ts"
-        },
-        {
-          "name": "createFreeSettlementFactory",
-          "kind": "function",
-          "signature": "createFreeSettlementFactory(config: FreeSettlementConfig)",
-          "file": "lib/hono-factory-market-settlement-free/mod.ts"
-        }
-      ]
-    }
+  name: lib-hono-factory-market-settlement-free-c2s-d20070c3bfb0-d20070c3bfb0
   phase: Failed
