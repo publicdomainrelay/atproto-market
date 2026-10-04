@@ -1,0 +1,14 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/market-settlement-free/client.ts client.ts@lib/market-settlement-free/client.ts
+- file:lib/market-settlement-free/mod.ts mod.ts@lib/market-settlement-free/mod.ts
+- file:lib/market-settlement-free/server.ts server.ts@lib/market-settlement-free/server.ts
+kind: SystemContext
+metadata:
+  name: lib-market-settlement-free
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

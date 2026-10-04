@@ -1015,3 +1015,47 @@ system_contexts:
   id: sc.lib-market-bidder-agent
   name: lib-market-bidder-agent
   upstream: self
+- code:
+  - lib/market-bidder-compute/mod.ts
+  codeRefIndex:
+  - file:lib/market-bidder-compute/mod.ts mod.ts@lib/market-bidder-compute/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-market-bidder-compute
+  name: lib-market-bidder-compute
+  upstream: self
+- code:
+  - lib/market-bidder-worker/mod.ts
+  codeRefIndex:
+  - file:lib/market-bidder-worker/mod.ts mod.ts@lib/market-bidder-worker/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-market-bidder-worker
+  name: lib-market-bidder-worker
+  upstream: self
+- code:
+  - lib/market-settlement-free/client.ts
+  - lib/market-settlement-free/mod.ts
+  - lib/market-settlement-free/server.ts
+  codeRefIndex:
+  - file:lib/market-settlement-free/client.ts client.ts@lib/market-settlement-free/client.ts
+  - file:lib/market-settlement-free/mod.ts mod.ts@lib/market-settlement-free/mod.ts
+  - file:lib/market-settlement-free/server.ts server.ts@lib/market-settlement-free/server.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-market-settlement-free
+  name: lib-market-settlement-free
+  upstream: self
+- code:
+  - lib/market-settlement-x402/client.ts
+  - lib/market-settlement-x402/mod.ts
+  - lib/market-settlement-x402/server.ts
+  codeRefIndex:
+  - file:lib/market-settlement-x402/client.ts client.ts@lib/market-settlement-x402/client.ts
+  - file:lib/market-settlement-x402/mod.ts mod.ts@lib/market-settlement-x402/mod.ts
+  - file:lib/market-settlement-x402/server.ts server.ts@lib/market-settlement-x402/server.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-market-settlement-x402
+  name: lib-market-settlement-x402
+  upstream: self

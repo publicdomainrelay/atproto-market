@@ -1,0 +1,78 @@
+conditions:
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
+  type: CodeSynced
+- message: no synced fingerprint has been recorded yet
+  reason: NotSyncedYet
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/market-settlement-x402/client.ts
+  - lib/market-settlement-x402/mod.ts
+  - lib/market-settlement-x402/server.ts
+  fingerprint: 3dfea414cf72ae476d8b1a12059db92550e1cecdff85df709b21948550da4fbb
+  interfaces:
+  - codegraphId: interface:79bc0568c0c3d466282e33574ce3067e
+    file: lib/market-settlement-x402/client.ts
+    kind: interface
+    line: 13
+    name: SettleX402Options
+  - codegraphId: function:400c91a8c6a70894daf46da876572ee6
+    file: lib/market-settlement-x402/client.ts
+    kind: function
+    line: 25
+    name: settleX402Payment
+    signature: '(opts: SettleX402Options): Promise<StrongRef>'
+  - codegraphId: class:d9cae8acb5befdb69053a678528cf3a0
+    file: lib/market-settlement-x402/server.ts
+    kind: class
+    line: 23
+    name: X402PaymentError
+  - codegraphId: method:164471847987d5ac0028bee41736e5ab
+    file: lib/market-settlement-x402/server.ts
+    kind: method
+    line: 24
+    name: X402PaymentError.constructor
+    signature: '(public readonly status: number, message: string)'
+  - codegraphId: function:bf43ae046d865cd951a7121f188a1ba0
+    file: lib/market-settlement-x402/server.ts
+    kind: function
+    line: 30
+    name: parseReceiptPath
+    signature: '(path: string, prefix = ""): { acceptsUri: string; acceptsCid: string
+      }'
+  - codegraphId: function:72d054e2b58c2f3913d7a9482387f0b2
+    file: lib/market-settlement-x402/server.ts
+    kind: function
+    line: 38
+    name: mintReceiptForAccepts
+    signature: |-
+      (opts: {
+        agent: Agent;
+        resolve: RecordResolver;
+        acceptsUri: string;
+        acceptsCid: string;
+        signer: RecordSigner;
+      }): Promise<StrongRef>
+  - codegraphId: function:b47d0322129cbcac24381eeb837e0eb5
+    file: lib/market-settlement-x402/server.ts
+    kind: function
+    line: 66
+    name: verifyX402Payment
+    signature: |-
+      (opts: {
+        payment: StrongRef | undefined;
+        resolve: RecordResolver;
+        bidderDid: string;
+      }): Promise<Resolved<ReceiptsX402>>
+  treeFiles:
+  - lib/market-settlement-x402/deno.json
+realizedSpecHash: d08fea096bf7f446b32a4aa38941dc1b43279d8a55c6bf965abf177be0e5d88c
+syncedFingerprint: 3dfea414cf72ae476d8b1a12059db92550e1cecdff85df709b21948550da4fbb

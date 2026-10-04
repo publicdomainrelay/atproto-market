@@ -1,0 +1,47 @@
+conditions:
+- message: 'undeclared: VmBidderDeps, createComputeProviderHooks, createVmBidderCallbacks'
+  reason: InterfacesMissing
+  status: "False"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/market-bidder-compute/mod.ts
+  fingerprint: 272e7bd6958cea514a397fba8c0e76ad44a4f7fbc808bde82f5cd1e7f013aaf7
+  interfaces:
+  - codegraphId: interface:462aac25716496197891c11616e37b58
+    file: lib/market-bidder-compute/mod.ts
+    kind: interface
+    line: 44
+    name: VmBidderDeps
+  - codegraphId: function:5ec21894bcf015b3164a07db128adf72
+    file: lib/market-bidder-compute/mod.ts
+    kind: function
+    line: 78
+    name: createVmBidderCallbacks
+    signature: |-
+      (deps: VmBidderDeps): {
+        rfp: Record<string, Record<string, SubmitRfpCallback>>;
+        accept: SubmitAcceptCallback;
+        event: Record<string, Record<string, (ctx: EventDispatchContext) => Promise<{ status?: number; body?: unknown } | void>>>;
+      }
+  - codegraphId: function:aed470efa09431ae131407c08a4b3c37
+    file: lib/market-bidder-compute/mod.ts
+    kind: function
+    line: 446
+    name: createComputeProviderHooks
+    signature: |-
+      (opts: {
+        provider: ComputeProvider;
+      }): MarketBidderProviderRef
+  treeFiles:
+  - lib/market-bidder-compute/deno.json
+realizedSpecHash: 269fa441be17d29da7e0d774e546fdf5448c71c5791f03433fe62239ca2713ac
+syncedFingerprint: 272e7bd6958cea514a397fba8c0e76ad44a4f7fbc808bde82f5cd1e7f013aaf7

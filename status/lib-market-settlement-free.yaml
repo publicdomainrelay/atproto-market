@@ -1,0 +1,78 @@
+conditions:
+- message: 'undeclared: FreeGrantError, FreeGrantError.constructor, SettleFreeOptions,
+    mintGrantForAccepts, parseGrantPath, settleFreeGrant, verifyFreeGrant'
+  reason: InterfacesMissing
+  status: "False"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/market-settlement-free/client.ts
+  - lib/market-settlement-free/mod.ts
+  - lib/market-settlement-free/server.ts
+  fingerprint: 93429871b8e52d2f65cd9070b16c6ff7efdcd2180cdc532b611086b801cc528e
+  interfaces:
+  - codegraphId: interface:cdef64f67aa14f86753db2d82253c04c
+    file: lib/market-settlement-free/client.ts
+    kind: interface
+    line: 13
+    name: SettleFreeOptions
+  - codegraphId: function:ca138dba99fe7843a691d23448a3af85
+    file: lib/market-settlement-free/client.ts
+    kind: function
+    line: 24
+    name: settleFreeGrant
+    signature: '(opts: SettleFreeOptions): Promise<StrongRef>'
+  - codegraphId: class:3827f797a6bd2d1108d56d2774b6518d
+    file: lib/market-settlement-free/server.ts
+    kind: class
+    line: 23
+    name: FreeGrantError
+  - codegraphId: method:d2ca5a3b04fbbe08479f73baafeef096
+    file: lib/market-settlement-free/server.ts
+    kind: method
+    line: 24
+    name: FreeGrantError.constructor
+    signature: '(public readonly status: number, message: string)'
+  - codegraphId: function:c1a42b12e47d538ba4f2c4033a018daf
+    file: lib/market-settlement-free/server.ts
+    kind: function
+    line: 30
+    name: parseGrantPath
+    signature: '(path: string, prefix = ""): { acceptsUri: string; acceptsCid: string
+      }'
+  - codegraphId: function:f40dd626ac80197332f89582a7964061
+    file: lib/market-settlement-free/server.ts
+    kind: function
+    line: 38
+    name: mintGrantForAccepts
+    signature: |-
+      (opts: {
+        agent: Agent;
+        resolve: RecordResolver;
+        acceptsUri: string;
+        acceptsCid: string;
+        signer: RecordSigner;
+      }): Promise<StrongRef>
+  - codegraphId: function:528e95e009f7f506a933ba541e0c4ed9
+    file: lib/market-settlement-free/server.ts
+    kind: function
+    line: 66
+    name: verifyFreeGrant
+    signature: |-
+      (opts: {
+        payment: StrongRef | undefined;
+        resolve: RecordResolver;
+        bidderDid: string;
+      }): Promise<Resolved<ReceiptsFree>>
+  treeFiles:
+  - lib/market-settlement-free/deno.json
+realizedSpecHash: a0a4216255d36fa4d4b467e5a594b12845ce4a27f6eea66a19c91ae9ef6ae699
+syncedFingerprint: 93429871b8e52d2f65cd9070b16c6ff7efdcd2180cdc532b611086b801cc528e
