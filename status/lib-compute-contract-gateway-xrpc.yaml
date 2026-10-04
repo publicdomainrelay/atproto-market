@@ -33,6 +33,6 @@ observed:
       ): ComputeContractGateway
   treeFiles:
   - lib/compute-contract-gateway-xrpc/deno.json
-observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
+observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
 realizedSpecHash: 6ca1791600a9ce1b84f0256fa15d4329a55e3697c8c2974399d0ed116b8e2b47
 syncedFingerprint: d0d81be78c9ecb29f5536f3d57ce1f14f2b4297f2252b672be71295d7da0d0dd
