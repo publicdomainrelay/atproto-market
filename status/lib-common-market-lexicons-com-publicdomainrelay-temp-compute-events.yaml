@@ -1,15 +1,22 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: 48622380993a1a821973e29bdd0d08200806dbc146e8d1e1ff762724006176be
+realizedSpecHash: 06b36113f0b9b7d3dce64836904870416e0b9673204fa281734f9e0a8d7f35ea
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: CodeRefsUnresolved
-  message: 'unresolved requirement code refs: r.barrel-only-no-local-declarations:
-    file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm.ts'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
-  reason: NotSyncedYet
-  message: no synced fingerprint has been recorded yet
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed
   message: the spec passes the validator
-observed: {}
+observed:
+  files:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm.ts
+  fingerprint: 48622380993a1a821973e29bdd0d08200806dbc146e8d1e1ff762724006176be
