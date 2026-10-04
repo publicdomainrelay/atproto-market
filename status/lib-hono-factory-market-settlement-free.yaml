@@ -1,7 +1,8 @@
 conditions:
-- message: 'undeclared: FreeSettlementConfig, FreeSettlementEnv, createFreeSettlementFactory'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -34,5 +35,5 @@ observed:
     signature: '(config: FreeSettlementConfig)'
   treeFiles:
   - lib/hono-factory-market-settlement-free/deno.json
-realizedSpecHash: 29df741f7f5c0045e8706b1a03d7f912f0889cf0fe35edc0b9e05d4a449119cf
+realizedSpecHash: 9fd120eda5150accb40b6b3167d926c39ca0e61a8a3e6bd7b616f42a40514216
 syncedFingerprint: 543cbdec95c06ad40e9ce2351795f1aab6333f6bed50abaec0f32d495d83a918
