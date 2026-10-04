@@ -245,6 +245,7 @@ const tunnelModule: UserDataModule = (ctx) => {
   const aliases = (ctx.hostAliases ?? []).filter((a) => /^[\w.:-]+\s+[\w.-]+$/.test(a));
   return {
     apt: { preserve_sources_list: true },
+    packages: ["openssh-server"],
     disable_root: false,
     ssh_pwauth: false,
     bootcmd: aliases.map((a) =>
@@ -311,8 +312,8 @@ const DUMBPIPE_VERSION = "v0.39.0";
  * iroh — dumbpipe listener transport (replaces the did-key-ingress-proxy
  * tunnel-subscriber). Guest sshd keeps :22 on loopback; dumbpipe publishes a
  * `listen-tcp` endpoint over the iroh network. dumbpipe prints its control
- * output -- including the ticket as the argument of the `dumbpipe connect
- * <ticket>` line -- on stdout/stderr, so the unit appends the listener's
+ * output -- including the ticket as the argument of the `dumbpipe connect-tcp
+ * <ticket>` line -- on stderr, so the unit appends the listener's
  * combined output to a log and runcmd extracts the ticket token from it into
  * /root/secrets/iroh-node-id (the compute provider's getNodeId hook cats that
  * path). The service keeps running after the capture so the ticket stays valid.
@@ -322,7 +323,7 @@ const irohModule: UserDataModule = (ctx) => {
   const targetPort = ctx.targetPort ?? 22;
   return {
     apt: { preserve_sources_list: true },
-    packages: ["curl"],
+    packages: ["curl", "openssh-server"],
     disable_root: false,
     ssh_pwauth: false,
     write_files: [
@@ -382,7 +383,7 @@ const irohModule: UserDataModule = (ctx) => {
       "systemctl enable --now ssh || systemctl enable --now sshd",
       "systemctl enable --now dumbpipe-listen.service",
       ["sh", "-c", `for _ in $(seq 1 60); do
-  _ticket=$(grep -m1 -oE 'dumbpipe connect [^[:space:]]+' /root/secrets/iroh-dumbpipe.log 2>/dev/null | cut -d' ' -f3)
+  _ticket=$(grep -m1 -oE 'dumbpipe connect-tcp [^[:space:]]+' /root/secrets/iroh-dumbpipe.log 2>/dev/null | cut -d' ' -f3)
   [ -n "$_ticket" ] && break
   sleep 1
 done
@@ -403,6 +404,7 @@ const fedproxySshModule: UserDataModule = (ctx) => {
   const xrpcRelayFqdn = `${ctx.xrpcRelaySubdomain ?? ""}.${ctx.relayHost ?? ""}`;
   return {
     apt: { preserve_sources_list: true },
+    packages: ["openssh-server"],
     disable_root: false,
     ssh_pwauth: false,
     write_files: [

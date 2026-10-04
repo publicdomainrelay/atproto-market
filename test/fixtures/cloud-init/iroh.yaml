@@ -3,6 +3,7 @@ apt:
   preserve_sources_list: true
 packages:
   - curl
+  - openssh-server
 write_files:
   - path: /root/.ssh/authorized_keys
     owner: root:root
@@ -59,7 +60,7 @@ runcmd:
     - -c
     - |-
       for _ in $(seq 1 60); do
-        _ticket=$(grep -m1 -oE 'dumbpipe connect [^[:space:]]+' /root/secrets/iroh-dumbpipe.log 2>/dev/null | cut -d' ' -f3)
+        _ticket=$(grep -m1 -oE 'dumbpipe connect-tcp [^[:space:]]+' /root/secrets/iroh-dumbpipe.log 2>/dev/null | cut -d' ' -f3)
         [ -n "$_ticket" ] && break
         sleep 1
       done

@@ -144,6 +144,34 @@ Deno.test("iroh dumbpipe listener replaces the tunnel subscriber", () => {
   assert(!y.includes("tunnel-subscriber"), "old transport not re-emitted");
 });
 
+Deno.test("iroh ticket extraction matches the connect-tcp line dumbpipe prints", () => {
+  const y = buildUserData({ ctx: CTX, modules: ["iroh"] });
+  // `dumbpipe listen-tcp` prints `dumbpipe connect-tcp <ticket>` on stderr, so
+  // the extraction must key on the subcommand that was actually printed.
+  assert(y.includes("dumbpipe connect-tcp "), "extracts from the connect-tcp line");
+  assert(!y.includes("dumbpipe connect [^"), "no bare `dumbpipe connect` prefix");
+});
+
+Deno.test("every module that configures an sshd installs openssh-server", () => {
+  for (const id of listUserDataModules()) {
+    const y = buildUserData({ ctx: CTX, modules: [id] });
+    const configuresSshd = y.includes("sshd_config.d/") ||
+      y.includes("systemctl enable --now ssh");
+    if (!configuresSshd) continue;
+    assert(
+      y.includes("openssh-server"),
+      `${id} configures an sshd but never installs openssh-server`,
+    );
+  }
+  // The rule has to bite for the transports that actually own an sshd.
+  for (const id of ["tunnel", "fedproxy-ssh", "iroh"]) {
+    assert(
+      /sshd_config\.d\//.test(buildUserData({ ctx: CTX, modules: [id] })),
+      `${id} is covered by the completeness rule`,
+    );
+  }
+});
+
 Deno.test("wootty combo carries token handoff + hardening", () => {
   const y = buildUserData({ ctx: CTX, modules: ["fedproxy-web", "wootty"] });
   assert(y.includes("get-ttyd-password-vm-test"));
