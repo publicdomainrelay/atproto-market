@@ -1,17 +1,44 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: b29671533054f5810c22010be833c835766105b429a3fa3c83f24b71d831e11f
+realizedSpecHash: 5020fac6c500584430b78141b7010bc0696db474f045e01b82daab29c726d411
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'missing: DelegatedTrustBadgeBlueKeysOpts, ListedRecord, createBadgeBlueKeysDelegatedTrustResolver;
-    unresolved: r-degrade-on-listing-failure: function:473e9effb9d9e91445db68e031e329ea,
-    r-optional-logger: interface:05ddb65bca17c3188f02d33eda8b8481, r-vouch-resolver-injected:
-    file:lib/delegated-trust-badge-blue-keys/mod.ts, r.list-badge-blue-keys: interface:9ba074d070c57eb2e62aa0df62cb0178'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
-  reason: NotSyncedYet
-  message: no synced fingerprint has been recorded yet
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed
   message: the spec passes the validator
-observed: {}
+observed:
+  files:
+  - lib/delegated-trust-badge-blue-keys/mod.ts
+  treeFiles:
+  - lib/delegated-trust-badge-blue-keys/deno.json
+  interfaces:
+  - name: ListedRecord
+    kind: interface
+    file: lib/delegated-trust-badge-blue-keys/mod.ts
+    line: 4
+    codegraphId: interface:9ba074d070c57eb2e62aa0df62cb0178
+  - name: DelegatedTrustBadgeBlueKeysOpts
+    kind: interface
+    file: lib/delegated-trust-badge-blue-keys/mod.ts
+    line: 9
+    codegraphId: interface:05ddb65bca17c3188f02d33eda8b8481
+  - name: createBadgeBlueKeysDelegatedTrustResolver
+    kind: function
+    signature: |-
+      (
+        opts: DelegatedTrustBadgeBlueKeysOpts,
+      ): DelegatedTrustResolver
+    file: lib/delegated-trust-badge-blue-keys/mod.ts
+    line: 15
+    codegraphId: function:473e9effb9d9e91445db68e031e329ea
+  fingerprint: b29671533054f5810c22010be833c835766105b429a3fa3c83f24b71d831e11f

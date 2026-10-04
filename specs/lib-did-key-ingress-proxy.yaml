@@ -144,3 +144,6 @@ spec:
     file: lib/did-key-ingress-proxy/mod.ts
 codeRefIndex:
 - file:lib/did-key-ingress-proxy/mod.ts mod.ts@lib/did-key-ingress-proxy/mod.ts
+- function:720938c17d8a919da0fa9510c65cc8d1 getServiceAuthToken@lib/did-key-ingress-proxy/mod.ts:51
+- function:ab0d43e74646836bd86d4b393d2cafa0 createIngress@lib/did-key-ingress-proxy/mod.ts:38
+- interface:da388f002919a2fd08b59e8f65646870 CreateIngressOpts@lib/did-key-ingress-proxy/mod.ts:8

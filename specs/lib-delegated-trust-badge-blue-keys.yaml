@@ -103,3 +103,6 @@ spec:
     file: lib/delegated-trust-badge-blue-keys/mod.ts
 codeRefIndex:
 - file:lib/delegated-trust-badge-blue-keys/mod.ts mod.ts@lib/delegated-trust-badge-blue-keys/mod.ts
+- function:473e9effb9d9e91445db68e031e329ea createBadgeBlueKeysDelegatedTrustResolver@lib/delegated-trust-badge-blue-keys/mod.ts:15
+- interface:05ddb65bca17c3188f02d33eda8b8481 DelegatedTrustBadgeBlueKeysOpts@lib/delegated-trust-badge-blue-keys/mod.ts:9
+- interface:9ba074d070c57eb2e62aa0df62cb0178 ListedRecord@lib/delegated-trust-badge-blue-keys/mod.ts:4

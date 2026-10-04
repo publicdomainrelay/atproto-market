@@ -341,9 +341,47 @@ spec:
     signature: 'saveKeypairState(path: string, state: KeypairState): Promise<void>'
     file: lib/did-plc/keypair-state.ts
 codeRefIndex:
+- class:33b7d068752c38948075552d9cef40eb PlcNotFoundError@lib/did-plc/client.ts:52
+- class:8a857a0ac52fbb0a4da6a57b447664ec PlcInvalidOperationError@lib/did-plc/client.ts:66
+- class:9b6ece3d7112f0cf0be907735c5f3d5a PlcTombstonedError@lib/did-plc/client.ts:59
+- class:a02218cd093a941f85749da7960298a5 PlcError@lib/did-plc/client.ts:42
+- class:ca276d9a71683fdf566bcdf5fb46e47c PlcClient@lib/did-plc/client.ts:131
 - file:lib/did-plc/client.ts client.ts@lib/did-plc/client.ts
 - file:lib/did-plc/fixup-openapi.ts fixup-openapi.ts@lib/did-plc/fixup-openapi.ts
+- file:lib/did-plc/genesis.ts genesis.ts@lib/did-plc/genesis.ts
+- file:lib/did-plc/keypair-state.ts keypair-state.ts@lib/did-plc/keypair-state.ts
 - file:lib/did-plc/mod.ts mod.ts@lib/did-plc/mod.ts
 - file:lib/did-plc/openapi-ts.config.ts openapi-ts.config.ts@lib/did-plc/openapi-ts.config.ts
 - file:lib/did-plc/openapi.official.yaml openapi.official.yaml@lib/did-plc/openapi.official.yaml
+- file:lib/did-plc/resolver.ts resolver.ts@lib/did-plc/resolver.ts
 - file:lib/did-plc/types.ts types.ts@lib/did-plc/types.ts
+- function:3a3751439dd48106c07530ecb7436c23 plcClientAsKeyResolver@lib/did-plc/resolver.ts:77
+- function:3b90763d12a0a4c3f820e3c6672dc372 keysFromDidDocument@lib/did-plc/resolver.ts:22
+- function:689a9b51d2e09d093defe4dfd3db3deb loadKeypairState@lib/did-plc/keypair-state.ts:17
+- function:8da01723383daa387c12dc941628b9a7 createGenesisOp@lib/did-plc/genesis.ts:63
+- function:a44d36ee0dc159bf2beed768aaff1e61 createPlcKeyResolver@lib/did-plc/resolver.ts:54
+- function:c4d5a623ba103c6f42dd447f82559553 saveKeypairState@lib/did-plc/keypair-state.ts:37
+- function:e49cc4a90e023dc47d5a2d109f1d2f08 createPlcDirectoryClient@lib/did-plc/client.ts:340
+- interface:4c23cbfe2fc6db60fea7fe843a47a8f6 GenesisOptions@lib/did-plc/genesis.ts:21
+- interface:4f51012b3df9c0dc5b7b93dc7b0249ba PlcService@lib/did-plc/types.ts:51
+- interface:5998a6ebd292373230c747dba056be85 GenesisResult@lib/did-plc/genesis.ts:43
+- interface:d1adb282179ee1bc93186f577980da48 PlcKeyResolverOptions@lib/did-plc/resolver.ts:31
+- interface:d20f19dc21ed3a83a1714e5dd722b53e HealthResponse@lib/did-plc/types.ts:65
+- interface:d759a391fe304d866db88c324e3e12bc PlcClientOptions@lib/did-plc/client.ts:120
+- interface:da65aed4a72e5d371a6f16031aa0ef83 ExportOptions@lib/did-plc/types.ts:57
+- interface:df8391de25b80908a518669067a0216c KeypairState@lib/did-plc/keypair-state.ts:3
+- method:21f0cc8824e1b4f6b3504c835e87cf1d PlcClient.getAuditLog@lib/did-plc/client.ts:210
+- method:3eb76e760f6161e2133b61ae52ba09e2 PlcError.constructor@lib/did-plc/client.ts:43
+- method:4a87ed875b87c760b18994d50d1b79d5 PlcInvalidOperationError.constructor@lib/did-plc/client.ts:67
+- method:56dc0a2c422513844c595e8ec9a9b661 PlcNotFoundError.constructor@lib/did-plc/client.ts:53
+- method:6265c2659cccf561f5f79d7c67669548 PlcClient.submitOp@lib/did-plc/client.ts:252
+- method:72c360d1837be5bb5dcfa1140fa19cc7 PlcTombstonedError.constructor@lib/did-plc/client.ts:60
+- method:72f0f2fbb2ecf38e70ef7708ae62c81b PlcClient.exportPages@lib/did-plc/client.ts:325
+- method:7a27bfcb60ada39f3859bf8cd78c6fed PlcClient.getData@lib/did-plc/client.ts:238
+- method:934b52fe49087234488561a3e9fa265c PlcClient.health@lib/did-plc/client.ts:269
+- method:a608364390c07ffbcb4053df02e4f50c PlcClient.resolve@lib/did-plc/client.ts:182
+- method:a8b2aede97428a79b7847a31740b5845 PlcClient.export@lib/did-plc/client.ts:283
+- method:acc069a9598f75909843cc79e05f199d PlcClient.getLastOp@lib/did-plc/client.ts:224
+- method:ccfc740ff0345ec11783cafe8b0545c9 PlcClient.constructor@lib/did-plc/client.ts:137
+- method:f049cdcb1705123200f64a903d8d30bf PlcClient.getLog@lib/did-plc/client.ts:196
+- type_alias:cda4456d40f40308bc05b5e1f3d08229 KeysForDid@lib/did-plc/resolver.ts:15

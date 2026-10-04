@@ -1,17 +1,42 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: e28e67f6737f8c55bb366814adcf8bd94e1c9319f609707b7d811b74b5ef067c
+realizedSpecHash: 5c6086004314431e2da56212b552defffcf4be24c009fadeae9641834cf083f7
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'missing: CreateIngressOpts, createIngress, getServiceAuthToken; unresolved:
-    r.close-idempotent-before-serve: function:ab0d43e74646836bd86d4b393d2cafa0, r.create-ingress-factory:
-    file:lib/did-key-ingress-proxy/mod.ts, r.create-ingress-factory: interface:da388f002919a2fd08b59e8f65646870,
-    r.service-auth-token: function:720938c17d8a919da0fa9510c65cc8d1'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
-  reason: NotSyncedYet
-  message: no synced fingerprint has been recorded yet
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed
   message: the spec passes the validator
-observed: {}
+observed:
+  files:
+  - lib/did-key-ingress-proxy/mod.ts
+  treeFiles:
+  - lib/did-key-ingress-proxy/deno.json
+  interfaces:
+  - name: CreateIngressOpts
+    kind: interface
+    file: lib/did-key-ingress-proxy/mod.ts
+    line: 8
+    codegraphId: interface:da388f002919a2fd08b59e8f65646870
+  - name: createIngress
+    kind: function
+    signature: '(opts: CreateIngressOpts): IngressRef'
+    file: lib/did-key-ingress-proxy/mod.ts
+    line: 38
+    codegraphId: function:ab0d43e74646836bd86d4b393d2cafa0
+  - name: getServiceAuthToken
+    kind: function
+    signature: '(lxm: string): Promise<string>'
+    file: lib/did-key-ingress-proxy/mod.ts
+    line: 51
+    codegraphId: function:720938c17d8a919da0fa9510c65cc8d1
+  fingerprint: e28e67f6737f8c55bb366814adcf8bd94e1c9319f609707b7d811b74b5ef067c

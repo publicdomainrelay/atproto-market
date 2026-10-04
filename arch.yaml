@@ -1828,7 +1828,17 @@ system_contexts:
   - id: r.rbac-record-not-published
     level: MUST
   codeRefIndex:
+  - class:d2916f8a4fa70fb60b7c6a8af50dc206 InvalidSecretsFileError@lib/common/secrets-common/mod.ts:42
   - file:lib/common/secrets-common/mod.ts mod.ts@lib/common/secrets-common/mod.ts
+  - function:6f7a9521a0c32f2f991f030c6b149cdb parseSecretsFile@lib/common/secrets-common/mod.ts:51
+  - function:bbd14d354b9d1c3aae2765a9447d1c79 buildSecretsRbacRecord@lib/common/secrets-common/mod.ts:118
+  - interface:1b0cf0f1cd64a3fb0c747b50f12fe6d0 SecretEntry@lib/common/secrets-common/mod.ts:7
+  - interface:3a4058c69bc810fa3f1d318c05426b08 RbacRoleShape@lib/common/secrets-common/mod.ts:24
+  - interface:7253e0f353e49b3a4e231426d24dc4ec SecretsRbacContext@lib/common/secrets-common/mod.ts:103
+  - interface:9f03721d29e2b3898e0b29ad30cb348a RbacPolicyShape@lib/common/secrets-common/mod.ts:19
+  - interface:b63e86d96de3a2cd62373c61fb39feb4 RbacProtectsShape@lib/common/secrets-common/mod.ts:29
+  - interface:ba32adcf332104a7ef22a672b35989fa RbacSchemaShape@lib/common/secrets-common/mod.ts:12
+  - interface:fe7c741a681050cfb5430927cbdf4551 RbacRecordShape@lib/common/secrets-common/mod.ts:34
 - id: sc.lib-compute-contract-gateway-xrpc
   name: lib-compute-contract-gateway-xrpc
   spec: specs/lib-compute-contract-gateway-xrpc.yaml
@@ -1868,6 +1878,8 @@ system_contexts:
     level: MUST
   codeRefIndex:
   - file:lib/compute-contract-gateway-xrpc/mod.ts mod.ts@lib/compute-contract-gateway-xrpc/mod.ts
+  - function:03370a182fd0653c2e57c9c946423ce7 createComputeContractGateway@lib/compute-contract-gateway-xrpc/mod.ts:38
+  - interface:ecee421eb7bb2708411146ff260c58b2 GatewayOptions@lib/compute-contract-gateway-xrpc/mod.ts:26
 - id: sc.lib-delegated-trust-badge-blue-keys
   name: lib-delegated-trust-badge-blue-keys
   spec: specs/lib-delegated-trust-badge-blue-keys.yaml
@@ -1895,6 +1907,9 @@ system_contexts:
     level: MUST
   codeRefIndex:
   - file:lib/delegated-trust-badge-blue-keys/mod.ts mod.ts@lib/delegated-trust-badge-blue-keys/mod.ts
+  - function:473e9effb9d9e91445db68e031e329ea createBadgeBlueKeysDelegatedTrustResolver@lib/delegated-trust-badge-blue-keys/mod.ts:15
+  - interface:05ddb65bca17c3188f02d33eda8b8481 DelegatedTrustBadgeBlueKeysOpts@lib/delegated-trust-badge-blue-keys/mod.ts:9
+  - interface:9ba074d070c57eb2e62aa0df62cb0178 ListedRecord@lib/delegated-trust-badge-blue-keys/mod.ts:4
 - id: sc.lib-did-key-ingress-proxy
   name: lib-did-key-ingress-proxy
   spec: specs/lib-did-key-ingress-proxy.yaml
@@ -1926,6 +1941,9 @@ system_contexts:
     level: MUST
   codeRefIndex:
   - file:lib/did-key-ingress-proxy/mod.ts mod.ts@lib/did-key-ingress-proxy/mod.ts
+  - function:720938c17d8a919da0fa9510c65cc8d1 getServiceAuthToken@lib/did-key-ingress-proxy/mod.ts:51
+  - function:ab0d43e74646836bd86d4b393d2cafa0 createIngress@lib/did-key-ingress-proxy/mod.ts:38
+  - interface:da388f002919a2fd08b59e8f65646870 CreateIngressOpts@lib/did-key-ingress-proxy/mod.ts:8
 - id: sc.lib-did-plc
   name: lib-did-plc
   spec: specs/lib-did-plc.yaml
@@ -1968,12 +1986,50 @@ system_contexts:
   - id: r.type-augmentation
     level: SHOULD
   codeRefIndex:
+  - class:33b7d068752c38948075552d9cef40eb PlcNotFoundError@lib/did-plc/client.ts:52
+  - class:8a857a0ac52fbb0a4da6a57b447664ec PlcInvalidOperationError@lib/did-plc/client.ts:66
+  - class:9b6ece3d7112f0cf0be907735c5f3d5a PlcTombstonedError@lib/did-plc/client.ts:59
+  - class:a02218cd093a941f85749da7960298a5 PlcError@lib/did-plc/client.ts:42
+  - class:ca276d9a71683fdf566bcdf5fb46e47c PlcClient@lib/did-plc/client.ts:131
   - file:lib/did-plc/client.ts client.ts@lib/did-plc/client.ts
   - file:lib/did-plc/fixup-openapi.ts fixup-openapi.ts@lib/did-plc/fixup-openapi.ts
+  - file:lib/did-plc/genesis.ts genesis.ts@lib/did-plc/genesis.ts
+  - file:lib/did-plc/keypair-state.ts keypair-state.ts@lib/did-plc/keypair-state.ts
   - file:lib/did-plc/mod.ts mod.ts@lib/did-plc/mod.ts
   - file:lib/did-plc/openapi-ts.config.ts openapi-ts.config.ts@lib/did-plc/openapi-ts.config.ts
   - file:lib/did-plc/openapi.official.yaml openapi.official.yaml@lib/did-plc/openapi.official.yaml
+  - file:lib/did-plc/resolver.ts resolver.ts@lib/did-plc/resolver.ts
   - file:lib/did-plc/types.ts types.ts@lib/did-plc/types.ts
+  - function:3a3751439dd48106c07530ecb7436c23 plcClientAsKeyResolver@lib/did-plc/resolver.ts:77
+  - function:3b90763d12a0a4c3f820e3c6672dc372 keysFromDidDocument@lib/did-plc/resolver.ts:22
+  - function:689a9b51d2e09d093defe4dfd3db3deb loadKeypairState@lib/did-plc/keypair-state.ts:17
+  - function:8da01723383daa387c12dc941628b9a7 createGenesisOp@lib/did-plc/genesis.ts:63
+  - function:a44d36ee0dc159bf2beed768aaff1e61 createPlcKeyResolver@lib/did-plc/resolver.ts:54
+  - function:c4d5a623ba103c6f42dd447f82559553 saveKeypairState@lib/did-plc/keypair-state.ts:37
+  - function:e49cc4a90e023dc47d5a2d109f1d2f08 createPlcDirectoryClient@lib/did-plc/client.ts:340
+  - interface:4c23cbfe2fc6db60fea7fe843a47a8f6 GenesisOptions@lib/did-plc/genesis.ts:21
+  - interface:4f51012b3df9c0dc5b7b93dc7b0249ba PlcService@lib/did-plc/types.ts:51
+  - interface:5998a6ebd292373230c747dba056be85 GenesisResult@lib/did-plc/genesis.ts:43
+  - interface:d1adb282179ee1bc93186f577980da48 PlcKeyResolverOptions@lib/did-plc/resolver.ts:31
+  - interface:d20f19dc21ed3a83a1714e5dd722b53e HealthResponse@lib/did-plc/types.ts:65
+  - interface:d759a391fe304d866db88c324e3e12bc PlcClientOptions@lib/did-plc/client.ts:120
+  - interface:da65aed4a72e5d371a6f16031aa0ef83 ExportOptions@lib/did-plc/types.ts:57
+  - interface:df8391de25b80908a518669067a0216c KeypairState@lib/did-plc/keypair-state.ts:3
+  - method:21f0cc8824e1b4f6b3504c835e87cf1d PlcClient.getAuditLog@lib/did-plc/client.ts:210
+  - method:3eb76e760f6161e2133b61ae52ba09e2 PlcError.constructor@lib/did-plc/client.ts:43
+  - method:4a87ed875b87c760b18994d50d1b79d5 PlcInvalidOperationError.constructor@lib/did-plc/client.ts:67
+  - method:56dc0a2c422513844c595e8ec9a9b661 PlcNotFoundError.constructor@lib/did-plc/client.ts:53
+  - method:6265c2659cccf561f5f79d7c67669548 PlcClient.submitOp@lib/did-plc/client.ts:252
+  - method:72c360d1837be5bb5dcfa1140fa19cc7 PlcTombstonedError.constructor@lib/did-plc/client.ts:60
+  - method:72f0f2fbb2ecf38e70ef7708ae62c81b PlcClient.exportPages@lib/did-plc/client.ts:325
+  - method:7a27bfcb60ada39f3859bf8cd78c6fed PlcClient.getData@lib/did-plc/client.ts:238
+  - method:934b52fe49087234488561a3e9fa265c PlcClient.health@lib/did-plc/client.ts:269
+  - method:a608364390c07ffbcb4053df02e4f50c PlcClient.resolve@lib/did-plc/client.ts:182
+  - method:a8b2aede97428a79b7847a31740b5845 PlcClient.export@lib/did-plc/client.ts:283
+  - method:acc069a9598f75909843cc79e05f199d PlcClient.getLastOp@lib/did-plc/client.ts:224
+  - method:ccfc740ff0345ec11783cafe8b0545c9 PlcClient.constructor@lib/did-plc/client.ts:137
+  - method:f049cdcb1705123200f64a903d8d30bf PlcClient.getLog@lib/did-plc/client.ts:196
+  - type_alias:cda4456d40f40308bc05b5e1f3d08229 KeysForDid@lib/did-plc/resolver.ts:15
 - id: sc.lib-did-plc-generated
   name: lib-did-plc-generated
   spec: specs/lib-did-plc-generated.yaml
@@ -2006,6 +2062,39 @@ system_contexts:
   - file:lib/did-plc/generated/index.ts index.ts@lib/did-plc/generated/index.ts
   - file:lib/did-plc/generated/sdk.gen.ts sdk.gen.ts@lib/did-plc/generated/sdk.gen.ts
   - file:lib/did-plc/generated/types.gen.ts types.gen.ts@lib/did-plc/generated/types.gen.ts
+  - function:0f780cea28411c032283f1ed477292f0 resolveDid@lib/did-plc/generated/sdk.gen.ts:24
+  - function:1495d4cb8fc5849c95ebfe53032eb6d5 createPlcOp@lib/did-plc/generated/sdk.gen.ts:29
+  - function:2c8cda686039039edfb62906f1c7b8e4 getLastOp@lib/did-plc/generated/sdk.gen.ts:51
+  - function:4d0581d5775526dc30563286eee15cf9 export_@lib/did-plc/generated/sdk.gen.ts:61
+  - function:8197f5c8b53dd102aab15a4859eb9eff getPlcOpLog@lib/did-plc/generated/sdk.gen.ts:41
+  - function:c16923351c028a2524d09fd49a4e9396 getPlcData@lib/did-plc/generated/sdk.gen.ts:56
+  - function:f88f253e570376f3c82045ceb410c964 getPlcAuditLog@lib/did-plc/generated/sdk.gen.ts:46
+  - type_alias:2217b5041dc37a25dbb3a95b3fdc3614 DidDocument@lib/did-plc/generated/types.gen.ts:116
+  - type_alias:2228e75a3fba8466df0a89f8602a2e3c ResolveDidResponses@lib/did-plc/generated/types.gen.ts:167
+  - type_alias:22d89c51e34c8a65a3d38a599069aad1 GetLastOpErrors@lib/did-plc/generated/types.gen.ts:282
+  - type_alias:254318a85cdcbe888f557d8dcbd18fce PlcOp@lib/did-plc/generated/types.gen.ts:18
+  - type_alias:36deb58af6b1e6a0c1b9bfd92a509de2 ClientOptions@lib/did-plc/generated/types.gen.ts:3
+  - type_alias:40f648a1dd86d8b4a12f5522753ebf80 GetPlcAuditLogErrors@lib/did-plc/generated/types.gen.ts:253
+  - type_alias:49e81f3179617521132a81d448100235 LogEntry@lib/did-plc/generated/types.gen.ts:96
+  - type_alias:4c53550ff9f0b1530f777457b2aab4b9 GetPlcDataResponses@lib/did-plc/generated/types.gen.ts:328
+  - type_alias:4c6c1f7432ff4192993ee2b756fa5062 GetPlcOpLogResponses@lib/did-plc/generated/types.gen.ts:235
+  - type_alias:50207c3afa79e900f577b79bf52f6aba ExportErrors@lib/did-plc/generated/types.gen.ts:348
+  - type_alias:680e3694e4e92af4022983c5fdd977f9 CreatePlcOpErrors@lib/did-plc/generated/types.gen.ts:185
+  - type_alias:6c4d76f5a7e883c1806d2ad3dc30c088 CreateClientConfig@lib/did-plc/generated/client.gen.ts:14
+  - type_alias:78962202220f883b01ea8937e4d66665 ExportData@lib/did-plc/generated/types.gen.ts:335
+  - type_alias:82dbe8940dcd7b888caeee4317af1244 Options@lib/did-plc/generated/sdk.gen.ts:7
+  - type_alias:99c6e65ed84f158926b7d77175147c6c ExportResponses@lib/did-plc/generated/types.gen.ts:359
+  - type_alias:9a3e85048fb3b4540f9b5b0ef6bc3287 GetPlcDataErrors@lib/did-plc/generated/types.gen.ts:311
+  - type_alias:9b356e3f3cd84e6766bfc8483c96b696 CreatePlcOpResponses@lib/did-plc/generated/types.gen.ts:208
+  - type_alias:9ed6ce54421dd1e6ce96139b0ce9856b ResolveDidErrors@lib/did-plc/generated/types.gen.ts:150
+  - type_alias:b4d6bfa8d0c23c03a6fabf2adde68710 GetPlcAuditLogResponses@lib/did-plc/generated/types.gen.ts:264
+  - type_alias:bf65ac75a3730bc43ef7790db94694f2 CreatePlcOpData@lib/did-plc/generated/types.gen.ts:176
+  - type_alias:c5375050d9a0278e54d6993b51009ae8 GetPlcOpLogErrors@lib/did-plc/generated/types.gen.ts:224
+  - type_alias:c9e396f69721efb9d82c3a68c8763f6f Operation@lib/did-plc/generated/types.gen.ts:7
+  - type_alias:cd3e5e7ab8f4ea8a1fa2b7920d7e3a7b LegacyCreateOp@lib/did-plc/generated/types.gen.ts:68
+  - type_alias:f2763d175add69dd71270f735d4df310 PlcService@lib/did-plc/generated/types.gen.ts:136
+  - type_alias:f625ac32a8a6e4f700251e1c33c7d289 TombstoneOp@lib/did-plc/generated/types.gen.ts:53
+  - type_alias:f7238f998c97915ef77a9d07f8b82c14 GetLastOpResponses@lib/did-plc/generated/types.gen.ts:293
 - id: sc.lib-did-plc-generated-client
   name: lib-did-plc-generated-client
   spec: specs/lib-did-plc-generated-client.yaml
