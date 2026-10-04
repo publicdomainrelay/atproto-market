@@ -288,6 +288,24 @@ async function main() {
     (recordsByCollection[col] ??= []).push(r);
   }
 
+  // Describe the SSH path the run actually used, never an unconditional
+  // websocat tunnel: the default iroh transport dials the guest's reported
+  // dumbpipe ticket, and only the legacy transports go through the relay.
+  const ranTransport = contract.transport ?? "iroh";
+  const sshPath = ranTransport === "iroh"
+    ? `requester SSH client
+  ProxyCommand dumbpipe connect <ticket>
+    -> iroh network
+      -> guest dumbpipe listener (listen-tcp --host 127.0.0.1:22)
+        -> sshd 127.0.0.1:22
+
+Ticket reported by the guest: ${contract.ticket ?? "(none reported)"}`
+    : `requester SSH client
+  ProxyCommand websocat --binary wss://<service>--did-plc-<key>.localhost
+    -> dispatcher (xrpc relay, routes by SNI subdomain)
+      -> relay WebSocket -> bidder PDS -> guest container
+        -> sshd 127.0.0.1:22`;
+
   const summary = `# Compute Contract Full Flow -- Summary
 
 ## Participants
@@ -343,27 +361,24 @@ runComputeContract()
   │                                    ├- onAccept -> provision
   │                                    │    ├- OIDC enrichment
   │                                    │    ├- runContainer()
-  │                                    │    └- cloud-init: sshd + websocat
+  │                                    │    └- cloud-init: sshd + ${ranTransport} transport
   │                                    └- eventCallbacks
   ├- wait bidWindowSec (15s)
   ├- pick lowest-cost bid
   ├- createSignedRepoRecord  --►  market.accept
   ├- submitAccept XRPC       --►  --►  provision guest
   ├- verify receipt
-  ├- pollReady -> SSH         --►  --►  websocat ws:// -> sshd
+  ├- pollReady -> SSH         --►  --►  ${ranTransport === "iroh" ? "dumbpipe ticket -> sshd" : "websocat ws:// -> sshd"}
   │  └- exec 'hostname'
   └- vm.delete event         --►  --►  destroy()
 \`\`\`
 
-## SSH Tunnel Path
+## SSH Transport Path
+
+Transport: \`${ranTransport}\`
 
 \`\`\`
-requester SSH client
-  ProxyCommand websocat --binary wss://<service>--did-plc-<key>.localhost
-    -> dispatcher (xrpc relay, routes by SNI subdomain)
-      -> relay WebSocket -> bidder PDS -> guest container
-        -> websocat ws-l:127.0.0.1:8080
-          -> sshd 127.0.0.1:22
+${sshPath}
 \`\`\`
 
 Generated: ${new Date().toISOString()}

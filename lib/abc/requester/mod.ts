@@ -179,18 +179,12 @@ export interface RequesterPDS {
   /** Release storage resources (close Deno.Kv if using DenoKvStorage). */
   dispose(): Promise<void>;
   /**
-   * iroh nodeId promise -- resolves with the dumbpipe ticket the guest
-   * publishes, whether it arrives through the firehose registerIdentity path or
-   * the direct vm.onNetwork/submitEvent path.
-   */
-  irohNodeId?: Promise<string>;
-  /** Resolve the iroh nodeId promise. No-op after first call. */
-  resolveIrohNodeId?(nodeId: string): void;
-  /** Set callback invoked when guest-side onNetwork event arrives via submitEvent XRPC. */
-  /**
-   * Register interest in a contract's guest FQDN, keyed by that contract's
-   * receipt. A requester serves many contracts concurrently, so the key is what
-   * keeps one run's onNetwork from resolving another run's wait.
+   * Register interest in a contract's transport target, keyed by that
+   * contract's receipt. A requester serves many contracts concurrently, so the
+   * key is what keeps one run's onNetwork event from resolving another run's
+   * wait. Under the legacy transports this is the guest FQDN carried on the
+   * event path; under the default iroh transport the ticket arrives over the
+   * requester's own per-contract report endpoint instead, keyed the same way.
    */
   setOnNetworkResolved?(key: string, fn: (address: string) => void): void;
   clearOnNetworkResolved?(key: string): void;

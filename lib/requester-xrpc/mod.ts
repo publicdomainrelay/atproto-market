@@ -96,6 +96,79 @@ export interface RequesterPDSImpl extends RequesterPDS {
 }
 
 // ---------------------------------------------------------------------------
+// per-contract transport report endpoint (iroh transport)
+// ---------------------------------------------------------------------------
+//
+// Under the default iroh transport the guest reports its dumbpipe ticket to the
+// requester's own app (POST /v1/on-network), never to a public record: a record
+// on the bidder's PDS is world-readable and the ticket is the capability that
+// dials the guest's sshd. One requester serves several contracts at once, so
+// entries are looked up by the contract's random bearer token and an entry only
+// accepts a ticket whose accept ref equals that contract's current accept ref.
+
+export interface OnNetworkReportEntry {
+  /** The contract's current accept ref; empty until the accept is written. */
+  accept(): { uri: string; cid: string };
+  /** Called with the reported ticket once the token and accept ref match. */
+  onTicket(ticket: string): void;
+}
+
+const onNetworkReportEntries = new WeakMap<object, Map<string, OnNetworkReportEntry>>();
+
+/** Hono app of a requester PDS, when the implementation exposes one. */
+export function requesterApp(pds: RequesterPDS): HonoApp | undefined {
+  return (pds as unknown as { app?: HonoApp }).app;
+}
+
+/**
+ * Mount POST /v1/on-network on the requester's own app. Mounted once per app;
+ * a missing or wrong bearer token answers 401 and an accept ref that does not
+ * match the contract's answers 409, and neither resolves the wait.
+ */
+export function mountOnNetworkReportHandler(app: HonoApp): void {
+  if (onNetworkReportEntries.has(app as object)) return;
+  const entries = new Map<string, OnNetworkReportEntry>();
+  onNetworkReportEntries.set(app as object, entries);
+  app.post("/v1/on-network", async (c: HonoApp) => {
+    const auth = String(c.req.header("authorization") ?? "");
+    const token = auth.startsWith("Bearer ") ? auth.slice("Bearer ".length).trim() : "";
+    if (!token) return c.json({ error: "missing token" }, 401);
+    const entry = entries.get(token);
+    if (!entry) return c.json({ error: "invalid token" }, 401);
+    const body = await c.req.json().catch(() => ({})) as {
+      acceptUri?: string;
+      acceptCid?: string;
+      address?: string;
+    };
+    const current = entry.accept();
+    if (
+      !body?.acceptUri || !body?.acceptCid ||
+      body.acceptUri !== current.uri || body.acceptCid !== current.cid
+    ) {
+      return c.json({ error: "accept ref mismatch" }, 409);
+    }
+    if (!body.address) return c.json({ error: "missing address" }, 400);
+    entry.onTicket(String(body.address));
+    return c.json({ ok: true });
+  });
+}
+
+/** Register a contract's report token. Mounts the route on first use. */
+export function registerOnNetworkReport(
+  app: HonoApp,
+  token: string,
+  entry: OnNetworkReportEntry,
+): void {
+  mountOnNetworkReportHandler(app);
+  onNetworkReportEntries.get(app as object)!.set(token, entry);
+}
+
+/** Invalidate a contract's report token when the contract ends. */
+export function unregisterOnNetworkReport(app: HonoApp, token: string): void {
+  onNetworkReportEntries.get(app as object)?.delete(token);
+}
+
+// ---------------------------------------------------------------------------
 // bidder discovery via relay (replaces discoverBiddersFromRegistries)
 // ---------------------------------------------------------------------------
 
@@ -702,25 +775,34 @@ export function tunnelWsUrl(fqdn: string): string {
 }
 
 /**
- * Default ProxyCommand for a transport target. A transport target under the
- * default iroh transport is the dumbpipe ticket the guest published -- a base32
- * endpoint id, not a hostname -- so it is dialled with a stdio `dumbpipe
- * connect`. A hostname-shaped target (the legacy fedproxy-ssh/tunnel plane)
- * keeps the websocat bridge to tunnelWsUrl.
+ * Default ProxyCommand for a transport target, derived from the transport id
+ * that ran -- never from the shape of the target string. A ticket and a relay
+ * FQDN are told apart by the transport that produced them: `iroh` dials the
+ * published ticket with a stdio `dumbpipe connect`, while `tunnel` and
+ * `fedproxy-ssh` keep the websocat bridge to tunnelWsUrl.
  */
-function defaultProxyCommand(target: string): string {
-  return /[.:]/.test(target)
-    ? `websocat --binary ${tunnelWsUrl(target)}`
-    : `dumbpipe connect ${target}`;
+export function defaultProxyCommand(target: string, transport = "iroh"): string {
+  return transport === "iroh"
+    ? `dumbpipe connect ${target}`
+    : `websocat --binary ${tunnelWsUrl(target)}`;
+}
+
+/**
+ * Which helper binary the selected transport's SSH path needs. Only `iroh`
+ * needs dumbpipe; `tunnel` and `fedproxy-ssh` need websocat.
+ */
+export function sshHelperForTransport(transport: string): "dumbpipe" | "websocat" {
+  return transport === "iroh" ? "dumbpipe" : "websocat";
 }
 
 export function sshTunnelArgs(
   privateKeyPath: string,
   target: string,
   proxyCmdOverride?: string,
+  transport = "iroh",
 ): string[] {
   return [
-    "-o", `ProxyCommand=${proxyCmdOverride ?? defaultProxyCommand(target)}`,
+    "-o", `ProxyCommand=${proxyCmdOverride ?? defaultProxyCommand(target, transport)}`,
     "-o", `IdentityFile=${privateKeyPath}`,
     "-o", "IdentitiesOnly=yes",
     "-o", "StrictHostKeyChecking=no",
@@ -731,7 +813,7 @@ export function sshTunnelArgs(
 
 export function createSshSessionProvider(
   logger?: StructuredLoggerInterface,
-  opts?: { proxyCommandFn?: (target: string) => string },
+  opts?: { proxyCommandFn?: (target: string) => string; transport?: string },
 ): SshSessionProvider {
   const log = (event: string, extra: Record<string, unknown> = {}) =>
     logger ? logger.info(event, extra) : console.log(JSON.stringify({ event, ...extra }));
@@ -765,7 +847,7 @@ export function createSshSessionProvider(
     while (Date.now() < deadline) {
       attempt++;
       const sshArgs = [
-        ...sshTunnelArgs(privateKeyPath, target, proxyCmd),
+        ...sshTunnelArgs(privateKeyPath, target, proxyCmd, opts?.transport ?? "iroh"),
         "-o", "BatchMode=yes",
         "-o", "ConnectTimeout=10",
         `root@${target}`,
@@ -799,7 +881,7 @@ export function createSshSessionProvider(
   ): Promise<number> {
     const proxyCmd = opts?.proxyCommandFn?.(target);
     const interactive = Deno.stdin.isTerminal();
-    const args = [...sshTunnelArgs(privateKeyPath, target, proxyCmd)];
+    const args = [...sshTunnelArgs(privateKeyPath, target, proxyCmd, opts?.transport ?? "iroh")];
     if (interactive) {
       args.push("-tt", `root@${target}`);
     } else {
@@ -910,8 +992,11 @@ export async function ensureDumbpipe(logger?: StructuredLoggerInterface): Promis
     const file = await Deno.open(archivePath, { write: true, create: true });
     await resp.body.pipeTo(file.writable);
 
+    // The release archive stores its single member as ./dumbpipe; naming the
+    // bare `dumbpipe` fails with `tar: dumbpipe: Not found in archive` (exit 2)
+    // and leaves no binary on PATH.
     const tar = new Deno.Command("tar", {
-      args: ["-xzf", archivePath, "-C", dir, "dumbpipe"],
+      args: ["-xzf", archivePath, "-C", dir, "./dumbpipe"],
       stdout: "null",
       stderr: "piped",
     });
@@ -978,6 +1063,11 @@ export async function runComputeContract(
   // the websocat ProxyCommand.
   const transport = opts.userData?.transport ?? "iroh";
   const usesDumbpipe = transport === "iroh";
+  // Under iroh the SSH target is the guest's privately reported ticket, so the
+  // public onNetwork/submitEvent path must not settle the wait. The legacy
+  // transports (and an explicit proxy command override, which names its own
+  // target) keep resolving from the event path unchanged.
+  const useEventPath = !usesDumbpipe || !!opts.sshProxyCommandFn;
   const vmReadyTimeoutSec = opts.vmReadyTimeoutSec ?? 300;
   const extraBidderDids = opts.extraBidderDids ?? [];
   const denyBidderDids = opts.denyBidderDids ?? [];
@@ -994,7 +1084,7 @@ export async function runComputeContract(
   };
   const sshProvider = opts.sshProvider ?? createSshSessionProvider(
     opts.logger,
-    { proxyCommandFn: opts.sshProxyCommandFn },
+    { proxyCommandFn: opts.sshProxyCommandFn, transport },
   );
   const relayUrl = opts.relayUrl;
   const relayUrls = opts.relayUrls ?? (relayUrl ? [relayUrl] : []);
@@ -1119,14 +1209,12 @@ export async function runComputeContract(
               const payloadRes = await fetch(payloadUrl);
               const payloadData = await payloadRes.json();
               const address = (payloadData.value as Record<string, unknown>)?.address as string | undefined;
-              // Only resolve on a transport target, not a container IP.
-              // Container IPs (192.168.x.x) contain only digits+dots; both the
-              // iroh dumbpipe ticket and a legacy FQDN contain letters.
-              const isTarget = address && /[a-zA-Z]/.test(address);
-              if (address && isTarget && !vmFqdn) {
+              // The address on a public record is informational only -- under
+              // iroh the ticket arrives over the private report endpoint, so a
+              // record can never settle the SSH wait.
+              if (useEventPath && address && /[a-zA-Z]/.test(address) && !vmFqdn) {
                 vmFqdn = address;
                 vmFqdnReady.resolve(address);
-                if (!skipSsh && usesDumbpipe) pds.resolveIrohNodeId?.(address);
                 log("vm_fqdn_discovered", { fqdn: address, eventUri: data.uri });
               }
             } catch { /* best-effort */ }
@@ -1152,34 +1240,16 @@ export async function runComputeContract(
               const data = await res.json();
               const value = data.value as Record<string, unknown> | undefined;
               const address = value?.address as string | undefined;
-              if (address && typeof address === "string" && /[a-zA-Z]/.test(address) && !vmFqdn) {
+              if (useEventPath && address && typeof address === "string" && /[a-zA-Z]/.test(address) && !vmFqdn) {
                 vmFqdn = address;
                 vmFqdnReady.resolve(address);
-                if (!skipSsh && usesDumbpipe) pds.resolveIrohNodeId?.(address);
                 log("vm_fqdn_discovered", { fqdn: address, uri: data.uri });
               }
             } catch { /* best-effort */ }
           })();
         }
-        // REGISTER_IDENTITY: extract iroh nodeId
-        if (e.collection === COMPUTE_EVENTS_VM_REGISTER_IDENTITY_NSID) {
-          (async () => {
-            try {
-              const doc = await idResolver.did.resolve(e.did);
-              if (!doc) return;
-              const pdsUrl = getPdsEndpoint(doc);
-              if (!pdsUrl) return;
-              const recordUrl = `${pdsUrl}/xrpc/com.atproto.repo.getRecord?repo=${encodeURIComponent(e.did)}&collection=${encodeURIComponent(e.collection)}&rkey=${e.rkey}`;
-              const res = await fetch(recordUrl);
-              const data = await res.json();
-              const identity = (data.value as Record<string, unknown>)?.computeIdentity as Record<string, unknown> | undefined;
-              if (identity?.nodeId) {
-                log("iroh_node_id_firehose", { nodeId: identity.nodeId });
-                pds.resolveIrohNodeId?.(String(identity.nodeId));
-              }
-            } catch { /* best-effort */ }
-          })();
-        }
+        // REGISTER_IDENTITY is informational here: the nodeId on a public record
+        // is never a transport target under iroh, so it cannot settle the wait.
         // RECEIPT_NSID: collect receipts for firehose-based discovery when
         // submitAccept XRPC doesn't return one (push path failed or bidder
         // doesn't expose receipt in response). Keyed by accept.uri so the
@@ -1228,19 +1298,55 @@ export async function runComputeContract(
   let privateKeyPath = "";
   let vmFqdn = "";
   const vmFqdnReady = Promise.withResolvers<string>();
-  // Wire guest-side onNetwork events (submitEvent) -> vmFqdnReady.
+  // The contract's current accept ref, read by the report endpoint so a ticket
+  // is only accepted from the contract that owns the bearer token.
+  let acceptRef: { uri: string; cid: string } = { uri: "", cid: "" };
+
+  // Per-contract private report channel (iroh). Mounted before the cloud-config
+  // is composed because the endpoint URL and token are baked into it. skipSsh
+  // mounts nothing: no SSH means no ticket to resolve.
+  const reportApp = (usesDumbpipe && !skipSsh) ? requesterApp(pds) : undefined;
+  const reportUrl = reportApp
+    ? `${(pds.relay.ingressUrl || pds.ingressUrl).replace(/\/+$/, "")}/v1/on-network`
+    : "";
+  const reportToken = (reportApp && reportUrl) ? randomHex(32) : "";
+  const reportRegistered = !!(reportApp && reportToken);
+  if (reportApp && reportToken) {
+    registerOnNetworkReport(reportApp, reportToken, {
+      accept: () => acceptRef,
+      onTicket: (ticket: string) => {
+        // The ticket is the SSH transport target under iroh: settle the
+        // receipt-keyed wait with it (the accept ref already bound it to this
+        // contract).
+        if (!vmFqdn) {
+          vmFqdn = ticket;
+          vmFqdnReady.resolve(ticket);
+          log("iroh_ticket_reported", { ticketLen: ticket.length });
+        }
+      },
+    });
+  } else if (usesDumbpipe && !skipSsh) {
+    log("iroh_report_endpoint_unavailable", { ingressUrl: pds.relay.ingressUrl });
+  }
+  const endReport = () => {
+    if (reportApp && reportToken) unregisterOnNetworkReport(reportApp, reportToken);
+  };
+
+  // Wire guest-side onNetwork events (submitEvent) -> vmFqdnReady. Only the
+  // legacy transports (and an explicit proxy command override) resolve their
+  // transport target from the public event path.
   const onNetworkFromSubmitEvent = (address: string) => {
     // Bidder-side onNetwork fires first with container IP (e.g. 192.168.x.x),
-    // guest-side fires later with the transport target: the dumbpipe ticket
-    // (base32 endpoint id) under the iroh transport, or a dispatcher FQDN
-    // (e.g. subdomain.localhost:port) under the legacy one. Both carry letters,
-    // so the letters test admits either; a bare container IP is not routable
-    // through the ProxyCommand and is skipped.
+    // guest-side fires later with the legacy transport target (a dispatcher
+    // FQDN such as subdomain.localhost:port). Both carry letters, so the
+    // letters test admits either; a bare container IP is not routable through
+    // the ProxyCommand and is skipped. Under iroh the ticket never comes from
+    // here, so the event path is not registered at all.
+    if (!useEventPath) return;
     const isTarget = /[a-zA-Z]/.test(address);
     if (isTarget && !vmFqdn) {
       vmFqdn = address;
       vmFqdnReady.resolve(address);
-      if (!skipSsh && usesDumbpipe) pds.resolveIrohNodeId?.(address);
       log("vm_fqdn_discovered", { fqdn: address, source: "submitEvent" });
     } else if (!isTarget) {
       log("vm_onnetwork_ip_skipped", { address, hint: "waiting for guest transport target via submitEvent" });
@@ -1250,6 +1356,7 @@ export async function runComputeContract(
   // this contract's events. Registering before it exists would need a keyless
   // slot, and several contracts share one requester.
   const registerOnNetwork = () => {
+    if (!useEventPath) return;
     if (!_receiptUri || !_receiptCid) return;
     pds.setOnNetworkResolved?.(`${_receiptUri}#${_receiptCid}`, onNetworkFromSubmitEvent);
   };
@@ -1261,7 +1368,9 @@ export async function runComputeContract(
     log("ssh_keypair_generated", {
       privateKeyPath,
       publicKey: ssh.publicKey,
-      hint: "FQDN will be discovered from vm.onNetwork event after guest tunnel subscriber registers",
+      hint: usesDumbpipe
+        ? "guest reports its iroh ticket to the requester's per-contract endpoint after boot"
+        : "FQDN will be discovered from vm.onNetwork event after the guest registers",
     });
 
     // Capabilities stand up their resources BEFORE the cloud-config is built:
@@ -1301,6 +1410,11 @@ export async function runComputeContract(
         // (e.g. the GitLab plugin's ConnectInfo identity) share the guest's
         // /root/.ssh/authorized_keys.
         sshAuthorizedKey: [ssh.publicKey, ...(opts.sshAuthorizedKeys ?? [])].join("\n"),
+        // Private per-contract report channel: the iroh module POSTs the guest
+        // ticket here, so the capability never enters a record. The token is
+        // never written into a repo record.
+        irohReportUrl: reportRegistered ? reportUrl : undefined,
+        irohReportToken: reportRegistered ? reportToken : undefined,
         ...capCtx,
       },
       base: ud?.base ?? opts.baseUserData,
@@ -1645,6 +1759,7 @@ runcmd:
   if (bids.length === 0) {
     const result: ContractFlowResult = { event: "no_bids", error: `no bids received within ${bidWindowSec}s` };
     log("no_bids", result as unknown as Record<string, unknown>);
+    endReport();
     await disposeCapabilities();
     return result;
   }
@@ -1744,6 +1859,7 @@ runcmd:
         error: `winner rejected by policy: ${evalResult.violations.map(v => v.msg).join("; ")}`,
         bids: bids.length,
       };
+      endReport();
       await disposeCapabilities();
       return result;
     }
@@ -1757,6 +1873,8 @@ runcmd:
     submitEvent: `${pds.did}#pdr_temp_compute_event`,
     createdAt: new Date().toISOString(),
   }, pds.attestationKp, pds.did);
+  // The report endpoint answers 409 until the accept ref matches this value.
+  acceptRef = { uri: acceptUri, cid: acceptCid };
   log("accept_created", { uri: acceptUri, cid: acceptCid });
 
   // 8. Submit accept to winning bidder.
@@ -1862,26 +1980,20 @@ runcmd:
   } else if (!receiptOk) {
     log("vm_poll_bailed", { reason: "no valid receipt", receiptUri, receiptCid });
   } else {
-    // SSH over the guest's transport target: the dumbpipe ticket the contract
-    // published under the default iroh transport, or the relay FQDN of the
-    // legacy fedproxy-ssh transport. The ProxyCommand follows the transport --
-    // `dumbpipe connect <ticket>` vs `websocat --binary wss://<fqdn>` -- and an
-    // explicit sshProxyCommandFn still fully overrides it. The helper binary the
-    // ProxyCommand needs is ensured first.
+    // SSH over the guest's transport target: the dumbpipe ticket the guest
+    // reported under the default iroh transport, or the relay FQDN of the
+    // legacy tunnel/fedproxy-ssh transport. The ProxyCommand follows the
+    // transport id -- `dumbpipe connect <ticket>` vs `websocat --binary
+    // wss://<fqdn>` -- never the shape of the target string, and an explicit
+    // sshProxyCommandFn still fully overrides it.
     const proxyCmdOverride = opts.sshProxyCommandFn;
     const needsWebsocat = proxyCmdOverride
       ? proxyCmdOverride("t").includes("websocat")
-      : !usesDumbpipe;
+      : sshHelperForTransport(transport) === "websocat";
     await (needsWebsocat ? ensureWebsocat(opts.logger) : ensureDumbpipe(opts.logger));
     const sshTunnel = opts.sshProvider ?? createSshSessionProvider(
       opts.logger,
-      {
-        proxyCommandFn: proxyCmdOverride ??
-          ((target: string) =>
-            usesDumbpipe
-              ? `dumbpipe connect ${target}`
-              : `websocat --binary ${tunnelWsUrl(target)}`),
-      },
+      { proxyCommandFn: proxyCmdOverride, transport },
     );
     // Transport target discovered from vm.onNetwork event (guest publishes its
     // ticket after the dumbpipe listener starts). Timeout after
@@ -1971,10 +2083,13 @@ runcmd:
   }
 
   // Report the transport that actually ran and, under iroh, the ticket the
-  // guest published (vmFqdn holds the transport target: the dumbpipe ticket
+  // guest reported (vmFqdn holds the transport target: the dumbpipe ticket
   // for iroh, the relay FQDN for the legacy fedproxy-ssh transport).
   result.transport = transport;
   if (usesDumbpipe && vmFqdn) result.ticket = vmFqdn;
+  // The contract has ended: invalidate its report token so a late report cannot
+  // resolve a wait that no longer exists.
+  endReport();
 
   await disposeCapabilities();
   return result;
@@ -2231,10 +2346,14 @@ export async function createOAuthRequester(opts: CreateOAuthRequesterOpts): Prom
   };
 }
 
-function randomHex8(): string {
-  const b = new Uint8Array(4);
+function randomHex(bytes: number): string {
+  const b = new Uint8Array(bytes);
   crypto.getRandomValues(b);
   return Array.from(b, (x) => x.toString(16).padStart(2, "0")).join("");
+}
+
+function randomHex8(): string {
+  return randomHex(4);
 }
 
 async function listRecordsAll(

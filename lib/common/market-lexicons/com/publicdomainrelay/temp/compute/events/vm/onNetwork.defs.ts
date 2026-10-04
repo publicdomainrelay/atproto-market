@@ -13,7 +13,7 @@ type Main = {
   $type: 'com.publicdomainrelay.temp.compute.events.vm.onNetwork'
 
   /**
-   * Address (hostname or IP) the VM is reachable at, if known.
+   * Informational, non-routable address of the provisioned VM (a container or droplet IP), or a relay FQDN under the legacy tunnel/fedproxy-ssh transports. Never the guest's iroh ticket, its endpoint id, or any address that dials the guest: this record is world-readable and the ticket is the capability that reaches the guest's sshd.
    */
   address?: string
   createdAt: l.DatetimeString

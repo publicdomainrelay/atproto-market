@@ -3,6 +3,7 @@ apt:
   preserve_sources_list: true
 packages:
   - curl
+  - jq
   - openssh-server
 write_files:
   - path: /root/.ssh/authorized_keys
@@ -17,6 +18,68 @@ write_files:
       # Key-only root login; dumbpipe bridges iroh traffic to sshd on loopback.
       PermitRootLogin prohibit-password
       PasswordAuthentication no
+  - path: /usr/local/bin/iroh-prepare.sh
+    owner: root:root
+    permissions: "0755"
+    content: |
+      #!/bin/sh
+      set -eu
+      install -d -m 0700 -o root -g root /root/secrets
+      if [ ! -s /root/secrets/iroh.env ]; then
+        (umask 077 && printf 'IROH_SECRET=%s\n' "$(head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n')" > /root/secrets/iroh.env)
+        chown root:root /root/secrets/iroh.env
+        chmod 0600 /root/secrets/iroh.env
+      fi
+      # Truncate, never append: extraction may only read this run's ticket.
+      : > /root/secrets/iroh-dumbpipe.log
+      chmod 0600 /root/secrets/iroh-dumbpipe.log
+  - path: /usr/local/bin/iroh-capture-ticket.sh
+    owner: root:root
+    permissions: "0755"
+    content: |
+      #!/bin/sh
+      set -u
+      LOG=/root/secrets/iroh-dumbpipe.log
+      TICKET=""
+      for _ in $(seq 1 60); do
+        TICKET=$(grep -m1 -oE 'dumbpipe connect-tcp [^[:space:]]+' "$LOG" 2>/dev/null | awk '{print $3}')
+        [ -n "$TICKET" ] && break
+        sleep 1
+      done
+      if [ -z "$TICKET" ]; then
+        echo "dumbpipe ticket never appeared in $LOG" >&2
+        exit 1
+      fi
+      umask 077
+      printf '%s' "$TICKET" > /root/secrets/iroh-node-id
+      chmod 0600 /root/secrets/iroh-node-id
+      # Report the ticket to the requester's per-contract endpoint (never a record).
+      if [ -s /root/secrets/iroh-report.json ]; then
+        _url=$(sed -n 's/.*"url":"\([^"]*\)".*/\1/p' /root/secrets/iroh-report.json)
+        _token=$(sed -n 's/.*"token":"\([^"]*\)".*/\1/p' /root/secrets/iroh-report.json)
+        _accept_uri=$(jq -r '.accept.uri // empty' /root/secrets/publicdomainrelay.com/market/accept.json 2>/dev/null || true)
+        _accept_cid=$(jq -r '.accept.cid // empty' /root/secrets/publicdomainrelay.com/market/accept.json 2>/dev/null || true)
+        _body=$(printf '{"acceptUri":"%s","acceptCid":"%s","address":"%s","createdAt":"%s"}' "$_accept_uri" "$_accept_cid" "$TICKET" "$(date -u +%Y-%m-%dT%H:%M:%SZ)")
+        _attempt=1
+        _delay=2
+        while [ "$_attempt" -le 5 ]; do
+          if curl -fsS -m 10 -X POST "$_url" -H "Authorization: Bearer $_token" -H "content-type: application/json" -d "$_body" >/dev/null; then
+            echo "iroh ticket reported" >&2
+            break
+          fi
+          echo "iroh ticket report attempt $_attempt failed" >&2
+          sleep "$_delay"
+          _attempt=$((_attempt + 1))
+          _delay=$((_delay * 2))
+        done
+      fi
+      # A failed report must not stop or restart the listener.
+      exit 0
+  - path: /root/secrets/iroh-report.json
+    owner: root:root
+    permissions: "0600"
+    content: |
+      {"url":"https://req-abc.relay.local/v1/on-network","token":"iroh-report-token-abc123"}
   - path: /etc/systemd/system/dumbpipe-listen.service
     owner: root:root
     permissions: "0644"
@@ -29,12 +92,18 @@ write_files:
       [Service]
       Type=simple
       User=root
-      ExecStart=/usr/local/bin/dumbpipe listen-tcp --host 127.0.0.1:22
+      # Prepares the persisted IROH_SECRET and truncates the listener log.
+      ExecStartPre=/usr/local/bin/iroh-prepare.sh
+      EnvironmentFile=-/root/secrets/iroh.env
+      # Source the secret in-process too: on the first start systemd read the
+      # EnvironmentFile before ExecStartPre created it.
+      ExecStart=/bin/sh -c 'set -a; [ -f /root/secrets/iroh.env ] && . /root/secrets/iroh.env; exec /usr/local/bin/dumbpipe listen-tcp --host 127.0.0.1:22'
+      # Extracts and reports the ticket; a missing ticket logs and exits non-zero
+      # without taking the listener down ('-' keeps a non-zero exit non-fatal).
+      ExecStartPost=-/usr/local/bin/iroh-capture-ticket.sh
       Restart=always
       RestartSec=5
       TimeoutStopSec=10
-      # dumbpipe prints the ticket on its output stream; capture both streams so
-      # runcmd can extract it. The log lives under /root/secrets (0700, root).
       StandardOutput=append:/root/secrets/iroh-dumbpipe.log
       StandardError=append:/root/secrets/iroh-dumbpipe.log
 
@@ -47,7 +116,7 @@ runcmd:
       command -v dumbpipe >/dev/null || {
         _arch=$(uname -m)
         case "$_arch" in x86_64|amd64) _arch=x86_64 ;; aarch64|arm64) _arch=aarch64 ;; esac
-        curl -fsSL "https://github.com/n0-computer/dumbpipe/releases/download/v0.39.0/dumbpipe-v0.39.0-linux-${_arch}.tar.gz" | tar -xvz -C /usr/local/bin dumbpipe
+        curl -fsSL "https://github.com/n0-computer/dumbpipe/releases/download/v0.39.0/dumbpipe-v0.39.0-linux-${_arch}.tar.gz" | tar -xvz -C /usr/local/bin ./dumbpipe
         chmod 755 /usr/local/bin/dumbpipe
       }
   - - sh
@@ -56,16 +125,5 @@ runcmd:
   - systemctl daemon-reload
   - systemctl enable --now ssh || systemctl enable --now sshd
   - systemctl enable --now dumbpipe-listen.service
-  - - sh
-    - -c
-    - |-
-      for _ in $(seq 1 60); do
-        _ticket=$(grep -m1 -oE 'dumbpipe connect-tcp [^[:space:]]+' /root/secrets/iroh-dumbpipe.log 2>/dev/null | cut -d' ' -f3)
-        [ -n "$_ticket" ] && break
-        sleep 1
-      done
-      [ -n "$_ticket" ] || { echo "dumbpipe ticket never appeared" >&2; exit 1; }
-      printf '%s' "$_ticket" > /root/secrets/iroh-node-id
-      chmod 0600 /root/secrets/iroh-node-id
 disable_root: false
 ssh_pwauth: false

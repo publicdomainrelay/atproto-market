@@ -27,6 +27,7 @@ import { createComputeProviderHooks } from "@publicdomainrelay/market-bidder-com
 import { createLocalComputeProvider } from "@publicdomainrelay/compute-provider-local";
 import type { ComputeAtproto } from "@publicdomainrelay/compute-provider-abc";
 import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc";
+import { resolveDidKeyFromPlc } from "./fetch-interceptor.ts";
 import { createRequesterPDS, runComputeContract } from "@publicdomainrelay/requester-xrpc";
 
 function didWebToHttps(s: string): string {
@@ -93,7 +94,10 @@ Deno.test({
 
   const cleanups: Array<() => void> = [];
 
-  const dispatcherApp = createRelayFactory({ hostname: "localhost" }).createApp();
+  const dispatcherApp = createRelayFactory({
+    hostname: "localhost",
+    resolveDidKey: resolveDidKeyFromPlc,
+  }).createApp();
   const dispatcherCtl = new AbortController();
   const { promise: dispPortReady, resolve: resolveDispPort } = Promise.withResolvers<number>();
   Deno.serve(

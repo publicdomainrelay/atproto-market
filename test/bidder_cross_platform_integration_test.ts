@@ -27,7 +27,7 @@ import type { ContainerBackend } from "@publicdomainrelay/container-backend-abc"
 import { createContainerBackend } from "@publicdomainrelay/container-backend-container";
 import { createDockerBackend } from "@publicdomainrelay/container-backend-docker";
 import { generateLocalhostTlsCert } from "@publicdomainrelay/tls-localhost";
-import { installFetchInterceptor } from "./fetch-interceptor.ts";
+import { installFetchInterceptor, resolveDidKeyFromPlc } from "./fetch-interceptor.ts";
 
 // ===========================================================================
 // Helpers
@@ -381,6 +381,7 @@ Deno.test({
   const dispatcherApp = createRelayFactory({
     hostname: "relay.localhost",
     additionalHosts: [gateway],
+    resolveDidKey: resolveDidKeyFromPlc,
   }).createApp();
   // Dual listeners on the same app: plain HTTP for in-process components
   // (no way to inject a CA into this process's WebSocket/fetch after start),

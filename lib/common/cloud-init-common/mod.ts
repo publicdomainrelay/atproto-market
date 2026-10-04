@@ -56,6 +56,16 @@ export interface CloudInitContext {
   secretsAud?: string;
   /** Guest path of the bidder-injected accept.json carrying bid_config. */
   secretsAcceptPath?: string;
+
+  // iroh transport ticket report
+  /**
+   * Absolute URL of the requester's per-contract transport-report endpoint.
+   * Supplied by the requester that composes this cloud-config. Never a value
+   * that may be published in a record.
+   */
+  irohReportUrl?: string;
+  /** That contract's random bearer token. Never published in a record. */
+  irohReportToken?: string;
 }
 
 /** Back-compat context for the tunnel-subscriber transport (historical buildTunnelUserData shape). */
@@ -308,88 +318,189 @@ const tunnelModule: UserDataModule = (ctx) => {
 /** dumbpipe release pinned by the iroh transport module. */
 const DUMBPIPE_VERSION = "v0.39.0";
 
+/** Guest path of the bidder-injected accept bundle when ctx.secretsAcceptPath is unset. */
+const DEFAULT_ACCEPT_PATH = "/root/secrets/publicdomainrelay.com/market/accept.json";
+
 /**
  * iroh — dumbpipe listener transport (replaces the did-key-ingress-proxy
  * tunnel-subscriber). Guest sshd keeps :22 on loopback; dumbpipe publishes a
  * `listen-tcp` endpoint over the iroh network. dumbpipe prints its control
  * output -- including the ticket as the argument of the `dumbpipe connect-tcp
- * <ticket>` line -- on stderr, so the unit appends the listener's
- * combined output to a log and runcmd extracts the ticket token from it into
- * /root/secrets/iroh-node-id (the compute provider's getNodeId hook cats that
- * path). The service keeps running after the capture so the ticket stays valid.
- * Requires ctx.sshAuthorizedKey. Optional: ctx.targetPort.
+ * <ticket>` line -- on stderr, so the unit appends the listener's combined
+ * output to /root/secrets/iroh-dumbpipe.log and an ExecStartPost extracts the
+ * ticket token, writes /root/secrets/iroh-node-id (a local convenience only)
+ * and reports it to the requester's own per-contract endpoint
+ * (ctx.irohReportUrl + ctx.irohReportToken) -- never to a public record. The
+ * log is truncated and the ticket re-extracted on every start, and the iroh
+ * identity is persisted in /root/secrets/iroh.env so restarts keep the same
+ * endpoint id. Requires ctx.sshAuthorizedKey. Optional: ctx.targetPort,
+ * ctx.irohReportUrl, ctx.irohReportToken, ctx.secretsAcceptPath.
  */
 const irohModule: UserDataModule = (ctx) => {
   const targetPort = ctx.targetPort ?? 22;
+  const acceptPath = ctx.secretsAcceptPath ?? DEFAULT_ACCEPT_PATH;
+  const reportUrl = ctx.irohReportUrl ?? "";
+  const reportToken = ctx.irohReportToken ?? "";
+  const reports = reportUrl !== "" && reportToken !== "";
+
+  // Persist a stable iroh identity: dumbpipe mints a fresh one (printing
+  // "using secret key <hex>") when IROH_SECRET is unset, which would change the
+  // endpoint id on every start and invalidate every ticket already delivered.
+  const prepareScript = [
+    "#!/bin/sh",
+    "set -eu",
+    "install -d -m 0700 -o root -g root /root/secrets",
+    "if [ ! -s /root/secrets/iroh.env ]; then",
+    "  (umask 077 && printf 'IROH_SECRET=%s\\n' \"$(head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \\n')\" > /root/secrets/iroh.env)",
+    "  chown root:root /root/secrets/iroh.env",
+    "  chmod 0600 /root/secrets/iroh.env",
+    "fi",
+    "# Truncate, never append: extraction may only read this run's ticket.",
+    ": > /root/secrets/iroh-dumbpipe.log",
+    "chmod 0600 /root/secrets/iroh-dumbpipe.log",
+    "",
+  ].join("\n");
+
+  // Re-extract on every start: a restarted listener issues a new ticket (the
+  // endpoint id is stable, the direct addresses inside the ticket are not), so
+  // the previously delivered ticket would be stale.
+  const captureLines = [
+    "#!/bin/sh",
+    "set -u",
+    "LOG=/root/secrets/iroh-dumbpipe.log",
+    "TICKET=\"\"",
+    "for _ in $(seq 1 60); do",
+    "  TICKET=$(grep -m1 -oE 'dumbpipe connect-tcp [^[:space:]]+' \"$LOG\" 2>/dev/null | awk '{print $3}')",
+    "  [ -n \"$TICKET\" ] && break",
+    "  sleep 1",
+    "done",
+    "if [ -z \"$TICKET\" ]; then",
+    "  echo \"dumbpipe ticket never appeared in $LOG\" >&2",
+    "  exit 1",
+    "fi",
+    "umask 077",
+    "printf '%s' \"$TICKET\" > /root/secrets/iroh-node-id",
+    "chmod 0600 /root/secrets/iroh-node-id",
+  ];
+  if (reports) {
+    captureLines.push(
+      "# Report the ticket to the requester's per-contract endpoint (never a record).",
+      "if [ -s /root/secrets/iroh-report.json ]; then",
+      "  _url=$(sed -n 's/.*\"url\":\"\\([^\"]*\\)\".*/\\1/p' /root/secrets/iroh-report.json)",
+      "  _token=$(sed -n 's/.*\"token\":\"\\([^\"]*\\)\".*/\\1/p' /root/secrets/iroh-report.json)",
+      `  _accept_uri=$(jq -r '.accept.uri // empty' ${acceptPath} 2>/dev/null || true)`,
+      `  _accept_cid=$(jq -r '.accept.cid // empty' ${acceptPath} 2>/dev/null || true)`,
+      "  _body=$(printf '{\"acceptUri\":\"%s\",\"acceptCid\":\"%s\",\"address\":\"%s\",\"createdAt\":\"%s\"}' \"$_accept_uri\" \"$_accept_cid\" \"$TICKET\" \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\")",
+      "  _attempt=1",
+      "  _delay=2",
+      "  while [ \"$_attempt\" -le 5 ]; do",
+      "    if curl -fsS -m 10 -X POST \"$_url\" -H \"Authorization: Bearer $_token\" -H \"content-type: application/json\" -d \"$_body\" >/dev/null; then",
+      "      echo \"iroh ticket reported\" >&2",
+      "      break",
+      "    fi",
+      "    echo \"iroh ticket report attempt $_attempt failed\" >&2",
+      "    sleep \"$_delay\"",
+      "    _attempt=$((_attempt + 1))",
+      "    _delay=$((_delay * 2))",
+      "  done",
+      "fi",
+      "# A failed report must not stop or restart the listener.",
+      "exit 0",
+    );
+  } else {
+    captureLines.push("exit 0");
+  }
+  const captureScript = captureLines.join("\n") + "\n";
+
+  const writeFiles: WriteFileEntry[] = [
+    {
+      path: "/root/.ssh/authorized_keys",
+      owner: "root:root",
+      permissions: "0600",
+      content: `${ctx.sshAuthorizedKey ?? ""}\n`,
+    },
+    {
+      path: "/etc/ssh/sshd_config.d/10-iroh.conf",
+      owner: "root:root",
+      permissions: "0644",
+      content: [
+        "# Key-only root login; dumbpipe bridges iroh traffic to sshd on loopback.",
+        "PermitRootLogin prohibit-password",
+        "PasswordAuthentication no",
+      ].join("\n") + "\n",
+    },
+    {
+      path: "/usr/local/bin/iroh-prepare.sh",
+      owner: "root:root",
+      permissions: "0755",
+      content: prepareScript,
+    },
+    {
+      path: "/usr/local/bin/iroh-capture-ticket.sh",
+      owner: "root:root",
+      permissions: "0755",
+      content: captureScript,
+    },
+  ];
+  if (reports) {
+    writeFiles.push({
+      path: "/root/secrets/iroh-report.json",
+      owner: "root:root",
+      permissions: "0600",
+      content: JSON.stringify({ url: reportUrl, token: reportToken }) + "\n",
+    });
+  }
+  writeFiles.push({
+    path: "/etc/systemd/system/dumbpipe-listen.service",
+    owner: "root:root",
+    permissions: "0644",
+    content: [
+      "[Unit]",
+      "Description=iroh dumbpipe listener (ssh-over-iroh)",
+      "After=network-online.target sshd.service ssh.service",
+      "Wants=network-online.target",
+      "",
+      "[Service]",
+      "Type=simple",
+      "User=root",
+      "# Prepares the persisted IROH_SECRET and truncates the listener log.",
+      "ExecStartPre=/usr/local/bin/iroh-prepare.sh",
+      "EnvironmentFile=-/root/secrets/iroh.env",
+      "# Source the secret in-process too: on the first start systemd read the",
+      "# EnvironmentFile before ExecStartPre created it.",
+      "ExecStart=/bin/sh -c 'set -a; [ -f /root/secrets/iroh.env ] && . /root/secrets/iroh.env; exec /usr/local/bin/dumbpipe listen-tcp --host 127.0.0.1:" + targetPort + "'",
+      "# Extracts and reports the ticket; a missing ticket logs and exits non-zero",
+      "# without taking the listener down ('-' keeps a non-zero exit non-fatal).",
+      "ExecStartPost=-/usr/local/bin/iroh-capture-ticket.sh",
+      "Restart=always",
+      "RestartSec=5",
+      "TimeoutStopSec=10",
+      "StandardOutput=append:/root/secrets/iroh-dumbpipe.log",
+      "StandardError=append:/root/secrets/iroh-dumbpipe.log",
+      "",
+      "[Install]",
+      "WantedBy=multi-user.target",
+      "",
+    ].join("\n"),
+  });
+
   return {
     apt: { preserve_sources_list: true },
-    packages: ["curl", "openssh-server"],
+    packages: ["curl", "jq", "openssh-server"],
     disable_root: false,
     ssh_pwauth: false,
-    write_files: [
-      {
-        path: "/root/.ssh/authorized_keys",
-        owner: "root:root",
-        permissions: "0600",
-        content: `${ctx.sshAuthorizedKey ?? ""}\n`,
-      },
-      {
-        path: "/etc/ssh/sshd_config.d/10-iroh.conf",
-        owner: "root:root",
-        permissions: "0644",
-        content: [
-          "# Key-only root login; dumbpipe bridges iroh traffic to sshd on loopback.",
-          "PermitRootLogin prohibit-password",
-          "PasswordAuthentication no",
-        ].join("\n") + "\n",
-      },
-      {
-        path: "/etc/systemd/system/dumbpipe-listen.service",
-        owner: "root:root",
-        permissions: "0644",
-        content: [
-          "[Unit]",
-          "Description=iroh dumbpipe listener (ssh-over-iroh)",
-          "After=network-online.target sshd.service ssh.service",
-          "Wants=network-online.target",
-          "",
-          "[Service]",
-          "Type=simple",
-          "User=root",
-          `ExecStart=/usr/local/bin/dumbpipe listen-tcp --host 127.0.0.1:${targetPort}`,
-          "Restart=always",
-          "RestartSec=5",
-          "TimeoutStopSec=10",
-          "# dumbpipe prints the ticket on its output stream; capture both streams so",
-          "# runcmd can extract it. The log lives under /root/secrets (0700, root).",
-          "StandardOutput=append:/root/secrets/iroh-dumbpipe.log",
-          "StandardError=append:/root/secrets/iroh-dumbpipe.log",
-          "",
-          "[Install]",
-          "WantedBy=multi-user.target",
-          "",
-        ].join("\n"),
-      },
-    ],
+    write_files: writeFiles,
     runcmd: [
       ["sh", "-c", `command -v dumbpipe >/dev/null || {
   _arch=$(uname -m)
   case "$_arch" in x86_64|amd64) _arch=x86_64 ;; aarch64|arm64) _arch=aarch64 ;; esac
-  curl -fsSL "https://github.com/n0-computer/dumbpipe/releases/download/${DUMBPIPE_VERSION}/dumbpipe-${DUMBPIPE_VERSION}-linux-\${_arch}.tar.gz" | tar -xvz -C /usr/local/bin dumbpipe
+  curl -fsSL "https://github.com/n0-computer/dumbpipe/releases/download/${DUMBPIPE_VERSION}/dumbpipe-${DUMBPIPE_VERSION}-linux-\${_arch}.tar.gz" | tar -xvz -C /usr/local/bin ./dumbpipe
   chmod 755 /usr/local/bin/dumbpipe
 }`],
       ["sh", "-c", "install -d -m 0700 -o root -g root /root/secrets"],
       "systemctl daemon-reload",
       "systemctl enable --now ssh || systemctl enable --now sshd",
       "systemctl enable --now dumbpipe-listen.service",
-      ["sh", "-c", `for _ in $(seq 1 60); do
-  _ticket=$(grep -m1 -oE 'dumbpipe connect-tcp [^[:space:]]+' /root/secrets/iroh-dumbpipe.log 2>/dev/null | cut -d' ' -f3)
-  [ -n "$_ticket" ] && break
-  sleep 1
-done
-[ -n "$_ticket" ] || { echo "dumbpipe ticket never appeared" >&2; exit 1; }
-printf '%s' "$_ticket" > /root/secrets/iroh-node-id
-chmod 0600 /root/secrets/iroh-node-id`],
     ],
   };
 };

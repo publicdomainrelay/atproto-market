@@ -12,6 +12,7 @@ import { createComputeProviderHooks } from "@publicdomainrelay/market-bidder-com
 import { createLocalComputeProvider } from "@publicdomainrelay/compute-provider-local";
 import type { ComputeAtproto } from "@publicdomainrelay/compute-provider-abc";
 import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc";
+import { resolveDidKeyFromPlc } from "./fetch-interceptor.ts";
 import { createComputeContractGateway } from "@publicdomainrelay/compute-contract-gateway-xrpc";
 import { createSshSessionProvider } from "@publicdomainrelay/requester-xrpc";
 
@@ -24,7 +25,10 @@ Deno.test(
   async () => {
     const logger = createLogger({ serviceName: "gateway_ssh_test" });
 
-    const dispatcher = createRelayFactory({ hostname: "localhost" }).createApp();
+    const dispatcher = createRelayFactory({
+      hostname: "localhost",
+      resolveDidKey: resolveDidKeyFromPlc,
+    }).createApp();
     const dispAc = new AbortController();
     const dispServer = Deno.serve(
       { port: 0, signal: dispAc.signal, hostname: "0.0.0.0" },

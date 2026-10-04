@@ -4,7 +4,7 @@
   "defs": {
     "main": {
       "type": "procedure",
-      "description": "Request a VM through the compute contract gateway. Gateway builds cloud-init from sshPublicKey, creates compute.vm and market.rfp records, discovers bidders, runs the full RFP protocol, submits accept, and verifies the receipt. Returns receipt refs and websocatUrl for SSH access.",
+      "description": "Request a VM through the compute contract gateway. Gateway builds cloud-init from sshPublicKey, creates compute.vm and market.rfp records, discovers bidders, runs the full RFP protocol, submits accept, and verifies the receipt. Returns receipt refs plus the transport that ran and the SSH target it produced.",
       "input": {
         "encoding": "application/json",
         "schema": {
@@ -66,8 +66,23 @@
             "receiptOk": { "type": "boolean" },
             "sshReady": { "type": "boolean" },
             "sshExitCode": { "type": "integer" },
-            "websocatUrl": { "type": "string", "format": "uri" },
-            "vmFqdn": { "type": "string" },
+            "websocatUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "Legacy fedproxy-ssh transport only: the wss:// relay tunnel URL for the websocat ProxyCommand. Absent under the default iroh transport."
+            },
+            "vmFqdn": {
+              "type": "string",
+              "description": "Legacy fedproxy-ssh transport only: the relay FQDN the SSH client dials through websocat. Absent under the default iroh transport."
+            },
+            "transport": {
+              "type": "string",
+              "description": "Cloud-init transport id that actually ran (\"iroh\" by default, or the legacy \"tunnel\"/\"fedproxy-ssh\")."
+            },
+            "ticket": {
+              "type": "string",
+              "description": "iroh dumbpipe ticket the guest reported to the gateway's own per-contract endpoint; the SSH target under the default iroh transport."
+            },
             "winnerDid": { "type": "string", "format": "did" },
             "winnerBidUri": { "type": "string", "format": "at-uri" },
             "winnerBidCid": { "type": "string", "format": "cid" },

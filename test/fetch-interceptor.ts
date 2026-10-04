@@ -41,3 +41,27 @@ export function installFetchInterceptor(opts: {
     client?.close();
   };
 }
+
+/**
+ * Resolve a DID's signing key the way the relay dispatcher does: GET the DID
+ * document from https://plc.directory/<did> -- which installFetchInterceptor
+ * rewrites onto the local fake PLC -- take the atproto verification method's
+ * publicKeyMultibase and return it as `did:key:<multibase>`.
+ *
+ * Pass this as the dispatcher factory's `resolveDidKey`. Without it the relay
+ * cannot verify the service-auth JWTs of the PDS/subscriber DIDs it serves and
+ * answers 401 AuthenticationRequired ("cannot resolve signing key for
+ * did:plc:...") before any transport or provisioning code runs.
+ */
+export async function resolveDidKeyFromPlc(did: string): Promise<string> {
+  const res = await fetch(`https://plc.directory/${encodeURIComponent(did)}`);
+  if (!res.ok) throw new Error(`PLC lookup failed for ${did}: ${res.status}`);
+  const doc = await res.json() as {
+    verificationMethod?: Array<{ id?: string; publicKeyMultibase?: string }>;
+  };
+  const methods = doc.verificationMethod ?? [];
+  const atproto = methods.find((m) => (m.id ?? "").endsWith("#atproto")) ?? methods[0];
+  const multibase = atproto?.publicKeyMultibase;
+  if (!multibase) throw new Error(`no atproto verification method for ${did}`);
+  return `did:key:${multibase}`;
+}

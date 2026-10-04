@@ -167,11 +167,33 @@ goat xrpc procedure "$GATEWAY_URL" com.publicdomainrelay.temp.gateway.requestCom
 
 ### 5. Connect via SSH
 
-Gateway returns `websocatUrl` and `vmFqdn`:
+The default transport is `iroh`. The guest runs a dumbpipe listener and reports
+its ticket to the gateway, so the response carries `transport` and `ticket`:
 
 ```json
 {
   "receiptOk": true,
+  "transport": "iroh",
+  "ticket": "2n7kq3xr5vbn4mh6wqk2s7d9fz3jptc5u4ye6a2b7c8d9e0f1g2h3j4k5m"
+}
+```
+
+Dial that ticket with dumbpipe (the gateway ensures the helper runs on the same
+host you run `dumbpipe` from):
+
+```sh
+ssh -o ProxyCommand='dumbpipe connect 2n7kq3xr5vbn4mh6wqk2s7d9fz3jptc5u4ye6a2b7c8d9e0f1g2h3j4k5m' \
+    -o IdentityFile=./my-vm-key \
+    root@2n7kq3xr5vbn4mh6wqk2s7d9fz3jptc5u4ye6a2b7c8d9e0f1g2h3j4k5m
+```
+
+Under the legacy `fedproxy-ssh` transport the response instead carries the
+relay pair and you reach the guest with the websocat ProxyCommand:
+
+```json
+{
+  "receiptOk": true,
+  "transport": "fedproxy-ssh",
   "websocatUrl": "wss://my-vm--did-plc-paeucw23byz57hqwihjmw4o3.fedproxy.com",
   "vmFqdn": "my-vm--did-plc-paeucw23byz57hqwihjmw4o3.fedproxy.com"
 }

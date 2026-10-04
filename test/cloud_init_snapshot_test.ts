@@ -30,6 +30,10 @@ const CTX = {
   sshAuthorizedKey: SSH,
   ingressProxyHost: "relay.local:443",
   audHost: "relay.local",
+  // Requester-supplied per-contract report channel: the guest posts its iroh
+  // ticket here instead of publishing it in a world-readable record.
+  irohReportUrl: "https://req-abc.relay.local/v1/on-network",
+  irohReportToken: "iroh-report-token-abc123",
 };
 
 function fixture(name: string): Promise<string> {
@@ -138,10 +142,45 @@ Deno.test("iroh dumbpipe listener replaces the tunnel subscriber", () => {
   assert(y.includes("PasswordAuthentication no"), "no password auth");
   assert(!y.includes("ListenAddress"), "sshd stays probe-able on :22");
   assert(y.includes("n0-computer/dumbpipe/releases/download"), "dumbpipe release archive");
+  // The release archive stores its member as ./dumbpipe; naming the bare
+  // `dumbpipe` fails with `tar: dumbpipe: Not found in archive` (exit 2).
+  assert(y.includes("./dumbpipe"), "extracts the ./dumbpipe member");
   assert(y.includes("dumbpipe-listen.service"), "listener unit installed");
   assert(y.includes("listen-tcp --host 127.0.0.1:22"), "listener bridges to sshd");
   assert(y.includes("/root/secrets/iroh-node-id"), "ticket captured for the requester");
   assert(!y.includes("tunnel-subscriber"), "old transport not re-emitted");
+});
+
+Deno.test("iroh listener keeps a stable identity and a fresh ticket", () => {
+  const y = buildUserData({ ctx: CTX, modules: ["iroh"] });
+  // Stable iroh identity: the secret file is created once, under umask 077, in
+  // the unit that starts the listener, and read through an EnvironmentFile.
+  assert(y.includes("EnvironmentFile=-/root/secrets/iroh.env"), "unit reads the secret file");
+  assert(y.includes("IROH_SECRET="), "secret file carries IROH_SECRET");
+  assert(
+    y.includes("[ ! -s /root/secrets/iroh.env ]"),
+    "secret generated only when missing or empty",
+  );
+  assert(y.includes("umask 077"), "secret written under umask 077");
+  assert(y.includes("chmod 0600 /root/secrets/iroh.env"), "secret file locked down");
+  // Freshness: the log is truncated on every start and the ticket re-extracted
+  // by an ExecStartPost, so a restarted listener cannot report a stale ticket.
+  assert(y.includes(": > /root/secrets/iroh-dumbpipe.log"), "log truncated on each start");
+  assert(
+    y.includes("ExecStartPost=-/usr/local/bin/iroh-capture-ticket.sh"),
+    "ticket re-extracted on each start",
+  );
+  assert(y.includes("ExecStartPre=/usr/local/bin/iroh-prepare.sh"), "prepares secret + log");
+  // Private report channel: the ticket goes to the requester's own endpoint,
+  // never into a public record.
+  assert(y.includes(CTX.irohReportUrl), "report endpoint from ctx.irohReportUrl");
+  assert(y.includes(CTX.irohReportToken), "bearer token from ctx.irohReportToken");
+  assert(y.includes("/root/secrets/iroh-report.json"), "report credentials written 0600");
+  assert(
+    y.includes('Authorization: Bearer $_token'),
+    "reports with the contract bearer token",
+  );
+  assert(y.includes("accept.uri"), "accept ref read from the injected bundle");
 });
 
 Deno.test("iroh ticket extraction matches the connect-tcp line dumbpipe prints", () => {
