@@ -43,7 +43,9 @@ spec:
   systemContext: test-fixtures-cloud-init
   toSpecHash: 5bdeb2bf7f6b155cebc82b79f8d5cefd212dfa4806f336a963ff841a4f118185
 status:
-  phase: Pending
+  message: the agent is realizing test-fixtures-cloud-init in a batch of 10 led by
+    lib-abc-requester
+  phase: Running
 superseded:
 - message: "...od.ts'.\n    at \e[0m\e[36mfile:///tmp/specd-worktree-3798412415/atproto-market/hono-bidder/mod.ts\e[0m:\e[0m\e[33m15\e[0m:\e[0m\e[33m36\e[0m\n\n\e[0m\e[1mTS2307
     \e[0m[ERROR]: Cannot find module 'file:///tmp/specd-worktree-3798412415/typescript-helpers/lib/tls-localhost/mod.ts'.\n

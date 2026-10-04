@@ -74,7 +74,9 @@ spec:
   systemContext: lib-compute-contract-gateway-xrpc
   toSpecHash: 956120f96e752c11992df4b6497774606a2901aceb42d35f8a77c18f46d88af2
 status:
-  phase: Pending
+  message: the agent is realizing lib-compute-contract-gateway-xrpc in a batch of
+    10 led by lib-abc-requester
+  phase: Running
 superseded:
 - message: "...od.ts'.\n    at \e[0m\e[36mfile:///tmp/specd-worktree-3798412415/atproto-market/hono-bidder/mod.ts\e[0m:\e[0m\e[33m15\e[0m:\e[0m\e[33m36\e[0m\n\n\e[0m\e[1mTS2307
     \e[0m[ERROR]: Cannot find module 'file:///tmp/specd-worktree-3798412415/typescript-helpers/lib/tls-localhost/mod.ts'.\n
