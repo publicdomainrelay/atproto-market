@@ -10,5 +10,24 @@ spec:
   systemContext: lib-market-bidder-compute
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-market-bidder-compute
-  phase: Running
+  agentLog: lib/market-bidder-compute wires a VM compute provider into the market
+    bidder flow. createComputeProviderHooks(opts) returns a MarketBidderProviderRef
+    with serviceId "pdr_temp_market", appliesTo ["com.publicdomainrelay.temp.compute.vm"],
+    the provider's own setup/teardown, and a buildCallbacks that constructs the RFP,
+    accept, and event callbacks via createVmBidderCallbacks. createVmBidderCallbacks(deps)
+    takes the full VmBidderDeps surface -- DID, attestation keypair, signer, id resolver,
+    relay ingress ref/url, compute provider, logger, the shared activeContracts map,
+    optional contract-change and policy-execution options, and the createRepoRecord
+    / createSignedRepoRecord / callService / resolve helpers -- and returns { rfp,
+    accept, event } callback maps. Its onRfp evaluates each attached RFP policy strongRef
+    through deps.evaluator, short-circuiting on the first deny, then creates a bid
+    config and a free bid payload record, signs a bid record, and best-effort submits
+    it to the RFP's submitBid URL. Its onAccept races VM provisioning against a 10
+    minute timeout, resolves rfp/payload/bid/bidConfig, injects an accept bundle into
+    user_data, signs a receipt record with an attestation CID, registers the contract
+    in activeContracts, and emits a vm.onNetwork event record on the bidder PDS, optionally
+    also pushing it over submitEvent. Its event callbacks handle vm.delete, resolving
+    the contract by receipt key, falling back to matching by receipt URI when the
+    CID was rewritten, and rejecting unknown receipts or non-author issuers.
+  message: wrote 15 requirement(s) and 3 interface(s) for lib-market-bidder-compute
+  phase: Succeeded
