@@ -1,14 +1,22 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: fe9f784be07b6075e4bd058b8bd349cd27b9274be4eee697c91a9fdd1984164b
+realizedSpecHash: ffa813c8a09c72f6be59cbabba8385be797eaf37976151bc0f721aeb9f999641
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: CodeRefsUnresolved
-  message: 'unresolved requirement code refs: r.generated-not-edited: file:lib/common/market-lexicons/com/atproto/repo.ts'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
-  reason: NotSyncedYet
-  message: no synced fingerprint has been recorded yet
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed
   message: the spec passes the validator
-observed: {}
+observed:
+  files:
+  - lib/common/market-lexicons/com/atproto/repo.ts
+  fingerprint: fe9f784be07b6075e4bd058b8bd349cd27b9274be4eee697c91a9fdd1984164b
