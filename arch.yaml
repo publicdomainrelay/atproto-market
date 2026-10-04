@@ -10759,10 +10759,238 @@ system_contexts:
   - lib/market-bidder-agent/mod.ts
   codeRefIndex:
   - file:lib/market-bidder-agent/mod.ts mod.ts@lib/market-bidder-agent/mod.ts
+  - function:06cebf856c3be35de17c689a0ccaca29 applyWrites@lib/market-bidder-agent/mod.ts:294
+  - function:08fbe16787fbdc5b92d51bda4c9a4519 listRecords@lib/market-bidder-agent/mod.ts:332
+  - function:1b2e0f2694d705889bcfb6ed573a9d5a dpopFetch@lib/market-bidder-agent/mod.ts:249
+  - function:407e4c41cef3e86724e04659cedadfdb createOAuthAgent@lib/market-bidder-agent/mod.ts:163
+  - function:691e68a35723a4f0e774745f7efb891b refreshLock@lib/market-bidder-agent/mod.ts:225
+  - function:8f78299c9e8f2a298e0fa81860dd13d0 createRecord@lib/market-bidder-agent/mod.ts:349
+  - function:96dc609775f8f9f5382312d19ec99f0e putRecord@lib/market-bidder-agent/mod.ts:367
+  - function:a690e444f084e1d7e654f05a07f22482 getServiceAuth@lib/market-bidder-agent/mod.ts:385
+  - function:a9adf14c6ea59e323dcdd8a8ad87784f createDesktopATProto@lib/market-bidder-agent/mod.ts:418
+  - function:fdc54648c4f6169ee7c3ef17e76f9628 getRecord@lib/market-bidder-agent/mod.ts:314
+  - interface:76dfa4cb57701d3cf137a9d79e664dfe OAuthAgentSession@lib/market-bidder-agent/mod.ts:144
+  - interface:981804416897bc52d8c40722ea378abb OAuthAgentOptions@lib/market-bidder-agent/mod.ts:152
+  - interface:ac5d8663ab340c835a37c121adbb2dac DidResolverLike@lib/market-bidder-agent/mod.ts:136
   depends_on:
   - sc.atproto-market
   id: sc.lib-market-bidder-agent
+  intent: This context exists so the market bidder agent can run against a PDS using
+    an OAuth client session rather than a plain credential login, while still satisfying
+    the `AtprotoAgentLike` contract the rest of the market stack consumes. It isolates
+    the DPoP/refresh plumbing that the upstream `@atproto/oauth-client` keeps private,
+    and it adapts the generic `ATProto` helper surface onto that agent by supplying
+    TID generation, strong-ref-returning create/update helpers, attestation signing,
+    and service-proxied `callService` requests.
+  interfaces:
+  - file: lib/market-bidder-agent/mod.ts
+    kind: interface
+    name: DidResolverLike
+    signature: 'interface DidResolverLike { did: { resolve(did: string): Promise<Record<string,
+      unknown> | null> } }'
+  - file: lib/market-bidder-agent/mod.ts
+    kind: interface
+    name: OAuthAgentOptions
+    signature: 'interface OAuthAgentOptions { refreshSession: () => Promise<OAuthAgentSession>;
+      onSessionRefreshed?: (session: OAuthAgentSession) => void }'
+  - file: lib/market-bidder-agent/mod.ts
+    kind: interface
+    name: OAuthAgentSession
+    signature: 'interface OAuthAgentSession { did: string; pds: string; accessJwt:
+      string; dpopKeyPair: CryptoKeyPair; dpopPublicJwk: Record<string, string> }'
+  - file: lib/market-bidder-agent/mod.ts
+    kind: function
+    name: applyWrites
+    signature: 'applyWrites(did: string, writes: WriteOp[])'
+  - file: lib/market-bidder-agent/mod.ts
+    kind: function
+    name: createDesktopATProto
+    signature: 'createDesktopATProto(logger: StructuredLoggerInterface, agent: AtprotoAgentLike,
+      badgeBlueSigner: CreateATProtoOpts["badgeBlueSigner"], idResolver: DidResolverLike,
+      plcClient: CreateATProtoOpts["plcDirectory"]): Promise<ATProto>'
+  - file: lib/market-bidder-agent/mod.ts
+    kind: function
+    name: createOAuthAgent
+    signature: 'createOAuthAgent(session: OAuthAgentSession, signer: { did(): string;
+      sign(bytes: Uint8Array): Promise<Uint8Array> }, opts: OAuthAgentOptions): AtprotoAgentLike'
+  - file: lib/market-bidder-agent/mod.ts
+    kind: function
+    name: createRecord
+    signature: 'createRecord(did: string, collection: string, rkey: string, record:
+      Record<string, unknown>): Promise<{ uri: string; cid: string }>'
+  - file: lib/market-bidder-agent/mod.ts
+    kind: function
+    name: dpopFetch
+    signature: 'dpopFetch(method: string, url: string, body?: Record<string, unknown>):
+      Promise<Response>'
+  - file: lib/market-bidder-agent/mod.ts
+    kind: function
+    name: getRecord
+    signature: 'getRecord(did: string, collection: string, rkey: string): Promise<{
+      uri: string; cid: string; value: Record<string, unknown> } | null>'
+  - file: lib/market-bidder-agent/mod.ts
+    kind: function
+    name: getServiceAuth
+    signature: 'getServiceAuth(aud: string, lxm?: string): Promise<string>'
+  - file: lib/market-bidder-agent/mod.ts
+    kind: function
+    name: listRecords
+    signature: 'listRecords(did: string, collection: string, opts?: { limit?: number
+      }): Promise<{ records: Array<{ uri: string; cid: string; value: Record<string,
+      unknown> }> }>'
+  - file: lib/market-bidder-agent/mod.ts
+    kind: function
+    name: putRecord
+    signature: 'putRecord(did: string, collection: string, rkey: string, record: Record<string,
+      unknown>): Promise<{ uri: string; cid: string }>'
+  - file: lib/market-bidder-agent/mod.ts
+    kind: function
+    name: refreshLock
+    signature: 'refreshLock(): Promise<void>'
   name: lib-market-bidder-agent
+  requirements:
+  - codeRefs:
+    - file:lib/market-bidder-agent/mod.ts
+    - function:407e4c41cef3e86724e04659cedadfdb
+    id: r.agent-surface
+    level: MUST
+    text: The object returned by the agent factory exposes the current session DID,
+      the caller-supplied signer, and the record and service-auth operations `applyWrites`,
+      `getRecord`, `listRecords`, `createRecord`, `putRecord`, and `getServiceAuth`,
+      so it satisfies the `AtprotoAgentLike` contract consumed by the desktop wrapper.
+  - codeRefs:
+    - file:lib/market-bidder-agent/mod.ts
+    id: r.alg-negotiation
+    level: MUST
+    text: The DPoP signing algorithm is chosen by intersecting the key's advertised
+      algorithms with the server-supported list, falling back to the key's first algorithm,
+      and an error is thrown when no algorithm matches.
+  - codeRefs:
+    - function:06cebf856c3be35de17c689a0ccaca29
+    id: r.apply-writes
+    level: MUST
+    text: '`applyWrites` rewrites each `WriteOp` by renaming its `record` field to
+      `value`, then POSTs `com.atproto.repo.applyWrites` to the session PDS with `validate:
+      false`, throwing an error carrying the status and response text on a non-OK
+      response and otherwise returning the parsed commit event.'
+  - codeRefs:
+    - function:a690e444f084e1d7e654f05a07f22482
+    - function:a9adf14c6ea59e323dcdd8a8ad87784f
+    id: r.call-service
+    level: MUST
+    text: 'When the wrapped agent supplies `getServiceAuth`, the wrapper replaces
+      `callService`: an `http(s)` endpoint yields the target base with `/xrpc` and
+      a `did:web:<host>` audience, a `did:` endpoint resolves the DID document, finds
+      the service entry named by the fragment (defaulting to `pdr_temp_market`), and
+      uses its `serviceEndpoint` origin as the audience, minting a service-auth token
+      and POSTing the JSON body with a Bearer authorization header; the result reports
+      status, ok, and the parsed JSON or text body.'
+  - codeRefs:
+    - function:a9adf14c6ea59e323dcdd8a8ad87784f
+    id: r.desktop-atproto-wrap
+    level: MUST
+    text: '`createDesktopATProto` dynamically imports `createATProto` and delegates
+      the logger, badge signer, PLC directory, and agent to it, returning the resulting
+      `ATProto` rather than reimplementing the helper layer.'
+  - codeRefs:
+    - interface:ac5d8663ab340c835a37c121adbb2dac
+    id: r.did-resolver
+    level: MAY
+    text: The DID resolver used for service resolution only needs a `did.resolve`
+      method returning a DID document record, not the full `@atproto/identity` resolver
+      surface.
+  - codeRefs:
+    - file:lib/market-bidder-agent/mod.ts
+    id: r.dpop-nonce
+    level: MUST
+    text: 'DPoP nonces are stored in a map keyed by request origin; the stored nonce
+      is attached to each proof, a differing `DPoP-Nonce` response header replaces
+      the stored value, and when the response is a nonce error (401 with `WWW-Authenticate:
+      DPoP ... error="use_dpop_nonce"`, or 400 with a JSON body reporting `use_dpop_nonce`
+      for bodies under 10 KiB) the original body is cancelled and the request is retried
+      once with the fresh nonce.'
+  - codeRefs:
+    - file:lib/market-bidder-agent/mod.ts
+    - function:1b2e0f2694d705889bcfb6ed573a9d5a
+    id: r.dpop-proof-inline
+    level: MUST
+    text: 'Requests are signed with a DPoP proof built inline per RFC 9449: the `htu`
+      claim strips query and fragment from the URL, the `ath` claim is the base64url
+      SHA-256 of the bearer token taken from a `DPoP `-prefixed Authorization header,
+      the JWT header carries `typ: dpop+jwt` with the bare public JWK, and the ES256
+      signature is produced with `crypto.subtle` over the base64url header and payload.'
+  - codeRefs:
+    - function:fdc54648c4f6169ee7c3ef17e76f9628
+    id: r.get-record
+    level: MUST
+    text: '`getRecord` issues a GET to `com.atproto.repo.getRecord` with URL-encoded
+      repo, collection, and rkey parameters, returns `null` for a 404 or 400 response,
+      throws with the status and body text on any other non-OK response, and otherwise
+      returns the decoded record.'
+  - codeRefs:
+    - function:08fbe16787fbdc5b92d51bda4c9a4519
+    id: r.list-records
+    level: MUST
+    text: '`listRecords` issues a GET to `com.atproto.repo.listRecords` for the given
+      repo and collection, appending a `limit` parameter only when one is supplied,
+      and throws with the status and body text on a non-OK response.'
+  - codeRefs:
+    - file:lib/market-bidder-agent/mod.ts
+    - function:a9adf14c6ea59e323dcdd8a8ad87784f
+    id: r.record-helper-patch
+    level: SHOULD
+    text: When the wrapped agent supplies `createRecord`, the wrapper installs TID-keyed
+      `createRecord` and `createRepoRecord` overrides that return strong refs and
+      raw `{ uri, cid }` respectively, and installs `updateRecord` over the agent's
+      `putRecord`; the TID is a monotonic 13-character base36 timestamp suffixed by
+      a wrapping 2048-count base36 clock, and `createSignedRepoRecord` signs an inline
+      attestation for the repository and stores it under a `signatures` array.
+  - codeRefs:
+    - function:691e68a35723a4f0e774745f7efb891b
+    - interface:981804416897bc52d8c40722ea378abb
+    id: r.refresh-lock
+    level: MUST
+    text: '`refreshLock` serializes concurrent refreshes behind a single in-flight
+      promise so simultaneous 401s cause one `refreshSession` call; it replaces the
+      current session, invokes the optional `onSessionRefreshed` callback, rebuilds
+      the DPoP fetch closure so proofs use the new key material, and clears the in-flight
+      promise in a `finally` block.'
+  - codeRefs:
+    - function:a690e444f084e1d7e654f05a07f22482
+    id: r.service-auth
+    level: MUST
+    text: '`getServiceAuth` GETs `com.atproto.server.getServiceAuth` with the required
+      `aud` and optional `lxm` query parameters, retries once after a `refreshLock`
+      when the response is 401, throws with the status and body text on a non-OK response,
+      and returns the `token` field of the decoded body.'
+  - codeRefs:
+    - interface:76dfa4cb57701d3cf137a9d79e664dfe
+    - interface:981804416897bc52d8c40722ea378abb
+    id: r.session-shape
+    level: MUST
+    text: An OAuth agent session is described by its DID, PDS base URL, access JWT,
+      DPoP key pair, and public JWK, and the options carry a required `refreshSession`
+      callback plus an optional `onSessionRefreshed` notification invoked after a
+      successful refresh.
+  - codeRefs:
+    - function:1b2e0f2694d705889bcfb6ed573a9d5a
+    - function:691e68a35723a4f0e774745f7efb891b
+    id: r.token-refresh-retry
+    level: MUST
+    text: '`dpopFetch` retries on an expired access token: a 401 whose `WWW-Authenticate`
+      begins with `Bearer ` or `DPoP ` and contains `error="invalid_token"` triggers
+      a session refresh followed by a re-send, repeated at most twice to absorb clock
+      skew between the auth server and the PDS, and the last response is returned
+      regardless.'
+  - codeRefs:
+    - function:8f78299c9e8f2a298e0fa81860dd13d0
+    - function:96dc609775f8f9f5382312d19ec99f0e
+    id: r.write-records
+    level: MUST
+    text: '`createRecord` and `putRecord` POST to `com.atproto.repo.createRecord`
+      and `com.atproto.repo.putRecord` respectively on the session PDS, each passing
+      repo, collection, rkey, the record, and `validate: false`, throwing with the
+      status and body text on failure and returning the `{ uri, cid }` result.'
   upstream: self
 - code:
   - lib/market-bidder-compute/mod.ts

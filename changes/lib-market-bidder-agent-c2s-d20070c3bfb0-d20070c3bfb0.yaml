@@ -10,5 +10,19 @@ spec:
   systemContext: lib-market-bidder-agent
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-market-bidder-agent
-  phase: Running
+  agentLog: '`lib/market-bidder-agent` is a Deno/TypeScript implementation module
+    that bridges AT Protocol OAuth sessions to the `AtprotoAgentLike` interface used
+    by `@publicdomainrelay/atproto-helpers`. Its `createOAuthAgent` builds an agent
+    from an `OAuthAgentSession` (DID, PDS URL, access JWT, DPoP keypair and public
+    JWK) plus a refresh callback, reimplementing RFC 9449 DPoP proof generation, origin-keyed
+    nonce storage, the `use_dpop_nonce` retry, and a 401 `invalid_token` refresh-and-retry
+    loop inline because the `@atproto/oauth-client` `dpopFetchWrapper` is not exported
+    from the package''s public entrypoint. The returned agent exposes `applyWrites`,
+    `getRecord`, `listRecords`, `createRecord`, `putRecord`, and `getServiceAuth`,
+    all of which talk to the session''s PDS over XRPC with `validate: false`. A second
+    export, `createDesktopATProto`, wraps `createATProto` from the helpers package
+    and patches in record helpers (TID-keyed create, put-backed update, signed records
+    with inline attestations) and a `callService` that resolves `http(s)` or `did:`
+    endpoints, mints a service-auth token, and posts the XRPC body with a Bearer token.'
+  message: wrote 16 requirement(s) and 13 interface(s) for lib-market-bidder-agent
+  phase: Succeeded

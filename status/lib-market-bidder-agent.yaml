@@ -1,9 +1,8 @@
 conditions:
-- message: 'undeclared: DidResolverLike, OAuthAgentOptions, OAuthAgentSession, applyWrites,
-    createDesktopATProto, createOAuthAgent, createRecord, dpopFetch, getRecord, getServiceAuth,
-    listRecords, putRecord, refreshLock'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -138,5 +137,5 @@ observed:
       ): Promise<ATProto>
   treeFiles:
   - lib/market-bidder-agent/deno.json
-realizedSpecHash: 8ce7aad54ae88dd01ae95e2d17bfe78d0947a659c138cc9118df8e518399aeac
+realizedSpecHash: a310cd4b38acd7905421ad6f385d0d376ccdfa0c1f45a45670a200008681ca33
 syncedFingerprint: 2076c902857ac4bea558bd1462f045436c7e0300383a9622284edbd16b81eac9
