@@ -43,5 +43,66 @@ spec:
   systemContext: test-fixtures-cloud-init
   toSpecHash: 5bdeb2bf7f6b155cebc82b79f8d5cefd212dfa4806f336a963ff841a4f118185
 status:
-  message: the agent is realizing test-fixtures-cloud-init
-  phase: Running
+  agentLog: "...d green.\n\n⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY
+    or another auth source is set and takes precedence over your claude.ai login ·
+    Unset it to load your organization's connectors\n[claude-code:unrecognized_model]
+    {\"model\":\"deepseek-v4-flash\",\"query_source\":\"sdk\"}\n\e[0m\e[38;5;245mrunning
+    17 tests from ./test/cloud_init_snapshot_test.ts\e[0m\ncomposer snapshots match
+    fixtures ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(23ms)\e[0m\nsecrets module composes
+    with the transport ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(1ms)\e[0m\nsecrets
+    module discovers provider paths at runtime, not build time ... \e[0m\e[32mok\e[0m
+    \e[0m\e[38;5;245m(615µs)\e[0m\nsecrets module echoes the provider-assigned subject
+    ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(655µs)\e[0m\nsecrets module fails loud
+    ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(857µs)\e[0m\nsecrets module writes secrets
+    0600 under a 0700 parent ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(449µs)\e[0m\nsecrets
+    module carries no secret values ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(419µs)\e[0m\nbug
+    fixes baked into fedproxy-ssh ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(733µs)\e[0m\ntunnel
+    has no ListenAddress (direct-TCP probe) ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(445µs)\e[0m\niroh
+    dumbpipe listener replaces the tunnel subscriber ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(578µs)\e[0m\nwootty
+    combo carries token handoff + hardening ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(1ms)\e[0m\ndeprecated
+    wrappers equal composer outputs ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(1ms)\e[0m\nmerge
+    semantics: base + module append, dedupe, override ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(7ms)\e[0m\nruncmdPrepend
+    ordering + acceptBundleModule ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(753µs)\e[0m\nunparseable
+    / empty base -> fresh build ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(4ms)\e[0m\ninjectJsrUrl
+    adds JSR_URL env to tunnel unit ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(432µs)\e[0m\nregistry:
+    built-ins present, unknown id throws ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(425µs)\e[0m\n\n\e[0m\e[32mok\e[0m
+    | 17 passed | 0 failed \e[0m\e[38;5;245m(59ms)\e[0m"
+  branch: spec/test-fixtures-cloud-init/5bdeb2bf
+  commit: 89b584d8b58ce18bb849552f887389ea9267134b
+  filesTouched:
+  - lib/common/cloud-init-common/mod.ts
+  - test/cloud_init_snapshot_test.ts
+  - test/fixtures/cloud-init/iroh.yaml
+  message: 'realized test-fixtures-cloud-init on spec/test-fixtures-cloud-init/5bdeb2bf:
+    3 file(s) touched, verify exit 0'
+  phase: Succeeded
+  progress:
+  - at: "2026-10-04T22:01:49Z"
+    files:
+    - test/cloud_init_snapshot_test.ts
+    tool: Read
+  - at: "2026-10-04T22:01:55Z"
+    files:
+    - lib/common/cloud-init-common/mod.ts
+    tool: Read
+  - at: "2026-10-04T22:02:18Z"
+    files:
+    - test/fixtures/cloud-init/tunnel.yaml
+    tool: Read
+  - at: "2026-10-04T22:03:50Z"
+    files:
+    - lib/common/cloud-init-common/mod.ts
+    tool: Edit
+  - at: "2026-10-04T22:04:05Z"
+    files:
+    - test/fixtures/cloud-init/iroh.yaml
+    tool: Read
+  - at: "2026-10-04T22:04:08Z"
+    files:
+    - test/cloud_init_snapshot_test.ts
+    tool: Edit
+  - at: "2026-10-04T22:04:25Z"
+    note: turn
+  - at: "2026-10-04T22:04:26Z"
+    note: turn
+    turn: 1
