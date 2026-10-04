@@ -1251,9 +1251,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-trust-graph-tangled-graph-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-utils-attestation-key-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | request-vm-ssh-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| request-vm-ssh-s2c-d2a673493193 | SpecToCode | Failed |  | 1 | - |
-| request-vm-ssh-s2c-d2a673493193-a2 | SpecToCode | Failed |  | 1 | - |
-| request-vm-ssh-s2c-d2a673493193-a3 | SpecToCode | Failed |  | 1 | - |
+| request-vm-ssh-s2c-d2a673493193 | SpecToCode | Pending |  | 0 | - |
 | test-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | test-fixtures-cloud-init-c2s-d20070c3bfb0-d20070c3bfb0-a3 | CodeToSpec | Succeeded |  | 0 | - |
 | test-fixtures-cloud-init-s2c-5bdeb2bf7f6b | SpecToCode | Succeeded | 89b584d8 | 0 | - |
