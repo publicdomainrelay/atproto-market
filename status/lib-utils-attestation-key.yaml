@@ -25,5 +25,6 @@ observed:
     signature: '(jwkPath: string | URL): Promise<string>'
   treeFiles:
   - lib/utils-attestation-key/deno.json
+observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 realizedSpecHash: 63fad1a7711c8b74c004ee35cb49f5ec841f8e6220f6f474e5c99f7085312952
 syncedFingerprint: c22b33cc6646e0dae8141ad778a4b1bf50bd12d1e741a6ca7a545bcd410a2352

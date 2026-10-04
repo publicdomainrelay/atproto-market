@@ -19,8 +19,7 @@ status:
     failed: 0
     summarized: 81
     total: 81
-  headCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-  indexedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-  observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
+  headCommit: 89b584d8b58ce18bb849552f887389ea9267134b
+  indexedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
   phase: Populated
   syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b

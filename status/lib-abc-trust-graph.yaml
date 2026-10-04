@@ -34,5 +34,6 @@ observed:
     name: DelegatedTrustResolver
   treeFiles:
   - lib/abc/trust-graph/deno.json
+observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
 realizedSpecHash: 172446476c0902c26bc1cd523d9026f4648ce86f8dd5d299fb38bf0ceb27201e
 syncedFingerprint: c4474a949fb36c0f188293dac3f1a5bc5f8fac71e52316d2fcb728490b334834

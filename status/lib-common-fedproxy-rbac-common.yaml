@@ -49,5 +49,6 @@ observed:
       ): Record<string, unknown>
   treeFiles:
   - lib/common/fedproxy-rbac-common/deno.json
+observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
 realizedSpecHash: d91a3ce0c8011cdc148d94af95267071bfa1c295e674fc50e3ef5d4493388a4e
 syncedFingerprint: 77502dccc4e5fcc06e8cc141912e8762435a6fe3c000fb51b6d8e7909e501fd7

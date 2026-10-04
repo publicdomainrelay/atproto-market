@@ -1,0 +1,76 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-common-cloud-init-common-c2s-d20070c3bfb0-89b584d8b58c
+  namespace: default
+spec:
+  delta:
+    observed:
+      fingerprint:
+        from: b3b5c693040c31034ae3a0bb86e5dca1a0d83e474a0f2e995ef5b2ec1a6c4dd8
+        to: 5d92b6301c76fe05fa99cac072963fe942b67c363adb7a281ab01de283f51041
+      interfaces:
+      - fields:
+        - codegraphId
+        - line
+        from:
+          codegraphId: function:46c9fd0cecf9645ba56294190be1600c
+          file: lib/common/cloud-init-common/mod.ts
+          kind: function
+          line: 874
+          name: buildDefaultUserData
+          signature: '(ctx: CloudInitContext): string'
+        name: buildDefaultUserData
+        op: changed
+        to:
+          codegraphId: function:1755fe3f2bf73f1ed1a41d5ca8ca9577
+          file: lib/common/cloud-init-common/mod.ts
+          kind: function
+          line: 953
+          name: buildDefaultUserData
+          signature: '(ctx: CloudInitContext): string'
+      - fields:
+        - codegraphId
+        - line
+        from:
+          codegraphId: function:40149c728f060be41b2c8ee8a826902c
+          file: lib/common/cloud-init-common/mod.ts
+          kind: function
+          line: 882
+          name: buildTunnelUserData
+          signature: '(ctx: TunnelCloudInitContext): string'
+        name: buildTunnelUserData
+        op: changed
+        to:
+          codegraphId: function:637aa27aa76514217f8a526aa6b77dec
+          file: lib/common/cloud-init-common/mod.ts
+          kind: function
+          line: 961
+          name: buildTunnelUserData
+          signature: '(ctx: TunnelCloudInitContext): string'
+      - fields:
+        - codegraphId
+        - line
+        from:
+          codegraphId: function:4466755423490bdd6cd4a58e579cc002
+          file: lib/common/cloud-init-common/mod.ts
+          kind: function
+          line: 887
+          name: injectJsrUrl
+          signature: '(userData: string, jsrUrl: string): string'
+        name: injectJsrUrl
+        op: changed
+        to:
+          codegraphId: function:8ebc1d2a73b7f6452aa7083b474633f6
+          file: lib/common/cloud-init-common/mod.ts
+          kind: function
+          line: 966
+          name: injectJsrUrl
+          signature: '(userData: string, jsrUrl: string): string'
+  direction: CodeToSpec
+  fromCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
+  systemContext: lib-common-cloud-init-common
+  toCommit: 89b584d8b58ce18bb849552f887389ea9267134b
+status:
+  message: the agent is summarizing lib-common-cloud-init-common
+  phase: Running

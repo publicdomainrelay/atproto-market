@@ -1,12 +1,13 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- message: 'unresolved requirement code refs: r.deprecated-wrappers: function:40149c728f060be41b2c8ee8a826902c,
+    r.deprecated-wrappers: function:46c9fd0cecf9645ba56294190be1600c, r.inject-jsr-url:
+    function:4466755423490bdd6cd4a58e579cc002'
+  reason: CodeRefsUnresolved
   status: "False"
+  type: CodeSynced
+- message: observed facts changed since the spec was last synced
+  reason: FingerprintChanged
+  status: "True"
   type: Drifted
 - message: the spec passes the validator
   reason: ValidatorPassed
@@ -15,7 +16,7 @@ conditions:
 observed:
   files:
   - lib/common/cloud-init-common/mod.ts
-  fingerprint: b3b5c693040c31034ae3a0bb86e5dca1a0d83e474a0f2e995ef5b2ec1a6c4dd8
+  fingerprint: 5d92b6301c76fe05fa99cac072963fe942b67c363adb7a281ab01de283f51041
   interfaces:
   - codegraphId: interface:0bccaee64ad56c10f80842c828570d30
     file: lib/common/cloud-init-common/mod.ts
@@ -88,25 +89,26 @@ observed:
         acceptPathVm: string,
         bundle: Record<string, unknown>,
       ): UserDataModule
-  - codegraphId: function:46c9fd0cecf9645ba56294190be1600c
+  - codegraphId: function:1755fe3f2bf73f1ed1a41d5ca8ca9577
     file: lib/common/cloud-init-common/mod.ts
     kind: function
-    line: 874
+    line: 953
     name: buildDefaultUserData
     signature: '(ctx: CloudInitContext): string'
-  - codegraphId: function:40149c728f060be41b2c8ee8a826902c
+  - codegraphId: function:637aa27aa76514217f8a526aa6b77dec
     file: lib/common/cloud-init-common/mod.ts
     kind: function
-    line: 882
+    line: 961
     name: buildTunnelUserData
     signature: '(ctx: TunnelCloudInitContext): string'
-  - codegraphId: function:4466755423490bdd6cd4a58e579cc002
+  - codegraphId: function:8ebc1d2a73b7f6452aa7083b474633f6
     file: lib/common/cloud-init-common/mod.ts
     kind: function
-    line: 887
+    line: 966
     name: injectJsrUrl
     signature: '(userData: string, jsrUrl: string): string'
   treeFiles:
   - lib/common/cloud-init-common/deno.json
+observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
 realizedSpecHash: 687f83492a8ecceaa75df21cd29ca42634632a6c69e2d144fd6c3a42af43a002
 syncedFingerprint: b3b5c693040c31034ae3a0bb86e5dca1a0d83e474a0f2e995ef5b2ec1a6c4dd8

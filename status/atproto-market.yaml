@@ -19,5 +19,6 @@ observed:
   - LEXICONS.md
   - deno.json
   - deno.lock
+observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 realizedSpecHash: 00ff9b5f1be5767cf17bad90b2e70bc9fdaef431efdc61d6719b3d64258a4de1
 syncedFingerprint: c615d9a5fb01683177aab2bc918332dd6ec5ca88dd5f90e744df41b5462d1f34

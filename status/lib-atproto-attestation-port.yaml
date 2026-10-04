@@ -535,5 +535,6 @@ observed:
     name: LexiconType
   treeFiles:
   - lib/atproto-attestation-port/deno.json
+observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
 realizedSpecHash: 923bc510c7b4e74f38e050a7503c9c4d01da5e71510dbb7a4eafc85afcf2fc03
 syncedFingerprint: 09e1f232cdea49345e02eb499246f99e7741eaf4ac3c2494cf257d02be03e8cd
