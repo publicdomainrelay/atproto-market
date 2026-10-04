@@ -45,5 +45,52 @@ spec:
   systemContext: request-vm-ssh
   toSpecHash: f1cc934aee1db7971c41a2c575edcc9d204e51c73e508bf7a417151f51250d77
 status:
-  message: the agent is realizing request-vm-ssh
-  phase: Running
+  agentLog: "...ed_model] {\"model\":\"deepseek-v4-flash\",\"query_source\":\"sdk\"}\n\e[0m\e[38;5;245mrunning
+    19 tests from ./test/cloud_init_snapshot_test.ts\e[0m\ncomposer snapshots match
+    fixtures ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(18ms)\e[0m\nsecrets module composes
+    with the transport ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(954µs)\e[0m\nsecrets
+    module discovers provider paths at runtime, not build time ... \e[0m\e[32mok\e[0m
+    \e[0m\e[38;5;245m(472µs)\e[0m\nsecrets module echoes the provider-assigned subject
+    ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(449µs)\e[0m\nsecrets module fails loud
+    ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(472µs)\e[0m\nsecrets module writes secrets
+    0600 under a 0700 parent ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(380µs)\e[0m\nsecrets
+    module carries no secret values ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(365µs)\e[0m\nbug
+    fixes baked into fedproxy-ssh ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(736µs)\e[0m\ntunnel
+    has no ListenAddress (direct-TCP probe) ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(459µs)\e[0m\niroh
+    dumbpipe listener replaces the tunnel subscriber ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(506µs)\e[0m\niroh
+    ticket extraction matches the connect-tcp line dumbpipe prints ... \e[0m\e[32mok\e[0m
+    \e[0m\e[38;5;245m(959µs)\e[0m\nevery module that configures an sshd installs openssh-server
+    ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(2ms)\e[0m\nwootty combo carries token
+    handoff + hardening ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(399µs)\e[0m\ndeprecated
+    wrappers equal composer outputs ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(1ms)\e[0m\nmerge
+    semantics: base + module append, dedupe, override ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(6ms)\e[0m\nruncmdPrepend
+    ordering + acceptBundleModule ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(1ms)\e[0m\nunparseable
+    / empty base -> fresh build ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(4ms)\e[0m\ninjectJsrUrl
+    adds JSR_URL env to tunnel unit ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(480µs)\e[0m\nregistry:
+    built-ins present, unknown id throws ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(390µs)\e[0m\n\n\e[0m\e[32mok\e[0m
+    | 19 passed | 0 failed \e[0m\e[38;5;245m(55ms)\e[0m"
+  branch: spec/request-vm-ssh/f1cc934a
+  commit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+  filesTouched:
+  - request-vm-ssh/mod.ts
+  message: 'realized request-vm-ssh on spec/request-vm-ssh/f1cc934a: 1 file(s) touched,
+    verify exit 0'
+  phase: Succeeded
+  progress:
+  - at: "2026-10-04T22:26:07Z"
+    files:
+    - request-vm-ssh/mod.ts
+    tool: Read
+  - at: "2026-10-04T22:26:07Z"
+    files:
+    - request-vm-ssh/cli-args-env.ts
+    tool: Read
+  - at: "2026-10-04T22:26:20Z"
+    files:
+    - request-vm-ssh/mod.ts
+    tool: Edit
+  - at: "2026-10-04T22:26:30Z"
+    note: turn
+  - at: "2026-10-04T22:26:31Z"
+    note: turn
+    turn: 1

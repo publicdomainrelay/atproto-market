@@ -1259,7 +1259,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-utils-attestation-key-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | request-vm-ssh-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | request-vm-ssh-s2c-d2a673493193 | SpecToCode | Succeeded | b9c1b774 | 0 | - |
-| request-vm-ssh-s2c-f1cc934aee1d | SpecToCode | Running |  | 0 | - |
+| request-vm-ssh-s2c-f1cc934aee1d | SpecToCode | Succeeded | 4e520f5a | 0 | - |
 | test-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | test-fixtures-cloud-init-c2s-d20070c3bfb0-d20070c3bfb0-a3 | CodeToSpec | Succeeded |  | 0 | - |
 | test-fixtures-cloud-init-s2c-5bdeb2bf7f6b | SpecToCode | Succeeded | 89b584d8 | 0 | - |
