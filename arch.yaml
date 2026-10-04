@@ -7634,10 +7634,388 @@ system_contexts:
   - file:lib/did-plc/generated/index.ts index.ts@lib/did-plc/generated/index.ts
   - file:lib/did-plc/generated/sdk.gen.ts sdk.gen.ts@lib/did-plc/generated/sdk.gen.ts
   - file:lib/did-plc/generated/types.gen.ts types.gen.ts@lib/did-plc/generated/types.gen.ts
+  - function:0f780cea28411c032283f1ed477292f0 resolveDid@lib/did-plc/generated/sdk.gen.ts:24
+  - function:1495d4cb8fc5849c95ebfe53032eb6d5 createPlcOp@lib/did-plc/generated/sdk.gen.ts:29
+  - function:2c8cda686039039edfb62906f1c7b8e4 getLastOp@lib/did-plc/generated/sdk.gen.ts:51
+  - function:4d0581d5775526dc30563286eee15cf9 export_@lib/did-plc/generated/sdk.gen.ts:61
+  - function:8197f5c8b53dd102aab15a4859eb9eff getPlcOpLog@lib/did-plc/generated/sdk.gen.ts:41
+  - function:c16923351c028a2524d09fd49a4e9396 getPlcData@lib/did-plc/generated/sdk.gen.ts:56
+  - function:f88f253e570376f3c82045ceb410c964 getPlcAuditLog@lib/did-plc/generated/sdk.gen.ts:46
+  - type_alias:2217b5041dc37a25dbb3a95b3fdc3614 DidDocument@lib/did-plc/generated/types.gen.ts:116
+  - type_alias:2228e75a3fba8466df0a89f8602a2e3c ResolveDidResponses@lib/did-plc/generated/types.gen.ts:167
+  - type_alias:22d89c51e34c8a65a3d38a599069aad1 GetLastOpErrors@lib/did-plc/generated/types.gen.ts:282
+  - type_alias:254318a85cdcbe888f557d8dcbd18fce PlcOp@lib/did-plc/generated/types.gen.ts:18
+  - type_alias:36deb58af6b1e6a0c1b9bfd92a509de2 ClientOptions@lib/did-plc/generated/types.gen.ts:3
+  - type_alias:40f648a1dd86d8b4a12f5522753ebf80 GetPlcAuditLogErrors@lib/did-plc/generated/types.gen.ts:253
+  - type_alias:49e81f3179617521132a81d448100235 LogEntry@lib/did-plc/generated/types.gen.ts:96
+  - type_alias:4c53550ff9f0b1530f777457b2aab4b9 GetPlcDataResponses@lib/did-plc/generated/types.gen.ts:328
+  - type_alias:4c6c1f7432ff4192993ee2b756fa5062 GetPlcOpLogResponses@lib/did-plc/generated/types.gen.ts:235
+  - type_alias:50207c3afa79e900f577b79bf52f6aba ExportErrors@lib/did-plc/generated/types.gen.ts:348
+  - type_alias:680e3694e4e92af4022983c5fdd977f9 CreatePlcOpErrors@lib/did-plc/generated/types.gen.ts:185
+  - type_alias:6c4d76f5a7e883c1806d2ad3dc30c088 CreateClientConfig@lib/did-plc/generated/client.gen.ts:14
+  - type_alias:78962202220f883b01ea8937e4d66665 ExportData@lib/did-plc/generated/types.gen.ts:335
+  - type_alias:82dbe8940dcd7b888caeee4317af1244 Options@lib/did-plc/generated/sdk.gen.ts:7
+  - type_alias:99c6e65ed84f158926b7d77175147c6c ExportResponses@lib/did-plc/generated/types.gen.ts:359
+  - type_alias:9a3e85048fb3b4540f9b5b0ef6bc3287 GetPlcDataErrors@lib/did-plc/generated/types.gen.ts:311
+  - type_alias:9b356e3f3cd84e6766bfc8483c96b696 CreatePlcOpResponses@lib/did-plc/generated/types.gen.ts:208
+  - type_alias:9ed6ce54421dd1e6ce96139b0ce9856b ResolveDidErrors@lib/did-plc/generated/types.gen.ts:150
+  - type_alias:b4d6bfa8d0c23c03a6fabf2adde68710 GetPlcAuditLogResponses@lib/did-plc/generated/types.gen.ts:264
+  - type_alias:bf65ac75a3730bc43ef7790db94694f2 CreatePlcOpData@lib/did-plc/generated/types.gen.ts:176
+  - type_alias:c5375050d9a0278e54d6993b51009ae8 GetPlcOpLogErrors@lib/did-plc/generated/types.gen.ts:224
+  - type_alias:c9e396f69721efb9d82c3a68c8763f6f Operation@lib/did-plc/generated/types.gen.ts:7
+  - type_alias:cd3e5e7ab8f4ea8a1fa2b7920d7e3a7b LegacyCreateOp@lib/did-plc/generated/types.gen.ts:68
+  - type_alias:f2763d175add69dd71270f735d4df310 PlcService@lib/did-plc/generated/types.gen.ts:136
+  - type_alias:f625ac32a8a6e4f700251e1c33c7d289 TombstoneOp@lib/did-plc/generated/types.gen.ts:53
+  - type_alias:f7238f998c97915ef77a9d07f8b82c14 GetLastOpResponses@lib/did-plc/generated/types.gen.ts:293
   depends_on:
   - sc.atproto-market
   id: sc.lib-did-plc-generated
+  intent: This context is the generated HTTP client layer for the PLC directory API,
+    produced from the service's OpenAPI description rather than written by hand. It
+    exists so the rest of atproto-market - principally lib/did-plc/client.ts and its
+    mod.ts barrel - can resolve DID documents and read or append PLC operations through
+    typed request/response shapes without re-deriving the wire format, and so the
+    wire contract can be regenerated when the PLC directory service changes. It depends
+    on sc.atproto-market and is upstream of itself, meaning it is the leaf of the
+    dependency graph and nothing inside it should depend on higher layers.
+  interfaces:
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: ClientOptions
+    signature: type ClientOptions
+  - file: lib/did-plc/generated/client.gen.ts
+    kind: type
+    name: CreateClientConfig
+    signature: 'type CreateClientConfig<T extends ClientOptions = ClientOptions2>
+      = (override?: Config<ClientOptions & T>) => Config<Required<ClientOptions> &
+      T>'
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: CreatePlcOpData
+    signature: type CreatePlcOpData
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: CreatePlcOpError
+    signature: type CreatePlcOpError
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: CreatePlcOpErrors
+    signature: type CreatePlcOpErrors
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: CreatePlcOpResponses
+    signature: type CreatePlcOpResponses
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: DidDocument
+    signature: type DidDocument
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: ExportData
+    signature: type ExportData
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: ExportError
+    signature: type ExportError
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: ExportErrors
+    signature: type ExportErrors
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: ExportResponse
+    signature: type ExportResponse
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: ExportResponses
+    signature: type ExportResponses
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: GetLastOpData
+    signature: type GetLastOpData
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: GetLastOpError
+    signature: type GetLastOpError
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: GetLastOpErrors
+    signature: type GetLastOpErrors
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: GetLastOpResponse
+    signature: type GetLastOpResponse
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: GetLastOpResponses
+    signature: type GetLastOpResponses
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: GetPlcAuditLogData
+    signature: type GetPlcAuditLogData
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: GetPlcAuditLogError
+    signature: type GetPlcAuditLogError
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: GetPlcAuditLogErrors
+    signature: type GetPlcAuditLogErrors
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: GetPlcAuditLogResponse
+    signature: type GetPlcAuditLogResponse
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: GetPlcAuditLogResponses
+    signature: type GetPlcAuditLogResponses
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: GetPlcDataData
+    signature: type GetPlcDataData
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: GetPlcDataError
+    signature: type GetPlcDataError
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: GetPlcDataErrors
+    signature: type GetPlcDataErrors
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: GetPlcDataResponses
+    signature: type GetPlcDataResponses
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: GetPlcOpLogData
+    signature: type GetPlcOpLogData
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: GetPlcOpLogError
+    signature: type GetPlcOpLogError
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: GetPlcOpLogErrors
+    signature: type GetPlcOpLogErrors
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: GetPlcOpLogResponse
+    signature: type GetPlcOpLogResponse
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: GetPlcOpLogResponses
+    signature: type GetPlcOpLogResponses
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: LegacyCreateOp
+    signature: type LegacyCreateOp
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: LogEntry
+    signature: type LogEntry
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: Operation
+    signature: type Operation
+  - file: lib/did-plc/generated/sdk.gen.ts
+    kind: type
+    name: Options
+    signature: 'type Options<TData extends TDataShape = TDataShape, ThrowOnError extends
+      boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse>
+      & { client?: Client; meta?: keyof ClientMeta extends never ? Record<string,
+      unknown> : ClientMeta }'
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: PlcOp
+    signature: type PlcOp
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: PlcService
+    signature: type PlcService
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: ResolveDidData
+    signature: type ResolveDidData
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: ResolveDidError
+    signature: type ResolveDidError
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: ResolveDidErrors
+    signature: type ResolveDidErrors
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: ResolveDidResponse
+    signature: type ResolveDidResponse
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: ResolveDidResponses
+    signature: type ResolveDidResponses
+  - file: lib/did-plc/generated/types.gen.ts
+    kind: type
+    name: TombstoneOp
+    signature: type TombstoneOp
+  - file: lib/did-plc/generated/sdk.gen.ts
+    kind: function
+    name: createPlcOp
+    signature: '(options: Options<CreatePlcOpData, ThrowOnError>): RequestResult<CreatePlcOpResponses,
+      CreatePlcOpErrors, ThrowOnError>'
+  - file: lib/did-plc/generated/sdk.gen.ts
+    kind: function
+    name: export_
+    signature: '(options?: Options<ExportData, ThrowOnError>): RequestResult<ExportResponses,
+      ExportErrors, ThrowOnError>'
+  - file: lib/did-plc/generated/sdk.gen.ts
+    kind: function
+    name: getLastOp
+    signature: '(options: Options<GetLastOpData, ThrowOnError>): RequestResult<GetLastOpResponses,
+      GetLastOpErrors, ThrowOnError>'
+  - file: lib/did-plc/generated/sdk.gen.ts
+    kind: function
+    name: getPlcAuditLog
+    signature: '(options: Options<GetPlcAuditLogData, ThrowOnError>): RequestResult<GetPlcAuditLogResponses,
+      GetPlcAuditLogErrors, ThrowOnError>'
+  - file: lib/did-plc/generated/sdk.gen.ts
+    kind: function
+    name: getPlcData
+    signature: '(options: Options<GetPlcDataData, ThrowOnError>): RequestResult<GetPlcDataResponses,
+      GetPlcDataErrors, ThrowOnError>'
+  - file: lib/did-plc/generated/sdk.gen.ts
+    kind: function
+    name: getPlcOpLog
+    signature: '(options: Options<GetPlcOpLogData, ThrowOnError>): RequestResult<GetPlcOpLogResponses,
+      GetPlcOpLogErrors, ThrowOnError>'
+  - file: lib/did-plc/generated/sdk.gen.ts
+    kind: function
+    name: resolveDid
+    signature: '(options: Options<ResolveDidData, ThrowOnError>): RequestResult<ResolveDidResponses,
+      ResolveDidErrors, ThrowOnError>'
   name: lib-did-plc-generated
+  requirements:
+  - codeRefs:
+    - file:lib/did-plc/generated/client.gen.ts
+    - type_alias:36deb58af6b1e6a0c1b9bfd92a509de2
+    - type_alias:6c4d76f5a7e883c1806d2ad3dc30c088
+    id: r.client-config-type
+    level: MUST
+    text: CreateClientConfig is exported as a generic function type over ClientOptions
+      that takes an optional override of the base config merged with the caller's
+      own options, and returns a config in which the base ClientOptions are required
+      - giving callers a typed way to produce a configured client instance to pass
+      back in through the Options client field.
+  - codeRefs:
+    - function:0f780cea28411c032283f1ed477292f0
+    - type_alias:82dbe8940dcd7b888caeee4317af1244
+    id: r.client-override-and-meta
+    level: MUST
+    text: The Options type accepted by each operation extends the underlying request
+      options with an optional client instance and an optional meta bag of caller-defined
+      values, and each operation dispatches through options.client when one is supplied,
+      falling back to the module-level default client otherwise - so a caller can
+      inject a custom client or attach request-scoped context without editing generated
+      code.
+  - codeRefs:
+    - function:0f780cea28411c032283f1ed477292f0
+    - function:1495d4cb8fc5849c95ebfe53032eb6d5
+    - function:2c8cda686039039edfb62906f1c7b8e4
+    - function:8197f5c8b53dd102aab15a4859eb9eff
+    id: r.did-path-parameter
+    level: MUST
+    text: 'Every operation addresses the directory by DID using a path template rather
+      than a composed URL: resolveDid and createPlcOp target ''/{did}'', getPlcOpLog
+      targets ''/{did}/log'' and getLastOp targets ''/{did}/log/last'', with the concrete
+      DID supplied by the caller through the path field of the operation''s data type.'
+  - codeRefs:
+    - function:4d0581d5775526dc30563286eee15cf9
+    - type_alias:78962202220f883b01ea8937e4d66665
+    id: r.export-name-escaped
+    level: MUST
+    text: The export operation is exported under the identifier export_ with a trailing
+      underscore, and unlike the other six it accepts an optional options argument,
+      which keeps the name legal in TypeScript while preserving the operation's meaning.
+  - codeRefs:
+    - file:lib/did-plc/generated/client.gen.ts
+    - file:lib/did-plc/generated/sdk.gen.ts
+    - file:lib/did-plc/generated/types.gen.ts
+    id: r.generated-not-hand-edited
+    level: SHOULD
+    text: 'Files carrying the .gen.ts suffix are treated as generated output: behaviour
+      changes belong in the upstream OpenAPI description and regeneration, while hand-written
+      adaptations such as the Deno request path live outside this directory in lib/did-plc/client.ts.'
+  - codeRefs:
+    - function:1495d4cb8fc5849c95ebfe53032eb6d5
+    - type_alias:bf65ac75a3730bc43ef7790db94694f2
+    id: r.json-body-content-type
+    level: MUST
+    text: createPlcOp issues a POST whose headers set Content-Type to application/json,
+      merged with any caller-supplied headers so the caller can still override or
+      extend them, and carries the submitted operation in the request body.
+  - codeRefs:
+    - file:lib/did-plc/generated/sdk.gen.ts
+    - function:0f780cea28411c032283f1ed477292f0
+    - function:1495d4cb8fc5849c95ebfe53032eb6d5
+    - function:2c8cda686039039edfb62906f1c7b8e4
+    - function:4d0581d5775526dc30563286eee15cf9
+    - function:8197f5c8b53dd102aab15a4859eb9eff
+    - function:c16923351c028a2524d09fd49a4e9396
+    - function:f88f253e570376f3c82045ceb410c964
+    id: r.operations-exported
+    level: MUST
+    text: The SDK module exports exactly seven operation functions - resolveDid, createPlcOp,
+      getPlcOpLog, getPlcAuditLog, getLastOp, getPlcData and export_ - each generic
+      over ThrowOnError extends boolean defaulting to false and each returning a RequestResult
+      parameterised by that operation's response, error and ThrowOnError types.
+  - codeRefs:
+    - file:lib/did-plc/generated/client.gen.ts
+    - file:lib/did-plc/generated/index.ts
+    - file:lib/did-plc/generated/sdk.gen.ts
+    - file:lib/did-plc/generated/types.gen.ts
+    id: r.package-barrel
+    level: MUST
+    text: The generated directory exposes a single barrel entry point that re-exports
+      the client configuration, the SDK operations and the generated types, so consumers
+      such as lib/did-plc/client.ts and lib/did-plc/mod.ts import from the package
+      root instead of reaching into the individual generated files.
+  - codeRefs:
+    - type_alias:2228e75a3fba8466df0a89f8602a2e3c
+    - type_alias:22d89c51e34c8a65a3d38a599069aad1
+    - type_alias:40f648a1dd86d8b4a12f5522753ebf80
+    - type_alias:4c53550ff9f0b1530f777457b2aab4b9
+    - type_alias:4c6c1f7432ff4192993ee2b756fa5062
+    - type_alias:50207c3afa79e900f577b79bf52f6aba
+    - type_alias:680e3694e4e92af4022983c5fdd977f9
+    - type_alias:99c6e65ed84f158926b7d77175147c6c
+    - type_alias:9a3e85048fb3b4540f9b5b0ef6bc3287
+    - type_alias:9b356e3f3cd84e6766bfc8483c96b696
+    - type_alias:9ed6ce54421dd1e6ce96139b0ce9856b
+    - type_alias:b4d6bfa8d0c23c03a6fabf2adde68710
+    - type_alias:c5375050d9a0278e54d6993b51009ae8
+    - type_alias:f7238f998c97915ef77a9d07f8b82c14
+    id: r.per-operation-error-types
+    level: MUST
+    text: Each operation carries its own error and response type pair - for example
+      ResolveDidErrors/ResolveDidResponses, CreatePlcOpErrors/CreatePlcOpResponses,
+      GetPlcOpLogErrors/GetPlcOpLogResponses, GetPlcAuditLogErrors/GetPlcAuditLogResponses,
+      GetLastOpErrors/GetLastOpResponses, GetPlcDataErrors/GetPlcDataResponses and
+      ExportErrors/ExportResponses - so that failure and success payloads stay distinguishable
+      at the type level rather than collapsing into one untyped result.
+  - codeRefs:
+    - type_alias:2217b5041dc37a25dbb3a95b3fdc3614
+    - type_alias:254318a85cdcbe888f557d8dcbd18fce
+    - type_alias:49e81f3179617521132a81d448100235
+    - type_alias:c9e396f69721efb9d82c3a68c8763f6f
+    - type_alias:cd3e5e7ab8f4ea8a1fa2b7920d7e3a7b
+    - type_alias:f2763d175add69dd71270f735d4df310
+    - type_alias:f625ac32a8a6e4f700251e1c33c7d289
+    id: r.plc-domain-types
+    level: MUST
+    text: 'The generated types model the PLC directory''s domain vocabulary, not just
+      transport shapes: Operation is the union of signed PLC operations, PlcOp, TombstoneOp
+      and LegacyCreateOp are its variants, LogEntry represents an entry in a DID''s
+      operation log, and DidDocument with PlcService represents a resolved DID document
+      and its service entries - so callers in lib/did-plc/client.ts can work with
+      typed operations rather than raw JSON.'
   upstream: self
 - code:
   - lib/did-plc/generated/client/client.gen.ts

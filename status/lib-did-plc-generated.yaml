@@ -1,16 +1,8 @@
 conditions:
-- message: 'undeclared: ClientOptions, CreateClientConfig, CreatePlcOpData, CreatePlcOpError,
-    CreatePlcOpErrors, CreatePlcOpResponses, DidDocument, ExportData, ExportError,
-    ExportErrors, ExportResponse, ExportResponses, GetLastOpData, GetLastOpError,
-    GetLastOpErrors, GetLastOpResponse, GetLastOpResponses, GetPlcAuditLogData, GetPlcAuditLogError,
-    GetPlcAuditLogErrors, GetPlcAuditLogResponse, GetPlcAuditLogResponses, GetPlcDataData,
-    GetPlcDataError, GetPlcDataErrors, GetPlcDataResponses, GetPlcOpLogData, GetPlcOpLogError,
-    GetPlcOpLogErrors, GetPlcOpLogResponse, GetPlcOpLogResponses, LegacyCreateOp,
-    LogEntry, Operation, Options, PlcOp, PlcService, ResolveDidData, ResolveDidError,
-    ResolveDidErrors, ResolveDidResponse, ResolveDidResponses, TombstoneOp, createPlcOp,
-    export_, getLastOp, getPlcAuditLog, getPlcData, getPlcOpLog, resolveDid'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -292,5 +284,5 @@ observed:
     kind: type_alias
     line: 366
     name: ExportResponse
-realizedSpecHash: 778b74d15d6b37e5a052e4ed17920621e6102a884dba9d82a4af17d16efd37e3
+realizedSpecHash: 04edc6691eab09e39f96ae7c7bf59c7ff5075db1c8e1fbd55c4266a62fdcb882
 syncedFingerprint: 699c5b492cb9c87728afe30c7fa1cfab4c4ddc710b6852eea34aadbdad54c64d

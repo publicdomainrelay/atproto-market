@@ -10,5 +10,19 @@ spec:
   systemContext: lib-did-plc-generated
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-did-plc-generated
-  phase: Running
+  agentLog: 'lib/did-plc/generated holds the OpenAPI-generated TypeScript client for
+    a PLC directory service (the did:plc operation-log server). The four files split
+    cleanly: types.gen.ts carries every request/response/error shape and the PLC domain
+    models (Operation, PlcOp, TombstoneOp, LegacyCreateOp, LogEntry, DidDocument,
+    PlcService), sdk.gen.ts wraps each HTTP operation as a thin arrow function delegating
+    to a hey-api style client, client.gen.ts exposes the CreateClientConfig type used
+    to build a configured client, and index.ts re-exports the lot as the package surface.
+    Seven operations are generated: resolveDid (GET /{did}), createPlcOp (POST /{did}),
+    getPlcOpLog (GET /{did}/log), getLastOp (GET /{did}/log/last), getPlcAuditLog,
+    getPlcData and export_. Every operation takes a single Options object that may
+    carry its own client instance and arbitrary meta values, so callers can swap in
+    a custom client or thread request-scoped context without changing the generated
+    code. Hand-written code in lib/did-plc/client.ts consumes these functions (submitOp,
+    getLog, getLastOp) and falls back to a Deno-specific path when running under Deno.'
+  message: wrote 10 requirement(s) and 50 interface(s) for lib-did-plc-generated
+  phase: Succeeded
