@@ -1,0 +1,66 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-market-c2s-d20070c3bfb0-d20070c3bfb0-a2
+  namespace: default
+spec:
+  delta: {}
+  direction: CodeToSpec
+  fromCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
+  systemContext: lib-common-market-lexicons-com-publicdomainrelay-temp-market
+  toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
+status:
+  message: the agent is summarizing lib-common-market-lexicons-com-publicdomainrelay-temp-market
+  phase: Running
+superseded:
+- message: |-
+    ...      "kind": "type_alias",
+          "signature": "export type $Params = l.InferOutput<typeof $params>",
+          "file": "lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts"
+        },
+        {
+          "name": "$Output",
+          "kind": "type_alias",
+          "signature": "export type $Output<B = l.BinaryData> = l.InferPayload<typeof $output, B>",
+          "file": "lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts"
+        },
+        {
+          "name": "$OutputBody",
+          "kind": "type_alias",
+          "signature": "export type $OutputBody<B = l.BinaryData> = l.InferPayloadBody<typeof $output, B>",
+          "file": "lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts"
+        },
+        {
+          "name": "$Params",
+          "kind": "type_alias",
+          "signature": "export type $Params = l.InferOutput<typeof $params>",
+          "file": "lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts"
+        },
+        {
+          "name": "$Input",
+          "kind": "type_alias",
+          "signature": "export type $Input = l.InferInput<typeof $input>",
+          "file": "lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts"
+        },
+        {
+          "name": "$InputBody",
+          "kind": "type_alias",
+          "signature": "export type $InputBody = l.InferInputBody<typeof $input>",
+          "file": "lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts"
+        },
+        {
+          "name": "$Output",
+          "kind": "type_alias",
+          "signature": "export type $Output<B = l.BinaryData> = l.InferPayload<typeof $output, B>",
+          "file": "lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts"
+        },
+        {
+          "name": "$OutputBody",
+          "kind": "type_alias",
+          "signature": "export type $OutputBody<B = l.BinaryData> = l.InferPayloadBody<typeof $output, B>",
+          "file": "lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts"
+        }
+      ]
+    }
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-market-c2s-d20070c3bfb0-d20070c3bfb0
+  phase: Failed
