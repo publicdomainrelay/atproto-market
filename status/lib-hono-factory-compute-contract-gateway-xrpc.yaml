@@ -1,17 +1,45 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: 7174d4b2b423f737042b159e2a95f0f5142ed7757cb0945d528e62ba7e1c116a
+realizedSpecHash: 9365b719e875ee3d38f1714e9a6470761315d29592ee6dd1220f149ffd078817
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'missing: ComputeContractGatewayFactoryOptions, createComputeContractGatewayFactory,
-    requireAuth; unresolved: r.auth-failure-401: file:lib/hono-factory-compute-contract-gateway-xrpc/mod.ts,
-    r.auth-failure-401: function:35f62ddaabe8e88061e3c0f6d7f5c28c, r.cors-all-routes:
-    function:fb9c0b643b6c0ae7e354f595aa7280cf, r.factory-returns-hono-app: interface:9ce82a55642acec416e2eb4c3b27f13c'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
-  reason: NotSyncedYet
-  message: no synced fingerprint has been recorded yet
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed
   message: the spec passes the validator
-observed: {}
+observed:
+  files:
+  - lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+  treeFiles:
+  - lib/hono-factory-compute-contract-gateway-xrpc/deno.json
+  interfaces:
+  - name: ComputeContractGatewayFactoryOptions
+    kind: interface
+    file: lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+    line: 18
+    codegraphId: interface:9ce82a55642acec416e2eb4c3b27f13c
+  - name: createComputeContractGatewayFactory
+    kind: function
+    signature: |-
+      (
+        opts: ComputeContractGatewayFactoryOptions,
+      ): { app: Hono }
+    file: lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+    line: 25
+    codegraphId: function:fb9c0b643b6c0ae7e354f595aa7280cf
+  - name: requireAuth
+    kind: function
+    signature: '(lxm: string)'
+    file: lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+    line: 30
+    codegraphId: function:35f62ddaabe8e88061e3c0f6d7f5c28c
+  fingerprint: 7174d4b2b423f737042b159e2a95f0f5142ed7757cb0945d528e62ba7e1c116a

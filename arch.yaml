@@ -2133,6 +2133,26 @@ system_contexts:
   - file:lib/did-plc/generated/client/index.ts index.ts@lib/did-plc/generated/client/index.ts
   - file:lib/did-plc/generated/client/types.gen.ts types.gen.ts@lib/did-plc/generated/client/types.gen.ts
   - file:lib/did-plc/generated/client/utils.gen.ts utils.gen.ts@lib/did-plc/generated/client/utils.gen.ts
+  - function:0131a84b31ad85543599f7fcdc257d17 createConfig@lib/did-plc/generated/client/utils.gen.ts:308
+  - function:045b120064539e4384e726f1ad3a6cfd mergeConfigs@lib/did-plc/generated/client/utils.gen.ts:169
+  - function:188d765b509d3931cfcc5bbfffb2b7dc createClient@lib/did-plc/generated/client/client.gen.ts:22
+  - function:5cc56f8414c5363a5723ab1d53a49283 mergeHeaders@lib/did-plc/generated/client/utils.gen.ts:186
+  - function:8458ee58b9d6ddeb478f0901d8d49b7a getParseAs@lib/did-plc/generated/client/utils.gen.ts:68
+  - function:8b30a2691d351681cfd7042ce1e15408 buildUrl@lib/did-plc/generated/client/utils.gen.ts:157
+  - function:a8e4eb7e716e14eb46c35d17b48cf48b createQuerySerializer@lib/did-plc/generated/client/utils.gen.ts:14
+  - function:bf0bf50aa3da564c87154fb48989d79a createInterceptors@lib/did-plc/generated/client/utils.gen.ts:281
+  - function:e9636fa71df0faaef499d2a5fb4b33cf setAuthParams@lib/did-plc/generated/client/utils.gen.ts:121
+  - interface:060e771651286dc59512e47760351c52 RequestOptions@lib/did-plc/generated/client/types.gen.ts:56
+  - interface:38443be81142d5646b8f37c2d0673a74 Config@lib/did-plc/generated/client/types.gen.ts:13
+  - interface:52b8825cf135e083d7d54d23395fc970 ResolvedRequestOptions@lib/did-plc/generated/client/types.gen.ts:91
+  - interface:6a08e48cdf00ed57e85e84d03157d051 Middleware@lib/did-plc/generated/client/utils.gen.ts:275
+  - interface:9323c2d655bd8f9655c74438a7d51be9 TDataShape@lib/did-plc/generated/client/types.gen.ts:199
+  - interface:c1fcf386d064ae2466c6e8d0fd2ac083 ClientOptions@lib/did-plc/generated/client/types.gen.ts:137
+  - type_alias:2af15840ea8a34874a90d03c8c53bfca RequestResult@lib/did-plc/generated/client/types.gen.ts:100
+  - type_alias:6ae6701371118f7f03da4ff85978bdf7 Options@lib/did-plc/generated/client/types.gen.ts:209
+  - type_alias:952c875d05b76621416e955f7ac584c0 ResponseStyle@lib/did-plc/generated/client/types.gen.ts:11
+  - type_alias:aff9789136e33dc58e0e596ab4913239 Client@lib/did-plc/generated/client/types.gen.ts:183
+  - type_alias:c165bd43ffb67fcfa6433020cbe99e52 CreateClientConfig@lib/did-plc/generated/client/types.gen.ts:195
 - id: sc.lib-did-plc-generated-core
   name: lib-did-plc-generated-core
   spec: specs/lib-did-plc-generated-core.yaml
@@ -2177,6 +2197,47 @@ system_contexts:
   - file:lib/did-plc/generated/core/serverSentEvents.gen.ts serverSentEvents.gen.ts@lib/did-plc/generated/core/serverSentEvents.gen.ts
   - file:lib/did-plc/generated/core/types.gen.ts types.gen.ts@lib/did-plc/generated/core/types.gen.ts
   - file:lib/did-plc/generated/core/utils.gen.ts utils.gen.ts@lib/did-plc/generated/core/utils.gen.ts
+  - function:0eec6a8b5f95850e00b60b674c319208 separatorArrayExplode@lib/did-plc/generated/core/pathSerializer.gen.ts:28
+  - function:322f298b5f2b35c454545e9e7383ed23 stringifyToJsonValue@lib/did-plc/generated/core/queryKeySerializer.gen.ts:33
+  - function:328544b37c6f5c21f27f71b2df1541fe createSseClient@lib/did-plc/generated/core/serverSentEvents.gen.ts:82
+  - function:3aa423aa49ce15b5c281fdf674ccea83 serializeArrayParam@lib/did-plc/generated/core/pathSerializer.gen.ts:67
+  - function:44cf0e94fd6213ef2ce23d5c6a2d1d08 defaultPathSerializer@lib/did-plc/generated/core/utils.gen.ts:18
+  - function:52c78b83773379b2af971b52fe7d344b separatorObjectExplode@lib/did-plc/generated/core/pathSerializer.gen.ts:54
+  - function:6b40f3b794b4bad43b14cd20458c4211 serializeObjectParam@lib/did-plc/generated/core/pathSerializer.gen.ts:127
+  - function:6da9c83dca2343cb8d6ab89b226694e3 getValidRequestBody@lib/did-plc/generated/core/utils.gen.ts:113
+  - function:726d44cabe8461d0ca02ce11929e1984 getAuthToken@lib/did-plc/generated/core/auth.gen.ts:29
+  - function:857ac81730785f9de7bbc011af2905ee buildClientParams@lib/did-plc/generated/core/params.gen.ts:107
+  - function:8a8169ef157538cd873bebae1c7e4b7c getUrl@lib/did-plc/generated/core/utils.gen.ts:85
+  - function:9886966e31c3b2166c2973f6d894a6c9 bodySerializer@lib/did-plc/generated/core/bodySerializer.gen.ts:42
+  - function:9e1e59ef39a8a3523eabbe58a707c0da separatorArrayNoExplode@lib/did-plc/generated/core/pathSerializer.gen.ts:41
+  - function:d8a8ad4ef7229e1f081c6bf168c34b83 serializePrimitiveParam@lib/did-plc/generated/core/pathSerializer.gen.ts:109
+  - function:e070a49e14782e2ad70106dfca6b7555 serializeQueryKeyValue@lib/did-plc/generated/core/queryKeySerializer.gen.ts:83
+  - function:fd2b04c364cd99e46d33fea953a519f3 queryKeyJsonReplacer@lib/did-plc/generated/core/queryKeySerializer.gen.ts:17
+  - interface:1b456f0aa4a4892de795fc7cfe346405 SerializerOptions@lib/did-plc/generated/core/pathSerializer.gen.ts:10
+  - interface:21dc1cb955f27a91202088472797c2b3 StreamEvent@lib/did-plc/generated/core/serverSentEvents.gen.ts:67
+  - interface:77f3963c1fa0f8f2cb8e9d7a27958cb2 Auth@lib/did-plc/generated/core/auth.gen.ts:5
+  - interface:86925fded451512a00e035e61ca0d84c Fields@lib/did-plc/generated/core/params.gen.ts:38
+  - interface:9724358a094cfd674de35400ce1b41f5 PathSerializer@lib/did-plc/generated/core/utils.gen.ts:11
+  - interface:9f7ce76ffc39dcee7f4408f47e8dc761 ClientMeta@lib/did-plc/generated/core/types.gen.ts:98
+  - interface:d7cde3b0b3197fc22f539e91215196ed Config@lib/did-plc/generated/core/types.gen.ts:35
+  - method:3e119e404dd19ce39adbd340693e853e ServerSentEventsOptions.sseSleepFn@lib/did-plc/generated/core/serverSentEvents.gen.ts:63
+  - method:5c7ca5bd02df3770e74bbdce8d0506c2 ServerSentEventsOptions.onSseEvent@lib/did-plc/generated/core/serverSentEvents.gen.ts:34
+  - method:903d25222e9da49cf170564fbcd88121 ServerSentEventsOptions.onSseError@lib/did-plc/generated/core/serverSentEvents.gen.ts:25
+  - method:ea065c4e19adf5aad92b1f94271d9c6b ServerSentEventsOptions.onRequest@lib/did-plc/generated/core/serverSentEvents.gen.ts:17
+  - type_alias:1442602a19a8b8d826fe955ec8b35459 ArraySeparatorStyle@lib/did-plc/generated/core/pathSerializer.gen.ts:19
+  - type_alias:2945f346c02f778b7f7a30bb74276e1a HttpMethod@lib/did-plc/generated/core/types.gen.ts:6
+  - type_alias:4666391d97cd157ecd65221851e39295 Client@lib/did-plc/generated/core/types.gen.ts:17
+  - type_alias:5099914286af01f9125c6a3086d0a4ac OmitNever@lib/did-plc/generated/core/types.gen.ts:108
+  - type_alias:73d3e5f774b282eef2fec4e0529a39f4 JsonValue@lib/did-plc/generated/core/queryKeySerializer.gen.ts:6
+  - type_alias:7735ceb25b97fac3d2d1b121e3f89176 AuthToken@lib/did-plc/generated/core/auth.gen.ts:3
+  - type_alias:7b083dfe3c20e80a081ae3b7540d6395 QuerySerializer@lib/did-plc/generated/core/bodySerializer.gen.ts:5
+  - type_alias:918b65cfb156b73540784120485ddc65 ServerSentEventsOptions@lib/did-plc/generated/core/serverSentEvents.gen.ts:5
+  - type_alias:c40de77654e0d20536f33c98f3814deb ServerSentEventsResult@lib/did-plc/generated/core/serverSentEvents.gen.ts:74
+  - type_alias:c6ba6174744a90575aff38757edd13d9 FieldsConfig@lib/did-plc/generated/core/params.gen.ts:43
+  - type_alias:cfd18ecca404ce0fa829adfbfed5419a QuerySerializerOptions@lib/did-plc/generated/core/bodySerializer.gen.ts:15
+  - type_alias:d4025b696fa82ef945e4ff5e7c98f3ca ObjectStyle@lib/did-plc/generated/core/pathSerializer.gen.ts:21
+  - type_alias:dde729a96cfbf612b97b92a3c998d820 BodySerializer@lib/did-plc/generated/core/bodySerializer.gen.ts:7
+  - type_alias:ed6588bd0f4545931394c9a19ffb3d2f Field@lib/did-plc/generated/core/params.gen.ts:5
 - id: sc.lib-guest-capability-secrets
   name: lib-guest-capability-secrets
   spec: specs/lib-guest-capability-secrets.yaml
@@ -2207,6 +2268,8 @@ system_contexts:
   codeRefIndex:
   - file:lib/guest-capability-secrets/deno.json deno.json@lib/guest-capability-secrets/deno.json
   - file:lib/guest-capability-secrets/mod.ts mod.ts@lib/guest-capability-secrets/mod.ts
+  - function:0d24cd5f66964dd094175db073cc3baf createSecretsCapability@lib/guest-capability-secrets/mod.ts:37
+  - interface:0c769a67d709c48b40d3f1032540989a CreateSecretsCapabilityOpts@lib/guest-capability-secrets/mod.ts:23
 - id: sc.lib-hono-factory-compute-contract-gateway-xrpc
   name: lib-hono-factory-compute-contract-gateway-xrpc
   spec: specs/lib-hono-factory-compute-contract-gateway-xrpc.yaml
@@ -2240,6 +2303,9 @@ system_contexts:
     level: MUST
   codeRefIndex:
   - file:lib/hono-factory-compute-contract-gateway-xrpc/mod.ts mod.ts@lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+  - function:35f62ddaabe8e88061e3c0f6d7f5c28c requireAuth@lib/hono-factory-compute-contract-gateway-xrpc/mod.ts:30
+  - function:fb9c0b643b6c0ae7e354f595aa7280cf createComputeContractGatewayFactory@lib/hono-factory-compute-contract-gateway-xrpc/mod.ts:25
+  - interface:9ce82a55642acec416e2eb4c3b27f13c ComputeContractGatewayFactoryOptions@lib/hono-factory-compute-contract-gateway-xrpc/mod.ts:18
 - id: sc.lib-hono-factory-did-plc-directory
   name: lib-hono-factory-did-plc-directory
   spec: specs/lib-hono-factory-did-plc-directory.yaml
@@ -2273,6 +2339,17 @@ system_contexts:
   - file:lib/hono-factory-did-plc-directory/handlers.ts handlers.ts@lib/hono-factory-did-plc-directory/handlers.ts
   - file:lib/hono-factory-did-plc-directory/mod.ts mod.ts@lib/hono-factory-did-plc-directory/mod.ts
   - file:lib/hono-factory-did-plc-directory/validation.ts validation.ts@lib/hono-factory-did-plc-directory/validation.ts
+  - function:3179a5fa554e021c00aadca31e4500e6 createPlcDirectoryFactory@lib/hono-factory-did-plc-directory/factory.ts:19
+  - function:3cdeb3d911d0b80c2f67f10b8b825205 validateRotationKeyAuth@lib/hono-factory-did-plc-directory/validation.ts:99
+  - function:45efe51af646c2a859080a62330a6a54 resolveDidDocument@lib/hono-factory-did-plc-directory/did-resolution.ts:9
+  - function:5503ef41dd95dd3ff95e23b6b7bd072e validateOperationStructure@lib/hono-factory-did-plc-directory/validation.ts:32
+  - function:b33678bc247c0cfd81b6157c59e5bde5 mountHandlers@lib/hono-factory-did-plc-directory/handlers.ts:30
+  - function:ce60a9ce515fde8a842b8e510617e5e3 validatePrevChain@lib/hono-factory-did-plc-directory/validation.ts:81
+  - function:cee54877382c117e060715b89d4affa0 computeOperationCid@lib/hono-factory-did-plc-directory/validation.ts:25
+  - function:d29a8b70510a2a66739855a818989601 verifyOperationSignature@lib/hono-factory-did-plc-directory/validation.ts:70
+  - interface:5a96ae66f70475a99ec34b51ef860a0b PlcDirectoryOptions@lib/hono-factory-did-plc-directory/factory.ts:6
+  - interface:cc3d4161f433917a2f2ac397219b72d6 HandlerDeps@lib/hono-factory-did-plc-directory/handlers.ts:14
+  - interface:ebd7cb20d08759e13cef8d018c871479 PlcDirectoryFactory@lib/hono-factory-did-plc-directory/factory.ts:12
 - id: sc.lib-hono-factory-did-plc-directory-storage
   name: lib-hono-factory-did-plc-directory-storage
   spec: specs/lib-hono-factory-did-plc-directory-storage.yaml

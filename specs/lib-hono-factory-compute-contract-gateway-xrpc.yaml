@@ -136,3 +136,6 @@ spec:
     file: lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
 codeRefIndex:
 - file:lib/hono-factory-compute-contract-gateway-xrpc/mod.ts mod.ts@lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+- function:35f62ddaabe8e88061e3c0f6d7f5c28c requireAuth@lib/hono-factory-compute-contract-gateway-xrpc/mod.ts:30
+- function:fb9c0b643b6c0ae7e354f595aa7280cf createComputeContractGatewayFactory@lib/hono-factory-compute-contract-gateway-xrpc/mod.ts:25
+- interface:9ce82a55642acec416e2eb4c3b27f13c ComputeContractGatewayFactoryOptions@lib/hono-factory-compute-contract-gateway-xrpc/mod.ts:18

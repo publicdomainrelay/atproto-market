@@ -1,3 +1,7 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: 6ac00ee419ac35de281ee3412c187d99b4f7b950df196647cda1d89bbe721cb9
+realizedSpecHash: e5d0ac1731d83788695f79bc2b792d90fa26721bb2db142b3a10662f96786023
 conditions:
 - type: CodeSynced
   status: "False"
@@ -24,4 +28,97 @@ conditions:
   status: "True"
   reason: ValidatorPassed
   message: the spec passes the validator
-observed: {}
+observed:
+  files:
+  - lib/hono-factory-did-plc-directory/did-resolution.ts
+  - lib/hono-factory-did-plc-directory/factory.ts
+  - lib/hono-factory-did-plc-directory/handlers.ts
+  - lib/hono-factory-did-plc-directory/mod.ts
+  - lib/hono-factory-did-plc-directory/validation.ts
+  treeFiles:
+  - lib/hono-factory-did-plc-directory/deno.json
+  interfaces:
+  - name: resolveDidDocument
+    kind: function
+    signature: |-
+      (
+        did: string,
+        currentOps: LogEntry[],
+      ): DidDocument | null
+    file: lib/hono-factory-did-plc-directory/did-resolution.ts
+    line: 9
+    codegraphId: function:45efe51af646c2a859080a62330a6a54
+  - name: PlcDirectoryOptions
+    kind: interface
+    file: lib/hono-factory-did-plc-directory/factory.ts
+    line: 6
+    codegraphId: interface:5a96ae66f70475a99ec34b51ef860a0b
+  - name: PlcDirectoryFactory
+    kind: interface
+    file: lib/hono-factory-did-plc-directory/factory.ts
+    line: 12
+    codegraphId: interface:ebd7cb20d08759e13cef8d018c871479
+  - name: createPlcDirectoryFactory
+    kind: function
+    signature: |-
+      (
+        opts: PlcDirectoryOptions = {},
+      ): PlcDirectoryFactory
+    file: lib/hono-factory-did-plc-directory/factory.ts
+    line: 19
+    codegraphId: function:3179a5fa554e021c00aadca31e4500e6
+  - name: HandlerDeps
+    kind: interface
+    file: lib/hono-factory-did-plc-directory/handlers.ts
+    line: 14
+    codegraphId: interface:cc3d4161f433917a2f2ac397219b72d6
+  - name: mountHandlers
+    kind: function
+    signature: '(app: Hono, deps: HandlerDeps): void'
+    file: lib/hono-factory-did-plc-directory/handlers.ts
+    line: 30
+    codegraphId: function:b33678bc247c0cfd81b6157c59e5bde5
+  - name: computeOperationCid
+    kind: function
+    signature: '(signedBytes: Uint8Array): Promise<string>'
+    file: lib/hono-factory-did-plc-directory/validation.ts
+    line: 25
+    codegraphId: function:cee54877382c117e060715b89d4affa0
+  - name: validateOperationStructure
+    kind: function
+    signature: '(op: unknown): string | null'
+    file: lib/hono-factory-did-plc-directory/validation.ts
+    line: 32
+    codegraphId: function:5503ef41dd95dd3ff95e23b6b7bd072e
+  - name: verifyOperationSignature
+    kind: function
+    signature: |-
+      (
+        op: PlcOp | TombstoneOp,
+        signerDid: string,
+        verifySig: (did: string, data: Uint8Array, sig: Uint8Array) => Promise<boolean>,
+      ): Promise<boolean>
+    file: lib/hono-factory-did-plc-directory/validation.ts
+    line: 70
+    codegraphId: function:d29a8b70510a2a66739855a818989601
+  - name: validatePrevChain
+    kind: function
+    signature: |-
+      (
+        prev: string | null,
+        existingOps: LogEntry[],
+      ): string | null
+    file: lib/hono-factory-did-plc-directory/validation.ts
+    line: 81
+    codegraphId: function:ce60a9ce515fde8a842b8e510617e5e3
+  - name: validateRotationKeyAuth
+    kind: function
+    signature: |-
+      (
+        prevOp: PlcOp,
+        signerDid: string,
+      ): boolean
+    file: lib/hono-factory-did-plc-directory/validation.ts
+    line: 99
+    codegraphId: function:3cdeb3d911d0b80c2f67f10b8b825205
+  fingerprint: 6ac00ee419ac35de281ee3412c187d99b4f7b950df196647cda1d89bbe721cb9
