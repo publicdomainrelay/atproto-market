@@ -10,5 +10,14 @@ spec:
   systemContext: lib-common-market-common
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-common-market-common
-  phase: Running
+  agentLog: lib/common/market-common is the shared foundation package for the atproto-market
+    libraries. It holds the cross-package domain type aliases (StrongRef, Offering,
+    RFP, Accept, Bid, MarketEvent, Resolved) plus the logging contract (LogLevel,
+    Logger, noopLogger) and the strongRef constructor in types.ts; the SSRF/egress
+    guard assertSafeEgressUrl and its EgressOptions in egress.ts; shared constants
+    in constants.ts; and a mod.ts barrel that fronts the package. Consumer packages
+    such as market-settlement-free and market-settlement-x402 import assertSafeEgressUrl
+    to vet outbound URLs before fetching settlement endpoints, and use StrongRef/strongRef
+    for receipt values. The package is configured by deno.json.
+  message: wrote 12 requirement(s) and 13 interface(s) for lib-common-market-common
+  phase: Succeeded

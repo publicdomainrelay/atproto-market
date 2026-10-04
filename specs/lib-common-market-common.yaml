@@ -1,9 +1,23 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
 codeRefIndex:
 - file:lib/common/market-common/constants.ts constants.ts@lib/common/market-common/constants.ts
+- file:lib/common/market-common/deno.json deno.json@lib/common/market-common/deno.json
 - file:lib/common/market-common/egress.ts egress.ts@lib/common/market-common/egress.ts
 - file:lib/common/market-common/mod.ts mod.ts@lib/common/market-common/mod.ts
 - file:lib/common/market-common/types.ts types.ts@lib/common/market-common/types.ts
+- function:4a9182a659c42eaf5efea613d576bf56 assertSafeEgressUrl@lib/common/market-common/egress.ts:5
+- function:98a3eb25fe3e5d71119b4776db96f280 strongRef@lib/common/market-common/types.ts:23
+- function:bdb007fdd15fa3b35d2579e3f50a9102 noopLogger@lib/common/market-common/types.ts:21
+- type_alias:094ab49db888ff112d27c2d9863156fb StrongRef@lib/common/market-common/types.ts:8
+- type_alias:0ddacc3f4f8324551fc28543224d5848 Resolved@lib/common/market-common/types.ts:15
+- type_alias:1415ed8e9c4445551461c01489f8e98e RFP@lib/common/market-common/types.ts:10
+- type_alias:3b05835c22ae315ee54800118068199e EgressOptions@lib/common/market-common/egress.ts:1
+- type_alias:4a83a08396757c59cee4d1abc1ac4e96 Bid@lib/common/market-common/types.ts:12
+- type_alias:5227ebb1a1c9a0e6fc64c180ba49b225 Logger@lib/common/market-common/types.ts:19
+- type_alias:68f1befbdba2e558d52f81fadb208604 MarketEvent@lib/common/market-common/types.ts:13
+- type_alias:a1be7c028260b060bface7fb68430980 LogLevel@lib/common/market-common/types.ts:17
+- type_alias:bf97d5bc1681c49e28bb73c0ef924a28 Offering@lib/common/market-common/types.ts:9
+- type_alias:cecc1b0d37ba12dc3d30a216f27c4d7d Accept@lib/common/market-common/types.ts:11
 kind: SystemContext
 metadata:
   name: lib-common-market-common
@@ -11,5 +25,158 @@ metadata:
 spec:
   dependsOn:
   - sc.atproto-market
+  intent: 'This context exists so every market package agrees on one vocabulary for
+    strong references, market records, and logging, and so all outbound HTTP egress
+    is filtered through a single audited guard. Without it, each settlement or market
+    package would re-declare its own record types and each would need its own scheme/host
+    filtering, letting an attacker-supplied endpoint reach cloud metadata services
+    or private networks. Centralizing the types and the egress check here keeps the
+    dependency direction one-way: consumer packages depend on market-common, never
+    the reverse.'
+  interfaces:
+  - file: lib/common/market-common/types.ts
+    kind: type
+    name: Accept
+    signature: type Accept
+  - file: lib/common/market-common/types.ts
+    kind: type
+    name: Bid
+    signature: type Bid
+  - file: lib/common/market-common/egress.ts
+    kind: type
+    name: EgressOptions
+    signature: 'type EgressOptions = { blockPrivate?: boolean }'
+  - file: lib/common/market-common/types.ts
+    kind: type
+    name: LogLevel
+    signature: type LogLevel
+  - file: lib/common/market-common/types.ts
+    kind: type
+    name: Logger
+    signature: type Logger
+  - file: lib/common/market-common/types.ts
+    kind: type
+    name: MarketEvent
+    signature: type MarketEvent
+  - file: lib/common/market-common/types.ts
+    kind: type
+    name: Offering
+    signature: type Offering
+  - file: lib/common/market-common/types.ts
+    kind: type
+    name: RFP
+    signature: type RFP
+  - file: lib/common/market-common/types.ts
+    kind: type
+    name: Resolved
+    signature: type Resolved
+  - file: lib/common/market-common/types.ts
+    kind: type
+    name: StrongRef
+    signature: type StrongRef = _StrongRef
+  - file: lib/common/market-common/egress.ts
+    kind: function
+    name: assertSafeEgressUrl
+    signature: 'function assertSafeEgressUrl(raw: string, opts: EgressOptions = {}):
+      URL'
+  - file: lib/common/market-common/types.ts
+    kind: function
+    name: noopLogger
+    signature: 'function noopLogger(): void'
+  - file: lib/common/market-common/types.ts
+    kind: function
+    name: strongRef
+    signature: 'function strongRef(uri: string, cid: string): StrongRef'
   repository: atproto-market
+  requirements:
+  - codeRefs:
+    - file:lib/common/market-common/deno.json
+    id: r.deno-package-config
+    level: MUST
+    text: deno.json declares the package's Deno configuration and exports for lib/common/market-common,
+      since every source file in the package is TypeScript consumed through Deno.
+  - codeRefs:
+    - function:4a9182a659c42eaf5efea613d576bf56
+    id: r.egress-metadata-hosts-always-blocked
+    level: MUST
+    text: Regardless of options, assertSafeEgressUrl rejects the cloud metadata hosts
+      169.254.169.254 and metadata.google.internal, comparing the lowercased hostname
+      with surrounding IPv6 brackets stripped.
+  - codeRefs:
+    - function:4a9182a659c42eaf5efea613d576bf56
+    - type_alias:3b05835c22ae315ee54800118068199e
+    id: r.egress-opt-in-private-blocking
+    level: MUST
+    text: 'When EgressOptions.blockPrivate is set, assertSafeEgressUrl additionally
+      rejects loopback and private hosts: localhost, ::1, 127.0.0.0/8, 10.0.0.0/8,
+      192.168.0.0/16, 169.254.0.0/16, 172.16.0.0/12, and fc00::/7 prefixes (fc or
+      fd); without the flag those hosts pass.'
+  - codeRefs:
+    - function:4a9182a659c42eaf5efea613d576bf56
+    - type_alias:3b05835c22ae315ee54800118068199e
+    id: r.egress-options-shape
+    level: MUST
+    text: EgressOptions carries a single optional boolean blockPrivate, and assertSafeEgressUrl
+      defaults it to an empty object when the caller passes no options.
+  - codeRefs:
+    - function:4a9182a659c42eaf5efea613d576bf56
+    id: r.egress-returns-parsed-url
+    level: MUST
+    text: When all checks pass assertSafeEgressUrl returns the parsed URL object so
+      callers fetch the normalized address rather than the raw string.
+  - codeRefs:
+    - file:lib/common/market-common/egress.ts
+    - function:4a9182a659c42eaf5efea613d576bf56
+    id: r.egress-scheme-allowlist
+    level: MUST
+    text: 'assertSafeEgressUrl parses the raw string as a URL and rejects any URL
+      whose protocol is not exactly http: or https:, throwing an Error naming the
+      blocked scheme; unparseable input throws an Error naming the invalid URL.'
+  - codeRefs:
+    - function:bdb007fdd15fa3b35d2579e3f50a9102
+    - type_alias:5227ebb1a1c9a0e6fc64c180ba49b225
+    - type_alias:a1be7c028260b060bface7fb68430980
+    id: r.logger-contract
+    level: MUST
+    text: LogLevel enumerates the accepted severity levels and Logger types the log
+      callable that takes a level plus message; noopLogger is a Logger implementation
+      that discards everything, used as the default when a caller supplies no logger.
+  - codeRefs:
+    - type_alias:0ddacc3f4f8324551fc28543224d5848
+    - type_alias:1415ed8e9c4445551461c01489f8e98e
+    - type_alias:4a83a08396757c59cee4d1abc1ac4e96
+    - type_alias:68f1befbdba2e558d52f81fadb208604
+    - type_alias:bf97d5bc1681c49e28bb73c0ef924a28
+    - type_alias:cecc1b0d37ba12dc3d30a216f27c4d7d
+    id: r.market-record-types
+    level: MUST
+    text: The package exports the shared market record type aliases Offering, RFP,
+      Accept, Bid, MarketEvent, and Resolved from types.ts so consumer packages share
+      one definition of each record kind.
+  - codeRefs:
+    - file:lib/common/market-common/constants.ts
+    id: r.shared-constants
+    level: SHOULD
+    text: constants.ts holds the constants shared across market packages so values
+      used by more than one package are not duplicated at each call site.
+  - codeRefs:
+    - file:lib/common/market-common/mod.ts
+    id: r.single-entry-point
+    level: MUST
+    text: mod.ts is the package's single export entry point, so consumers import the
+      shared types, the logger helpers, and the egress guard from the package root
+      rather than reaching into individual files.
+  - codeRefs:
+    - file:lib/common/market-common/types.ts
+    - type_alias:094ab49db888ff112d27c2d9863156fb
+    id: r.strong-ref-alias
+    level: MUST
+    text: StrongRef is an alias of the lexicon-generated _StrongRef type, so the atproto
+      strong-reference shape is reused rather than redeclared.
+  - codeRefs:
+    - function:98a3eb25fe3e5d71119b4776db96f280
+    id: r.strong-ref-constructor
+    level: MUST
+    text: strongRef(uri, cid) builds a StrongRef from the supplied AT-URI and CID
+      strings, giving callers a typed constructor instead of object literals.
   upstream: self

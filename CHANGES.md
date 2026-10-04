@@ -315,6 +315,22 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.ssh-key-register-policy` (MUST): "The policy object marks itself with meta.policy "ssh-key-register" and contributes a JSON schema for /xrpc/com.atproto.repo.createRecord that requires the body's collection to be constrained to the fedproxy SSH key NSID and requires the capability and body properties, so only SSH key record creation is authorised by this record."
 - added `r.subject-placeholders` (MUST): "renderSubject replaces every occurrence of the literal placeholders {actx}, {did-plc-key} and {role} in the given template with vars.actx, vars.didPlcKey and vars.role respectively, applying all three substitutions globally so repeated placeholders are all expanded and no placeholder matching is left behind."
 
+### lib-common-market-common
+
+- intent: "" -> "This context exists so every market package agrees on one vocabulary for strong references, market records, and logging, and so all outbound HTTP egress is filtered through a single audited guard. Without it, each settlement or market package would re-declare its own record types and each would need its own scheme/host filtering, letting an attacker-supplied endpoint reach cloud metadata services or private networks. Centralizing the types and the egress check here keeps the dependency direction one-way: consumer packages depend on market-common, never the reverse."
+- added `r.deno-package-config` (MUST): "deno.json declares the package's Deno configuration and exports for lib/common/market-common, since every source file in the package is TypeScript consumed through Deno."
+- added `r.egress-metadata-hosts-always-blocked` (MUST): "Regardless of options, assertSafeEgressUrl rejects the cloud metadata hosts 169.254.169.254 and metadata.google.internal, comparing the lowercased hostname with surrounding IPv6 brackets stripped."
+- added `r.egress-opt-in-private-blocking` (MUST): "When EgressOptions.blockPrivate is set, assertSafeEgressUrl additionally rejects loopback and private hosts: localhost, ::1, 127.0.0.0/8, 10.0.0.0/8, 192.168.0.0/16, 169.254.0.0/16, 172.16.0.0/12, and fc00::/7 prefixes (fc or fd); without the flag those hosts pass."
+- added `r.egress-options-shape` (MUST): "EgressOptions carries a single optional boolean blockPrivate, and assertSafeEgressUrl defaults it to an empty object when the caller passes no options."
+- added `r.egress-returns-parsed-url` (MUST): "When all checks pass assertSafeEgressUrl returns the parsed URL object so callers fetch the normalized address rather than the raw string."
+- added `r.egress-scheme-allowlist` (MUST): "assertSafeEgressUrl parses the raw string as a URL and rejects any URL whose protocol is not exactly http: or https:, throwing an Error naming the blocked scheme; unparseable input throws an Error naming the invalid URL."
+- added `r.logger-contract` (MUST): "LogLevel enumerates the accepted severity levels and Logger types the log callable that takes a level plus message; noopLogger is a Logger implementation that discards everything, used as the default when a caller supplies no logger."
+- added `r.market-record-types` (MUST): "The package exports the shared market record type aliases Offering, RFP, Accept, Bid, MarketEvent, and Resolved from types.ts so consumer packages share one definition of each record kind."
+- added `r.shared-constants` (SHOULD): "constants.ts holds the constants shared across market packages so values used by more than one package are not duplicated at each call site."
+- added `r.single-entry-point` (MUST): "mod.ts is the package's single export entry point, so consumers import the shared types, the logger helpers, and the egress guard from the package root rather than reaching into individual files."
+- added `r.strong-ref-alias` (MUST): "StrongRef is an alias of the lexicon-generated _StrongRef type, so the atproto strong-reference shape is reused rather than redeclared."
+- added `r.strong-ref-constructor` (MUST): "strongRef(uri, cid) builds a StrongRef from the supplied AT-URI and CID strings, giving callers a typed constructor instead of object literals."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance |
@@ -338,5 +354,6 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-common-cloud-init-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-common-compute-contract-gateway-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-common-fedproxy-rbac-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-common-market-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-common-market-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-common-market-lexicons-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-common-market-lexicons-com-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |

@@ -1,8 +1,8 @@
 conditions:
-- message: 'undeclared: Accept, Bid, EgressOptions, LogLevel, Logger, MarketEvent,
-    Offering, RFP, Resolved, StrongRef, assertSafeEgressUrl, noopLogger, strongRef'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -90,5 +90,5 @@ observed:
     signature: '(uri: string, cid: string): StrongRef'
   treeFiles:
   - lib/common/market-common/deno.json
-realizedSpecHash: f70f4159d25c85f452c60969f12530c9d74f34486738bfb18a744146cfdb6b27
+realizedSpecHash: 29a2ab5c1ecc810b1718e861ef9ac025eb5af3804d47b6f5b4dc2a72ac0ceaea
 syncedFingerprint: 45b9b8260b4d7a8e89d8374490a616ec2b976315211f46bd754cafb73a751879
