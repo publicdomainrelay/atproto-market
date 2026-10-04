@@ -48,4 +48,6 @@ spec:
   systemContext: lib-market-bidder-compute
   toSpecHash: e583cca0ffebd750bcc8b7e87dc7dfb3ad0b34d6dfd595b6be0c34b56930220e
 status:
-  phase: Pending
+  message: the agent is realizing lib-market-bidder-compute in a batch of 10 led by
+    lib-requester-xrpc
+  phase: Running

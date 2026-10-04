@@ -26,4 +26,5 @@ spec:
   systemContext: test
   toSpecHash: 02610595978aabda028e0ae82f7b959d79a6436bcfc68ec0dbfb5063a01283b9
 status:
-  phase: Pending
+  message: the agent is realizing test in a batch of 10 led by lib-requester-xrpc
+  phase: Running

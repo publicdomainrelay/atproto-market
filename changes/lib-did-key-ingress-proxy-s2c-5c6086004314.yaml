@@ -45,4 +45,6 @@ spec:
   systemContext: lib-did-key-ingress-proxy
   toSpecHash: 5c6086004314431e2da56212b552defffcf4be24c009fadeae9641834cf083f7
 status:
-  phase: Pending
+  message: the agent is realizing lib-did-key-ingress-proxy in a batch of 10 led by
+    lib-requester-xrpc
+  phase: Running

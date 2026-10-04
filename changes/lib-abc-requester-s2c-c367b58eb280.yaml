@@ -91,4 +91,5 @@ spec:
   systemContext: lib-abc-requester
   toSpecHash: c367b58eb280c20a539b4e8c6eaad13552975de046c216a0e53d238df6ee0c71
 status:
-  phase: Pending
+  message: the agent is realizing lib-abc-requester in a batch of 10 led by lib-requester-xrpc
+  phase: Running

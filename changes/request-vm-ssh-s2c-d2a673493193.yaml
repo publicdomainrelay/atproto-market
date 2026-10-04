@@ -139,4 +139,5 @@ spec:
   systemContext: request-vm-ssh
   toSpecHash: d2a673493193432744b0aa2f785835f404b2d638ceacbf01738f3bc0ce05276b
 status:
-  phase: Pending
+  message: the agent is realizing request-vm-ssh in a batch of 10 led by lib-requester-xrpc
+  phase: Running
