@@ -44,7 +44,7 @@ observed:
       }): MarketBidderProviderRef
   treeFiles:
   - lib/market-bidder-compute/deno.json
-observedCommit: b807bd49b14ab808f967efc8bd2d2a76bceacb7a
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
 realizedSpecHash: e583cca0ffebd750bcc8b7e87dc7dfb3ad0b34d6dfd595b6be0c34b56930220e
 syncedCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
 syncedFingerprint: f4e4d75e911a5af1734903ea9bd806d79511c0494f3f53ff913f6a8a8f9eb6db
