@@ -10,5 +10,28 @@ spec:
   systemContext: lib-common-market-lexicons-com-publicdomainrelay-temp-auth-allowlist
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-common-market-lexicons-com-publicdomainrelay-temp-auth-allowlist
-  phase: Running
+  agentLog: This context covers the generated atproto lexicon for `com.publicdomainrelay.temp.auth.allowlist.rbacDid`,
+    a record type that lets a record owner's own DID authorize account-scoped AT Protocol
+    operations (for example `applyWrites` on their own repo via service-auth tokens)
+    — the use case being bidders and other automated actors. The record carries two
+    lex-map fields, `protects` and `allowed`, plus a `createdAt` datetime; `protects`
+    maps an arbitrary label (such as 'allowSelf') to a `{ service, scope }` entry
+    that must match for the protection to apply, and `allowed` maps the same labels
+    to arrays of DIDs authorized under each label. The package is split into a definitions
+    module that declares the NSID, the `Main` type and the `l.record<'tid', Main>`
+    validator, and a thin barrel module that re-exports everything and re-exports
+    `main` as the default.
+  message: wrote 8 requirement(s) and 0 interface(s) for lib-common-market-lexicons-com-publicdomainrelay-temp-auth-allowlist;
+    interface main is not in the observed facts; dropped; interface Main is not in
+    the observed facts; dropped; interface $nsid is not in the observed facts; dropped;
+    interface $type is not in the observed facts; dropped; interface $isTypeOf is
+    not in the observed facts; dropped; interface $build is not in the observed facts;
+    dropped; interface $assert is not in the observed facts; dropped; interface $check
+    is not in the observed facts; dropped; interface $cast is not in the observed
+    facts; dropped; interface $ifMatches is not in the observed facts; dropped; interface
+    $matches is not in the observed facts; dropped; interface $parse is not in the
+    observed facts; dropped; interface $safeParse is not in the observed facts; dropped;
+    interface $validate is not in the observed facts; dropped; interface $safeValidate
+    is not in the observed facts; dropped; interface default is not in the observed
+    facts; dropped
+  phase: Succeeded

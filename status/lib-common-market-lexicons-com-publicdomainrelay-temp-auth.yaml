@@ -16,5 +16,5 @@ observed:
   files:
   - lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist.ts
   fingerprint: 226a4ea7b2522926841b4e1305bd9ddcc203211428db1e3651096a25823927f7
-realizedSpecHash: 48f855c8783befbc8f60d5b83fc72d432532ea2683933b2bc9af85aaa712a6ff
+realizedSpecHash: dc4626b3f9892ba3ea362c365b2bf3b228b6e13765186eb41329b8392c5fc5fe
 syncedFingerprint: 226a4ea7b2522926841b4e1305bd9ddcc203211428db1e3651096a25823927f7
