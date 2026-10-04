@@ -1,7 +1,8 @@
 conditions:
-- message: 'undeclared: BadgeBlueKeysOperatorDiscoveryOpts, ListedRecord, createBadgeBlueKeysOperatorDiscovery'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -34,5 +35,5 @@ observed:
     signature: '(opts: BadgeBlueKeysOperatorDiscoveryOpts): OperatorDiscovery'
   treeFiles:
   - lib/operator-discovery-badge-blue-keys/deno.json
-realizedSpecHash: 9a5e919e46a1d3c91496f62f639bfb4bda9e44dde02e51f66182ab5cb5cb676c
+realizedSpecHash: b8ad37514c014f11e85f44cde81617f0a6ccdce744b2462bdfa47f930becb3d4
 syncedFingerprint: fa8e9debd81599bb4b301a537e322a66d6dd7e88976705ac4f3cfeebad18b73d

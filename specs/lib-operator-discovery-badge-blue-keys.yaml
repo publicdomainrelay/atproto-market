@@ -1,6 +1,9 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
 codeRefIndex:
 - file:lib/operator-discovery-badge-blue-keys/mod.ts mod.ts@lib/operator-discovery-badge-blue-keys/mod.ts
+- function:dc1f27a14a62ce61d3668e393e355f72 createBadgeBlueKeysOperatorDiscovery@lib/operator-discovery-badge-blue-keys/mod.ts:15
+- interface:2f571f7e3c998ccd8befe1bbae9ccb85 BadgeBlueKeysOperatorDiscoveryOpts@lib/operator-discovery-badge-blue-keys/mod.ts:9
+- interface:b712ea6968624576e21a143e7622a253 ListedRecord@lib/operator-discovery-badge-blue-keys/mod.ts:4
 kind: SystemContext
 metadata:
   name: lib-operator-discovery-badge-blue-keys
@@ -8,5 +11,96 @@ metadata:
 spec:
   dependsOn:
   - sc.atproto-market
+  intent: 'Exists so operator (delegated-trust) relationships published as badgeBlueKeys
+    records can be resolved without the discovery logic knowing anything about transports
+    or repositories: the caller injects own-repo and public-repo record listing, and
+    the module supplies the canonical record-shape interpretation and caching. It
+    encodes one deliberate correctness rule -- the canonical shape is {challenge:
+    operator, keyId: associated}, so the inverted legacy shape {challenge: subject,
+    keyId: operator} must not be read as this subject''s operator -- which prevents
+    mis-resolving operators as self-operated bidders.'
+  interfaces:
+  - file: lib/operator-discovery-badge-blue-keys/mod.ts
+    kind: interface
+    name: BadgeBlueKeysOperatorDiscoveryOpts
+    signature: 'interface BadgeBlueKeysOperatorDiscoveryOpts { listRecordsOwn(collection:
+      string, opts?: { limit?: number }): Promise<ListedRecord[]>; listRecordsPublic(repo:
+      string, collection: string): Promise<ListedRecord[]>; log?(level: string, msg:
+      string, meta?: Record<string, unknown>): void }'
+  - file: lib/operator-discovery-badge-blue-keys/mod.ts
+    kind: interface
+    name: ListedRecord
+    signature: 'interface ListedRecord { uri: string; value: Record<string, unknown>
+      }'
+  - file: lib/operator-discovery-badge-blue-keys/mod.ts
+    kind: function
+    name: createBadgeBlueKeysOperatorDiscovery
+    signature: 'createBadgeBlueKeysOperatorDiscovery(opts: BadgeBlueKeysOperatorDiscoveryOpts):
+      OperatorDiscovery'
   repository: atproto-market
+  requirements:
+  - codeRefs:
+    - file:lib/operator-discovery-badge-blue-keys/mod.ts
+    - function:dc1f27a14a62ce61d3668e393e355f72
+    id: r.canonical-association-shape
+    level: MUST
+    text: A badgeBlueKeys record counts as a subject's operator association only when
+      value.keyId equals the subject DID, value.service is exactly bidder_associate
+      or requester_associate, and value.challenge is a string beginning with did:;
+      the operator DID returned is that challenge value.
+  - codeRefs:
+    - file:lib/operator-discovery-badge-blue-keys/mod.ts
+    - function:dc1f27a14a62ce61d3668e393e355f72
+    - interface:2f571f7e3c998ccd8befe1bbae9ccb85
+    id: r.factory-returns-operator-discovery
+    level: MUST
+    text: createBadgeBlueKeysOperatorDiscovery accepts a BadgeBlueKeysOperatorDiscoveryOpts
+      and returns an OperatorDiscovery exposing discoverOperatorDids(atprotoDid),
+      which resolves to the list of operator DIDs for that atproto DID (empty array
+      when none are found).
+  - codeRefs:
+    - file:lib/operator-discovery-badge-blue-keys/mod.ts
+    - function:dc1f27a14a62ce61d3668e393e355f72
+    id: r.inverted-records-rejected
+    level: MUST
+    text: Records in the inverted legacy shape, where the challenge is the subject
+      and the keyId is the operator, must not be read as this subject's operator,
+      because such a record is the acknowledgment of a different subject and would
+      otherwise mis-resolve an operator as a self-operated bidder.
+  - codeRefs:
+    - function:dc1f27a14a62ce61d3668e393e355f72
+    - interface:2f571f7e3c998ccd8befe1bbae9ccb85
+    id: r.optional-logging
+    level: MAY
+    text: When opts.log is absent the module substitutes a no-op logger; when present
+      it is called at info level on a successful discovery with bidderDid and operatorDids
+      metadata.
+  - codeRefs:
+    - file:lib/operator-discovery-badge-blue-keys/mod.ts
+    - function:dc1f27a14a62ce61d3668e393e355f72
+    id: r.own-repo-first-then-public
+    level: MUST
+    text: discoverOperatorDids queries listRecordsOwn with the badgeBlueKeys NSID
+      and a limit of 200 first, and only when that pass produced no operator DIDs
+      does it query listRecordsPublic against the subject's own repo for the same
+      collection; errors from either listing are swallowed so discovery degrades to
+      an empty result rather than throwing.
+  - codeRefs:
+    - file:lib/operator-discovery-badge-blue-keys/mod.ts
+    - function:dc1f27a14a62ce61d3668e393e355f72
+    id: r.per-did-memo-cache
+    level: MUST
+    text: Results are memoized in a map keyed by atproto DID and reused on subsequent
+      calls, and only non-empty discovery results are cached, so a failed or empty
+      lookup is retried on the next call.
+  - codeRefs:
+    - file:lib/operator-discovery-badge-blue-keys/mod.ts
+    - interface:2f571f7e3c998ccd8befe1bbae9ccb85
+    - interface:b712ea6968624576e21a143e7622a253
+    id: r.record-listing-is-injected
+    level: MUST
+    text: 'Record access is never performed by the module itself: opts supplies listRecordsOwn(collection,
+      {limit}) for the caller''s own repo and listRecordsPublic(repo, collection)
+      for another repo, both returning ListedRecord values carrying a uri and a value
+      record; the optional log(level, msg, meta) sink is the only observability channel.'
   upstream: self

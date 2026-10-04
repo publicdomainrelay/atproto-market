@@ -1018,6 +1018,17 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.settle-payment-signs-accepts-and-fetches-receipt` (MUST): "settleX402Payment must, given an agent, signer, bid and bidPayload, create a signed accepts.x402 record via createSignedRecord, build the receipt URL by stripping trailing slashes from the configured url and appending the accepts uri and cid as two path segments, then GET that URL and return the uri/cid pair from the JSON response as a StrongRef. A non-ok response or a response body missing uri or cid must raise an Error carrying the status and body text, and the request must be aborted after timeoutMs (default 30000)."
 - added `r.verify-payment-checks-type-author-and-binding` (MUST): "verifyX402Payment must throw X402PaymentError with status 402 when the payment reference is absent, when the resolved record's type (its $type, falling back to the NSID of the payment uri) is not RECEIPTS_X402_NSID, or when the payment uri's DID authority is not the bidderDid; when the receipt carries an accept strongRef it must additionally resolve that accepts.x402 record and run verifyRemoteProof against it, throwing status 402 if the proof does not bind. On success it returns the resolved receipt."
 
+### lib-operator-discovery-badge-blue-keys
+
+- intent: "" -> "Exists so operator (delegated-trust) relationships published as badgeBlueKeys records can be resolved without the discovery logic knowing anything about transports or repositories: the caller injects own-repo and public-repo record listing, and the module supplies the canonical record-shape interpretation and caching. It encodes one deliberate correctness rule -- the canonical shape is {challenge: operator, keyId: associated}, so the inverted legacy shape {challenge: subject, keyId: operator} must not be read as this subject's operator -- which prevents mis-resolving operators as self-operated bidders."
+- added `r.canonical-association-shape` (MUST): "A badgeBlueKeys record counts as a subject's operator association only when value.keyId equals the subject DID, value.service is exactly bidder_associate or requester_associate, and value.challenge is a string beginning with did:; the operator DID returned is that challenge value."
+- added `r.factory-returns-operator-discovery` (MUST): "createBadgeBlueKeysOperatorDiscovery accepts a BadgeBlueKeysOperatorDiscoveryOpts and returns an OperatorDiscovery exposing discoverOperatorDids(atprotoDid), which resolves to the list of operator DIDs for that atproto DID (empty array when none are found)."
+- added `r.inverted-records-rejected` (MUST): "Records in the inverted legacy shape, where the challenge is the subject and the keyId is the operator, must not be read as this subject's operator, because such a record is the acknowledgment of a different subject and would otherwise mis-resolve an operator as a self-operated bidder."
+- added `r.optional-logging` (MAY): "When opts.log is absent the module substitutes a no-op logger; when present it is called at info level on a successful discovery with bidderDid and operatorDids metadata."
+- added `r.own-repo-first-then-public` (MUST): "discoverOperatorDids queries listRecordsOwn with the badgeBlueKeys NSID and a limit of 200 first, and only when that pass produced no operator DIDs does it query listRecordsPublic against the subject's own repo for the same collection; errors from either listing are swallowed so discovery degrades to an empty result rather than throwing."
+- added `r.per-did-memo-cache` (MUST): "Results are memoized in a map keyed by atproto DID and reused on subsequent calls, and only non-empty discovery results are cached, so a failed or empty lookup is retried on the next call."
+- added `r.record-listing-is-injected` (MUST): "Record access is never performed by the module itself: opts supplies listRecordsOwn(collection, {limit}) for the caller's own repo and listRecordsPublic(repo, collection) for another repo, both returning ListedRecord values carrying a uri and a value record; the optional log(level, msg, meta) sink is the only observability channel."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance |
@@ -1097,5 +1108,5 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-market-bidder-worker-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-market-settlement-free-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-market-settlement-x402-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-operator-discovery-badge-blue-keys-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-operator-discovery-badge-blue-keys-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-requester-xrpc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |

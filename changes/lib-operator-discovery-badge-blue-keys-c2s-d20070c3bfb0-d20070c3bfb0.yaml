@@ -10,5 +10,19 @@ spec:
   systemContext: lib-operator-discovery-badge-blue-keys
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-operator-discovery-badge-blue-keys
-  phase: Running
+  agentLog: 'lib/operator-discovery-badge-blue-keys is a dependency-injected factory
+    module that resolves which operator DIDs stand behind a given atproto DID. createBadgeBlueKeysOperatorDiscovery
+    takes a BadgeBlueKeysOperatorDiscoveryOpts bundle (listRecordsOwn, listRecordsPublic,
+    optional log) and returns an OperatorDiscovery whose single method discoverOperatorDids(atprotoDid)
+    reads badgeBlueKeys records, first from the caller''s own repo (limit 200) and
+    then, only if that yielded nothing, from the subject''s public repo, keeping a
+    per-DID memo cache. A record is read as an operator association only when its
+    keyId equals the subject DID, its service is bidder_associate or requester_associate,
+    and its challenge is a did: string -- the challenge is the operator. Discovery
+    failures are swallowed, and a successful discovery is optionally logged and cached.'
+  message: wrote 7 requirement(s) and 3 interface(s) for lib-operator-discovery-badge-blue-keys;
+    interface BadgeBlueKeysOperatorDiscoveryOpts.listRecordsOwn is not in the observed
+    facts; dropped; interface BadgeBlueKeysOperatorDiscoveryOpts.listRecordsPublic
+    is not in the observed facts; dropped; interface BadgeBlueKeysOperatorDiscoveryOpts.log
+    is not in the observed facts; dropped
+  phase: Succeeded
