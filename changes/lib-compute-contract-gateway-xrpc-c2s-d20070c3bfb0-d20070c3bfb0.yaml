@@ -10,5 +10,24 @@ spec:
   systemContext: lib-compute-contract-gateway-xrpc
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-compute-contract-gateway-xrpc
-  phase: Running
+  agentLog: 'This context is the Deno/TypeScript module lib/compute-contract-gateway-xrpc/mod.ts,
+    which adapts the requester-XRPC compute-contract machinery into the ComputeContractGateway
+    interface. Its single exported factory, createComputeContractGateway, closes over
+    a lazily created RequesterPDS handle and returns an object exposing did, beginServe,
+    dispose, requestComputeVM, requestComputeWorkerEphemeral, requestComputeWorkerPersistent
+    and deleteCompute. GatewayOptions carries the logger and serve handle plus optional
+    identity and network settings (privateKeyHex, plcDirectoryUrl, ingressProxyHost,
+    fedingressHost, label, storagePath, relayUrls). beginServe dynamically imports
+    @publicdomainrelay/requester-xrpc, builds the PDS with the options (label defaulting
+    to "compute-contract-gateway"), starts it and logs gateway_ready with the DID;
+    every request method throws "gateway not started" until that has happened. Each
+    request method dynamically imports runComputeContract and createSshSessionProvider,
+    derives a VM name (the caller-supplied role for requestComputeVM, otherwise a
+    random worker- or compute-prefixed suffix), and runs the contract with fedingressHost
+    defaulting to fedproxy.com, keepVm true, and rbac enabled for the VM path. Worker
+    requests publish a WORKER_MANIFEST_NSID repo record from the caller''s deno.json,
+    deno.lock and source bundle through a payloadFactory. Results are mapped into
+    GatewayComputeResponse, including a websocatUrl of the form wss://<flattenLabel(vmName)>--<flattenLabel(did)>.<fedingressHost>
+    for the VM path. deleteCompute is a stub that always returns { ok: true }.'
+  message: wrote 14 requirement(s) and 2 interface(s) for lib-compute-contract-gateway-xrpc
+  phase: Succeeded

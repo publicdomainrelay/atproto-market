@@ -1,6 +1,8 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
 codeRefIndex:
 - file:lib/compute-contract-gateway-xrpc/mod.ts mod.ts@lib/compute-contract-gateway-xrpc/mod.ts
+- function:03370a182fd0653c2e57c9c946423ce7 createComputeContractGateway@lib/compute-contract-gateway-xrpc/mod.ts:38
+- interface:ecee421eb7bb2708411146ff260c58b2 GatewayOptions@lib/compute-contract-gateway-xrpc/mod.ts:26
 kind: SystemContext
 metadata:
   name: lib-compute-contract-gateway-xrpc
@@ -8,5 +10,147 @@ metadata:
 spec:
   dependsOn:
   - sc.atproto-market
+  intent: This context exists to give consumers of the compute-contract gateway a
+    transport-agnostic implementation that speaks the ComputeContractGateway abstraction
+    on top of the requester-XRPC package, so that a Hono/gateway front end (and its
+    integration tests) can create a gateway, start it, and issue VM or worker compute
+    requests without knowing how the underlying requester PDS, SSH session provider,
+    fedproxy ingress naming or worker manifest publication work. It centralizes option
+    defaulting, lazy PDS lifecycle, and the mapping from runComputeContract results
+    to GatewayComputeResponse.
+  interfaces:
+  - file: lib/compute-contract-gateway-xrpc/mod.ts
+    kind: interface
+    name: GatewayOptions
+    signature: 'interface GatewayOptions { logger: StructuredLoggerInterface; serve:
+      ServeHandle; privateKeyHex?: string; plcDirectoryUrl?: string; ingressProxyHost?:
+      string; fedingressHost?: string; label?: string; storagePath?: string; relayUrls?:
+      string[]; }'
+  - file: lib/compute-contract-gateway-xrpc/mod.ts
+    kind: function
+    name: createComputeContractGateway
+    signature: |-
+      createComputeContractGateway(
+        opts: GatewayOptions,
+      ): ComputeContractGateway
   repository: atproto-market
+  requirements:
+  - codeRefs:
+    - file:lib/compute-contract-gateway-xrpc/mod.ts
+    - function:03370a182fd0653c2e57c9c946423ce7
+    id: r.begin-serve-creates-pds
+    level: MUST
+    text: beginServe must dynamically import createRequesterPDS from @publicdomainrelay/requester-xrpc,
+      construct the PDS with the gateway options (label falling back to "compute-contract-gateway"),
+      await its own beginServe, and then log gateway_ready with the resulting DID.
+  - codeRefs:
+    - file:lib/compute-contract-gateway-xrpc/mod.ts
+    - function:03370a182fd0653c2e57c9c946423ce7
+    id: r.delete-compute-stub
+    level: MAY
+    text: 'deleteCompute may ignore the caller identity, receipt uri, receipt cid
+      and token and return { ok: true } unconditionally, as the gateway does not yet
+      perform real deletion.'
+  - codeRefs:
+    - file:lib/compute-contract-gateway-xrpc/mod.ts
+    - function:03370a182fd0653c2e57c9c946423ce7
+    id: r.did-requires-start
+    level: MUST
+    text: The did getter must throw an Error with the message "gateway not started"
+      when the PDS has not been created, and otherwise return the PDS DID.
+  - codeRefs:
+    - file:lib/compute-contract-gateway-xrpc/mod.ts
+    - function:03370a182fd0653c2e57c9c946423ce7
+    id: r.dispose-guards-null
+    level: MUST
+    text: dispose must be a no-op when the PDS was never created and must otherwise
+      delegate to the PDS dispose.
+  - codeRefs:
+    - function:03370a182fd0653c2e57c9c946423ce7
+    - interface:ecee421eb7bb2708411146ff260c58b2
+    id: r.factory-returns-gateway
+    level: MUST
+    text: createComputeContractGateway must accept a GatewayOptions object and return
+      a ComputeContractGateway whose PDS handle starts out null, so any use before
+      beginServe fails rather than silently operating without an identity.
+  - codeRefs:
+    - file:lib/compute-contract-gateway-xrpc/mod.ts
+    - interface:ecee421eb7bb2708411146ff260c58b2
+    id: r.options-shape
+    level: MUST
+    text: GatewayOptions must require a logger and a serve handle, and must accept
+      optional privateKeyHex, plcDirectoryUrl, ingressProxyHost, fedingressHost, label,
+      storagePath and relayUrls used to configure the underlying requester PDS and
+      the compute contracts.
+  - codeRefs:
+    - file:lib/compute-contract-gateway-xrpc/mod.ts
+    - function:03370a182fd0653c2e57c9c946423ce7
+    id: r.request-methods-require-start
+    level: MUST
+    text: requestComputeVM, requestComputeWorkerEphemeral and requestComputeWorkerPersistent
+      must each throw an Error with the message "gateway not started" when invoked
+      before beginServe has created the PDS.
+  - codeRefs:
+    - file:lib/compute-contract-gateway-xrpc/mod.ts
+    - function:03370a182fd0653c2e57c9c946423ce7
+    id: r.request-vm-bids
+    level: SHOULD
+    text: requestComputeVM should synthesize a single-element bids array holding the
+      winner DID, bid uri, bid cid and a zero cost when the contract reports more
+      than zero bids, and an empty bids array otherwise.
+  - codeRefs:
+    - file:lib/compute-contract-gateway-xrpc/mod.ts
+    - function:03370a182fd0653c2e57c9c946423ce7
+    id: r.request-vm-contract
+    level: MUST
+    text: requestComputeVM must run the compute contract through runComputeContract
+      with a VM name taken from the input role or a random compute-prefixed suffix,
+      skipSsh and keepVm defaulting to true, rbac set to true, the caller's policy
+      spec and policy engine, the configured plcDirectoryUrl, ingressProxyHost and
+      relayUrls, the caller's extraBidderDids, and a fedproxy.com fedingressHost when
+      none is configured.
+  - codeRefs:
+    - file:lib/compute-contract-gateway-xrpc/mod.ts
+    - function:03370a182fd0653c2e57c9c946423ce7
+    id: r.request-vm-response
+    level: MUST
+    text: When the VM contract returns an error, requestComputeVM must return that
+      error together with the RFP uri and cid; otherwise it must return the receipt
+      uri, cid and ok flag, the ssh readiness and exit code, the winner DID and bid
+      uri and cid, the RFP uri and cid, and a VM fqdn of <flat vm name>--<flat DID>.<fedingressHost>
+      with websocatUrl of wss://<vmFqdn>.
+  - codeRefs:
+    - file:lib/compute-contract-gateway-xrpc/mod.ts
+    - function:03370a182fd0653c2e57c9c946423ce7
+    id: r.request-worker-manifest
+    level: MUST
+    text: Both worker request methods must run the contract with a random worker-prefixed
+      VM name, skipSsh and keepVm true, and a payloadFactory that reads WORKER_MANIFEST_NSID
+      from @publicdomainrelay/compute-deno-common and writes a repo record of that
+      NSID containing the caller's deno lock (defaulting to "{}"), deno json, source
+      bundle and a creation timestamp.
+  - codeRefs:
+    - file:lib/compute-contract-gateway-xrpc/mod.ts
+    - function:03370a182fd0653c2e57c9c946423ce7
+    id: r.ssh-provider-per-request
+    level: MUST
+    text: Each request method must build its SSH session provider via createSshSessionProvider
+      with the configured logger and hand it to runComputeContract, so SSH key material
+      and polling are scoped to the individual request.
+  - codeRefs:
+    - file:lib/compute-contract-gateway-xrpc/mod.ts
+    - function:03370a182fd0653c2e57c9c946423ce7
+    id: r.worker-ephemeral-bidders
+    level: MUST
+    text: requestComputeWorkerEphemeral must pass the caller's extraBidderDids, defaulting
+      to an empty array, while requestComputeWorkerPersistent must pass an empty extraBidderDids
+      array; both must scope the contract to WORKER_MANIFEST_NSID through appliesToNsid.
+  - codeRefs:
+    - file:lib/compute-contract-gateway-xrpc/mod.ts
+    - function:03370a182fd0653c2e57c9c946423ce7
+    id: r.worker-response
+    level: MUST
+    text: Both worker request methods must return only the error with RFP uri and
+      cid on failure, and otherwise the receipt uri, cid and ok flag together with
+      the winner DID and the RFP uri and cid.
   upstream: self

@@ -1,7 +1,8 @@
 conditions:
-- message: 'undeclared: GatewayOptions, createComputeContractGateway'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -32,5 +33,5 @@ observed:
       ): ComputeContractGateway
   treeFiles:
   - lib/compute-contract-gateway-xrpc/deno.json
-realizedSpecHash: 6b6d1b6e34efcda8c750349457cd845ac9591d1bcb82cc98dee611966c11a2d2
+realizedSpecHash: 6ca1791600a9ce1b84f0256fa15d4329a55e3697c8c2974399d0ed116b8e2b47
 syncedFingerprint: d0d81be78c9ecb29f5536f3d57ce1f14f2b4297f2252b672be71295d7da0d0dd
