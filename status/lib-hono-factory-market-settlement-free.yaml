@@ -35,6 +35,6 @@ observed:
     signature: '(config: FreeSettlementConfig)'
   treeFiles:
   - lib/hono-factory-market-settlement-free/deno.json
-observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
+observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
 realizedSpecHash: 9fd120eda5150accb40b6b3167d926c39ca0e61a8a3e6bd7b616f42a40514216
 syncedFingerprint: 543cbdec95c06ad40e9ce2351795f1aab6333f6bed50abaec0f32d495d83a918

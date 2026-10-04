@@ -63,6 +63,6 @@ observed:
     line: 56
     name: MemoryPlcStore.exportLogs
     signature: '(after?: Date, count?: number): Promise<LogEntry[]>'
-observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
+observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
 realizedSpecHash: d9dfa4eef0c024109c97f35d848bcaf0a7a24cbf77fcb5d4d368470da6823de2
 syncedFingerprint: 299d71105c1b85d17aeb7f5c881a4050341315fa634af881aa0f3b2cfe87acd1
