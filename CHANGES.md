@@ -1216,10 +1216,10 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-common-market-lexicons-network-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-common-secrets-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-compute-contract-gateway-xrpc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-compute-contract-gateway-xrpc-s2c-956120f96e75 | SpecToCode | Pending |  | 0 | - |
+| lib-compute-contract-gateway-xrpc-s2c-956120f96e75 | SpecToCode | Running |  | 0 | - |
 | lib-delegated-trust-badge-blue-keys-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-did-key-ingress-proxy-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-did-key-ingress-proxy-s2c-5c6086004314 | SpecToCode | Pending |  | 0 | - |
+| lib-did-key-ingress-proxy-s2c-5c6086004314 | SpecToCode | Running |  | 0 | - |
 | lib-did-plc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-did-plc-generated-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-did-plc-generated-client-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
@@ -1238,8 +1238,8 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-market-bidder-agent-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-market-bidder-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-market-bidder-compute-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-market-bidder-compute-s2c-e583cca0ffeb | SpecToCode | Pending |  | 0 | - |
-| lib-market-bidder-s2c-57311f62afad | SpecToCode | Pending |  | 0 | - |
+| lib-market-bidder-compute-s2c-e583cca0ffeb | SpecToCode | Running |  | 0 | - |
+| lib-market-bidder-s2c-57311f62afad | SpecToCode | Running |  | 0 | - |
 | lib-market-bidder-worker-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-market-settlement-free-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-market-settlement-x402-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
@@ -1251,8 +1251,8 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-trust-graph-tangled-graph-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-utils-attestation-key-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | request-vm-ssh-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| request-vm-ssh-s2c-d2a673493193 | SpecToCode | Pending |  | 0 | - |
+| request-vm-ssh-s2c-d2a673493193 | SpecToCode | Running |  | 0 | - |
 | test-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | test-fixtures-cloud-init-c2s-d20070c3bfb0-d20070c3bfb0-a3 | CodeToSpec | Succeeded |  | 0 | - |
 | test-fixtures-cloud-init-s2c-5bdeb2bf7f6b | SpecToCode | Succeeded | 89b584d8 | 0 | - |
-| test-s2c-02610595978a | SpecToCode | Pending |  | 0 | - |
+| test-s2c-02610595978a | SpecToCode | Running |  | 0 | - |
