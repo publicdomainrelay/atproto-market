@@ -150,7 +150,7 @@ observed:
       (
         override: Config<Omit<ClientOptions, keyof T> & T> = {},
       ): Config<Omit<ClientOptions, keyof T> & T>
-observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
+observedCommit: 857b94a22ea058825611b4f155cdc639e3c0139d
 realizedSpecHash: 61f4ceb82b23ae1357afeaa16490461eb079feb141942793b4ae22062f7dca96
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 139ca181cf4f4709194afd06757cccf0fb514019c4a7518e77944479978181c5
