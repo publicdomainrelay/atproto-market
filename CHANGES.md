@@ -1266,12 +1266,8 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | request-vm-ssh-s2c-d2a673493193-a2 | SpecToCode | Failed |  | 1 | - |
 | request-vm-ssh-s2c-d2a673493193-a3 | SpecToCode | Failed |  | 1 | - |
 | test-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| test-fixtures-cloud-init-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Failed |  | 0 | - |
-| test-fixtures-cloud-init-c2s-d20070c3bfb0-d20070c3bfb0-a2 | CodeToSpec | Failed |  | 0 | - |
 | test-fixtures-cloud-init-c2s-d20070c3bfb0-d20070c3bfb0-a3 | CodeToSpec | Succeeded |  | 0 | - |
-| test-fixtures-cloud-init-s2c-5bdeb2bf7f6b | SpecToCode | Failed |  | 1 | - |
-| test-fixtures-cloud-init-s2c-5bdeb2bf7f6b-a2 | SpecToCode | Failed |  | 1 | - |
-| test-fixtures-cloud-init-s2c-5bdeb2bf7f6b-a3 | SpecToCode | Failed |  | 1 | - |
+| test-fixtures-cloud-init-s2c-5bdeb2bf7f6b | SpecToCode | Pending |  | 0 | - |
 | test-s2c-02610595978a | SpecToCode | Failed |  | 1 | - |
 | test-s2c-02610595978a-a2 | SpecToCode | Failed |  | 1 | - |
 | test-s2c-02610595978a-a3 | SpecToCode | Failed |  | 1 | - |
