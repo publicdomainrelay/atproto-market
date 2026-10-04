@@ -12933,6 +12933,17 @@ system_contexts:
       verification; when no PEM is supplied the rewrite must downgrade to plain http
       and issue the request on the default client.
   - codeRefs:
+    - file:test/cloud_init_snapshot_test.ts
+    id: r.cloud-init-iroh-snapshot
+    level: MUST
+    text: 'test/cloud_init_snapshot_test.ts must render the new iroh transport and
+      assert it byte-for-byte against test/fixtures/cloud-init/iroh.yaml, and must
+      assert listUserDataModules() includes "iroh"; the existing tunnel, tunnel-secrets,
+      fedproxy-ssh and fedproxy-web-wootty snapshot assertions and the secrets-module
+      semantic assertions must remain in the same file and stay green. This test is
+      the verification gate: it must pass under `deno test -A test/cloud_init_snapshot_test.ts`,
+      and the whole workspace must still pass `deno check`.'
+  - codeRefs:
     - file:test/bidder_container_integration_test.ts
     - file:test/bidder_cross_platform_integration_test.ts
     - file:test/fetch-interceptor.ts
