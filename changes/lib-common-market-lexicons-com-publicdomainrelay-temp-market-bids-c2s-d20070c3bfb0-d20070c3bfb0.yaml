@@ -10,5 +10,17 @@ spec:
   systemContext: lib-common-market-lexicons-com-publicdomainrelay-temp-market-bids
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-common-market-lexicons-com-publicdomainrelay-temp-market-bids
-  phase: Running
+  agentLog: 'This context is the generated `@atproto/lex` record-definition slice
+    for the `com.publicdomainrelay.temp.market.bids` namespace of the atproto-market
+    repository. It holds two bid-payload record types: `bids.free`, which advertises
+    compute offered at no cost and carries an optional-to-describe human-readable
+    reason plus attestation signatures, and `bids.x402`, which advertises priced compute
+    with a cost lex-map, currency code, billing frequency, a prepay flag, the x402
+    payment endpoint URL, and attestation signatures. Each namespace is split into
+    a `*.defs.ts` module holding the `$nsid`, the `Main` type, the `l.record<''tid'',
+    Main>` builder and its bound validator helpers, plus a thin `*.ts` re-export module
+    that forwards the defs and re-exports `main` as the default. Both record types
+    are keyed by TID and both embed the shared `network/attested/signature.defs` signatures
+    structure so a bidder''s terms are non-repudiable.'
+  message: wrote 8 requirement(s) and 0 interface(s) for lib-common-market-lexicons-com-publicdomainrelay-temp-market-bids
+  phase: Succeeded
