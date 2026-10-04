@@ -1833,14 +1833,442 @@ system_contexts:
   - lib/atproto-helpers/mod.ts
   - lib/atproto-helpers/oauth-qr-session.ts
   codeRefIndex:
+  - class:1566ce3568946d393c5b85eaa61b269a OAuthSessionExpiredError@lib/atproto-helpers/agent.ts:685
   - file:lib/atproto-helpers/agent.ts agent.ts@lib/atproto-helpers/agent.ts
   - file:lib/atproto-helpers/misc.ts misc.ts@lib/atproto-helpers/misc.ts
   - file:lib/atproto-helpers/mod.ts mod.ts@lib/atproto-helpers/mod.ts
   - file:lib/atproto-helpers/oauth-qr-session.ts oauth-qr-session.ts@lib/atproto-helpers/oauth-qr-session.ts
+  - function:08d6aae41cdb39780531e4b0b9970c5d resolveAs@lib/atproto-helpers/misc.ts:57
+  - function:09f008e00ce5312275207c9bb985bf56 listReposByCollection@lib/atproto-helpers/agent.ts:213
+  - function:1d90901125c6e1d8dfd922e2ed845766 createLocalPDSAgent@lib/atproto-helpers/agent.ts:276
+  - function:2939f2ecc3f558571114fcb90118a88f getSession@lib/atproto-helpers/agent.ts:560
+  - function:31c65f0f185060332167efd7fc6e6d7c createATProto@lib/atproto-helpers/agent.ts:76
+  - function:37176259ad0bf8cca398f47d8181537d deleteRecord@lib/atproto-helpers/agent.ts:151
+  - function:3caa35e6f44a7b681959c9df2a5753fa callService@lib/atproto-helpers/agent.ts:155
+  - function:3e90f5dbb5111b07df987d91fcdeaf1c createRecord@lib/atproto-helpers/agent.ts:83
+  - function:5e05dbc129e7d20330a96f2b8b371acc parseAtUri@lib/atproto-helpers/misc.ts:36
+  - function:61e36407a3a21d0845f4433419538d37 createOAuthAgentFromSession@lib/atproto-helpers/agent.ts:958
+  - function:664162a0c26c952691307bc83f9e48a6 pollForOAuthSession@lib/atproto-helpers/agent.ts:706
+  - function:66ccdff293ab5a09aac5708669d6cef4 refreshTokens@lib/atproto-helpers/agent.ts:988
+  - function:6a0c4068be3b125828b666d263cc18ea updateRecord@lib/atproto-helpers/agent.ts:101
+  - function:6b6cc11628f77edf2c2c12e68f5a75c4 requestCrawl@lib/atproto-helpers/agent.ts:193
+  - function:7bb086235074f3f23a228b28c80d8f33 saveOAuthQRSession@lib/atproto-helpers/oauth-qr-session.ts:73
+  - function:7e251839adec5d1acb7a20677dc42d17 atUriAuthority@lib/atproto-helpers/misc.ts:14
+  - function:86f938ce1d76c8a1f32a886fb2fb32e9 createOAuthAgent@lib/atproto-helpers/agent.ts:525
+  - function:89a524c1470f01c9a5732de495c47427 getRecord@lib/atproto-helpers/misc.ts:49
+  - function:9bec0d16cfa15fbf75d6c2c9d9ce955f createRemoteAgent@lib/atproto-helpers/agent.ts:441
+  - function:a3ab0f133ae10b069bf4b6a4f08b7db5 pdsForDid@lib/atproto-helpers/misc.ts:41
+  - function:a907c5bbc24af7160b7fa45b125f67f5 loginAgent@lib/atproto-helpers/misc.ts:18
+  - function:b34dbba7673214aea15a7263a57fa04d tryRestoreOAuthQRSession@lib/atproto-helpers/oauth-qr-session.ts:24
+  - function:c81124baa930594366258e2c4bec56be createRepoRecord@lib/atproto-helpers/agent.ts:119
+  - function:d6435492681cef08f5a89f2c4ae353d5 ownServiceDidWeb@lib/atproto-helpers/misc.ts:10
+  - function:e3db23bd44e56bd354195ad1232a79a5 checkSession@lib/atproto-helpers/agent.ts:977
+  - function:ee9ae97184cfe644c817bf83f01cc4e5 createSignedRepoRecord@lib/atproto-helpers/agent.ts:133
+  - interface:21b8d823b481d84d8026709425577f6a OAuthAgent@lib/atproto-helpers/agent.ts:518
+  - interface:3909e6cc4ffe1847476e7bebfc2b5cdd CreateOAuthAgentOpts@lib/atproto-helpers/agent.ts:507
+  - interface:4f0df49504aa975e2e54a985698793b2 CreateRemoteAgentOpts@lib/atproto-helpers/agent.ts:435
+  - interface:58f1e081030b997d8b6d09a946945b14 OAuthSessionData@lib/atproto-helpers/agent.ts:692
+  - interface:807e9a2852208ca9fa9c3f3dc245262f ATProto@lib/atproto-helpers/agent.ts:46
+  - interface:b317984f729313aa3263448156dc7422 LocalPDSAgent@lib/atproto-helpers/agent.ts:262
+  - interface:c01302c11785b2aad10f98ef090f5ab9 CreateLocalPDSAgentOpts@lib/atproto-helpers/agent.ts:249
+  - interface:e0ab4ec3b2df74288a9ef13801013959 AtprotoAgentLike@lib/atproto-helpers/agent.ts:27
+  - interface:f7ce7dfac1fcdf268e6ed934d41a6b29 CreateATProtoOpts@lib/atproto-helpers/agent.ts:39
+  - method:185b959a4bfe59388a3e65533b314ec1 OAuthSessionExpiredError.constructor@lib/atproto-helpers/agent.ts:686
   depends_on:
   - sc.atproto-market
   id: sc.lib-atproto-helpers
+  intent: 'This context exists so the rest of the repository (market-bidder-agent,
+    requester-xrpc, the bidder worker, tests) has one dependency to import instead
+    of each talking to @atproto/api, the PDS, the PLC directory and the relay directly.
+    It exists to abstract over the several ways an identity can reach an AT Protocol
+    repo - local PDS, remote credentialed session, OAuth QR session restored from
+    cache - behind a single AtprotoAgentLike shape, and to add the market-specific
+    operations that sit on top of it: strongRef record CRUD, signed records, service-proxied
+    XRPC calls, and relay crawl registration.'
+  interfaces:
+  - file: lib/atproto-helpers/agent.ts
+    kind: interface
+    name: ATProto
+    signature: 'interface ATProto { did: string; getAgentDid(): string; signer: {
+      did(): string; sign(bytes: Uint8Array): Promise<Uint8Array> }; attestationKp:
+      AttestationKeypair; idResolver: IdResolver; plcClient: PlcClient; applyWrites(did:
+      string, writes: WriteOp[]): Promise<CommitEvent>; getRecord(did: string, collection:
+      string, rkey: string): Promise<{ uri: string; cid: string; value: Record<string,
+      unknown> } | null>; listRecords(did: string, collection: string, opts?: { limit?:
+      number }): Promise<{ records: Array<{ uri: string; cid: string; value: Record<string,
+      unknown> }> }>; createRecord(collection: string, record: Record<string, unknown>):
+      Promise<StrongRef>; updateRecord(collection: string, rkey: string, record: Record<string,
+      unknown>): Promise<StrongRef>; createRepoRecord(collection: string, record:
+      Record<string, unknown>): Promise<{ uri: string; cid: string }>; createSignedRepoRecord(collection:
+      string, record: Record<string, unknown>, issuer?: string): Promise<{ uri: string;
+      cid: string; record: Record<string, unknown> }>; deleteRecord(collection: string,
+      rkey: string): Promise<void>; callService(endpointUrl: string, nsid: string,
+      lxm: string, body: Record<string, unknown>): Promise<{ status: number; ok: boolean;
+      body: unknown }>; requestCrawl(relayUrl: string, hostname: string): Promise<void>;
+      listReposByCollection(relayUrl: string, collection: string): Promise<string[]>;
+      resolve: ReturnType<typeof createRecordResolver> }'
+  - file: lib/atproto-helpers/agent.ts
+    kind: interface
+    name: AtprotoAgentLike
+    signature: 'interface AtprotoAgentLike { did: string; signer: { did(): string;
+      sign(bytes: Uint8Array): Promise<Uint8Array> }; applyWrites(did: string, writes:
+      WriteOp[]): Promise<CommitEvent>; getRecord(did: string, collection: string,
+      rkey: string): Promise<{ uri: string; cid: string; value: Record<string, unknown>
+      } | null>; listRecords(did: string, collection: string, opts?: { limit?: number
+      }): Promise<{ records: Array<{ uri: string; cid: string; value: Record<string,
+      unknown> }> }>; getServiceAuth?(aud: string, lxm?: string): Promise<string>;
+      createRecord?(did: string, collection: string, rkey: string, record: Record<string,
+      unknown>): Promise<{ uri: string; cid: string }>; putRecord?(did: string, collection:
+      string, rkey: string, record: Record<string, unknown>): Promise<{ uri: string;
+      cid: string }> }'
+  - file: lib/atproto-helpers/agent.ts
+    kind: interface
+    name: CreateATProtoOpts
+    signature: 'interface CreateATProtoOpts { logger: StructuredLoggerInterface; badgeBlueSigner:
+      AttestationKeypair; plcDirectory: PlcClient; agent: AtprotoAgentLike }'
+  - file: lib/atproto-helpers/agent.ts
+    kind: interface
+    name: CreateLocalPDSAgentOpts
+    signature: interface CreateLocalPDSAgentOpts
+  - file: lib/atproto-helpers/agent.ts
+    kind: interface
+    name: CreateOAuthAgentOpts
+    signature: interface CreateOAuthAgentOpts
+  - file: lib/atproto-helpers/agent.ts
+    kind: interface
+    name: CreateRemoteAgentOpts
+    signature: interface CreateRemoteAgentOpts
+  - file: lib/atproto-helpers/agent.ts
+    kind: interface
+    name: LocalPDSAgent
+    signature: interface LocalPDSAgent
+  - file: lib/atproto-helpers/agent.ts
+    kind: interface
+    name: OAuthAgent
+    signature: interface OAuthAgent
+  - file: lib/atproto-helpers/agent.ts
+    kind: interface
+    name: OAuthSessionData
+    signature: interface OAuthSessionData
+  - file: lib/atproto-helpers/agent.ts
+    kind: class
+    name: OAuthSessionExpiredError
+    signature: class OAuthSessionExpiredError
+  - file: lib/atproto-helpers/agent.ts
+    kind: method
+    name: OAuthSessionExpiredError.constructor
+    signature: 'OAuthSessionExpiredError.constructor(message: string, public readonly
+      sessionPath?: string)'
+  - file: lib/atproto-helpers/misc.ts
+    kind: function
+    name: atUriAuthority
+    signature: 'atUriAuthority(uri: string): string'
+  - file: lib/atproto-helpers/agent.ts
+    kind: function
+    name: callService
+    signature: 'callService(endpointUrl: string, nsid: string, lxm: string, body:
+      Record<string, unknown>): Promise<{ status: number; ok: boolean; body: unknown
+      }>'
+  - file: lib/atproto-helpers/agent.ts
+    kind: function
+    name: checkSession
+    signature: 'checkSession(): void'
+  - file: lib/atproto-helpers/agent.ts
+    kind: function
+    name: createATProto
+    signature: 'createATProto(opts: CreateATProtoOpts): Promise<ATProto>'
+  - file: lib/atproto-helpers/agent.ts
+    kind: function
+    name: createLocalPDSAgent
+    signature: 'createLocalPDSAgent(opts: CreateLocalPDSAgentOpts): Promise<LocalPDSAgent>'
+  - file: lib/atproto-helpers/agent.ts
+    kind: function
+    name: createOAuthAgent
+    signature: 'createOAuthAgent(opts: CreateOAuthAgentOpts): Promise<OAuthAgent>'
+  - file: lib/atproto-helpers/agent.ts
+    kind: function
+    name: createOAuthAgentFromSession
+    signature: 'createOAuthAgentFromSession(sessionData: OAuthSessionData, opts?:
+      OAuthAgentFromSessionOpts): Promise<AtprotoAgentLike & { sessionData: OAuthSessionData;
+      dispose(): void; proactiveRefresh(): Promise<void> }>'
+  - file: lib/atproto-helpers/agent.ts
+    kind: function
+    name: createRecord
+    signature: 'createRecord(collection: string, record: Record<string, unknown>):
+      Promise<StrongRef>'
+  - file: lib/atproto-helpers/agent.ts
+    kind: function
+    name: createRemoteAgent
+    signature: 'createRemoteAgent(opts: CreateRemoteAgentOpts): Promise<AtprotoAgentLike>'
+  - file: lib/atproto-helpers/agent.ts
+    kind: function
+    name: createRepoRecord
+    signature: 'createRepoRecord(collection: string, record: Record<string, unknown>):
+      Promise<{ uri: string; cid: string }>'
+  - file: lib/atproto-helpers/agent.ts
+    kind: function
+    name: createSignedRepoRecord
+    signature: 'createSignedRepoRecord(collection: string, record: Record<string,
+      unknown>, issuer?: string): Promise<{ uri: string; cid: string; record: Record<string,
+      unknown> }>'
+  - file: lib/atproto-helpers/agent.ts
+    kind: function
+    name: deleteRecord
+    signature: 'deleteRecord(collection: string, rkey: string): Promise<void>'
+  - file: lib/atproto-helpers/misc.ts
+    kind: function
+    name: getRecord
+    signature: 'getRecord(atUri: string, cid: string): Promise<{ uri: string; cid:
+      string; value: Record<string, unknown> }>'
+  - file: lib/atproto-helpers/agent.ts
+    kind: function
+    name: getSession
+    signature: getSession()
+  - file: lib/atproto-helpers/agent.ts
+    kind: function
+    name: listReposByCollection
+    signature: 'listReposByCollection(relayUrl: string, collection: string): Promise<string[]>'
+  - file: lib/atproto-helpers/misc.ts
+    kind: function
+    name: loginAgent
+    signature: 'loginAgent(handle: string, password: string): Promise<void>'
+  - file: lib/atproto-helpers/misc.ts
+    kind: function
+    name: ownServiceDidWeb
+    signature: 'ownServiceDidWeb(base_url: string): string'
+  - file: lib/atproto-helpers/misc.ts
+    kind: function
+    name: parseAtUri
+    signature: 'parseAtUri(uri: string): { repo: string; collection: string; rkey:
+      string }'
+  - file: lib/atproto-helpers/misc.ts
+    kind: function
+    name: pdsForDid
+    signature: 'pdsForDid(did: string): Promise<string>'
+  - file: lib/atproto-helpers/agent.ts
+    kind: function
+    name: pollForOAuthSession
+    signature: 'pollForOAuthSession(opts: { cliDid: string; signer: { did(): string;
+      sign(bytes: Uint8Array): Promise<Uint8Array> }; qrFedforkOrigin: string; pollIntervalMs?:
+      number; timeoutMs?: number; logger?: StructuredLoggerInterface }): Promise<OAuthSessionData>'
+  - file: lib/atproto-helpers/agent.ts
+    kind: function
+    name: refreshTokens
+    signature: 'refreshTokens(): Promise<void>'
+  - file: lib/atproto-helpers/agent.ts
+    kind: function
+    name: requestCrawl
+    signature: 'requestCrawl(relayUrl: string, hostname: string): Promise<void>'
+  - file: lib/atproto-helpers/misc.ts
+    kind: function
+    name: resolveAs
+    signature: 'resolveAs<T>(atUri: string, cid: string): Promise<T & { _uri: string;
+      _cid: string }>'
+  - file: lib/atproto-helpers/oauth-qr-session.ts
+    kind: function
+    name: saveOAuthQRSession
+    signature: 'saveOAuthQRSession(session: OAuthSessionData, opts?: { sessionPath?:
+      string; label?: string; handle?: string }): Promise<void>'
+  - file: lib/atproto-helpers/oauth-qr-session.ts
+    kind: function
+    name: tryRestoreOAuthQRSession
+    signature: 'tryRestoreOAuthQRSession(opts: { logger?: StructuredLoggerInterface;
+      sessionPath?: string; label?: string; handle?: string; autoRefreshThresholdMs?:
+      number; clientId?: string; onSessionExpired?: (err: OAuthSessionExpiredError)
+      => void }): Promise<(AtprotoAgentLike & { sessionData: OAuthSessionData; dispose():
+      void; proactiveRefresh(): Promise<void> }) | null>'
+  - file: lib/atproto-helpers/agent.ts
+    kind: function
+    name: updateRecord
+    signature: 'updateRecord(collection: string, rkey: string, record: Record<string,
+      unknown>): Promise<StrongRef>'
   name: lib-atproto-helpers
+  requirements:
+  - codeRefs:
+    - file:lib/atproto-helpers/agent.ts
+    - interface:e0ab4ec3b2df74288a9ef13801013959
+    id: r.agent-contract
+    level: MUST
+    text: 'AtprotoAgentLike is the minimal agent shape every factory must satisfy:
+      a did, a signer exposing did() and sign(bytes), applyWrites(did, writes) returning
+      a CommitEvent, getRecord(did, collection, rkey) returning a record or null,
+      and listRecords(did, collection, opts). getServiceAuth, createRecord and putRecord
+      are optional members used to bypass applyWrites for Lexicons a PDS rejects unless
+      written through the direct endpoint.'
+  - codeRefs:
+    - function:5e05dbc129e7d20330a96f2b8b371acc
+    - function:7e251839adec5d1acb7a20677dc42d17
+    id: r.at-uri-parsing
+    level: MUST
+    text: atUriAuthority extracts the authority (repo) segment of an at:// URI and
+      parseAtUri splits a full at:// URI into its repo, collection and rkey components,
+      so callers can route and display records without hand-slicing strings.
+  - codeRefs:
+    - function:31c65f0f185060332167efd7fc6e6d7c
+    - interface:807e9a2852208ca9fa9c3f3dc245262f
+    - interface:f7ce7dfac1fcdf268e6ed934d41a6b29
+    id: r.atproto-facade
+    level: MUST
+    text: createATProto takes a logger, an AttestationKeypair badge-blue signer, a
+      PlcClient and an AtprotoAgentLike, and returns an ATProto facade carrying that
+      did, signer, attestation keypair, id resolver and PLC client alongside the record
+      and service operations, so every consumer works against the ATProto surface
+      instead of the raw agent.
+  - codeRefs:
+    - function:3caa35e6f44a7b681959c9df2a5753fa
+    id: r.call-service
+    level: MUST
+    text: 'callService performs a service-proxied XRPC call: given an endpoint URL,
+      an NSID, an lxm and a body it returns the numeric status, an ok flag and the
+      parsed body instead of throwing on non-2xx, so callers can inspect error payloads.'
+  - codeRefs:
+    - function:3e90f5dbb5111b07df987d91fcdeaf1c
+    id: r.create-record
+    level: MUST
+    text: createRecord mints a TID rkey and, when the underlying agent exposes the
+      optional createRecord, writes through that direct endpoint; otherwise it issues
+      an applyWrites create and reads the record back to recover the cid. Either path
+      returns a com.atproto.repo.strongRef with the uri and cid.
+  - codeRefs:
+    - function:37176259ad0bf8cca398f47d8181537d
+    id: r.delete-record
+    level: MUST
+    text: deleteRecord removes the record at the given collection and rkey from the
+      agent's repo.
+  - codeRefs:
+    - function:d6435492681cef08f5a89f2c4ae353d5
+    id: r.did-web-helper
+    level: MUST
+    text: ownServiceDidWeb derives the service's own did:web identifier from a base
+      URL, so callers do not hand-build the DID string.
+  - codeRefs:
+    - function:a3ab0f133ae10b069bf4b6a4f08b7db5
+    id: r.identity-resolution
+    level: MUST
+    text: pdsForDid resolves a DID to the PDS endpoint that hosts its repo, so a caller
+      holding only a DID can address the right service.
+  - codeRefs:
+    - function:1d90901125c6e1d8dfd922e2ed845766
+    - interface:b317984f729313aa3263448156dc7422
+    - interface:c01302c11785b2aad10f98ef090f5ab9
+    id: r.local-pds-agent
+    level: MUST
+    text: createLocalPDSAgent builds a LocalPDSAgent from CreateLocalPDSAgentOpts,
+      giving callers an AtprotoAgentLike backed by a PDS the process itself runs.
+  - codeRefs:
+    - function:a907c5bbc24af7160b7fa45b125f67f5
+    id: r.misc-login
+    level: MUST
+    text: loginAgent logs in with a handle and password through @atproto/api, giving
+      misc.ts's record helpers an authenticated client to work with.
+  - codeRefs:
+    - function:86f938ce1d76c8a1f32a886fb2fb32e9
+    - interface:21b8d823b481d84d8026709425577f6a
+    - interface:3909e6cc4ffe1847476e7bebfc2b5cdd
+    id: r.oauth-agent
+    level: MUST
+    text: createOAuthAgent returns an OAuthAgent built from CreateOAuthAgentOpts,
+      the OAuth-mode counterpart to the local and remote factories.
+  - codeRefs:
+    - function:61e36407a3a21d0845f4433419538d37
+    id: r.oauth-agent-from-session
+    level: MUST
+    text: createOAuthAgentFromSession turns stored OAuthSessionData into an AtprotoAgentLike
+      that additionally exposes its sessionData, a dispose() to tear the session down,
+      and proactiveRefresh() to renew tokens ahead of expiry.
+  - codeRefs:
+    - file:lib/atproto-helpers/oauth-qr-session.ts
+    - function:7bb086235074f3f23a228b28c80d8f33
+    - function:b34dbba7673214aea15a7263a57fa04d
+    id: r.oauth-qr-persistence
+    level: MUST
+    text: saveOAuthQRSession writes an OAuthSessionData to disk and tryRestoreOAuthQRSession
+      reads it back, returning null when nothing restorable is found; both key the
+      cache file by AT Protocol handle and accept an explicit sessionPath and label,
+      so one machine can hold sessions for several accounts.
+  - codeRefs:
+    - function:b34dbba7673214aea15a7263a57fa04d
+    - interface:58f1e081030b997d8b6d09a946945b14
+    id: r.oauth-refresh-policy
+    level: SHOULD
+    text: 'A restored OAuth session should be refreshed before it dies: tryRestoreOAuthQRSession
+      accepts the clientId the session was issued to (refreshes must reuse it), an
+      autoRefreshThresholdMs, and an onSessionExpired callback that receives the OAuthSessionExpiredError
+      when refresh ultimately fails.'
+  - codeRefs:
+    - file:lib/atproto-helpers/mod.ts
+    id: r.package-entrypoint
+    level: MUST
+    text: mod.ts re-exports the agent, OAuth QR session and misc helpers so a consumer
+      can import the whole helper layer from the package entrypoint rather than reaching
+      into individual files.
+  - codeRefs:
+    - function:664162a0c26c952691307bc83f9e48a6
+    - interface:58f1e081030b997d8b6d09a946945b14
+    id: r.poll-oauth-session
+    level: MUST
+    text: pollForOAuthSession polls qrFedforkOrigin on behalf of a cliDid using the
+      supplied signer until the QR-approved session arrives, honouring pollIntervalMs
+      and timeoutMs overrides and logging through an optional StructuredLoggerInterface,
+      and resolves to OAuthSessionData.
+  - codeRefs:
+    - function:08d6aae41cdb39780531e4b0b9970c5d
+    - function:89a524c1470f01c9a5732de495c47427
+    id: r.record-fetch
+    level: MUST
+    text: getRecord fetches an at:// URI (optionally pinned to a cid) and returns
+      uri, cid and the raw value, and resolveAs layers a caller-supplied type over
+      the same fetch, returning the typed record augmented with _uri and _cid.
+  - codeRefs:
+    - function:09f008e00ce5312275207c9bb985bf56
+    - function:6b6cc11628f77edf2c2c12e68f5a75c4
+    id: r.relay-integration
+    level: MUST
+    text: requestCrawl registers a PDS hostname with a relay so the relay begins crawling
+      it, and listReposByCollection queries a relay for the DIDs that hold records
+      in a given collection.
+  - codeRefs:
+    - function:9bec0d16cfa15fbf75d6c2c9d9ce955f
+    - interface:4f0df49504aa975e2e54a985698793b2
+    id: r.remote-agent
+    level: MUST
+    text: createRemoteAgent logs a CredentialSession into the given pdsUrl with handle
+      and password and wraps it as an AtprotoAgentLike; its signer returns the session
+      did but sign() throws, because a remote credential session cannot produce repo
+      signatures locally, and applyWrites is translated into com.atproto.repo.applyWrites
+      with the delete action carrying no value.
+  - codeRefs:
+    - function:c81124baa930594366258e2c4bec56be
+    - function:ee9ae97184cfe644c817bf83f01cc4e5
+    id: r.repo-record
+    level: MUST
+    text: createRepoRecord writes a record and returns its uri and cid as a plain
+      pair rather than a strongRef, for callers that store the reference themselves,
+      and createSignedRepoRecord additionally returns the stored record and accepts
+      an optional issuer used when signing it.
+  - codeRefs:
+    - class:1566ce3568946d393c5b85eaa61b269a
+    - method:185b959a4bfe59388a3e65533b314ec1
+    id: r.session-expiry
+    level: MUST
+    text: OAuthSessionExpiredError is thrown to signal a dead OAuth session and carries
+      the message plus the optional sessionPath of the cache file that held it, so
+      callers can delete or re-key that file.
+  - codeRefs:
+    - function:2939f2ecc3f558571114fcb90118a88f
+    - function:66ccdff293ab5a09aac5708669d6cef4
+    - function:e3db23bd44e56bd354195ad1232a79a5
+    id: r.session-guards
+    level: MAY
+    text: The module also carries the internal session lifecycle helpers getSession,
+      checkSession and refreshTokens alongside the exported agent factories.
+  - codeRefs:
+    - function:6a0c4068be3b125828b666d263cc18ea
+    id: r.update-record
+    level: MUST
+    text: updateRecord writes the given record at an existing collection and rkey,
+      preferring the agent's optional putRecord and falling back to an applyWrites
+      update plus read-back, and returns a strongRef for the written record.
   upstream: self
 - code:
   - lib/atproto-oauth-helpers/key.ts

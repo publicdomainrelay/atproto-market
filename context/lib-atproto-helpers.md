@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so the rest of the repository (market-bidder-agent, requester-xrpc, the bidder worker, tests) has one dependency to import instead of each talking to @atproto/api, the PDS, the PLC directory and the relay directly. It exists to abstract over the several ways an identity can reach an AT Protocol repo - local PDS, remote credentialed session, OAuth QR session restored from cache - behind a single AtprotoAgentLike shape, and to add the market-specific operations that sit on top of it: strongRef record CRUD, signed records, service-proxied XRPC calls, and relay crawl registration.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

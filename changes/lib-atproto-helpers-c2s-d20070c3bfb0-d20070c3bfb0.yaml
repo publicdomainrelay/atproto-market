@@ -10,5 +10,17 @@ spec:
   systemContext: lib-atproto-helpers
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-atproto-helpers
-  phase: Running
+  agentLog: 'lib/atproto-helpers is the shared AT Protocol client layer of atproto-market,
+    split across four TypeScript files. agent.ts defines the minimal agent contract
+    (AtprotoAgentLike) and the ATProto facade built by createATProto, plus three concrete
+    agent factories: createLocalPDSAgent for a locally hosted PDS, createRemoteAgent
+    for CredentialSession handle/password login, and createOAuthAgent / createOAuthAgentFromSession
+    for the OAuth QR flow, together with OAuthSessionExpiredError, OAuthSessionData,
+    pollForOAuthSession and the checkSession/refreshTokens/getSession session guards.
+    oauth-qr-session.ts persists and restores those OAuth sessions on disk, keyed
+    per AT Protocol handle, through saveOAuthQRSession and tryRestoreOAuthQRSession.
+    misc.ts holds small DID and AT-URI utilities (ownServiceDidWeb, atUriAuthority,
+    parseAtUri, pdsForDid, getRecord, resolveAs, loginAgent). mod.ts is the single
+    re-export entrypoint for the package.'
+  message: wrote 23 requirement(s) and 37 interface(s) for lib-atproto-helpers
+  phase: Succeeded
