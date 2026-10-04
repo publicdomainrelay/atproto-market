@@ -10,5 +10,17 @@ spec:
   systemContext: lib-common-market-lexicons-com-publicdomainrelay-temp-gateway
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-common-market-lexicons-com-publicdomainrelay-temp-gateway
-  phase: Running
+  agentLog: 'This context is the generated Lexicon binding layer for the `com.publicdomainrelay.temp.gateway`
+    namespace in `lib/common/market-lexicons`. It contains five XRPC endpoint definitions
+    — four procedures (`deleteCompute`, `requestComputeVM`, `requestComputeWorkerEphemeral`,
+    `requestComputeWorkerPersistent`) and one subscription (`subscribeComputeEvents`)
+    — each split into a `.defs.ts` file holding the `$nsid`, `$params`, `$input`/`$message`,
+    `$output` schema builders, the inferred `$Params` / `$Input` / `$InputBody` /
+    `$Output` / `$OutputBody` / `$Message` type aliases, and the `main` procedure/subscription
+    value, plus a thin `.ts` shim that re-exports the defs module and re-exports `main`
+    as the default export. Every file is emitted by `@atproto/lex` and carries a "DO
+    NOT EDIT" header. The definitions describe the gateway''s client-facing contract:
+    tearing down a compute resource by receipt, requesting a VM or a Deno worker through
+    the compute contract RFP flow, and subscribing to compute lifecycle events.'
+  message: wrote 8 requirement(s) and 6 interface(s) for lib-common-market-lexicons-com-publicdomainrelay-temp-gateway
+  phase: Succeeded
