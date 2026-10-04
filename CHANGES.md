@@ -907,5 +907,5 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-hono-factory-did-plc-directory-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-hono-factory-did-plc-directory-storage-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-hono-factory-market-atproto-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-hono-factory-market-settlement-free-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-hono-factory-market-settlement-free-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Failed |  | 0 | - |
 | lib-hono-factory-market-settlement-x402-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
