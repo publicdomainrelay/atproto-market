@@ -1,0 +1,25 @@
+conditions:
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
+  type: CodeSynced
+- message: no synced fingerprint has been recorded yet
+  reason: NotSyncedYet
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/builtin.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/builtin.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/denoWorker.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/denoWorker.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/service.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/service.ts
+  fingerprint: 30b2850bf0f88c71b9d3edaec06559d44446b00260db864ae6355c9ba91d0091
+realizedSpecHash: 4dc823ca094790d255f684b9e9f91a96a98ca42bd8f4fb6ba0af8f165e170532
+syncedFingerprint: 30b2850bf0f88c71b9d3edaec06559d44446b00260db864ae6355c9ba91d0091

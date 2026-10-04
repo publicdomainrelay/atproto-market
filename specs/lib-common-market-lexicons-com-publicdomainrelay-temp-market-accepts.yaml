@@ -1,0 +1,19 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/free.defs.ts
+  free.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/free.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/free.ts
+  free.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/free.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/x402.defs.ts
+  x402.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/x402.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/x402.ts
+  x402.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/x402.ts
+kind: SystemContext
+metadata:
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-market-accepts
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self
