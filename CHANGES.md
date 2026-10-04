@@ -1098,6 +1098,17 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.refuse-non-secp256k1-jwk` (MUST): "A pre-existing file whose parsed contents do not have kty === "EC", crv === "secp256k1" and a string d must cause a thrown error naming the path and stating it is not a secp256k1 private JWK; the file must not be overwritten."
 - added `r.restrict-key-file-mode` (SHOULD): "After writing a newly generated JWK the file mode is set to 0600, and a chmod failure is swallowed so platforms without chmod support still complete key creation."
 
+### test
+
+- intent: "" -> "This context exists to hold the repository's verification surface: executable tests that pin down the behaviour of the bidder, gateway, and supporting subsystems against locally stood-up infrastructure instead of public network services. Its central mechanism is the shared fetch interceptor in test/fetch-interceptor.ts, which exists so that code under test that hardcodes public endpoints (plc.directory for identity resolution, https://*.localhost for per-service relays) can be driven against ephemeral local servers on arbitrary ports, and so that tests exercising TLS can trust a throwaway self-signed CA without touching the real certificate store. Keeping these tests in one context makes the assumptions they share — the host rewrite rules, the CA trust escape hatch, and the teardown contract — describable in one place, so a change to the interceptor's rewriting behaviour is visibly a change to every integration suite at once."
+- added `r.ca-cert-https-mode` (SHOULD): "When a caCertPem is supplied, localhost rewrites must keep the https scheme and be issued through a Deno HttpClient configured with that PEM as a trusted CA certificate, so TLS-terminating local services are reachable without disabling verification; when no PEM is supplied the rewrite must downgrade to plain http and issue the request on the default client."
+- added `r.integration-suites-install-interceptor` (MUST): "The bidder container, bidder cross-platform, gateway caller RBAC, gateway README smoke, gateway request VM, gateway SSH, gateway worker, and OAuth session transfer suites must all install the shared fetch interceptor, so these end-to-end tests exercise services through the local rewrite rules rather than the public network."
+- added `r.localhost-port-rewrite` (MUST): "installFetchInterceptor must detect https URLs whose host is exactly localhost, ends with .localhost, or contains .localhost:, and rewrite them to reach the local dispatcher; when the host carries no explicit port the configured dispPort is appended, and the original path and query are preserved."
+- added `r.passthrough-unmatched` (MUST): "Requests that match neither the plc.directory prefix nor a localhost host must be forwarded unchanged to the original realFetch, so an installed interceptor does not silently alter traffic to any other origin."
+- added `r.plc-directory-rewrite` (MUST): "installFetchInterceptor must rewrite any request whose URL begins with https://plc.directory/ onto the caller-supplied plcDirectoryUrl, preserving the remainder of the original path after the https://plc.directory prefix, so tests resolve DIDs against a local fake PLC rather than the public directory."
+- added `r.teardown-restores-fetch` (MUST): "installFetchInterceptor must return a disposable closure that reassigns globalThis.fetch back to the original realFetch and closes the Deno HttpClient it created, so a test that installs the interceptor leaves no patched global or leaked connection pool behind for later tests in the same process."
+- added `r.unit-suite-coverage` (SHOULD): "The suite must retain focused tests for each non-intercepted subsystem: badge blue key binding, bid collection, the bidder policy restricted to only-me, the production bidder, bidder SSH relay, cloud-init snapshot rendering, firehose watching, offering refresh, registry discovery, and secrets capability."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance |
@@ -1185,3 +1196,4 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-utils-attestation-key-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | request-vm-ssh-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
 | test-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
+| test-fixtures-cloud-init-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
