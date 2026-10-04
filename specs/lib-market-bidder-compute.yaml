@@ -206,4 +206,5 @@ spec:
     file: lib/market-bidder-compute/mod.ts
 codeRefIndex:
 - file:lib/market-bidder-compute/mod.ts mod.ts@lib/market-bidder-compute/mod.ts
+- function:5ec21894bcf015b3164a07db128adf72 createVmBidderCallbacks@lib/market-bidder-compute/mod.ts:78
 - interface:462aac25716496197891c11616e37b58 VmBidderDeps@lib/market-bidder-compute/mod.ts:44

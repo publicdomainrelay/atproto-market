@@ -1,13 +1,13 @@
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-syncedFingerprint: f4e4d75e911a5af1734903ea9bd806d79511c0494f3f53ff913f6a8a8f9eb6db
-realizedSpecHash: e583cca0ffebd750bcc8b7e87dc7dfb3ad0b34d6dfd595b6be0c34b56930220e
+observedCommit: 1e1cd3c58d5d52ccc1910f033eb41dc978dfdbc2
+syncedCommit: 1e1cd3c58d5d52ccc1910f033eb41dc978dfdbc2
+syncedFingerprint: 7cad9394df73b77fddfb561410663580f02f7be1de80e98d678f6cb70a888440
+realizedSpecHash: 5807b7c34327f42d276c5c8b0a78698ffbf2103f94c1f73e86c1e413ee176e89
 conditions:
 - type: CodeSynced
   status: "False"
   reason: CodeRefsUnresolved
-  message: 'unresolved requirement code refs: r.accept-bidconfig-required: function:5ec21894bcf015b3164a07db128adf72,
-    r.provider-ref-callback-delegation: function:aed470efa09431ae131407c08a4b3c37'
+  message: 'unresolved requirement code refs: r.provider-ref-callback-delegation:
+    function:aed470efa09431ae131407c08a4b3c37'
 - type: Drifted
   status: "False"
   reason: FingerprintEqual
@@ -36,8 +36,8 @@ observed:
         event: Record<string, Record<string, (ctx: EventDispatchContext) => Promise<{ status?: number; body?: unknown } | void>>>;
       }
     file: lib/market-bidder-compute/mod.ts
-    line: 117
-    codegraphId: function:0791308e00a93c24057bb04e10198f52
+    line: 78
+    codegraphId: function:5ec21894bcf015b3164a07db128adf72
   - name: createComputeProviderHooks
     kind: function
     signature: |-
@@ -45,6 +45,6 @@ observed:
         provider: ComputeProvider;
       }): MarketBidderProviderRef
     file: lib/market-bidder-compute/mod.ts
-    line: 492
-    codegraphId: function:ef1bc6ab24fd35061cac77784db90302
-  fingerprint: f4e4d75e911a5af1734903ea9bd806d79511c0494f3f53ff913f6a8a8f9eb6db
+    line: 455
+    codegraphId: function:e76b288839b52710a78d154ddff13842
+  fingerprint: 7cad9394df73b77fddfb561410663580f02f7be1de80e98d678f6cb70a888440
