@@ -136,6 +136,21 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.submit-rfp-callback` (MUST): "SubmitRfpCallback receives a SubmitRfpContext carrying the RFP's uri, cid, resolved record, payload NSID and issuer DID plus the resolver and logger, and may return a HandlerResult of status and body or nothing; RfpCallbacks indexes those handlers by service id and then by payload NSID so one server can host several RFP types."
 - added `r.submit-rfp-request-optional` (MUST): "The inbound request on SubmitRfpContext is optional, because an RFP discovered by pulling the firehose has no originating HTTP request while one pushed over submitRfp does; handlers that need url or headers must tolerate its absence."
 
+### lib-abc-market-bidder
+
+- intent: "" -> "This context exists to fix the shared vocabulary of the market bidder before any transport or runtime is chosen. The ABC layering keeps the interface here, in lib/abc, so that the compute and worker bidder implementations can import the same ActiveContract, ContractEvent and CallbackSet without depending on each other, and so a host can supply its own RFP callbacks, accept callback and event callbacks without the bidder knowing how the market is spoken to. Every type here is data or a callback slot: no behavior, no transport, no environment access, which is what lets the same shapes be reused across bidder runtimes."
+- added `r.active-contract-accept-identity` (MUST): "ActiveContract represents a contract currently held by the bidder and MUST record acceptAuthor alongside the optional receiptUri, receiptCid and acceptedAt of the acceptance, so that an accepted contract can be traced back to the author and receipt that produced it."
+- added `r.active-contract-provider-id-promise` (SHOULD): "ActiveContract SHOULD carry providerIdPromise as a Promise resolving to string, number or undefined rather than a settled provider id, so provisioning may be awaited lazily and a not-yet-provisioned contract is representable as a promise resolving to undefined."
+- added `r.callback-factory-deps` (MUST): "CallbackFactoryDeps MUST bundle the guest contract entry, active contract and contract event shapes needed to construct a CallbackSet, so a callback factory receives everything it needs to build callbacks without reaching into bidder internals."
+- added `r.callback-set-slots` (MUST): "CallbackSet MUST let a host inject behaviour through optional slots: rfpCallbacks for RFP callbacks, onAccept for the submit-accept callback, eventCallbacks for contract event callbacks, and an eventBackground flag selecting whether event callbacks run in the background, with every slot optional so a bidder runs with any subset supplied."
+- added `r.contract-event-discriminated-union` (MUST): "ContractEvent MUST discriminate contract lifecycle state with type limited to accepted, provisioned, provisioning-failed, terminated or termination-failed, and MUST carry key, receiptUri, receiptCid, acceptAuthor and acceptedAt for every event so each notification is self-describing."
+- added `r.contract-event-terminal-fields` (SHOULD): "ContractEvent SHOULD include terminatedAt and providerId only for the event types where they are meaningful, leaving them optional so a terminated or provisioned event can report its timestamp and provider while earlier events omit them."
+- added `r.guest-contract-entry-optional-submit-url` (MAY): "GuestContractEntry MAY carry a submitEventUrl to name where events for that guest contract are submitted; when absent the consumer must fall back to its own event submission target."
+- added `r.guest-contract-entry-receipt-identity` (MUST): "GuestContractEntry identifies a contract the bidder did not itself author by a receiptKey, receiptUri and receiptCid triple, and MUST expose those three as required fields so a consumer can address the receipt without further lookup."
+- added `r.no-behaviour-in-abc` (MUST): "lib/abc/market-bidder/mod.ts MUST stay declarative, exporting only these interface declarations and their imported callback types (RfpCallbacks, SubmitAcceptCallback, EventCallbacks) with no runtime, transport or environment access, so the interface layer can be depended on from both lib/market-bidder-compute and lib/market-bidder-worker."
+- added `r.policy-exec-options` (SHOULD): "PolicyExecOptions SHOULD parameterise how a bidder policy is executed, holding the execution options separately from the policy itself so callers can vary execution without changing the policy."
+- added `r.provider-ref` (MUST): "MarketBidderProviderRef MUST name a provider reference resolvable by the bidder, so that compute and worker bidder implementations share one type for identifying the provider a contract runs on."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance |
@@ -148,6 +163,6 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | hono-plc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-abc-compute-contract-gateway-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-abc-guest-capability-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-abc-market-bidder-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-abc-market-bidder-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-abc-market-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-abc-requester-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |

@@ -10,5 +10,24 @@ spec:
   systemContext: lib-abc-market-bidder
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-abc-market-bidder
-  phase: Running
+  agentLog: 'lib/abc/market-bidder/mod.ts is the abstract interface layer for a market
+    bidder: it declares the plain data shapes that a bidder exchanges with the market
+    and the pluggable callback bundle a host supplies. GuestContractEntry carries
+    the receipt identity (receiptKey, receiptUri, receiptCid) plus an optional submitEventUrl
+    for a contract the bidder did not author. ActiveContract tracks a contract in
+    flight, pairing an optional providerIdPromise (a promise of the provider id, which
+    may be a string, a number, or undefined) with the acceptAuthor and the optional
+    receiptUri, receiptCid and acceptedAt of the accepted receipt. ContractEvent is
+    the structured lifecycle notification emitted for a contract, discriminated by
+    a type of accepted, provisioned, provisioning-failed, terminated or termination-failed
+    and carrying the key, receiptUri, receiptCid, acceptAuthor and acceptedAt, with
+    terminatedAt and providerId present only where they apply. CallbackSet is the
+    injection point: optional rfpCallbacks (RfpCallbacks), an optional onAccept (SubmitAcceptCallback),
+    optional eventCallbacks (EventCallbacks) and an eventBackground flag. CallbackFactoryDeps
+    and PolicyExecOptions describe the dependencies and execution options passed to
+    callback factories and policy execution, and MarketBidderProviderRef names a provider
+    reference the bidder resolves. The file is the contract between the bidder implementations
+    (lib/market-bidder, lib/market-bidder-compute, lib/market-bidder-worker) and whoever
+    wires them up.'
+  message: wrote 11 requirement(s) and 7 interface(s) for lib-abc-market-bidder
+  phase: Succeeded

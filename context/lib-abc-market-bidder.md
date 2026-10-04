@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists to fix the shared vocabulary of the market bidder before any transport or runtime is chosen. The ABC layering keeps the interface here, in lib/abc, so that the compute and worker bidder implementations can import the same ActiveContract, ContractEvent and CallbackSet without depending on each other, and so a host can supply its own RFP callbacks, accept callback and event callbacks without the bidder knowing how the market is spoken to. Every type here is data or a callback slot: no behavior, no transport, no environment access, which is what lets the same shapes be reused across bidder runtimes.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 
