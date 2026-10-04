@@ -304,6 +304,84 @@ const tunnelModule: UserDataModule = (ctx) => {
   };
 };
 
+/** dumbpipe release pinned by the iroh transport module. */
+const DUMBPIPE_VERSION = "v0.39.0";
+
+/**
+ * iroh — dumbpipe listener transport (replaces the did-key-ingress-proxy
+ * tunnel-subscriber). Guest sshd keeps :22 on loopback; dumbpipe publishes a
+ * `listen-tcp` endpoint over the iroh network and the ticket it prints at
+ * startup is captured to /root/secrets/iroh-node-id for the guest to publish.
+ * Requires ctx.sshAuthorizedKey. Optional: ctx.targetPort.
+ */
+const irohModule: UserDataModule = (ctx) => {
+  const targetPort = ctx.targetPort ?? 22;
+  return {
+    apt: { preserve_sources_list: true },
+    packages: ["curl"],
+    disable_root: false,
+    ssh_pwauth: false,
+    write_files: [
+      {
+        path: "/root/.ssh/authorized_keys",
+        owner: "root:root",
+        permissions: "0600",
+        content: `${ctx.sshAuthorizedKey ?? ""}\n`,
+      },
+      {
+        path: "/etc/ssh/sshd_config.d/10-iroh.conf",
+        owner: "root:root",
+        permissions: "0644",
+        content: [
+          "# Key-only root login; dumbpipe bridges iroh traffic to sshd on loopback.",
+          "PermitRootLogin prohibit-password",
+          "PasswordAuthentication no",
+        ].join("\n") + "\n",
+      },
+      {
+        path: "/etc/systemd/system/dumbpipe-listen.service",
+        owner: "root:root",
+        permissions: "0644",
+        content: [
+          "[Unit]",
+          "Description=iroh dumbpipe listener (ssh-over-iroh)",
+          "After=network-online.target sshd.service ssh.service",
+          "Wants=network-online.target",
+          "",
+          "[Service]",
+          "Type=simple",
+          "User=root",
+          `ExecStart=/usr/local/bin/dumbpipe listen-tcp --host 127.0.0.1:${targetPort}`,
+          "Restart=always",
+          "RestartSec=5",
+          "TimeoutStopSec=10",
+          "StandardOutput=journal",
+          "StandardError=journal",
+          "",
+          "[Install]",
+          "WantedBy=multi-user.target",
+          "",
+        ].join("\n"),
+      },
+    ],
+    runcmd: [
+      ["sh", "-c", `command -v dumbpipe >/dev/null || {
+  _arch=$(uname -m)
+  case "$_arch" in x86_64|amd64) _arch=x86_64 ;; aarch64|arm64) _arch=aarch64 ;; esac
+  curl -fsSL "https://github.com/n0-computer/dumbpipe/releases/download/${DUMBPIPE_VERSION}/dumbpipe-${DUMBPIPE_VERSION}-linux-\${_arch}.tar.gz" | tar -xvz -C /usr/local/bin dumbpipe
+  chmod 755 /usr/local/bin/dumbpipe
+}`],
+      ["sh", "-c", "install -d -m 0700 -o root -g root /root/secrets"],
+      ["sh", "-c", `timeout 30 /usr/local/bin/dumbpipe listen-tcp --host 127.0.0.1:${targetPort} > /root/secrets/iroh-node-id || true
+chmod 0600 /root/secrets/iroh-node-id
+[ -s /root/secrets/iroh-node-id ] || { echo "dumbpipe ticket never appeared" >&2; exit 1; }`],
+      "systemctl daemon-reload",
+      "systemctl enable --now ssh || systemctl enable --now sshd",
+      "systemctl enable --now dumbpipe-listen.service",
+    ],
+  };
+};
+
 /**
  * fedproxy-ssh — websocat + fedproxy-client transport. sshd reachable through a
  * websocat ws->sshd bridge on loopback :8080, fronted by fedproxy-client.
@@ -856,6 +934,7 @@ touch "\${STAMP}"
 };
 
 registerUserDataModule("tunnel", tunnelModule);
+registerUserDataModule("iroh", irohModule);
 registerUserDataModule("fedproxy-ssh", fedproxySshModule);
 registerUserDataModule("fedproxy-web", fedproxyWebModule);
 registerUserDataModule("wootty", woottyModule);

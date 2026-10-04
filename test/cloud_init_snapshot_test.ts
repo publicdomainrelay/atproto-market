@@ -2,7 +2,7 @@
 //
 // Fixtures are byte-stable outputs of the composer (generated once during the
 // migration; regenerate only when intentionally changing the composed YAML):
-//   test/fixtures/cloud-init/{tunnel,fedproxy-ssh,fedproxy-web-wootty}.yaml
+//   test/fixtures/cloud-init/{tunnel,iroh,fedproxy-ssh,fedproxy-web-wootty}.yaml
 //
 // Run:
 //   deno test -A test/cloud_init_snapshot_test.ts
@@ -42,6 +42,10 @@ Deno.test("composer snapshots match fixtures", async () => {
   assertEquals(
     buildUserData({ ctx: CTX, modules: ["tunnel"] }),
     await fixture("tunnel.yaml"),
+  );
+  assertEquals(
+    buildUserData({ ctx: CTX, modules: ["iroh"] }),
+    await fixture("iroh.yaml"),
   );
   assertEquals(
     buildUserData({ ctx: CTX, modules: ["fedproxy-ssh"] }),
@@ -123,6 +127,21 @@ Deno.test("tunnel has no ListenAddress (direct-TCP probe)", () => {
   assert(!y.includes("ListenAddress"));
   assert(y.includes("tunnel-subscriber.service"));
   assert(y.includes(`--target-port 22`));
+});
+
+Deno.test("iroh dumbpipe listener replaces the tunnel subscriber", () => {
+  const y = buildUserData({ ctx: CTX, modules: ["iroh"] });
+  assert(y.startsWith("#cloud-config\n"), "cloud-config header");
+  assert(y.includes("/root/.ssh/authorized_keys"), "root key installed");
+  assert(y.includes(SSH), "authorized key comes from ctx.sshAuthorizedKey");
+  assert(y.includes("PermitRootLogin prohibit-password"), "key-only root login");
+  assert(y.includes("PasswordAuthentication no"), "no password auth");
+  assert(!y.includes("ListenAddress"), "sshd stays probe-able on :22");
+  assert(y.includes("n0-computer/dumbpipe/releases/download"), "dumbpipe release archive");
+  assert(y.includes("dumbpipe-listen.service"), "listener unit installed");
+  assert(y.includes("listen-tcp --host 127.0.0.1:22"), "listener bridges to sshd");
+  assert(y.includes("/root/secrets/iroh-node-id"), "ticket captured for the requester");
+  assert(!y.includes("tunnel-subscriber"), "old transport not re-emitted");
 });
 
 Deno.test("wootty combo carries token handoff + hardening", () => {
@@ -208,6 +227,7 @@ Deno.test("injectJsrUrl adds JSR_URL env to tunnel unit", () => {
 
 Deno.test("registry: built-ins present, unknown id throws", () => {
   assert(listUserDataModules().includes("tunnel"));
+  assert(listUserDataModules().includes("iroh"));
   assert(listUserDataModules().includes("fedproxy-ssh"));
   assert(listUserDataModules().includes("fedproxy-web"));
   assert(listUserDataModules().includes("wootty"));
