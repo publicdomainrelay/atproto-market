@@ -10,5 +10,21 @@ spec:
   systemContext: lib-hono-factory-did-plc-directory
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-hono-factory-did-plc-directory
-  phase: Running
+  agentLog: 'This context is the Deno + Hono PLC directory library at lib/hono-factory-did-plc-directory,
+    which serves a did:plc style directory over HTTP. mod.ts re-exports the surface;
+    factory.ts builds the app from optional PlcDirectoryOptions (store, version, verifySig)
+    and returns a PlcDirectoryFactory holding the Hono `app` and the underlying PlcStore;
+    handlers.ts defines HandlerDeps (store, version, optional verifySig) and mountHandlers,
+    which wires GET /health, GET /export, GET /:did, POST /:did, GET /:did/log and
+    GET /:did/log/audit, with handleExport honouring `after` and `count` query parameters
+    (invalid values give 400, count is clamped to 1000) and handleHealth returning
+    the configured version. validation.ts supplies the operation pipeline: computeOperationCid
+    hashes signed bytes with SHA-256 and wraps them as a base32 CIDv1 with the dag-cbor
+    codec and a 0x12 0x20 multihash prefix, while validateOperationStructure, verifyOperationSignature,
+    validatePrevChain and validateRotationKeyAuth check shape, signature, previous-CID
+    chain and rotation-key authority. did-resolution.ts replays a DID''s operation
+    log into a DID document, returning null for an empty log or a log ending in a
+    tombstone and otherwise merging verification methods, alsoKnownAs entries and
+    services from create and plc_operation entries.'
+  message: wrote 10 requirement(s) and 11 interface(s) for lib-hono-factory-did-plc-directory
+  phase: Succeeded

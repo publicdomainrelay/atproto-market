@@ -803,6 +803,20 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.worker-routes-caller-did` (MUST): "The requestComputeWorkerEphemeral and requestComputeWorkerPersistent handlers parse the JSON body, call the corresponding gateway method with caller { did: "unknown" } and the body, and return the result with status 500 when result.error is set and 200 otherwise."
 - added `r.xrpc-post-routes` (MUST): "The app registers POST routes at /xrpc/<REQUEST_COMPUTE_VM_NSID>, /xrpc/<REQUEST_COMPUTE_WORKER_EPHEMERAL_NSID>, /xrpc/<REQUEST_COMPUTE_WORKER_PERSISTENT_NSID> and /xrpc/<DELETE_COMPUTE_NSID>, each guarded by requireAuth bound to the matching LXM constant for that method."
 
+### lib-hono-factory-did-plc-directory
+
+- intent: "" -> "This context exists so the PLC directory's HTTP surface can be constructed by a caller and mounted into a larger atproto service, while the audit-relevant rules of a PLC operation log (structure, CID, signature, prev chain, rotation-key authority, and log-to-DID-document resolution) live in small, separately testable functions. It separates the transport layer (factory + handlers) from the validation and resolution logic so that a service embedding the directory supplies its own PlcStore, version string and signature verifier, and gets back a standard routes set plus the store it was given."
+- added `r.cid-computation` (MUST): "computeOperationCid hashes the signed operation bytes with SHA-256, prefixes them with the 0x12 0x20 multihash header and the 0x01 0x71 dag-cbor CIDv1 header, and returns the result as a multibase base32 string beginning with 'b', so the same signed bytes always yield the same CID."
+- added `r.did-document-resolution` (MUST): "resolveDidDocument replays a DID's operation log in order and returns the resulting DID document, or null when the log is empty or its last entry is a plc_tombstone; create entries contribute an `atproto` verification method, a handle in alsoKnownAs and an `atproto_pds` service, while plc_operation entries merge their verificationMethods, alsoKnownAs and services over that state, with verification methods emitted as Multikey entries (did:key: prefix stripped) and duplicate alsoKnownAs values collapsed."
+- added `r.export-pagination` (MUST): "The export handler reads the `after` and `count` query parameters, returning 400 'Invalid Query Parameter: after' for an unparseable date and 400 'Invalid Query Parameter: count' for a non-numeric or negative count, clamping an accepted count to at most 1000, and passes the parsed values to store.exportLogs as the response body."
+- added `r.factory-construction` (MUST): "createPlcDirectoryFactory accepts an optional PlcDirectoryOptions object (store, version, verifySig, all optional, defaulting to an empty options object) and returns a PlcDirectoryFactory exposing the constructed Hono `app` together with the `store` in use, so a caller can mount the routes and keep a handle on the same store."
+- added `r.handler-mounting` (MUST): "mountHandlers takes the Hono app and a HandlerDeps (required store and version, optional verifySig) and registers exactly the routes GET /health, GET /export, GET /:did, POST /:did, GET /:did/log and GET /:did/log/audit, each dispatching to its dedicated handler with the same deps, so the route table is the whole HTTP surface of the directory."
+- added `r.health-reports-version` (SHOULD): "The health handler responds with a JSON body containing the version string supplied through HandlerDeps, so an operator can confirm which build of the directory is running."
+- added `r.prev-chain-validation` (MUST): "validatePrevChain checks an operation's `prev` pointer against the existing log entries, returning null when the chain link is consistent and a string describing the failure otherwise, so that gaps, forks and stale prevs are rejected."
+- added `r.rotation-key-auth` (MUST): "validateRotationKeyAuth takes the previous operation and the signer DID and returns a boolean telling whether that signer was authorised by the previous operation's rotation keys, so only key holders can extend a DID's log."
+- added `r.signature-verification` (MUST): "verifyOperationSignature takes a PlcOp or TombstoneOp, the signer DID and an injected verifySig callback, and resolves to a boolean indicating whether the operation's signature is valid for that signer, keeping the cryptographic primitive outside the library."
+- added `r.structure-validation` (MUST): "validateOperationStructure takes an unknown operation and returns a string describing the structural problem, or null when the operation is well formed, so callers can reject malformed operations before any cryptographic work."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance |
@@ -867,5 +881,5 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-did-plc-generated-core-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-guest-capability-secrets-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-hono-factory-compute-contract-gateway-xrpc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-hono-factory-did-plc-directory-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-hono-factory-did-plc-directory-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-hono-factory-did-plc-directory-storage-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |

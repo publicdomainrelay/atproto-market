@@ -1,9 +1,8 @@
 conditions:
-- message: 'undeclared: HandlerDeps, PlcDirectoryFactory, PlcDirectoryOptions, computeOperationCid,
-    createPlcDirectoryFactory, mountHandlers, resolveDidDocument, validateOperationStructure,
-    validatePrevChain, validateRotationKeyAuth, verifyOperationSignature'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -107,5 +106,5 @@ observed:
       ): boolean
   treeFiles:
   - lib/hono-factory-did-plc-directory/deno.json
-realizedSpecHash: 24bd293da611505b93f10f97e041152385e897428e3778465ebb50a7877d92d2
+realizedSpecHash: e5d0ac1731d83788695f79bc2b792d90fa26721bb2db142b3a10662f96786023
 syncedFingerprint: 6ac00ee419ac35de281ee3412c187d99b4f7b950df196647cda1d89bbe721cb9
