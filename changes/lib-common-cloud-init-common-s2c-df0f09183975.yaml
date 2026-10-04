@@ -15,4 +15,6 @@ spec:
     - +r.iroh-report-carries-workload-token
     - +r.iroh-unit-runs-under-container-shim
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is realizing lib-common-cloud-init-common in a batch of 3 led
+    by lib-common-cloud-init-common
