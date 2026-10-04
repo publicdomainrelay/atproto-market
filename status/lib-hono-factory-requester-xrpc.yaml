@@ -33,7 +33,7 @@ observed:
       ): Promise<{ stop: () => void }>
   treeFiles:
   - lib/hono-factory-requester-xrpc/deno.json
-observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
+observedCommit: 857b94a22ea058825611b4f155cdc639e3c0139d
 realizedSpecHash: e95cb5dd61faa36545e58398a6e13f93517b49c95f5e52a33598b307dc484a80
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: f0becfeadc3d2372da177a4b9e8342ec9f2ba1d78585787d6f03e7032924544d

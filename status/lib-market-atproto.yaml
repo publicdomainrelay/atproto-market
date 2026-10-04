@@ -564,7 +564,7 @@ observed:
       ): Promise<boolean>
   treeFiles:
   - lib/market-atproto/deno.json
-observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
+observedCommit: 857b94a22ea058825611b4f155cdc639e3c0139d
 realizedSpecHash: 7ede8f90bc3d6a8d02160f5815a95b46e2856ce09f85875b025939aea2d9da59
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 275503b01b63b599b8c0cf32be01e45a03ce2b5a1df16f6203e6466ab7fd201b
