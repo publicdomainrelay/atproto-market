@@ -20,7 +20,7 @@ observed:
   treeFiles:
   - hono-bidder/config.json
   - hono-bidder/deno.json
-observedCommit: b807bd49b14ab808f967efc8bd2d2a76bceacb7a
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
 realizedSpecHash: 0654d60dcaa3c8f994b420f8c63756db4aa57a84af9e1feb325e06d8797aa924
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 117e1f5a39ba7b56fe8e6e265f60d22dce9b9d4ca01cc0cadeb6b9cf9f18dcae

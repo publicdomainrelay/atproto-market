@@ -18,7 +18,7 @@ observed:
   - lib/common/market-lexicons/com/fedproxy.ts
   - lib/common/market-lexicons/com/publicdomainrelay.ts
   fingerprint: d748e099091c359f212d9a8b041c18261088319cf96e4b02464cffe131097ca8
-observedCommit: b807bd49b14ab808f967efc8bd2d2a76bceacb7a
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
 realizedSpecHash: 0ffcfb12a924dffe959748a6d8d1c8891c336aaf36dfd8aa8dfa2aa5b997acc8
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: d748e099091c359f212d9a8b041c18261088319cf96e4b02464cffe131097ca8

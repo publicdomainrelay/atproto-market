@@ -49,7 +49,7 @@ observed:
       ): Record<string, unknown>
   treeFiles:
   - lib/common/fedproxy-rbac-common/deno.json
-observedCommit: b807bd49b14ab808f967efc8bd2d2a76bceacb7a
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
 realizedSpecHash: d91a3ce0c8011cdc148d94af95267071bfa1c295e674fc50e3ef5d4493388a4e
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 77502dccc4e5fcc06e8cc141912e8762435a6fe3c000fb51b6d8e7909e501fd7
