@@ -19,7 +19,7 @@ observed:
   - lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/x402.defs.ts
   - lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/x402.ts
   fingerprint: 755beadc1b0bc938bcbce6f5c520321faa5cc33d85b87e21aa822ddc5ab1119d
-observedCommit: 4f1174f584309d08e68d7a1b42a7c61665b1d732
+observedCommit: b807bd49b14ab808f967efc8bd2d2a76bceacb7a
 realizedSpecHash: bea64b9e98380092330e0c8176bd8cd16416942c40343a69547f182303248d4f
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 755beadc1b0bc938bcbce6f5c520321faa5cc33d85b87e21aa822ddc5ab1119d
