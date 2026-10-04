@@ -21,5 +21,5 @@ observed:
   fingerprint: fa7c4f8269cea48b0d1e42cf82b1234e3b5ca2d053a8361b61f054daccaf8cdf
   treeFiles:
   - lib/common/market-lexicons/deno.json
-realizedSpecHash: e7fff21c093c3a98f63dbd5e524bb03c62d82f2a6419651442ecb8d14cb1bb73
+realizedSpecHash: a5a80175244774a44d30d36092dc66c46a581da59793de0bc660f654e81145b3
 syncedFingerprint: fa7c4f8269cea48b0d1e42cf82b1234e3b5ca2d053a8361b61f054daccaf8cdf
