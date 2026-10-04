@@ -87,3 +87,8 @@ spec:
     kind: function
     signature: '(deps: MarketServerDeps, handlers?: MarketFactoryHandlers)'
     file: lib/hono-factory-market-atproto/mod.ts
+codeRefIndex:
+- file:lib/hono-factory-market-atproto/mod.ts mod.ts@lib/hono-factory-market-atproto/mod.ts
+- function:800a02055445c67608223d52523a4f52 createMarketFactory@lib/hono-factory-market-atproto/mod.ts:44
+- interface:8e5a087b65382c18eeeb71bed01f210a MarketFactoryHandlers@lib/hono-factory-market-atproto/mod.ts:35
+- type_alias:7760b83d04c47b7681b47b9d97351064 MarketEnv@lib/hono-factory-market-atproto/mod.ts:29

@@ -115,3 +115,5 @@ spec:
 codeRefIndex:
 - file:lib/hono-factory-requester-xrpc/deno.json deno.json@lib/hono-factory-requester-xrpc/deno.json
 - file:lib/hono-factory-requester-xrpc/mod.ts mod.ts@lib/hono-factory-requester-xrpc/mod.ts
+- function:4adb00e3e75b63bbad98d6f295adf81c createRequesterFactory@lib/hono-factory-requester-xrpc/mod.ts:57
+- interface:24e3920dde2766781bd325714476a696 RequesterFactoryOptions@lib/hono-factory-requester-xrpc/mod.ts:17

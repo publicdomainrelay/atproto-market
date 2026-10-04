@@ -2374,7 +2374,15 @@ system_contexts:
   - id: r.store-port
     level: MUST
   codeRefIndex:
+  - class:6dc897b2ad83f3474c8cc21fa651b5f0 MemoryPlcStore@lib/hono-factory-did-plc-directory/storage/plc-store.ts:17
   - file:lib/hono-factory-did-plc-directory/storage/plc-store.ts plc-store.ts@lib/hono-factory-did-plc-directory/storage/plc-store.ts
+  - interface:86a4aca923e87a6278f374fd01ce9547 PlcStore@lib/hono-factory-did-plc-directory/storage/plc-store.ts:3
+  - method:5effb1ba90cc09ca38b9facc67e0e5e5 MemoryPlcStore.getAuditLog@lib/hono-factory-did-plc-directory/storage/plc-store.ts:26
+  - method:8b706b26d2ae998889c6d053a48c7fe3 MemoryPlcStore.nullifyOps@lib/hono-factory-did-plc-directory/storage/plc-store.ts:45
+  - method:b7635d15869a1ecb4b58b9cef42809a8 MemoryPlcStore.getOpByCid@lib/hono-factory-did-plc-directory/storage/plc-store.ts:30
+  - method:b796dec3c2dab2f5c026e954e2799299 MemoryPlcStore.insertOp@lib/hono-factory-did-plc-directory/storage/plc-store.ts:36
+  - method:b8ee53ece42a3057f7a82bf6033b7ab5 MemoryPlcStore.exportLogs@lib/hono-factory-did-plc-directory/storage/plc-store.ts:56
+  - method:f3ed83fb406ac57043fa578dc7d44e12 MemoryPlcStore.getCurrentOps@lib/hono-factory-did-plc-directory/storage/plc-store.ts:20
 - id: sc.lib-hono-factory-market-atproto
   name: lib-hono-factory-market-atproto
   spec: specs/lib-hono-factory-market-atproto.yaml
@@ -2396,6 +2404,11 @@ system_contexts:
     level: MUST
   - id: r.verify-route
     level: MUST
+  codeRefIndex:
+  - file:lib/hono-factory-market-atproto/mod.ts mod.ts@lib/hono-factory-market-atproto/mod.ts
+  - function:800a02055445c67608223d52523a4f52 createMarketFactory@lib/hono-factory-market-atproto/mod.ts:44
+  - interface:8e5a087b65382c18eeeb71bed01f210a MarketFactoryHandlers@lib/hono-factory-market-atproto/mod.ts:35
+  - type_alias:7760b83d04c47b7681b47b9d97351064 MarketEnv@lib/hono-factory-market-atproto/mod.ts:29
 - id: sc.lib-hono-factory-market-settlement-free
   name: lib-hono-factory-market-settlement-free
   spec: specs/lib-hono-factory-market-settlement-free.yaml
@@ -2426,6 +2439,9 @@ system_contexts:
   codeRefIndex:
   - file:lib/hono-factory-market-settlement-free/deno.json deno.json@lib/hono-factory-market-settlement-free/deno.json
   - file:lib/hono-factory-market-settlement-free/mod.ts mod.ts@lib/hono-factory-market-settlement-free/mod.ts
+  - function:7bbe9c9808ae3467009f796d9d61f7a7 createFreeSettlementFactory@lib/hono-factory-market-settlement-free/mod.ts:28
+  - interface:d9c1f785121068db886f45f3e476e730 FreeSettlementConfig@lib/hono-factory-market-settlement-free/mod.ts:18
+  - type_alias:259f1f8ce12ab1cae693c13fa0c86028 FreeSettlementEnv@lib/hono-factory-market-settlement-free/mod.ts:11
 - id: sc.lib-hono-factory-market-settlement-x402
   name: lib-hono-factory-market-settlement-x402
   spec: specs/lib-hono-factory-market-settlement-x402.yaml
@@ -2453,6 +2469,9 @@ system_contexts:
     level: MUST
   codeRefIndex:
   - file:lib/hono-factory-market-settlement-x402/mod.ts mod.ts@lib/hono-factory-market-settlement-x402/mod.ts
+  - function:78e258a8c5323f8774599a9e9adf6dad createX402SettlementFactory@lib/hono-factory-market-settlement-x402/mod.ts:30
+  - interface:689a63cbfa61ba7bfe171e76eeea36d4 X402SettlementConfig@lib/hono-factory-market-settlement-x402/mod.ts:19
+  - type_alias:aed7d5829498218c0606453c9468be76 X402SettlementEnv@lib/hono-factory-market-settlement-x402/mod.ts:12
 - id: sc.lib-hono-factory-requester-xrpc
   name: lib-hono-factory-requester-xrpc
   spec: specs/lib-hono-factory-requester-xrpc.yaml
@@ -2483,6 +2502,8 @@ system_contexts:
   codeRefIndex:
   - file:lib/hono-factory-requester-xrpc/deno.json deno.json@lib/hono-factory-requester-xrpc/deno.json
   - file:lib/hono-factory-requester-xrpc/mod.ts mod.ts@lib/hono-factory-requester-xrpc/mod.ts
+  - function:4adb00e3e75b63bbad98d6f295adf81c createRequesterFactory@lib/hono-factory-requester-xrpc/mod.ts:57
+  - interface:24e3920dde2766781bd325714476a696 RequesterFactoryOptions@lib/hono-factory-requester-xrpc/mod.ts:17
 - id: sc.lib-hono-factory-secrets-oidc
   name: lib-hono-factory-secrets-oidc
   spec: specs/lib-hono-factory-secrets-oidc.yaml

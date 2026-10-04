@@ -1,17 +1,41 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: 9dce1b6a546cbb6d761e7561d54880cf8ca3a8531e086b9a1d6ff1b6c06f733d
+realizedSpecHash: d16febece93c5fea29468d14b51e19d0c6b3060058b2edeb631bc275313ecae9
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'missing: X402SettlementConfig, X402SettlementEnv, createX402SettlementFactory;
-    unresolved: r.config-optional-overrides: function:78e258a8c5323f8774599a9e9adf6dad,
-    r.config-optional-overrides: interface:689a63cbfa61ba7bfe171e76eeea36d4, r.config-required-dependencies:
-    file:lib/hono-factory-market-settlement-x402/mod.ts, r.env-variables: type_alias:aed7d5829498218c0606453c9468be76'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
-  reason: NotSyncedYet
-  message: no synced fingerprint has been recorded yet
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed
   message: the spec passes the validator
-observed: {}
+observed:
+  files:
+  - lib/hono-factory-market-settlement-x402/mod.ts
+  treeFiles:
+  - lib/hono-factory-market-settlement-x402/deno.json
+  interfaces:
+  - name: X402SettlementEnv
+    kind: type_alias
+    file: lib/hono-factory-market-settlement-x402/mod.ts
+    line: 12
+    codegraphId: type_alias:aed7d5829498218c0606453c9468be76
+  - name: X402SettlementConfig
+    kind: interface
+    file: lib/hono-factory-market-settlement-x402/mod.ts
+    line: 19
+    codegraphId: interface:689a63cbfa61ba7bfe171e76eeea36d4
+  - name: createX402SettlementFactory
+    kind: function
+    signature: '(config: X402SettlementConfig)'
+    file: lib/hono-factory-market-settlement-x402/mod.ts
+    line: 30
+    codegraphId: function:78e258a8c5323f8774599a9e9adf6dad
+  fingerprint: 9dce1b6a546cbb6d761e7561d54880cf8ca3a8531e086b9a1d6ff1b6c06f733d

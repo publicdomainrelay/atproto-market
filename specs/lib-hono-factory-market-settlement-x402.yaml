@@ -104,3 +104,6 @@ spec:
     file: lib/hono-factory-market-settlement-x402/mod.ts
 codeRefIndex:
 - file:lib/hono-factory-market-settlement-x402/mod.ts mod.ts@lib/hono-factory-market-settlement-x402/mod.ts
+- function:78e258a8c5323f8774599a9e9adf6dad createX402SettlementFactory@lib/hono-factory-market-settlement-x402/mod.ts:30
+- interface:689a63cbfa61ba7bfe171e76eeea36d4 X402SettlementConfig@lib/hono-factory-market-settlement-x402/mod.ts:19
+- type_alias:aed7d5829498218c0606453c9468be76 X402SettlementEnv@lib/hono-factory-market-settlement-x402/mod.ts:12
