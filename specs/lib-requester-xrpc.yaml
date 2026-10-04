@@ -117,10 +117,33 @@ spec:
       report can point the contract at an iroh endpoint of its own; an impostor endpoint
       cannot complete ssh publickey auth (it does not hold the guest''s host key and
       the requester''s key is authorized only on the real guest), but it can observe
-      the requester''s own ssh session. Closing that needs a guest-held credential
-      the cloud-init cannot carry (the workload-identity / secrets-capability channel);
-      it is a stated gap, not a claim of authentication, and it must be named in the
-      pull request and in the requirement text, not hidden.'
+      the requester''s own ssh session. That race is closed by r.iroh-report-workload-identity,
+      which makes the handler authenticate the reporter; this requirement owns the
+      route, the single-report rule and the no-credential-in-cloud-config rule that
+      the authentication must keep.'
+    codeRefs:
+    - file:lib/requester-xrpc/mod.ts
+  - id: r.iroh-report-workload-identity
+    level: MUST
+    text: 'POST /v1/on-network must authenticate the reporter by its guest workload
+      identity before it settles the SSH wait, so a reader of the public contract
+      records cannot race the real guest with an iroh endpoint of its own. The guest
+      sends `Authorization: Bearer <token>` where the token is the exchanged workload-identity
+      token the winning provider mints for that droplet -- the same exchange the secrets
+      module performs, from the provisioning token named by the accept bundle''s bid_config
+      against the provider''s /v1/oidc/issue. The requester must fail closed with
+      401 when the header is missing or the token does not verify: it resolves the
+      winning bid''s bid_config with the record resolver the flow already uses, and
+      requires the token''s issuer to equal that bid_config''s issuer_uri, its audience
+      to equal the audience this contract requested, and its subject to name this
+      contract''s requester (the provider tag-derived subject, matched the way the
+      secrets grant is derived). Verification must go through the provider''s published
+      JWKS with the injected fetch, as createSecretsAuthorizer does, so a local dispatcher
+      or test fetch is honoured. No credential may be baked into the cloud-config:
+      the composed user_data is published inside the compute.vm record, so the token
+      the guest presents must be minted by the provider at boot, never written into
+      user_data. A report that carries no valid token must leave every contract''s
+      SSH wait unsettled and must not replace an already settled ticket.'
     codeRefs:
     - file:lib/requester-xrpc/mod.ts
   - id: r.iroh-ticket-onnetwork

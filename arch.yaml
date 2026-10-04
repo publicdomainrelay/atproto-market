@@ -776,6 +776,8 @@ system_contexts:
     level: MUST
   - id: r.iroh-module-installs-sshd
     level: MUST
+  - id: r.iroh-report-carries-workload-token
+    level: MUST
   - id: r.iroh-secret-persisted
     level: MUST
   - id: r.iroh-ticket-file
@@ -783,6 +785,8 @@ system_contexts:
   - id: r.iroh-ticket-report
     level: MUST
   - id: r.iroh-transport-module
+    level: MUST
+  - id: r.iroh-unit-runs-under-container-shim
     level: MUST
   - id: r.merge-precedence
     level: MUST
@@ -2974,6 +2978,8 @@ system_contexts:
     level: MUST
   - id: r.iroh-report-endpoint
     level: MUST
+  - id: r.iroh-report-workload-identity
+    level: MUST
   - id: r.iroh-ticket-onnetwork
     level: MUST
   - id: r.keypair-generation
@@ -3214,6 +3220,8 @@ system_contexts:
   - id: r.ca-cert-https-mode
     level: SHOULD
   - id: r.cloud-init-iroh-snapshot
+    level: MUST
+  - id: r.container-harness-proves-live-ssh-over-iroh
     level: MUST
   - id: r.container-harness-relay-resolves-did-keys
     level: MUST

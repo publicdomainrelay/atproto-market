@@ -1,0 +1,18 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-common-cloud-init-common-s2c-df0f09183975
+  namespace: default
+spec:
+  systemContext: lib-common-cloud-init-common
+  direction: SpecToCode
+  fromSpecHash: 0c1bd2c5dcde6bfcb503dac4cb3d700db7ab6a4cd1e2fbc63e300251371773c4
+  toSpecHash: df0f091839755ce20c9e89dcd430211ed6a2bc1fca3c3bedeb7532a84c508e5b
+  delta:
+    counts:
+      added: 2
+    requirements:
+    - +r.iroh-report-carries-workload-token
+    - +r.iroh-unit-runs-under-container-shim
+status:
+  phase: Pending

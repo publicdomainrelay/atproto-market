@@ -130,6 +130,23 @@ spec:
       installing it leaves the guest with no sshd at all and the transport dead.
     codeRefs:
     - file:lib/common/cloud-init-common/mod.ts
+  - id: r.iroh-report-carries-workload-token
+    level: MUST
+    text: 'The iroh module''s report POST must carry the guest''s workload-identity
+      token so the requester can authenticate it (r.iroh-report-workload-identity
+      in the lib-requester-xrpc context). The report script must mint that token itself,
+      because the secrets capability may not be enabled for the contract: it reads
+      the bid_config out of the accept bundle the bidder injected at /root/secrets/publicdomainrelay.com/market/accept.json,
+      reads the provider-provisioned workload token at that bid_config''s token_path,
+      exchanges it at the provider issuer''s url_route (default /v1/oidc/issue) exactly
+      as the secrets module does -- posting the subject it read out of the provisioning
+      token so the exchanged token keeps the same identity -- and sends the result
+      as `Authorization: Bearer <token>` on the POST to ctx.irohReportUrl. When the
+      exchange fails the script must keep retrying with backoff inside its existing
+      attempt loop and must never send an unauthenticated report, and it must still
+      never write the token into the cloud-config or into any record.'
+    codeRefs:
+    - file:lib/common/cloud-init-common/mod.ts
   - id: r.iroh-secret-persisted
     level: MUST
     text: '''The listener must have a stable iroh identity across restarts: a 32-byte
@@ -191,6 +208,25 @@ spec:
       from ctx.sshAuthorizedKey with owner root:root mode 0600 and an sshd drop-in
       enabling key-only root login (PermitRootLogin prohibit-password, PasswordAuthentication
       no), matching the tunnel module''s hardening.'
+    codeRefs:
+    - file:lib/common/cloud-init-common/mod.ts
+  - id: r.iroh-unit-runs-under-container-shim
+    level: MUST
+    text: 'The iroh listener unit must start and report its ticket under the container-mode
+      systemctl shim the local compute provider installs, not only under real systemd.
+      The shim runs a unit''s ExecStart through bash without re-quoting it, so an
+      ExecStart that embeds quotes (`/bin/sh -c ''set -a; . /root/secrets/iroh.env;
+      exec ...''`) fails with `unexpected EOF while looking for matching quote` and
+      the listener never starts; the ExecStart must therefore be a bare path to a
+      helper script that sources /root/secrets/iroh.env itself. The shim also ignores
+      StandardOutput=append: (it pipes the child''s streams to its own stdout) and
+      implements neither ExecStartPost nor the append-redirect, so the log the ticket
+      is extracted from must be written by that script''s own redirection, and the
+      ticket extraction and the report POST must be launched by that same script before
+      it execs dumbpipe, instead of by ExecStartPost. Real systemd runs the identical
+      script, so one unit satisfies both. A module that only satisfies real systemd
+      leaves the guest with no ticket and no report under container mode, which is
+      the mode the repository''s live acceptance runs in.'
     codeRefs:
     - file:lib/common/cloud-init-common/mod.ts
   - id: r.merge-precedence

@@ -1,0 +1,19 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-requester-xrpc-s2c-8f789cbecc7a
+  namespace: default
+spec:
+  systemContext: lib-requester-xrpc
+  direction: SpecToCode
+  fromSpecHash: 872232766d1c38505af179745be8e55d16189450b2130244cf062276e200ce81
+  toSpecHash: 8f789cbecc7ab31133822e5074ef878467d3550945ecf51290b4bf79d7840a31
+  delta:
+    counts:
+      added: 1
+      changed: 1
+    requirements:
+    - +r.iroh-report-workload-identity
+    - ~r.iroh-report-endpoint
+status:
+  phase: Pending

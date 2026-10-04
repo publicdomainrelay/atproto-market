@@ -46,6 +46,32 @@ spec:
       `deno check`.'
     codeRefs:
     - file:test/cloud_init_snapshot_test.ts
+  - id: r.container-harness-proves-live-ssh-over-iroh
+    level: MUST
+    text: 'test/bidder_container_integration_test.ts must prove the live SSH path,
+      not only bid collection: it must run runComputeContract with skipSsh false and
+      await the whole contract, with no Promise.race cap that lets the test fall through
+      to its cleanup while the flow is still running. Every service -- dispatcher,
+      requester serve, bidder and provider -- must stay alive until the contract returns.
+      Tearing them down while the bidder is still provisioning aborts the in-flight
+      record resolves and surfaces as `TypeError: fetch failed` in the bidder; that
+      is a teardown race in this test and not a provisioning failure, and it is proven
+      to be one: with the same harness and the teardown held for 30 s the container-mode
+      provider provisions a guest, reaches sshd in under 3 s and the guest reaches
+      POST /v1/on-network. The harness must assert result.sshReady === true and result.sshExitCode
+      === 0 for an execProgram whose exit code only succeeds inside the real guest
+      (it must both echo a marker and test for the file the guest cloud-init installs,
+      e.g. `test -x /usr/local/bin/dumbpipe && echo SSH_OK_VIA_IROH`), so a green
+      run proves the whole chain: RFP -> bid -> accept -> cloud-init installs dumbpipe
+      in the guest -> the guest reports its ticket to the requester''s per-contract
+      endpoint -> ssh with ProxyCommand `dumbpipe connect <ticket>` runs the command
+      in the guest. The harness must give the requester an ingress host the container
+      can actually dial and give the provider the guest TLS port and CA certificate,
+      the same gateway-reachable wiring the cross-platform and OAuth suites already
+      use, because the report endpoint URL is baked into the cloud-config the guest
+      runs.'
+    codeRefs:
+    - file:test/bidder_container_integration_test.ts
   - id: r.container-harness-relay-resolves-did-keys
     level: MUST
     text: 'test/bidder_container_integration_test.ts is the repository''s canonical
