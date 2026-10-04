@@ -1,0 +1,38 @@
+conditions:
+- message: 'undeclared: BadgeBlueKeysOperatorDiscoveryOpts, ListedRecord, createBadgeBlueKeysOperatorDiscovery'
+  reason: InterfacesMissing
+  status: "False"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/operator-discovery-badge-blue-keys/mod.ts
+  fingerprint: fa8e9debd81599bb4b301a537e322a66d6dd7e88976705ac4f3cfeebad18b73d
+  interfaces:
+  - codegraphId: interface:b712ea6968624576e21a143e7622a253
+    file: lib/operator-discovery-badge-blue-keys/mod.ts
+    kind: interface
+    line: 4
+    name: ListedRecord
+  - codegraphId: interface:2f571f7e3c998ccd8befe1bbae9ccb85
+    file: lib/operator-discovery-badge-blue-keys/mod.ts
+    kind: interface
+    line: 9
+    name: BadgeBlueKeysOperatorDiscoveryOpts
+  - codegraphId: function:dc1f27a14a62ce61d3668e393e355f72
+    file: lib/operator-discovery-badge-blue-keys/mod.ts
+    kind: function
+    line: 15
+    name: createBadgeBlueKeysOperatorDiscovery
+    signature: '(opts: BadgeBlueKeysOperatorDiscoveryOpts): OperatorDiscovery'
+  treeFiles:
+  - lib/operator-discovery-badge-blue-keys/deno.json
+realizedSpecHash: 9a5e919e46a1d3c91496f62f639bfb4bda9e44dde02e51f66182ab5cb5cb676c
+syncedFingerprint: fa8e9debd81599bb4b301a537e322a66d6dd7e88976705ac4f3cfeebad18b73d

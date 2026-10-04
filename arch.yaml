@@ -1059,3 +1059,39 @@ system_contexts:
   id: sc.lib-market-settlement-x402
   name: lib-market-settlement-x402
   upstream: self
+- code:
+  - lib/operator-discovery-badge-blue-keys/mod.ts
+  codeRefIndex:
+  - file:lib/operator-discovery-badge-blue-keys/mod.ts mod.ts@lib/operator-discovery-badge-blue-keys/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-operator-discovery-badge-blue-keys
+  name: lib-operator-discovery-badge-blue-keys
+  upstream: self
+- code:
+  - lib/requester-xrpc/mod.ts
+  codeRefIndex:
+  - file:lib/requester-xrpc/mod.ts mod.ts@lib/requester-xrpc/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-requester-xrpc
+  name: lib-requester-xrpc
+  upstream: self
+- code:
+  - lib/secrets-oidc/mod.ts
+  codeRefIndex:
+  - file:lib/secrets-oidc/mod.ts mod.ts@lib/secrets-oidc/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-secrets-oidc
+  name: lib-secrets-oidc
+  upstream: self
+- code:
+  - lib/trust-graph-bsky-mutuals/mod.ts
+  codeRefIndex:
+  - file:lib/trust-graph-bsky-mutuals/mod.ts mod.ts@lib/trust-graph-bsky-mutuals/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-trust-graph-bsky-mutuals
+  name: lib-trust-graph-bsky-mutuals
+  upstream: self

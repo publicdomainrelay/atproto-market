@@ -1,0 +1,12 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/requester-xrpc/mod.ts mod.ts@lib/requester-xrpc/mod.ts
+kind: SystemContext
+metadata:
+  name: lib-requester-xrpc
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

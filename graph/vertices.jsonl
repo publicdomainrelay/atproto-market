@@ -234,6 +234,10 @@
 {"codegraphId":"file:lib/market-settlement-x402/client.ts","display":"client.ts@lib/market-settlement-x402/client.ts","filePath":"lib/market-settlement-x402/client.ts","id":6967153058037663,"kind":"file","label":"CodeRef","line":0,"name":"client.ts","scope":""}
 {"codegraphId":"file:lib/market-settlement-x402/mod.ts","display":"mod.ts@lib/market-settlement-x402/mod.ts","filePath":"lib/market-settlement-x402/mod.ts","id":8179275853539744,"kind":"file","label":"CodeRef","line":0,"name":"mod.ts","scope":""}
 {"codegraphId":"file:lib/market-settlement-x402/server.ts","display":"server.ts@lib/market-settlement-x402/server.ts","filePath":"lib/market-settlement-x402/server.ts","id":2971307469106515,"kind":"file","label":"CodeRef","line":0,"name":"server.ts","scope":""}
+{"codegraphId":"file:lib/operator-discovery-badge-blue-keys/mod.ts","display":"mod.ts@lib/operator-discovery-badge-blue-keys/mod.ts","filePath":"lib/operator-discovery-badge-blue-keys/mod.ts","id":1446224312386194,"kind":"file","label":"CodeRef","line":0,"name":"mod.ts","scope":""}
+{"codegraphId":"file:lib/requester-xrpc/mod.ts","display":"mod.ts@lib/requester-xrpc/mod.ts","filePath":"lib/requester-xrpc/mod.ts","id":1088007207900889,"kind":"file","label":"CodeRef","line":0,"name":"mod.ts","scope":""}
+{"codegraphId":"file:lib/secrets-oidc/mod.ts","display":"mod.ts@lib/secrets-oidc/mod.ts","filePath":"lib/secrets-oidc/mod.ts","id":131001220521692,"kind":"file","label":"CodeRef","line":0,"name":"mod.ts","scope":""}
+{"codegraphId":"file:lib/trust-graph-bsky-mutuals/mod.ts","display":"mod.ts@lib/trust-graph-bsky-mutuals/mod.ts","filePath":"lib/trust-graph-bsky-mutuals/mod.ts","id":1346891306202680,"kind":"file","label":"CodeRef","line":0,"name":"mod.ts","scope":""}
 {"id":1066856006091469,"intent":"","label":"SpecContext","name":"lib-hono-factory-secrets-oidc","repo":"atproto-market","scope":"","specHash":"246c9b72f01ee1aeeae2f2af286394483a772f8c7dd0b7a5422f10d705c4c1ca"}
 {"id":1181831651923261,"label":"SpecRepo","name":"atproto-market","path":"","scope":""}
 {"id":1457061499984214,"intent":"","label":"SpecContext","name":"lib-common-market-lexicons-com-publicdomainrelay-temp-market-policies","repo":"atproto-market","scope":"","specHash":"4dc823ca094790d255f684b9e9f91a96a98ca42bd8f4fb6ba0af8f165e170532"}
@@ -257,6 +261,7 @@
 {"id":3396870281784597,"intent":"","label":"SpecContext","name":"lib-did-plc","repo":"atproto-market","scope":"","specHash":"7ea5774c71256d8a76d780a29c4287ee957dfc6b1a3bac192c207e32448ea927"}
 {"id":358493737753156,"intent":"","label":"SpecContext","name":"lib-common-market-lexicons-com-publicdomainrelay-temp-tangled-spindle","repo":"atproto-market","scope":"","specHash":"ac05dc90e2a1cf6cf7bd50efccbb2f0833439bafe6fd2910da1c6446c5fee154"}
 {"id":3615486014532233,"intent":"","label":"SpecContext","name":"lib-common-compute-contract-gateway-common","repo":"atproto-market","scope":"","specHash":"0b2316bc8222b078b8ce521db86c215f4f2f037434c66e1b2fccb656eba87a70"}
+{"id":3675039875728927,"intent":"","label":"SpecContext","name":"lib-operator-discovery-badge-blue-keys","repo":"atproto-market","scope":"","specHash":"9a5e919e46a1d3c91496f62f639bfb4bda9e44dde02e51f66182ab5cb5cb676c"}
 {"id":3797556395831465,"intent":"","label":"SpecContext","name":"lib-did-plc-generated","repo":"atproto-market","scope":"","specHash":"778b74d15d6b37e5a052e4ed17920621e6102a884dba9d82a4af17d16efd37e3"}
 {"id":3945255175948497,"intent":"","label":"SpecContext","name":"lib-common-market-lexicons-com-publicdomainrelay-temp-market","repo":"atproto-market","scope":"","specHash":"af6eaf2e308f44273b451288a1981117f4024f54d6862a4fdcf2afa6b7a2e490"}
 {"id":4106738160514893,"intent":"","label":"SpecContext","name":"hono-bidder","repo":"atproto-market","scope":"","specHash":"f6d7d52e26dedd3d0ca86a803a83f8bdd954c9670671c8aec0d0223bdf21c2c9"}
@@ -274,9 +279,11 @@
 {"id":5503551285742995,"intent":"","label":"SpecContext","name":"lib-hono-factory-did-plc-directory","repo":"atproto-market","scope":"","specHash":"24bd293da611505b93f10f97e041152385e897428e3778465ebb50a7877d92d2"}
 {"id":5649186899115581,"intent":"","label":"SpecContext","name":"lib-hono-factory-market-settlement-free","repo":"atproto-market","scope":"","specHash":"29df741f7f5c0045e8706b1a03d7f912f0889cf0fe35edc0b9e05d4a449119cf"}
 {"id":5775578304546702,"intent":"","label":"SpecContext","name":"lib-common-market-lexicons-com","repo":"atproto-market","scope":"","specHash":"4ea4eb6f3116f9d3b9e029133cb49c2b12823b8a09400024e7a2f68430af12b5"}
+{"id":5790609217632597,"intent":"","label":"SpecContext","name":"lib-secrets-oidc","repo":"atproto-market","scope":"","specHash":"78613143d850d8d4f8df8d4ca2f36646d6327e7ee68723d152045b94008f1577"}
 {"id":5966702940280445,"intent":"","label":"SpecContext","name":"lib-market-bidder-compute","repo":"atproto-market","scope":"","specHash":"269fa441be17d29da7e0d774e546fdf5448c71c5791f03433fe62239ca2713ac"}
 {"id":6037427264948458,"intent":"","label":"SpecContext","name":"lib-atproto-attestation-port","repo":"atproto-market","scope":"","specHash":"47fdb2fdc2332f4e9e01b34e0d818ad5e01a13ab888a2ba6af7e52e53097601f"}
 {"id":6060660080246234,"intent":"","label":"SpecContext","name":"lib-common-market-lexicons","repo":"atproto-market","scope":"","specHash":"e7fff21c093c3a98f63dbd5e524bb03c62d82f2a6419651442ecb8d14cb1bb73"}
+{"id":6127922798858046,"intent":"","label":"SpecContext","name":"lib-requester-xrpc","repo":"atproto-market","scope":"","specHash":"be37a6bbaa00d9ff7d2b33f6c5f9288f7312b76df10a95a46cd751728fb3c866"}
 {"id":6249593236567540,"intent":"","label":"SpecContext","name":"lib-common-market-lexicons-network-attested","repo":"atproto-market","scope":"","specHash":"c5b1bc32532a885c3ebaf0256187a0fba8338eb76da4fe42f6f38d6a167fce2d"}
 {"id":6258308066670628,"intent":"","label":"SpecContext","name":"lib-common-market-lexicons-com-fedproxy","repo":"atproto-market","scope":"","specHash":"83624b14a532f04b79ec13345db0af23f889fb99f0af87abc7a930caf4be560a"}
 {"id":6282532221404159,"intent":"","label":"SpecContext","name":"lib-hono-factory-did-plc-directory-storage","repo":"atproto-market","scope":"","specHash":"30953bac1874a30eec0ca50271177d6738ae72dc190e0acf1c16b54e654cbaab"}
@@ -306,4 +313,5 @@
 {"id":8655963705235641,"intent":"","label":"SpecContext","name":"lib-atproto-helpers","repo":"atproto-market","scope":"","specHash":"78f58f32af8545571186239ea6cf9219f7ad349a4c9c98e9406cf1afa06a7a9b"}
 {"id":8712198616041934,"intent":"","label":"SpecContext","name":"lib-abc-compute-contract-gateway","repo":"atproto-market","scope":"","specHash":"e69c49e3b106f7e787823b96c0c3b0ac0e301d8c16aaf55f24d1400cf57f72b5"}
 {"id":8713425276845626,"intent":"","label":"SpecContext","name":"lib-common-market-lexicons-com-publicdomainrelay-temp-compute","repo":"atproto-market","scope":"","specHash":"8519aef70b077b3a7e8cfad9611cc666c12d59797f2263001ce59ef7d25ea8a9"}
+{"id":8767444694605629,"intent":"","label":"SpecContext","name":"lib-trust-graph-bsky-mutuals","repo":"atproto-market","scope":"","specHash":"f0f1a8327d74a1485b5744c7cc61b9e23a0d80199f99d22092ee7674aa1eb222"}
 {"id":8873082579250502,"intent":"","label":"SpecContext","name":"lib-delegated-trust-badge-blue-keys","repo":"atproto-market","scope":"","specHash":"fce4da8a60e422551f4cc65fc0728116eb7d76154426fc62a770590e51962507"}

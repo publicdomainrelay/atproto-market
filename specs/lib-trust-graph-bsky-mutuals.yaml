@@ -1,0 +1,12 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/trust-graph-bsky-mutuals/mod.ts mod.ts@lib/trust-graph-bsky-mutuals/mod.ts
+kind: SystemContext
+metadata:
+  name: lib-trust-graph-bsky-mutuals
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self
