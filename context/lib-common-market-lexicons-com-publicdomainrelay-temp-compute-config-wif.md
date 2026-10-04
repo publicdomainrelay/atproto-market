@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+The context exists so the market can describe, validate, and construct WIF simple-config records that a requester writes to obtain a workload-identity token the provider's RBAC will accept. It fixes the on-record field names, which fields are required versus optional, and the `tid` record-key policy, so any code reading or writing this config agrees on one schema. It depends on the parent `sc.atproto-market` context, and the definitions are upstream-generated rather than authored here.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 
