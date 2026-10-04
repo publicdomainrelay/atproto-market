@@ -22,7 +22,7 @@ observed:
   - request-vm-ssh/README.md
   - request-vm-ssh/config.json
   - request-vm-ssh/deno.json
-observedCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
+observedCommit: 4f1174f584309d08e68d7a1b42a7c61665b1d732
 realizedSpecHash: d2a673493193432744b0aa2f785835f404b2d638ceacbf01738f3bc0ce05276b
 syncedCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
 syncedFingerprint: ec4d81f79640bb751be4d5f9b5a27db4b327fda8a2a3c779402bf05d7b50f68f
