@@ -15,5 +15,90 @@ metadata:
 spec:
   dependsOn:
   - sc.atproto-market
+  intent: This context exists so the temp market has a canonical, generated, machine-validatable
+    wire definition for the requester's acceptance of a bid, split by pricing model.
+    The requester mints one of these records after a bid wins and passes it by AT-URI
+    plus CID to the endpoint the bid names; the bidder resolves it, checks the embedded
+    signatures, and answers with the matching receipt record, completing the bilateral
+    badge.blue agreement. Keeping the free and x402 variants as separate lexicons
+    keeps the payment-specific settlement path out of the record shape while sharing
+    bid, payload, and signature structure, and generating both through @atproto/lex
+    means the types and runtime validators cannot drift from the published lexicons.
   repository: atproto-market
+  requirements:
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/free.defs.ts
+    id: r.accepts-free-record-shape
+    level: MUST
+    text: The com.publicdomainrelay.temp.market.accepts.free record (Main) must carry
+      a required bid strong reference to the winning com.publicdomainrelay.temp.market.bid,
+      an optional payload strong reference to the bid's terms record, and a required
+      signatures field of AttestedSignature.Signatures; the object schema declared
+      through l.object must list exactly those three keys, with payload wrapped in
+      l.optional and both refs resolved through the RepoStrongRef and AttestedSignature
+      defs modules.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/x402.defs.ts
+    id: r.accepts-x402-record-shape
+    level: MUST
+    text: The com.publicdomainrelay.temp.market.accepts.x402 record (Main) must carry
+      the same three fields as the free variant — a required bid strong reference,
+      an optional payload strong reference, and a required AttestedSignature.Signatures
+      value — so that only the NSID and the payment semantics distinguish accepting
+      a bid's x402 terms from accepting its free terms.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/free.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/x402.ts
+    id: r.barrel-module-default-export
+    level: MUST
+    text: The free.ts and x402.ts modules must re-export everything from their .defs.ts
+      sibling and additionally re-export main as the module default, so the lexicon
+      is importable either as a namespace or as a single default record definition.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/free.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/free.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/x402.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/x402.ts
+    id: r.generated-files-not-hand-edited
+    level: MUST
+    text: All four files must keep the '@atproto/lex' generated-file banner and remain
+      unedited by hand, since they are emitted from the published lexicons and any
+      local change would diverge from the lexicon schema.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/free.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/x402.defs.ts
+    id: r.generated-validator-surface
+    level: MUST
+    text: Each defs module must export main together with the validator helpers bound
+      to it ($isTypeOf, $build, $assert, $check, $cast, $ifMatches, $matches, $parse,
+      $safeParse, $validate, $safeValidate) so callers can build, parse, and validate
+      acceptance records at runtime without reimplementing schema checks.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/free.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/x402.defs.ts
+    id: r.nsid-and-tid-keying
+    level: MUST
+    text: Each module must fix its own $nsid ('com.publicdomainrelay.temp.market.accepts.free'
+      and 'com.publicdomainrelay.temp.market.accepts.x402') and build the record with
+      key 'tid' via l.record, and must export $type as that NSID so the record's $type
+      discriminator matches the lexicon id.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/free.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/x402.defs.ts
+    id: r.settlement-handoff-semantics
+    level: MUST
+    text: The doc comments must record that the acceptance is minted before settling
+      and is handed to the bidder by AT-URI plus CID — the free record to the grant
+      endpoint named in the bids.free url, the x402 record to the x402 GET endpoint
+      named in the bids.x402 url — where the bidder resolves it and mints the matching
+      receipt.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/free.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/x402.defs.ts
+    id: r.signatures-bilateral-requirement
+    level: MUST
+    text: The signatures field must be documented and typed as badge.blue attestations
+      over the acceptance that include the requester's inline signature attached at
+      creation time, with the bidder's receipts.free (free variant) or receipts.x402
+      (x402 variant) remote attestation completing the bilateral agreement.
   upstream: self
