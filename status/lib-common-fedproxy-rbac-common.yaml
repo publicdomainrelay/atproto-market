@@ -1,7 +1,8 @@
 conditions:
-- message: 'undeclared: SshKeyRbacContext, buildSshKeyRbacRecord, didPlcKey, renderSubject'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -48,5 +49,5 @@ observed:
       ): Record<string, unknown>
   treeFiles:
   - lib/common/fedproxy-rbac-common/deno.json
-realizedSpecHash: 9b1be28e42830a302a949fffcbeb0d1f00564aae134bda5c9cfe90df5e5779f0
+realizedSpecHash: d91a3ce0c8011cdc148d94af95267071bfa1c295e674fc50e3ef5d4493388a4e
 syncedFingerprint: 77502dccc4e5fcc06e8cc141912e8762435a6fe3c000fb51b6d8e7909e501fd7

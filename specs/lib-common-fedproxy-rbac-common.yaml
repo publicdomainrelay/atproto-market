@@ -1,6 +1,10 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
 codeRefIndex:
 - file:lib/common/fedproxy-rbac-common/mod.ts mod.ts@lib/common/fedproxy-rbac-common/mod.ts
+- function:a98ccef775e425fa7c13add3016e54f5 renderSubject@lib/common/fedproxy-rbac-common/mod.ts:16
+- function:aac738c94c8e2dfa2a0ff4c0e8d5c018 buildSshKeyRbacRecord@lib/common/fedproxy-rbac-common/mod.ts:26
+- function:e5377f0a379eb596837b1526cd73134c didPlcKey@lib/common/fedproxy-rbac-common/mod.ts:12
+- interface:967a594352d4c9b86213f54d84909966 SshKeyRbacContext@lib/common/fedproxy-rbac-common/mod.ts:4
 kind: SystemContext
 metadata:
   name: lib-common-fedproxy-rbac-common
@@ -8,5 +12,110 @@ metadata:
 spec:
   dependsOn:
   - sc.atproto-market
+  intent: 'This context exists so the wire shape of the fedproxy RBAC record and the
+    placeholder semantics it shares with the guest-capability grant derivation are
+    specified in one place, independent of any transport or deployment. It pins down
+    the contract that callers rely on: which fields a context must carry, how a DID
+    is reduced to its PLC key, how a subject template is interpolated, what the default
+    subject template is, and exactly which role, policy, audience, issuer and JSON
+    schema the emitted record must contain. Because both the fedproxy RBAC path and
+    lib/abc/guest-capability''s deriveGrantVars must produce matching subjects and
+    audiences for a token to be accepted, the rules here are the single source of
+    truth the two sides are checked against.'
+  interfaces:
+  - file: lib/common/fedproxy-rbac-common/mod.ts
+    kind: interface
+    name: SshKeyRbacContext
+    signature: 'interface SshKeyRbacContext { serviceName: string; issuerUri: string;
+      actx: string; requesterDid: string; subjectTemplate?: string }'
+  - file: lib/common/fedproxy-rbac-common/mod.ts
+    kind: function
+    name: buildSshKeyRbacRecord
+    signature: 'buildSshKeyRbacRecord(ctx: SshKeyRbacContext): Record<string, unknown>'
+  - file: lib/common/fedproxy-rbac-common/mod.ts
+    kind: function
+    name: didPlcKey
+    signature: 'didPlcKey(did: string): string'
+  - file: lib/common/fedproxy-rbac-common/mod.ts
+    kind: function
+    name: renderSubject
+    signature: 'renderSubject(template: string, vars: { actx: string; didPlcKey: string;
+      role: string }): string'
   repository: atproto-market
+  requirements:
+  - codeRefs:
+    - function:aac738c94c8e2dfa2a0ff4c0e8d5c018
+    - interface:967a594352d4c9b86213f54d84909966
+    id: r.context-fields
+    level: MUST
+    text: A caller supplying an SshKeyRbacContext must provide serviceName, issuerUri,
+      actx and requesterDid; subjectTemplate is optional and its absence selects the
+      default subject template rather than producing an error or an empty subject.
+  - codeRefs:
+    - function:a98ccef775e425fa7c13add3016e54f5
+    - function:aac738c94c8e2dfa2a0ff4c0e8d5c018
+    id: r.default-subject-template
+    level: MUST
+    text: buildSshKeyRbacRecord renders the subject from ctx.subjectTemplate when
+      it is set, and otherwise falls back to the default template "actx:{actx}:plc:{did-plc-key}:role:{role}";
+      the interpolation variables are actx from the context, the PLC key of the requester
+      DID, and role set to serviceName.
+  - codeRefs:
+    - file:lib/common/fedproxy-rbac-common/mod.ts
+    - function:e5377f0a379eb596837b1526cd73134c
+    id: r.did-plc-key-strip
+    level: MUST
+    text: didPlcKey removes a leading "did:plc:" prefix from the given DID and returns
+      the remainder unchanged; a DID without that prefix, or the empty string, is
+      returned as-is.
+  - codeRefs:
+    - function:aac738c94c8e2dfa2a0ff4c0e8d5c018
+    id: r.policy-naming
+    level: MUST
+    text: The policy is keyed by the derived name "<serviceName>-ssh-key-register",
+      and the record's policies map contains that one key pointing at the policy object
+      referenced from the role definition.
+  - codeRefs:
+    - file:lib/common/fedproxy-rbac-common/mod.ts
+    - function:aac738c94c8e2dfa2a0ff4c0e8d5c018
+    id: r.pure-builders
+    level: SHOULD
+    text: The exported builders stay free of I/O and ambient state, deriving the whole
+      record from the context argument alone so a caller can compute and compare records
+      without a network or a running service.
+  - codeRefs:
+    - file:lib/common/fedproxy-rbac-common/mod.ts
+    - function:aac738c94c8e2dfa2a0ff4c0e8d5c018
+    id: r.record-type
+    level: MUST
+    text: buildSshKeyRbacRecord returns a plain Record<string, unknown> whose $type
+      is the fedproxy RBAC NSID constant, so the emitted object is recognisable as
+      a fedproxy RBAC record rather than an arbitrary map.
+  - codeRefs:
+    - function:aac738c94c8e2dfa2a0ff4c0e8d5c018
+    - interface:967a594352d4c9b86213f54d84909966
+    id: r.role-shape
+    level: MUST
+    text: The returned record's roles map holds exactly one entry, keyed by ctx.serviceName,
+      whose role_name is that same service name and whose definition carries aud built
+      as "api://ATProto?actx=<requesterDid>", iss set to ctx.issuerUri, sub set to
+      the rendered subject, and policies listing the single derived policy name.
+  - codeRefs:
+    - file:lib/common/fedproxy-rbac-common/mod.ts
+    - function:aac738c94c8e2dfa2a0ff4c0e8d5c018
+    id: r.ssh-key-register-policy
+    level: MUST
+    text: The policy object marks itself with meta.policy "ssh-key-register" and contributes
+      a JSON schema for /xrpc/com.atproto.repo.createRecord that requires the body's
+      collection to be constrained to the fedproxy SSH key NSID and requires the capability
+      and body properties, so only SSH key record creation is authorised by this record.
+  - codeRefs:
+    - file:lib/common/fedproxy-rbac-common/mod.ts
+    - function:a98ccef775e425fa7c13add3016e54f5
+    id: r.subject-placeholders
+    level: MUST
+    text: renderSubject replaces every occurrence of the literal placeholders {actx},
+      {did-plc-key} and {role} in the given template with vars.actx, vars.didPlcKey
+      and vars.role respectively, applying all three substitutions globally so repeated
+      placeholders are all expanded and no placeholder matching is left behind.
   upstream: self

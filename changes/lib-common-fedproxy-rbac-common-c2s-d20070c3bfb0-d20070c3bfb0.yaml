@@ -10,5 +10,20 @@ spec:
   systemContext: lib-common-fedproxy-rbac-common
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-common-fedproxy-rbac-common
-  phase: Running
+  agentLog: 'lib/common/fedproxy-rbac-common is a single-module Deno/TypeScript package
+    (lib/common/fedproxy-rbac-common/mod.ts, accompanied by a deno.json) that builds
+    the fedproxy RBAC record granting a requester the right to register an SSH key.
+    It exports the SshKeyRbacContext interface (serviceName, issuerUri, actx, requesterDid,
+    optional subjectTemplate) plus three pure helpers: didPlcKey, which strips the
+    leading "did:plc:" from a DID; renderSubject, which substitutes the {actx}, {did-plc-key}
+    and {role} placeholders in a subject template; and buildSshKeyRbacRecord, which
+    turns a context into a plain Record<string, unknown> containing the RBAC $type,
+    a single role keyed by serviceName with an aud of "api://ATProto?actx=<requesterDid>",
+    an iss of issuerUri, the rendered sub and a policy list, plus a policy named "<serviceName>-ssh-key-register"
+    whose meta marks it as the ssh-key-register policy and whose schemas whitelist
+    /xrpc/com.atproto.repo.createRecord for the SSH key collection. The module holds
+    no state and no I/O; the same helpers are consumed downstream by lib/abc/guest-capability.
+    This context therefore documents the shared record-shaping rules that both the
+    guest-capability grant path and the fedproxy RBAC emission path must agree on.'
+  message: wrote 9 requirement(s) and 4 interface(s) for lib-common-fedproxy-rbac-common
+  phase: Succeeded

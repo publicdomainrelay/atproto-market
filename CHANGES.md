@@ -302,6 +302,19 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.vm-request-input` (MUST): "ComputeRequestVMInput carries a VM request: the required computeVm record and sshPublicKey, optional vmReadyTimeoutSec, execProgram, skipSsh and keepVm knobs, and the shared optional policy, policyEngine, extraBidderDids and tokens fields, so VM provisioning parameters travel in one payload alongside the bidder and policy configuration."
 - added `r.worker-request-input` (MUST): "ComputeRequestWorkerInput carries a worker request: the required source and denoJson strings, an optional denoLock, an optional persistent flag that distinguishes the persistent worker path from the ephemeral one, and the same optional policy, policyEngine, extraBidderDids and tokens fields as the VM request."
 
+### lib-common-fedproxy-rbac-common
+
+- intent: "" -> "This context exists so the wire shape of the fedproxy RBAC record and the placeholder semantics it shares with the guest-capability grant derivation are specified in one place, independent of any transport or deployment. It pins down the contract that callers rely on: which fields a context must carry, how a DID is reduced to its PLC key, how a subject template is interpolated, what the default subject template is, and exactly which role, policy, audience, issuer and JSON schema the emitted record must contain. Because both the fedproxy RBAC path and lib/abc/guest-capability's deriveGrantVars must produce matching subjects and audiences for a token to be accepted, the rules here are the single source of truth the two sides are checked against."
+- added `r.context-fields` (MUST): "A caller supplying an SshKeyRbacContext must provide serviceName, issuerUri, actx and requesterDid; subjectTemplate is optional and its absence selects the default subject template rather than producing an error or an empty subject."
+- added `r.default-subject-template` (MUST): "buildSshKeyRbacRecord renders the subject from ctx.subjectTemplate when it is set, and otherwise falls back to the default template "actx:{actx}:plc:{did-plc-key}:role:{role}"; the interpolation variables are actx from the context, the PLC key of the requester DID, and role set to serviceName."
+- added `r.did-plc-key-strip` (MUST): "didPlcKey removes a leading "did:plc:" prefix from the given DID and returns the remainder unchanged; a DID without that prefix, or the empty string, is returned as-is."
+- added `r.policy-naming` (MUST): "The policy is keyed by the derived name "<serviceName>-ssh-key-register", and the record's policies map contains that one key pointing at the policy object referenced from the role definition."
+- added `r.pure-builders` (SHOULD): "The exported builders stay free of I/O and ambient state, deriving the whole record from the context argument alone so a caller can compute and compare records without a network or a running service."
+- added `r.record-type` (MUST): "buildSshKeyRbacRecord returns a plain Record<string, unknown> whose $type is the fedproxy RBAC NSID constant, so the emitted object is recognisable as a fedproxy RBAC record rather than an arbitrary map."
+- added `r.role-shape` (MUST): "The returned record's roles map holds exactly one entry, keyed by ctx.serviceName, whose role_name is that same service name and whose definition carries aud built as "api://ATProto?actx=<requesterDid>", iss set to ctx.issuerUri, sub set to the rendered subject, and policies listing the single derived policy name."
+- added `r.ssh-key-register-policy` (MUST): "The policy object marks itself with meta.policy "ssh-key-register" and contributes a JSON schema for /xrpc/com.atproto.repo.createRecord that requires the body's collection to be constrained to the fedproxy SSH key NSID and requires the capability and body properties, so only SSH key record creation is authorised by this record."
+- added `r.subject-placeholders` (MUST): "renderSubject replaces every occurrence of the literal placeholders {actx}, {did-plc-key} and {role} in the given template with vars.actx, vars.didPlcKey and vars.role respectively, applying all three substitutions globally so repeated placeholders are all expanded and no placeholder matching is left behind."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance |
@@ -324,5 +337,5 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-cocore-api-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-common-cloud-init-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-common-compute-contract-gateway-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-common-fedproxy-rbac-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-common-fedproxy-rbac-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-common-market-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
