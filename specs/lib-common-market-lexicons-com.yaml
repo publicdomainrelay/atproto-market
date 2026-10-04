@@ -1,0 +1,14 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/common/market-lexicons/com/atproto.ts atproto.ts@lib/common/market-lexicons/com/atproto.ts
+- file:lib/common/market-lexicons/com/fedproxy.ts fedproxy.ts@lib/common/market-lexicons/com/fedproxy.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay.ts publicdomainrelay.ts@lib/common/market-lexicons/com/publicdomainrelay.ts
+kind: SystemContext
+metadata:
+  name: lib-common-market-lexicons-com
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

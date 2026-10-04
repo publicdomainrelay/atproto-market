@@ -14,11 +14,14 @@ conditions:
   type: SpecValid
 observed:
   files:
-  - hono-market/mod.ts
-  fingerprint: 902b76f1af18104351565e32a27bcde3ff0879267928ec6adfbb2c4351e903ee
+  - lib/common/market-lexicons/com.ts
+  - lib/common/market-lexicons/mod.ts
+  - lib/common/market-lexicons/network.ts
+  - lib/common/market-lexicons/nsids.ts
+  fingerprint: fa7c4f8269cea48b0d1e42cf82b1234e3b5ca2d053a8361b61f054daccaf8cdf
   treeFiles:
-  - hono-market/deno.json
+  - lib/common/market-lexicons/deno.json
 observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-realizedSpecHash: 6696794cc7f099344e074c3139c027dec8650357f9b7aa0e38d5e1549de46ead
+realizedSpecHash: e7fff21c093c3a98f63dbd5e524bb03c62d82f2a6419651442ecb8d14cb1bb73
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 902b76f1af18104351565e32a27bcde3ff0879267928ec6adfbb2c4351e903ee
+syncedFingerprint: fa7c4f8269cea48b0d1e42cf82b1234e3b5ca2d053a8361b61f054daccaf8cdf

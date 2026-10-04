@@ -56,5 +56,7 @@ observed:
     signature: '(nsid: string, body?: Record<string, unknown>): Promise<unknown>'
   treeFiles:
   - lib/cocore-api/deno.json
+observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 realizedSpecHash: 4db3d140eaab8a7bfa92be1f295cc74485821c55ca6a6c06fac5137b3820f962
+syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 85c3c98e84d99a541d65e2aa64667cf7370f958680a1a68a2e06f40d73abb018

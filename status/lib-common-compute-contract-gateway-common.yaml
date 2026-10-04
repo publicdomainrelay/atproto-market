@@ -67,5 +67,7 @@ observed:
     name: GatewayComputeResponse
   treeFiles:
   - lib/common/compute-contract-gateway-common/deno.json
+observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 realizedSpecHash: 0b2316bc8222b078b8ce521db86c215f4f2f037434c66e1b2fccb656eba87a70
+syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 0e02b84eab965c551878bc155f04e16dc9ce35a7d1834a38676672ffe16c870c

@@ -194,5 +194,7 @@ observed:
     signature: '(baseUrl: string, reqUrl: string, path: string): string'
   treeFiles:
   - lib/abc/market/deno.json
+observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 realizedSpecHash: 99b5de7e070020f5acd16adb782dbf31ecc324740995120b670f2d61026846d4
+syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 5bd58b97bfb1cec3dfaaf335833717f321206a4b2980ea6d766d321fdc710614

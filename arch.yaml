@@ -207,3 +207,63 @@ system_contexts:
   id: sc.lib-common-fedproxy-rbac-common
   name: lib-common-fedproxy-rbac-common
   upstream: self
+- code:
+  - lib/common/market-common/constants.ts
+  - lib/common/market-common/egress.ts
+  - lib/common/market-common/mod.ts
+  - lib/common/market-common/types.ts
+  codeRefIndex:
+  - file:lib/common/market-common/constants.ts constants.ts@lib/common/market-common/constants.ts
+  - file:lib/common/market-common/egress.ts egress.ts@lib/common/market-common/egress.ts
+  - file:lib/common/market-common/mod.ts mod.ts@lib/common/market-common/mod.ts
+  - file:lib/common/market-common/types.ts types.ts@lib/common/market-common/types.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-common
+  name: lib-common-market-common
+  upstream: self
+- code:
+  - lib/common/market-lexicons/com.ts
+  - lib/common/market-lexicons/mod.ts
+  - lib/common/market-lexicons/network.ts
+  - lib/common/market-lexicons/nsids.ts
+  codeRefIndex:
+  - file:lib/common/market-lexicons/com.ts com.ts@lib/common/market-lexicons/com.ts
+  - file:lib/common/market-lexicons/mod.ts mod.ts@lib/common/market-lexicons/mod.ts
+  - file:lib/common/market-lexicons/network.ts network.ts@lib/common/market-lexicons/network.ts
+  - file:lib/common/market-lexicons/nsids.ts nsids.ts@lib/common/market-lexicons/nsids.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-lexicons
+  name: lib-common-market-lexicons
+  upstream: self
+- code:
+  - lib/common/market-lexicons/com/atproto.ts
+  - lib/common/market-lexicons/com/fedproxy.ts
+  - lib/common/market-lexicons/com/publicdomainrelay.ts
+  codeRefIndex:
+  - file:lib/common/market-lexicons/com/atproto.ts atproto.ts@lib/common/market-lexicons/com/atproto.ts
+  - file:lib/common/market-lexicons/com/fedproxy.ts fedproxy.ts@lib/common/market-lexicons/com/fedproxy.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay.ts publicdomainrelay.ts@lib/common/market-lexicons/com/publicdomainrelay.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-lexicons-com
+  name: lib-common-market-lexicons-com
+  upstream: self
+- code:
+  - lib/common/market-lexicons/com/atproto/repo.ts
+  codeRefIndex:
+  - file:lib/common/market-lexicons/com/atproto/repo.ts repo.ts@lib/common/market-lexicons/com/atproto/repo.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-lexicons-com-atproto
+  name: lib-common-market-lexicons-com-atproto
+  upstream: self
+- codeRefIndex:
+  - file:lib/common/market-lexicons/com/atproto/repo/strongRef.defs.ts strongRef.defs.ts@lib/common/market-lexicons/com/atproto/repo/strongRef.defs.ts
+  - file:lib/common/market-lexicons/com/atproto/repo/strongRef.ts strongRef.ts@lib/common/market-lexicons/com/atproto/repo/strongRef.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-lexicons-com-atproto-repo
+  name: lib-common-market-lexicons-com-atproto-repo
+  upstream: self

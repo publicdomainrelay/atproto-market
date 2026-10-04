@@ -1,0 +1,15 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/common/market-common/constants.ts constants.ts@lib/common/market-common/constants.ts
+- file:lib/common/market-common/egress.ts egress.ts@lib/common/market-common/egress.ts
+- file:lib/common/market-common/mod.ts mod.ts@lib/common/market-common/mod.ts
+- file:lib/common/market-common/types.ts types.ts@lib/common/market-common/types.ts
+kind: SystemContext
+metadata:
+  name: lib-common-market-common
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self
