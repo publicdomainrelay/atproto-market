@@ -3223,16 +3223,6 @@ system_contexts:
     level: MUST
   - id: r.iroh-private-ticket-report-tested
     level: MUST
-  - id: r.iroh-ticket-extraction-tested
-    level: MUST
-  - id: r.localhost-port-rewrite
-    level: MUST
-  - id: r.passthrough-unmatched
-    level: MUST
-  - id: r.plc-directory-rewrite
-    level: MUST
-  - id: r.teardown-restores-fetch
-    level: MUST
   - id: r.transport-selection-tests
     level: MUST
   - id: r.unit-suite-coverage

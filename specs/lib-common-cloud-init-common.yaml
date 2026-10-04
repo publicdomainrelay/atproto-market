@@ -48,15 +48,15 @@ spec:
     - function:abdc82dd14921cdce8ae29819e706996
   - id: r.context-fields
     level: MUST
-    text: CloudInitContext must carry the guest-provisioning inputs, with vmName required
-      and didPlc, didPlcKey, relayHost, xrpcRelaySubdomain, sshAuthorizedKey, ingressProxyHost,
-      audHost, jsrUrl, targetPort, hostAliases, sshHandle, listenPort, woottyDistUrl,
-      secretsUrl, secretsRoute, secretsAud, secretsAcceptPath, irohReportUrl and irohReportToken
+    text: 'CloudInitContext must carry the guest-provisioning inputs, with vmName
+      required and didPlc, didPlcKey, relayHost, xrpcRelaySubdomain, sshAuthorizedKey,
+      ingressProxyHost, audHost, jsrUrl, targetPort, hostAliases, sshHandle, listenPort,
+      woottyDistUrl, secretsUrl, secretsRoute, secretsAud, secretsAcceptPath and irohReportUrl
       optional, so a module reading a field it does not need can be composed from
-      a partial context. irohReportUrl is the absolute URL of the requester's per-contract
-      transport-report endpoint and irohReportToken is that contract's random bearer
-      token; both are supplied by the requester that composes this cloud-config, and
-      neither is a value that may be published in a record.
+      a partial context. irohReportUrl is the absolute URL of the requester''s per-contract
+      transport-report endpoint, supplied by the requester that composes this cloud-config.
+      No secret may be carried here: the composed user_data is published inside the
+      compute.vm record, so every field is public.'
     codeRefs:
     - interface:0bccaee64ad56c10f80842c828570d30
   - id: r.deprecated-wrappers
@@ -164,22 +164,22 @@ spec:
     - file:lib/common/cloud-init-common/mod.ts
   - id: r.iroh-ticket-report
     level: MUST
-    text: '''The guest must deliver its ticket to the requester itself, over the requester-only
-      report endpoint that requester names in this cloud-config, and never through
-      a public record. When ctx.irohReportUrl and ctx.irohReportToken are set, the
-      module writes /root/secrets/iroh-report.json (owner root:root, mode 0600) holding
-      `{ "url": <ctx.irohReportUrl>, "token": <ctx.irohReportToken> }`, and after
-      every successful ticket extraction -- first boot and every listener restart
-      -- POSTs to that url, with `Authorization: Bearer <token>` and `content-type:
-      application/json`, the body `{ acceptUri, acceptCid, address: <ticket>, createdAt
-      }`, where acceptUri and acceptCid come from the bidder-injected accept bundle
-      (`.accept.uri` and `.accept.cid` of accept.json at ctx.secretsAcceptPath, default
-      /root/secrets/publicdomainrelay.com/market/accept.json). The POST retries with
-      a bounded backoff while the listener runs and logs each attempt; a failed report
-      must not stop or restart the listener and must be retried on the next listener
-      start. The module must not write the ticket to any other file, to any record,
-      to the journal (beyond a redacted success event), or to any world-readable path,
-      and must not publish the ticket''''s direct addresses anywhere.'''
+    text: 'The guest must deliver its ticket to the requester itself, over the report
+      endpoint that requester names in this cloud-config, and never through a public
+      record. When ctx.irohReportUrl is set, the module writes /root/secrets/iroh-report.json
+      (owner root:root, mode 0600) holding `{ "url": <ctx.irohReportUrl> }` -- no
+      token or other credential, because this cloud-config is published inside the
+      compute.vm record and anything in it is public -- and after every successful
+      ticket extraction (first boot and every listener restart) POSTs to that url,
+      with `content-type: application/json`, the body `{ acceptUri, acceptCid, address:
+      <ticket>, createdAt }`, where acceptUri and acceptCid come from the bidder-injected
+      accept bundle (`.accept.uri` and `.accept.cid` of accept.json at ctx.secretsAcceptPath,
+      default /root/secrets/publicdomainrelay.com/market/accept.json). The POST retries
+      with a bounded backoff while the listener runs and logs each attempt; a failed
+      report must not stop or restart the listener and must be retried on the next
+      listener start. The module must not write the ticket to any other file, to any
+      record, to the journal beyond a redacted success event, or to any world-readable
+      path, and must not publish the ticket''s direct addresses anywhere.'
     codeRefs:
     - file:lib/common/cloud-init-common/mod.ts
   - id: r.iroh-transport-module

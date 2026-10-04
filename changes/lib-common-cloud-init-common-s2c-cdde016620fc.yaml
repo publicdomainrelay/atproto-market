@@ -1,0 +1,18 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-common-cloud-init-common-s2c-cdde016620fc
+  namespace: default
+spec:
+  systemContext: lib-common-cloud-init-common
+  direction: SpecToCode
+  fromSpecHash: f6cdd5199a78a60091abb94182b9343dd23821e0cc99facce7a5ac04b4fe7b4e
+  toSpecHash: cdde016620fc928544bea80b27c4dde3f25c7477b3450963ee88197537294733
+  delta:
+    counts:
+      changed: 2
+    requirements:
+    - ~r.context-fields
+    - ~r.iroh-ticket-report
+status:
+  phase: Pending

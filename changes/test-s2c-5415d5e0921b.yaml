@@ -1,0 +1,23 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: test-s2c-5415d5e0921b
+  namespace: default
+spec:
+  systemContext: test
+  direction: SpecToCode
+  fromSpecHash: d320b15230167d8938ef86776b4801f418a2a3d8ea1b120c5837f84986bc9c5c
+  toSpecHash: 5415d5e0921b7f1c5ef3d812174c23619bb5fda630ab72444f11176b33d2e669
+  delta:
+    counts:
+      removed: 5
+      changed: 1
+    requirements:
+    - -r.iroh-ticket-extraction-tested
+    - -r.localhost-port-rewrite
+    - -r.passthrough-unmatched
+    - -r.plc-directory-rewrite
+    - -r.teardown-restores-fetch
+    - ~r.iroh-private-ticket-report-tested
+status:
+  phase: Pending

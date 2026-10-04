@@ -93,21 +93,32 @@ spec:
   - id: r.iroh-report-endpoint
     level: MUST
     text: 'Under the default iroh transport, when SSH will run, the contract must
-      receive the guest''s ticket over a requester-only per-contract channel instead
-      of the public event path. runComputeContract must generate a random per-contract
-      report token, mount POST /v1/on-network on the requester''s own app before the
-      cloud-config is composed, and pass the endpoint URL (the requester''s own ingress
-      URL plus /v1/on-network) and that token to the iroh module as ctx.irohReportUrl
-      and ctx.irohReportToken, so the guest can report to nobody else. The endpoint
-      accepts { acceptUri, acceptCid, address } only when the Authorization: Bearer
-      token equals the contract''s token and acceptUri#acceptCid equals the contract''s
-      current accept ref; on success it resolves the contract''s SSH wait with the
-      address (the dumbpipe ticket), records it as the contract result''s ticket and
-      answers 200 { ok: true }; a missing or wrong token answers 401 and a mismatched
-      accept ref answers 409, and neither resolves the wait. The endpoint must be
-      unregistered or its token invalidated when the contract ends, and skipSsh must
-      not mount it. The token is per contract and must never be written into a repo
-      record.'
+      receive the guest''s ticket over a per-contract channel of its own instead of
+      the public event path. runComputeContract must mount POST /v1/on-network on
+      the requester''s serve app -- the app the ingress actually serves -- before
+      the cloud-config is composed, and pass the endpoint URL (the requester''s own
+      ingress URL plus /v1/on-network) to the iroh module as ctx.irohReportUrl. Mounting
+      on the repo app instead is a defect: createRequesterPDS has already run serve.app.route("/",
+      repoApp), and Hono copies a child app''s routes into the parent at that call,
+      so a route added to the repo app afterwards is never reachable, the guest''s
+      POST gets 404 and the SSH wait times out. The endpoint accepts { acceptUri,
+      acceptCid, address } only when acceptUri#acceptCid equals the contract''s current
+      accept ref and the contract''s SSH wait is still open; it accepts exactly one
+      report per contract (the first settles the wait with the address, the dumbpipe
+      ticket, records it as the contract result''s ticket and answers 200 { ok: true
+      }; a later report answers 409 and never replaces a settled target), and a mismatched
+      accept ref answers 409 without resolving. The endpoint must be unmounted when
+      the contract ends, and skipSsh must not mount it. No credential may be placed
+      in the cloud-config: the composed user_data is published inside the compute.vm
+      record, so a bearer token there is public and would only appear to protect the
+      endpoint. The accept ref is public too, and a reader of the contract records
+      who races the guest''s first report can point the contract at an iroh endpoint
+      of its own; an impostor endpoint cannot complete ssh publickey auth (it does
+      not hold the guest''s host key and the requester''s key is authorized only on
+      the real guest), but it can observe the requester''s own ssh session. Closing
+      that needs a guest-held credential the cloud-init cannot carry (the workload-identity
+      / secrets-capability channel); it is a stated gap, not a claim of authentication,
+      and it must be named in the pull request and in the requirement text, not hidden.'
     codeRefs:
     - file:lib/requester-xrpc/mod.ts
   - id: r.iroh-ticket-onnetwork
