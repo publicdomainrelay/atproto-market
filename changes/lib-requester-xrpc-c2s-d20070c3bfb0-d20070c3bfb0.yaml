@@ -10,5 +10,20 @@ spec:
   systemContext: lib-requester-xrpc
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-requester-xrpc
-  phase: Running
+  agentLog: 'lib/requester-xrpc/mod.ts is the requester side of the market''s XRPC
+    compute-contract flow. It discovers bidders by querying atproto relays (com.atproto.sync.listReposByCollection,
+    limit=1000) across a configurable relay list, verifies that a bidder''s DID is
+    actually visible/indexed by at least one capable relay, and can auto-discover
+    relay URLs by resolving the requester''s DID to its PDS and reading records under
+    the relay NSID. It creates a requester PDS (Hono app, signer, secp256k1 keypair,
+    repo API), writes plain and signed repo records returning uri/cid, resolves a
+    bidder endpoint to a target URL plus audience DID, and calls the bidder over XRPC
+    with the nsid/lxm pair. The same module owns the SSH side of the flow: mapping
+    an fqdn to a websocket URL, building ssh tunnel args, providing an SSH session
+    provider, generating keypairs, ensuring websocat is installed, polling for session
+    readiness, and running a program over the tunnel. runComputeContract ties these
+    together as the orchestration entrypoint, with an OAuth variant (createOAuthRequester,
+    applyOAuthAgentToRequesterPDS, getSession) layered on top so the requester PDS
+    can act as an OAuth session.'
+  message: wrote 15 requirement(s) and 25 interface(s) for lib-requester-xrpc
+  phase: Succeeded

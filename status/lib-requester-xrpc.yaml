@@ -1,12 +1,8 @@
 conditions:
-- message: 'undeclared: ContractState, CreateOAuthRequesterOpts, OAuthRequesterHandle,
-    RelayVisibilityResult, RequesterPDSImpl, applyOAuthAgentToRequesterPDS, autoDiscoverRelayUrls,
-    callBidder, createOAuthRequester, createRepoRecord, createRequesterPDS, createSignedRepoRecord,
-    createSshSessionProvider, discoverBiddersFromRelay, discoverBiddersFromRelays,
-    ensureWebsocat, generateKeypair, getSession, pollReady, resolveBidderEndpoint,
-    runComputeContract, runSession, sshTunnelArgs, tunnelWsUrl, verifyRelayVisibility'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -256,5 +252,5 @@ observed:
     signature: ()
   treeFiles:
   - lib/requester-xrpc/deno.json
-realizedSpecHash: be37a6bbaa00d9ff7d2b33f6c5f9288f7312b76df10a95a46cd751728fb3c866
+realizedSpecHash: ed3c4725abd46a94c8e36c261d5b8bbfc700418002c003fc8c7a5d4b8159a928
 syncedFingerprint: 501674c6c22c41f9f64261c6fd696f06ae5a0061a96af985f205b26e8a3d86f9
