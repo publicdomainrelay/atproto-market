@@ -22,5 +22,5 @@ observed:
   - request-vm-ssh/README.md
   - request-vm-ssh/config.json
   - request-vm-ssh/deno.json
-realizedSpecHash: afc80852e0cd2a0734226d3df2a4f3d337aa59ee722ff9572982904b65df1599
+realizedSpecHash: 659aba6de94a30e9cc62dded8eb81be2005ed3463427df1f921e9908e2a4d66b
 syncedFingerprint: ec4d81f79640bb751be4d5f9b5a27db4b327fda8a2a3c779402bf05d7b50f68f

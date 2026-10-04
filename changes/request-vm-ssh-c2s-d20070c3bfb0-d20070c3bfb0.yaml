@@ -10,5 +10,17 @@ spec:
   systemContext: request-vm-ssh
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing request-vm-ssh
-  phase: Running
+  agentLog: '`request-vm-ssh` is a Deno CLI entrypoint that acts as the compute-market
+    requester side of atproto-market: it resolves configuration from `cli-args-env.ts`
+    (with an optional `config.json` overlay), builds the requester identity and PDS
+    in one of three modes (local ephemeral PDS, ATProto OAuth loopback, or QR-based
+    OAuth through qr.fedfork.com), associates the operator via a QR prompt or an existing
+    `com.publicdomainrelay.temp.badgeBlueKeys` record, and then calls `runComputeContract`
+    from `@publicdomainrelay/requester-xrpc` to post the RFP, collect bids, provision
+    a VM, wait for SSH readiness, open an interactive (or `--exec`) SSH session, and
+    tear the VM down. Around that call it wires event-stream firehose watchers for
+    offerings and its own compute events, RBAC and secrets user-data capabilities,
+    policy selection, an optional provisioning-only hold mode, and signal-driven shutdown;
+    a smoke test runs `--help` and asserts the CLI prints its name.'
+  message: wrote 18 requirement(s) and 0 interface(s) for request-vm-ssh
+  phase: Succeeded

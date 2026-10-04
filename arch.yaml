@@ -12510,7 +12510,195 @@ system_contexts:
   depends_on:
   - sc.atproto-market
   id: sc.request-vm-ssh
+  intent: 'This context exists so the requester CLI''s external contract is pinned
+    down: which flags and environment variables configure it and what each defaults
+    to, how the three identity/OAuth modes differ, how association is proven or skipped,
+    what is passed into `runComputeContract`, and how shutdown, hold mode and the
+    `--help` smoke test behave. It is the operator-facing shell around the requester
+    library, so that library can change without silently breaking the command people
+    actually run.'
   name: request-vm-ssh
+  requirements:
+  - codeRefs:
+    - file:request-vm-ssh/mod.ts
+    id: r.association-proof
+    level: MUST
+    text: 'Unless --skip-qr is set, the entrypoint looks for an existing association:
+      in OAuth mode by listing `com.publicdomainrelay.temp.badgeBlueKeys` on the user''s
+      PDS through the OAuth agent matching challenge==userDid, service==requester_associate
+      and keyId==pds.did; otherwise by paging the same collection on the local PDS
+      matching challenge==pds.did and service==requester_associate. Any OAuth session
+      counts as association proof, so OAuth mode never prompts again.'
+  - codeRefs:
+    - file:request-vm-ssh/mod.ts
+    id: r.begin-serve-nonoauth
+    level: MUST
+    text: '`pds.beginServe()` is awaited only in non-OAuth mode; OAuth modes skip
+      it because their market identity is the session user rather than the ephemeral
+      PDS keypair DID, which is what `marketDid` resolves to.'
+  - codeRefs:
+    - file:request-vm-ssh/mod.ts
+    id: r.capabilities
+    level: MUST
+    text: When --secrets names a JSON bundle, the file is parsed and a secrets guest
+      capability is registered (the ephemeral server is reachable only through the
+      ingress proxy and releases values after the VM exchanges its workload identity
+      token); --user-data names a base cloud-init file that is read and patched with
+      the default tunnel provisioning before the RFP, and --user-data-transport selects
+      the transport module.
+  - codeRefs:
+    - file:request-vm-ssh/cli-args-env.ts
+    - file:request-vm-ssh/mod.ts
+    id: r.cli-configuration-surface
+    level: MUST
+    text: 'Configuration is declared declaratively in cli-args-env.ts as an option
+      map, not read via Deno.env.get in the entrypoint: `--port` (PORT, no default;
+      when absent only the ingress relay serves), `--private-key-hex` (REPO_PRIVATE_KEY_HEX),
+      `--private-key-hex-path` (REPO_PRIVATE_KEY_HEX_PATH, default a requester-private-key
+      file under the user cache dir, overridden by --private-key-hex), `--plc-directory-url`
+      (PLC_DIRECTORY_URL, default https://plc.directory), `--atproto-oauth` (boolean),
+      `--atproto-oauth-qr` (boolean), `--atproto-handle` (ATP_HANDLE), `--oauth-client-id`
+      (OAUTH_CLIENT_ID, default http://localhost), `--oauth-redirect-uri` (OAUTH_REDIRECT_URI,
+      default http://127.0.0.1:0/callback), `--oauth-session-path` (OAUTH_SESSION_PATH,
+      default requester-oauth-session.json under the cache dir), `--ingress-proxy-host`
+      (INGRESS_PROXY_HOST, default xrpc.fedproxy.com), `--no-ingress-proxy` (boolean),
+      `--fedproxy-host` (FEDPROXY_HOST, default fedproxy.com), `--label` (REQUESTER_LABEL,
+      default request-vm-ssh), `--vm-name` (VM_NAME), `--exec` (EXEC_PROGRAM, default
+      bash), `--vm-ready-timeout-sec` (VM_READY_TIMEOUT_SEC, default 300), `--keep-vm`
+      (KEEP_VM), `--hold` (HOLD), `--ssh-authorized-key` (SSH_AUTHORIZED_KEY, repeatable
+      or comma-separated), `--skip-ssh` (SKIP_SSH), `--bidder-dids` (BIDDER_DIDS),
+      `--deny-bidder-dids` (DENY_BIDDER_DIDS), `--relay-url` (RELAY_URL), `--firehose-mode`
+      (FIREHOSE_MODE, default off), `--firehose-url` (FIREHOSE_URL, repeatable or
+      comma-separated), `--serve-addr` (SERVE_ADDR), `--serve-unix` (SERVE_UNIX),
+      `--guest-host-aliases` (GUEST_HOST_ALIASES), `--user-data` (USER_DATA), `--user-data-transport`
+      (USER_DATA_TRANSPORT), `--secrets` (SECRETS_FILE), `--policy`, `--policy-args`,
+      `--policy-engine` (POLICY_ENGINE), `--only-remote-policy-exec`, `--allow-untrusted-policy-exec`,
+      `--pds-state-path` (PDS_STATE_PATH, default requester-pds under the cache dir),
+      `--oauth-session-file` (OAUTH_SESSION_FILE), `--oauth-session-client-id` (OAUTH_SESSION_CLIENT_ID),
+      `--skip-qr` (boolean), `--skip-rbac` (SKIP_RBAC, default off i.e. RBAC enabled).'
+  - codeRefs:
+    - file:request-vm-ssh/cli_smoke_test.ts
+    id: r.cli-smoke-test
+    level: MUST
+    text: A smoke test invokes `deno run -A request-vm-ssh/mod.ts --help` from the
+      repository root (derived from the test file's own URL, not a hard-coded path),
+      asserts exit code 0, and asserts stdout mentions "request-vm-ssh".
+  - codeRefs:
+    - file:request-vm-ssh/mod.ts
+    id: r.config-json-overlay
+    level: SHOULD
+    text: A sibling `config.json` is imported dynamically and passed as the runtime
+      config to the CLI resolver so file values override absent flags; a missing or
+      unparsable config.json is swallowed rather than fatal.
+  - codeRefs:
+    - file:request-vm-ssh/mod.ts
+    id: r.contract-invocation
+    level: MUST
+    text: runComputeContract is called with the built PDS plus the resolved ingress/fedproxy
+      hosts, PLC URL, guest host aliases, VM name, exec program (default bash), skip-ssh/keep-vm
+      flags, comma- or repeated-flag-flattened SSH authorized keys, VM-ready timeout,
+      extra and denied bidder DIDs, relay URLs, base user data, RBAC flag, capabilities,
+      policy settings, the offering watcher accessor, the event-streams client, and
+      an SSH session provider that pauses console output on SSH start and resumes
+      it on SSH end.
+  - codeRefs:
+    - file:request-vm-ssh/mod.ts
+    id: r.firehose-watchers
+    level: MUST
+    text: An event-streams client is built from --relay-url plus, when firehose mode
+      is subscriberepos and a URL is given, each comma-separated --firehose-url entry,
+      with the default relay set removed when a firehose URL is supplied; it then
+      starts a watcher on the offering collection that records offering DIDs seen
+      in non-delete operations and a watcher on the compute event collection for this
+      PDS, and the client's relay URLs plus the offering-DID accessor are passed into
+      the contract run.
+  - codeRefs:
+    - file:request-vm-ssh/mod.ts
+    id: r.hold-mode
+    level: MUST
+    text: '--hold runs provisioning-only: the first SIGINT/SIGTERM aborts the hold
+      signal so the contract tears the VM down via vm.delete and returns, while without
+      --hold a signal shuts down directly; combining --hold with --skip-ssh is rejected
+      with `--hold requires SSH readiness (conflicts with --skip-ssh)` and exit status
+      2.'
+  - codeRefs:
+    - file:request-vm-ssh/mod.ts
+    id: r.identity-modes
+    level: MUST
+    text: 'Exactly one of three mutually exclusive branches selects the requester
+      identity: --atproto-oauth with --atproto-handle builds an OAuth requester with
+      the requester OAuth scope, restores a persisted session or opens the browser
+      on the auth URL and completes the flow through a loopback callback server; --atproto-oauth-qr
+      restores a saved QR session or shows a qr.fedfork.com QR URL and polls for the
+      transferred session, then builds a local PDS whose `oauthAgent`/`oauthSession`
+      are the signed-in user so market records are authored by that user via applyOAuthAgentToRequesterPDS;
+      and the default branch builds a plain local PDS.'
+  - codeRefs:
+    - file:request-vm-ssh/mod.ts
+    id: r.local-dev-fetch-patch
+    level: MUST
+    text: When the ingress proxy host contains localhost or starts with 127., the
+      entrypoint replaces globalThis.fetch so that https URLs whose host ends in .localhost
+      are rewritten to http on the patch port (the port embedded in the ingress host,
+      else 80), letting the requester reach bidder PDS endpoints during local development.
+  - codeRefs:
+    - file:request-vm-ssh/mod.ts
+    id: r.oauth-session-expiry
+    level: MUST
+    text: In the loopback OAuth mode an expired session deletes the stale session
+      file, logs the expiry with a restart hint, and exits with status 1 after a short
+      delay; QR-mode sessions are created with the same one-hour auto-refresh threshold
+      and persist rotated sessions through saveOAuthQRSession.
+  - codeRefs:
+    - file:request-vm-ssh/mod.ts
+    id: r.policy-selection
+    level: MUST
+    text: 'When --policy is given, its args are parsed, the policy name is resolved
+      against the Deno/TypeScript policy registry for the requester role, and an unknown
+      or invalid policy prints `invalid --policy: <err>` and exits with status 2;
+      the resolved policy, --policy-engine DID, --only-remote-policy-exec and --allow-untrusted-policy-exec
+      are forwarded to the contract run.'
+  - codeRefs:
+    - file:request-vm-ssh/mod.ts
+    id: r.private-key-resolution
+    level: MUST
+    text: The key hex comes from --private-key-hex when set; otherwise --private-key-hex-path
+      is read, trimmed and used if non-empty. In the plain and QR modes a freshly
+      generated or loaded key is written back to the path (warned, not fatal, on write
+      failure); in QR mode a generated key is also submitted to the PLC directory
+      as a genesis operation when the DID does not yet resolve, and the key is persisted
+      so later runs reuse it.
+  - codeRefs:
+    - file:request-vm-ssh/mod.ts
+    id: r.qr-association-prompt
+    level: MUST
+    text: With no association found, the entrypoint prints a `https://qr.fedfork.com/#plc=<did>`
+      QR code to the console and waits on `pds.associateCalled`, resolves the caller's
+      handle from the DID document (falling back to the DID), prompts `Associate with
+      <handle>? [y/N]`, and then either calls `pds.approveAssociation()` or, on any
+      non-yes answer, rejects the association and exits 0.
+  - codeRefs:
+    - file:request-vm-ssh/mod.ts
+    id: r.rbac-default-on
+    level: MUST
+    text: RBAC is enabled by default — the requester writes the com.fedproxy.rbac
+      record authorizing the VM to register its SSH host key — and only --skip-rbac
+      turns it off.
+  - codeRefs:
+    - file:request-vm-ssh/mod.ts
+    id: r.serve-binding
+    level: MUST
+    text: The serve listener binds TCP only when --port is set, using --serve-addr
+      as the bind address (default 127.0.0.1), and additionally an optional unix socket
+      from --serve-unix; the resulting handle is handed to the PDS factory.
+  - codeRefs:
+    - file:request-vm-ssh/mod.ts
+    id: r.shutdown
+    level: MUST
+    text: After the contract run returns, the result is logged, the PDS is disposed,
+      and shutdown closes the event streams, disposes any OAuth agent, shuts the serve
+      handle down and exits; SIGINT and SIGTERM are registered to that same path unless
+      hold mode is active.
   upstream: self
 - code:
   - test/badge_blue_keys_binding_test.ts
