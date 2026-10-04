@@ -1251,7 +1251,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-operator-discovery-badge-blue-keys-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-requester-xrpc-c2s-b296a7ee7c1a-b9c1b7749635 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-requester-xrpc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-requester-xrpc-s2c-275aea2136d3 | SpecToCode | Running |  | 0 | - |
+| lib-requester-xrpc-s2c-275aea2136d3 | SpecToCode | Succeeded | b807bd49 | 0 | - |
 | lib-requester-xrpc-s2c-fc3eb42383f9 | SpecToCode | Succeeded | b296a7ee | 0 | - |
 | lib-secrets-oidc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-trust-graph-bsky-mutuals-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |

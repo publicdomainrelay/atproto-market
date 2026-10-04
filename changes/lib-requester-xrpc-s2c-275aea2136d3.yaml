@@ -26,5 +26,44 @@ spec:
   systemContext: lib-requester-xrpc
   toSpecHash: 275aea2136d3f217d797136f848e8b8d58e1c52c1258f4e22d59b5ddc10feead
 status:
-  message: the agent is realizing lib-requester-xrpc
-  phase: Running
+  agentLog: "...nrecognized_model] {\"model\":\"deepseek-v4-flash\",\"query_source\":\"sdk\"}\n\e[0m\e[38;5;245mrunning
+    19 tests from ./test/cloud_init_snapshot_test.ts\e[0m\ncomposer snapshots match
+    fixtures ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(20ms)\e[0m\nsecrets module composes
+    with the transport ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(1ms)\e[0m\nsecrets
+    module discovers provider paths at runtime, not build time ... \e[0m\e[32mok\e[0m
+    \e[0m\e[38;5;245m(492µs)\e[0m\nsecrets module echoes the provider-assigned subject
+    ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(396µs)\e[0m\nsecrets module fails loud
+    ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(528µs)\e[0m\nsecrets module writes secrets
+    0600 under a 0700 parent ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(387µs)\e[0m\nsecrets
+    module carries no secret values ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(297µs)\e[0m\nbug
+    fixes baked into fedproxy-ssh ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(690µs)\e[0m\ntunnel
+    has no ListenAddress (direct-TCP probe) ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(1ms)\e[0m\niroh
+    dumbpipe listener replaces the tunnel subscriber ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(1ms)\e[0m\niroh
+    ticket extraction matches the connect-tcp line dumbpipe prints ... \e[0m\e[32mok\e[0m
+    \e[0m\e[38;5;245m(1ms)\e[0m\nevery module that configures an sshd installs openssh-server
+    ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(1ms)\e[0m\nwootty combo carries token
+    handoff + hardening ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(331µs)\e[0m\ndeprecated
+    wrappers equal composer outputs ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(1ms)\e[0m\nmerge
+    semantics: base + module append, dedupe, override ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(7ms)\e[0m\nruncmdPrepend
+    ordering + acceptBundleModule ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(584µs)\e[0m\nunparseable
+    / empty base -> fresh build ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(4ms)\e[0m\ninjectJsrUrl
+    adds JSR_URL env to tunnel unit ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(592µs)\e[0m\nregistry:
+    built-ins present, unknown id throws ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(456µs)\e[0m\n\n\e[0m\e[32mok\e[0m
+    | 19 passed | 0 failed \e[0m\e[38;5;245m(56ms)\e[0m"
+  branch: spec/lib-requester-xrpc/275aea21
+  commit: b807bd49b14ab808f967efc8bd2d2a76bceacb7a
+  filesTouched:
+  - lib/requester-xrpc/mod.ts
+  message: 'realized lib-requester-xrpc on spec/lib-requester-xrpc/275aea21: 1 file(s)
+    touched, verify exit 0'
+  phase: Succeeded
+  progress:
+  - at: "2026-10-04T22:25:07Z"
+    files:
+    - lib/requester-xrpc/mod.ts
+    tool: Edit
+  - at: "2026-10-04T22:25:18Z"
+    note: turn
+  - at: "2026-10-04T22:25:18Z"
+    note: turn
+    turn: 1
