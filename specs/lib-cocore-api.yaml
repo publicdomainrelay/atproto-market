@@ -116,3 +116,10 @@ spec:
 codeRefIndex:
 - file:lib/cocore-api/deno.json deno.json@lib/cocore-api/deno.json
 - file:lib/cocore-api/mod.ts mod.ts@lib/cocore-api/mod.ts
+- function:1fea095a0bee325bdb1aae5e86e8f6a3 createCocoreClient@lib/cocore-api/mod.ts:35
+- function:d182b9f8d24e2ca8806313b0bcd98280 call@lib/cocore-api/mod.ts:40
+- interface:09decfc0b5223bf533f41d5230769bc8 ListApiKeysResponse@lib/cocore-api/mod.ts:17
+- interface:1bcea98b6e61d0fa858c001c956b655d CreateApiKeyResponse@lib/cocore-api/mod.ts:12
+- interface:6c1e6b8fec8cdfaf8c00a2c93ec26f2e CocoreClient@lib/cocore-api/mod.ts:29
+- interface:8ec256e4f14d893e88afbca014d72b53 CocoreClientOptions@lib/cocore-api/mod.ts:21
+- interface:a6b944b6f1859d7bd5b304b7a2b77b3c ApiKey@lib/cocore-api/mod.ts:5

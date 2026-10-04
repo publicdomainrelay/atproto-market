@@ -4,14 +4,14 @@ syncedFingerprint: 3ace54d94a28605fd535e1685d355c9b5b2f7456a18aee9347b6e44991572
 realizedSpecHash: 881a850c00cd0e7748bbed71aa91f9f3d0b54a4515dd2d53f956cccb02094f52
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'missing: ComputeContractGateway; unresolved: r.caller-and-input-types:
-    file:lib/abc/compute-contract-gateway/mod.ts, r.caller-and-input-types: interface:686284d942a70c576d3538a0ee80e825'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
-  reason: NotSyncedYet
-  message: no synced fingerprint has been recorded yet
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed

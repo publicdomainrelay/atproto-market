@@ -167,3 +167,16 @@ codeRefIndex:
 - file:lib/common/market-common/egress.ts egress.ts@lib/common/market-common/egress.ts
 - file:lib/common/market-common/mod.ts mod.ts@lib/common/market-common/mod.ts
 - file:lib/common/market-common/types.ts types.ts@lib/common/market-common/types.ts
+- function:4a9182a659c42eaf5efea613d576bf56 assertSafeEgressUrl@lib/common/market-common/egress.ts:5
+- function:98a3eb25fe3e5d71119b4776db96f280 strongRef@lib/common/market-common/types.ts:23
+- function:bdb007fdd15fa3b35d2579e3f50a9102 noopLogger@lib/common/market-common/types.ts:21
+- type_alias:094ab49db888ff112d27c2d9863156fb StrongRef@lib/common/market-common/types.ts:8
+- type_alias:0ddacc3f4f8324551fc28543224d5848 Resolved@lib/common/market-common/types.ts:15
+- type_alias:1415ed8e9c4445551461c01489f8e98e RFP@lib/common/market-common/types.ts:10
+- type_alias:3b05835c22ae315ee54800118068199e EgressOptions@lib/common/market-common/egress.ts:1
+- type_alias:4a83a08396757c59cee4d1abc1ac4e96 Bid@lib/common/market-common/types.ts:12
+- type_alias:5227ebb1a1c9a0e6fc64c180ba49b225 Logger@lib/common/market-common/types.ts:19
+- type_alias:68f1befbdba2e558d52f81fadb208604 MarketEvent@lib/common/market-common/types.ts:13
+- type_alias:a1be7c028260b060bface7fb68430980 LogLevel@lib/common/market-common/types.ts:17
+- type_alias:bf97d5bc1681c49e28bb73c0ef924a28 Offering@lib/common/market-common/types.ts:9
+- type_alias:cecc1b0d37ba12dc3d30a216f27c4d7d Accept@lib/common/market-common/types.ts:11

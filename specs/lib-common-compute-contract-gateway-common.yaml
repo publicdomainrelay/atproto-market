@@ -199,3 +199,12 @@ codeRefIndex:
 - file:lib/common/compute-contract-gateway-common/mod.ts mod.ts@lib/common/compute-contract-gateway-common/mod.ts
 - file:lib/common/compute-contract-gateway-common/nsids.ts nsids.ts@lib/common/compute-contract-gateway-common/nsids.ts
 - file:lib/common/compute-contract-gateway-common/types.ts types.ts@lib/common/compute-contract-gateway-common/types.ts
+- interface:41ae11030dc803c5fa163f76b3aaeeb0 GatewayPolicySpec@lib/common/compute-contract-gateway-common/types.ts:36
+- interface:54d56e2397fdff2c37bd648570123818 CallerIdentity@lib/common/compute-contract-gateway-common/types.ts:1
+- interface:79ac11ae8e1a5e878c56818d0ea8f713 GatewayBidEntry@lib/common/compute-contract-gateway-common/types.ts:24
+- interface:869e37e6b7707634513f48f2312f0215 GatewayEventEntry@lib/common/compute-contract-gateway-common/types.ts:31
+- interface:869f60653fa984f384ebda98b750465b GatewayTokens@lib/common/compute-contract-gateway-common/types.ts:66
+- interface:a92d50db702dea8d4a773cdf785d7086 GatewayComputeResponse@lib/common/compute-contract-gateway-common/types.ts:73
+- interface:bb907138ab8576908b425812a1323e8a GatewayContractState@lib/common/compute-contract-gateway-common/types.ts:5
+- interface:cba9e8e50afd227d1e11556b44027a17 ComputeRequestWorkerInput@lib/common/compute-contract-gateway-common/types.ts:55
+- interface:e9438a48f8507c2cb4704a23772cbcfd ComputeRequestVMInput@lib/common/compute-contract-gateway-common/types.ts:42

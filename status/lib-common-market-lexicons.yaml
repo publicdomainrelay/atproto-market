@@ -1,18 +1,27 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: fa7c4f8269cea48b0d1e42cf82b1234e3b5ca2d053a8361b61f054daccaf8cdf
+realizedSpecHash: a5a80175244774a44d30d36092dc66c46a581da59793de0bc660f654e81145b3
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: CodeRefsUnresolved
-  message: 'unresolved requirement code refs: r.attested-vocabulary: file:lib/common/market-lexicons/nsids.ts,
-    r.generated-barrels-export-namespaces: file:lib/common/market-lexicons/com.ts,
-    r.generated-barrels-export-namespaces: file:lib/common/market-lexicons/network.ts,
-    r.package-manifest: file:lib/common/market-lexicons/deno.json, r.single-import-surface:
-    file:lib/common/market-lexicons/mod.ts'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
-  reason: NotSyncedYet
-  message: no synced fingerprint has been recorded yet
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed
   message: the spec passes the validator
-observed: {}
+observed:
+  files:
+  - lib/common/market-lexicons/com.ts
+  - lib/common/market-lexicons/mod.ts
+  - lib/common/market-lexicons/network.ts
+  - lib/common/market-lexicons/nsids.ts
+  treeFiles:
+  - lib/common/market-lexicons/deno.json
+  fingerprint: fa7c4f8269cea48b0d1e42cf82b1234e3b5ca2d053a8361b61f054daccaf8cdf

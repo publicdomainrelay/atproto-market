@@ -115,3 +115,7 @@ spec:
     file: lib/common/fedproxy-rbac-common/mod.ts
 codeRefIndex:
 - file:lib/common/fedproxy-rbac-common/mod.ts mod.ts@lib/common/fedproxy-rbac-common/mod.ts
+- function:a98ccef775e425fa7c13add3016e54f5 renderSubject@lib/common/fedproxy-rbac-common/mod.ts:16
+- function:aac738c94c8e2dfa2a0ff4c0e8d5c018 buildSshKeyRbacRecord@lib/common/fedproxy-rbac-common/mod.ts:26
+- function:e5377f0a379eb596837b1526cd73134c didPlcKey@lib/common/fedproxy-rbac-common/mod.ts:12
+- interface:967a594352d4c9b86213f54d84909966 SshKeyRbacContext@lib/common/fedproxy-rbac-common/mod.ts:4

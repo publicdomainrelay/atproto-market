@@ -173,6 +173,18 @@ spec:
     signature: 'function webCryptoRuntime(): RuntimeImplementation'
     file: lib/atproto-oauth-helpers/mod.ts
 codeRefIndex:
+- class:5a1bec4d77c5f5a5cde8c04bb59bca88 WebCryptoKey@lib/atproto-oauth-helpers/key.ts:11
 - file:lib/atproto-oauth-helpers/deno.json deno.json@lib/atproto-oauth-helpers/deno.json
 - file:lib/atproto-oauth-helpers/key.ts key.ts@lib/atproto-oauth-helpers/key.ts
 - file:lib/atproto-oauth-helpers/mod.ts mod.ts@lib/atproto-oauth-helpers/mod.ts
+- function:3cb1b51f5aea3838133b4e60f686144d load@lib/atproto-oauth-helpers/mod.ts:34
+- function:653db074b84283be302a08bc6df60d44 startLoopbackCallbackServer@lib/atproto-oauth-helpers/mod.ts:75
+- function:7981a0b8b11bca99dd8741f34edb3e25 memoryStateStore@lib/atproto-oauth-helpers/mod.ts:22
+- function:a1f1c096bf7c6dd3ad9ba01660767894 createWebCryptoKey@lib/atproto-oauth-helpers/key.ts:55
+- function:c4b50dc71822e21c61d8462aa6849574 webCryptoRuntime@lib/atproto-oauth-helpers/mod.ts:8
+- function:d03b1bd1ba44ea92ad6b5bb772af7fe3 oauthClientMetadata@lib/atproto-oauth-helpers/mod.ts:55
+- function:d160bc8be496a8089360e4f03266343f jsonSessionStore@lib/atproto-oauth-helpers/mod.ts:32
+- function:fdf5c99b8f6ee5d65a5a59079345a3b3 save@lib/atproto-oauth-helpers/mod.ts:44
+- method:26adc3684a97b0c5cac3325b5165757c WebCryptoKey.createJwt@lib/atproto-oauth-helpers/key.ts:30
+- method:2c62f219629eb196fc241a82271bf951 WebCryptoKey.constructor@lib/atproto-oauth-helpers/key.ts:16
+- method:e6fca13262fb7317e7cd6ca588b27877 WebCryptoKey.verifyJwt@lib/atproto-oauth-helpers/key.ts:45

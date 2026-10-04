@@ -697,9 +697,21 @@ system_contexts:
   - id: r.web-crypto-key-extends-jwk-key
     level: MUST
   codeRefIndex:
+  - class:5a1bec4d77c5f5a5cde8c04bb59bca88 WebCryptoKey@lib/atproto-oauth-helpers/key.ts:11
   - file:lib/atproto-oauth-helpers/deno.json deno.json@lib/atproto-oauth-helpers/deno.json
   - file:lib/atproto-oauth-helpers/key.ts key.ts@lib/atproto-oauth-helpers/key.ts
   - file:lib/atproto-oauth-helpers/mod.ts mod.ts@lib/atproto-oauth-helpers/mod.ts
+  - function:3cb1b51f5aea3838133b4e60f686144d load@lib/atproto-oauth-helpers/mod.ts:34
+  - function:653db074b84283be302a08bc6df60d44 startLoopbackCallbackServer@lib/atproto-oauth-helpers/mod.ts:75
+  - function:7981a0b8b11bca99dd8741f34edb3e25 memoryStateStore@lib/atproto-oauth-helpers/mod.ts:22
+  - function:a1f1c096bf7c6dd3ad9ba01660767894 createWebCryptoKey@lib/atproto-oauth-helpers/key.ts:55
+  - function:c4b50dc71822e21c61d8462aa6849574 webCryptoRuntime@lib/atproto-oauth-helpers/mod.ts:8
+  - function:d03b1bd1ba44ea92ad6b5bb772af7fe3 oauthClientMetadata@lib/atproto-oauth-helpers/mod.ts:55
+  - function:d160bc8be496a8089360e4f03266343f jsonSessionStore@lib/atproto-oauth-helpers/mod.ts:32
+  - function:fdf5c99b8f6ee5d65a5a59079345a3b3 save@lib/atproto-oauth-helpers/mod.ts:44
+  - method:26adc3684a97b0c5cac3325b5165757c WebCryptoKey.createJwt@lib/atproto-oauth-helpers/key.ts:30
+  - method:2c62f219629eb196fc241a82271bf951 WebCryptoKey.constructor@lib/atproto-oauth-helpers/key.ts:16
+  - method:e6fca13262fb7317e7cd6ca588b27877 WebCryptoKey.verifyJwt@lib/atproto-oauth-helpers/key.ts:45
 - id: sc.lib-cocore-api
   name: lib-cocore-api
   spec: specs/lib-cocore-api.yaml
@@ -728,6 +740,13 @@ system_contexts:
   codeRefIndex:
   - file:lib/cocore-api/deno.json deno.json@lib/cocore-api/deno.json
   - file:lib/cocore-api/mod.ts mod.ts@lib/cocore-api/mod.ts
+  - function:1fea095a0bee325bdb1aae5e86e8f6a3 createCocoreClient@lib/cocore-api/mod.ts:35
+  - function:d182b9f8d24e2ca8806313b0bcd98280 call@lib/cocore-api/mod.ts:40
+  - interface:09decfc0b5223bf533f41d5230769bc8 ListApiKeysResponse@lib/cocore-api/mod.ts:17
+  - interface:1bcea98b6e61d0fa858c001c956b655d CreateApiKeyResponse@lib/cocore-api/mod.ts:12
+  - interface:6c1e6b8fec8cdfaf8c00a2c93ec26f2e CocoreClient@lib/cocore-api/mod.ts:29
+  - interface:8ec256e4f14d893e88afbca014d72b53 CocoreClientOptions@lib/cocore-api/mod.ts:21
+  - interface:a6b944b6f1859d7bd5b304b7a2b77b3c ApiKey@lib/cocore-api/mod.ts:5
 - id: sc.lib-common-cloud-init-common
   name: lib-common-cloud-init-common
   spec: specs/lib-common-cloud-init-common.yaml
@@ -767,6 +786,17 @@ system_contexts:
     level: MUST
   codeRefIndex:
   - file:lib/common/cloud-init-common/mod.ts mod.ts@lib/common/cloud-init-common/mod.ts
+  - function:4b5291e8f10c0cf8f4ac044370b5d20e acceptBundleModule@lib/common/cloud-init-common/mod.ts:220
+  - function:a68626e26bed80b6d685682d2680efdb registerUserDataModule@lib/common/cloud-init-common/mod.ts:113
+  - function:a852acc6663f06c9724c3272a33b42a4 listUserDataModules@lib/common/cloud-init-common/mod.ts:127
+  - function:b171eb2dbd8264151491ce36f02925d2 buildUserData@lib/common/cloud-init-common/mod.ts:200
+  - function:b757a298771ae8dcbe1086c37860fb1e getUserDataModules@lib/common/cloud-init-common/mod.ts:118
+  - function:c42fe19fa18470a330f72a65da020d2d flattenLabel@lib/common/cloud-init-common/mod.ts:102
+  - interface:0bccaee64ad56c10f80842c828570d30 CloudInitContext@lib/common/cloud-init-common/mod.ts:16
+  - interface:a1ea99f0f39ad710f4f5c37a44b76b5a TunnelCloudInitContext@lib/common/cloud-init-common/mod.ts:62
+  - interface:a70dcded359cb8e179e375b8adc0876c UserDataPatch@lib/common/cloud-init-common/mod.ts:86
+  - interface:ce3efe5cd2d89f183f1c90bd06992a98 WriteFileEntry@lib/common/cloud-init-common/mod.ts:77
+  - type_alias:41d76c33929582b594b1d002d3176708 UserDataModule@lib/common/cloud-init-common/mod.ts:99
 - id: sc.lib-common-compute-contract-gateway-common
   name: lib-common-compute-contract-gateway-common
   spec: specs/lib-common-compute-contract-gateway-common.yaml
@@ -807,6 +837,15 @@ system_contexts:
   - file:lib/common/compute-contract-gateway-common/mod.ts mod.ts@lib/common/compute-contract-gateway-common/mod.ts
   - file:lib/common/compute-contract-gateway-common/nsids.ts nsids.ts@lib/common/compute-contract-gateway-common/nsids.ts
   - file:lib/common/compute-contract-gateway-common/types.ts types.ts@lib/common/compute-contract-gateway-common/types.ts
+  - interface:41ae11030dc803c5fa163f76b3aaeeb0 GatewayPolicySpec@lib/common/compute-contract-gateway-common/types.ts:36
+  - interface:54d56e2397fdff2c37bd648570123818 CallerIdentity@lib/common/compute-contract-gateway-common/types.ts:1
+  - interface:79ac11ae8e1a5e878c56818d0ea8f713 GatewayBidEntry@lib/common/compute-contract-gateway-common/types.ts:24
+  - interface:869e37e6b7707634513f48f2312f0215 GatewayEventEntry@lib/common/compute-contract-gateway-common/types.ts:31
+  - interface:869f60653fa984f384ebda98b750465b GatewayTokens@lib/common/compute-contract-gateway-common/types.ts:66
+  - interface:a92d50db702dea8d4a773cdf785d7086 GatewayComputeResponse@lib/common/compute-contract-gateway-common/types.ts:73
+  - interface:bb907138ab8576908b425812a1323e8a GatewayContractState@lib/common/compute-contract-gateway-common/types.ts:5
+  - interface:cba9e8e50afd227d1e11556b44027a17 ComputeRequestWorkerInput@lib/common/compute-contract-gateway-common/types.ts:55
+  - interface:e9438a48f8507c2cb4704a23772cbcfd ComputeRequestVMInput@lib/common/compute-contract-gateway-common/types.ts:42
 - id: sc.lib-common-fedproxy-rbac-common
   name: lib-common-fedproxy-rbac-common
   spec: specs/lib-common-fedproxy-rbac-common.yaml
@@ -834,6 +873,10 @@ system_contexts:
     level: MUST
   codeRefIndex:
   - file:lib/common/fedproxy-rbac-common/mod.ts mod.ts@lib/common/fedproxy-rbac-common/mod.ts
+  - function:a98ccef775e425fa7c13add3016e54f5 renderSubject@lib/common/fedproxy-rbac-common/mod.ts:16
+  - function:aac738c94c8e2dfa2a0ff4c0e8d5c018 buildSshKeyRbacRecord@lib/common/fedproxy-rbac-common/mod.ts:26
+  - function:e5377f0a379eb596837b1526cd73134c didPlcKey@lib/common/fedproxy-rbac-common/mod.ts:12
+  - interface:967a594352d4c9b86213f54d84909966 SshKeyRbacContext@lib/common/fedproxy-rbac-common/mod.ts:4
 - id: sc.lib-common-market-common
   name: lib-common-market-common
   spec: specs/lib-common-market-common.yaml
@@ -871,6 +914,19 @@ system_contexts:
   - file:lib/common/market-common/egress.ts egress.ts@lib/common/market-common/egress.ts
   - file:lib/common/market-common/mod.ts mod.ts@lib/common/market-common/mod.ts
   - file:lib/common/market-common/types.ts types.ts@lib/common/market-common/types.ts
+  - function:4a9182a659c42eaf5efea613d576bf56 assertSafeEgressUrl@lib/common/market-common/egress.ts:5
+  - function:98a3eb25fe3e5d71119b4776db96f280 strongRef@lib/common/market-common/types.ts:23
+  - function:bdb007fdd15fa3b35d2579e3f50a9102 noopLogger@lib/common/market-common/types.ts:21
+  - type_alias:094ab49db888ff112d27c2d9863156fb StrongRef@lib/common/market-common/types.ts:8
+  - type_alias:0ddacc3f4f8324551fc28543224d5848 Resolved@lib/common/market-common/types.ts:15
+  - type_alias:1415ed8e9c4445551461c01489f8e98e RFP@lib/common/market-common/types.ts:10
+  - type_alias:3b05835c22ae315ee54800118068199e EgressOptions@lib/common/market-common/egress.ts:1
+  - type_alias:4a83a08396757c59cee4d1abc1ac4e96 Bid@lib/common/market-common/types.ts:12
+  - type_alias:5227ebb1a1c9a0e6fc64c180ba49b225 Logger@lib/common/market-common/types.ts:19
+  - type_alias:68f1befbdba2e558d52f81fadb208604 MarketEvent@lib/common/market-common/types.ts:13
+  - type_alias:a1be7c028260b060bface7fb68430980 LogLevel@lib/common/market-common/types.ts:17
+  - type_alias:bf97d5bc1681c49e28bb73c0ef924a28 Offering@lib/common/market-common/types.ts:9
+  - type_alias:cecc1b0d37ba12dc3d30a216f27c4d7d Accept@lib/common/market-common/types.ts:11
 - id: sc.lib-common-market-lexicons
   name: lib-common-market-lexicons
   spec: specs/lib-common-market-lexicons.yaml

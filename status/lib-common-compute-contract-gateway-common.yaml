@@ -1,24 +1,72 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: 0e02b84eab965c551878bc155f04e16dc9ce35a7d1834a38676672ffe16c870c
+realizedSpecHash: 1b15587bfdecad86842734993bddce070e45e754b7a455de1131efc68f91a1d7
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'missing: CallerIdentity, ComputeRequestVMInput, ComputeRequestWorkerInput,
-    GatewayBidEntry, GatewayComputeResponse, GatewayContractState, GatewayEventEntry,
-    GatewayPolicySpec, GatewayTokens; unresolved: r.bid-entry: file:lib/common/compute-contract-gateway-common/types.ts,
-    r.bid-entry: interface:79ac11ae8e1a5e878c56818d0ea8f713, r.caller-identity: interface:54d56e2397fdff2c37bd648570123818,
-    r.compute-response: interface:a92d50db702dea8d4a773cdf785d7086, r.contract-state:
-    interface:869e37e6b7707634513f48f2312f0215, r.contract-state: interface:bb907138ab8576908b425812a1323e8a,
-    r.default-service-id: file:lib/common/compute-contract-gateway-common/nsids.ts,
-    r.mod-reexports: file:lib/common/compute-contract-gateway-common/mod.ts, r.no-dependencies:
-    file:lib/common/compute-contract-gateway-common/deno.json, r.policy-spec: interface:41ae11030dc803c5fa163f76b3aaeeb0,
-    r.tokens: interface:869f60653fa984f384ebda98b750465b, r.vm-request-input: interface:e9438a48f8507c2cb4704a23772cbcfd,
-    r.worker-request-input: interface:cba9e8e50afd227d1e11556b44027a17'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
-  reason: NotSyncedYet
-  message: no synced fingerprint has been recorded yet
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed
   message: the spec passes the validator
-observed: {}
+observed:
+  files:
+  - lib/common/compute-contract-gateway-common/mod.ts
+  - lib/common/compute-contract-gateway-common/nsids.ts
+  - lib/common/compute-contract-gateway-common/types.ts
+  treeFiles:
+  - lib/common/compute-contract-gateway-common/deno.json
+  interfaces:
+  - name: CallerIdentity
+    kind: interface
+    file: lib/common/compute-contract-gateway-common/types.ts
+    line: 1
+    codegraphId: interface:54d56e2397fdff2c37bd648570123818
+  - name: GatewayContractState
+    kind: interface
+    file: lib/common/compute-contract-gateway-common/types.ts
+    line: 5
+    codegraphId: interface:bb907138ab8576908b425812a1323e8a
+  - name: GatewayBidEntry
+    kind: interface
+    file: lib/common/compute-contract-gateway-common/types.ts
+    line: 24
+    codegraphId: interface:79ac11ae8e1a5e878c56818d0ea8f713
+  - name: GatewayEventEntry
+    kind: interface
+    file: lib/common/compute-contract-gateway-common/types.ts
+    line: 31
+    codegraphId: interface:869e37e6b7707634513f48f2312f0215
+  - name: GatewayPolicySpec
+    kind: interface
+    file: lib/common/compute-contract-gateway-common/types.ts
+    line: 36
+    codegraphId: interface:41ae11030dc803c5fa163f76b3aaeeb0
+  - name: ComputeRequestVMInput
+    kind: interface
+    file: lib/common/compute-contract-gateway-common/types.ts
+    line: 42
+    codegraphId: interface:e9438a48f8507c2cb4704a23772cbcfd
+  - name: ComputeRequestWorkerInput
+    kind: interface
+    file: lib/common/compute-contract-gateway-common/types.ts
+    line: 55
+    codegraphId: interface:cba9e8e50afd227d1e11556b44027a17
+  - name: GatewayTokens
+    kind: interface
+    file: lib/common/compute-contract-gateway-common/types.ts
+    line: 66
+    codegraphId: interface:869f60653fa984f384ebda98b750465b
+  - name: GatewayComputeResponse
+    kind: interface
+    file: lib/common/compute-contract-gateway-common/types.ts
+    line: 73
+    codegraphId: interface:a92d50db702dea8d4a773cdf785d7086
+  fingerprint: 0e02b84eab965c551878bc155f04e16dc9ce35a7d1834a38676672ffe16c870c

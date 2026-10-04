@@ -1,21 +1,61 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: 85c3c98e84d99a541d65e2aa64667cf7370f958680a1a68a2e06f40d73abb018
+realizedSpecHash: ae4185c10b33b9533636e67df5585e76edde2d5931aad20ae0f8044eef188ff2
 conditions:
 - type: CodeSynced
   status: "False"
   reason: InterfacesMissing
-  message: 'missing: ApiKey, CocoreClient, CocoreClientOptions, CreateApiKeyResponse,
-    ListApiKeysResponse, createCocoreClient; unresolved: r.create-api-key: function:1fea095a0bee325bdb1aae5e86e8f6a3,
-    r.create-api-key: interface:1bcea98b6e61d0fa858c001c956b655d, r.create-api-key:
-    interface:6c1e6b8fec8cdfaf8c00a2c93ec26f2e, r.default-appview-url: interface:8ec256e4f14d893e88afbca014d72b53,
-    r.error-on-non-ok: function:d182b9f8d24e2ca8806313b0bcd98280, r.list-api-keys:
-    interface:09decfc0b5223bf533f41d5230769bc8, r.list-api-keys: interface:a6b944b6f1859d7bd5b304b7a2b77b3c,
-    r.single-module-package: file:lib/cocore-api/deno.json, r.single-module-package:
-    file:lib/cocore-api/mod.ts'
+  message: 'undeclared: call'
 - type: Drifted
   status: "False"
-  reason: NotSyncedYet
-  message: no synced fingerprint has been recorded yet
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed
   message: the spec passes the validator
-observed: {}
+observed:
+  files:
+  - lib/cocore-api/mod.ts
+  treeFiles:
+  - lib/cocore-api/deno.json
+  interfaces:
+  - name: ApiKey
+    kind: interface
+    file: lib/cocore-api/mod.ts
+    line: 5
+    codegraphId: interface:a6b944b6f1859d7bd5b304b7a2b77b3c
+  - name: CreateApiKeyResponse
+    kind: interface
+    file: lib/cocore-api/mod.ts
+    line: 12
+    codegraphId: interface:1bcea98b6e61d0fa858c001c956b655d
+  - name: ListApiKeysResponse
+    kind: interface
+    file: lib/cocore-api/mod.ts
+    line: 17
+    codegraphId: interface:09decfc0b5223bf533f41d5230769bc8
+  - name: CocoreClientOptions
+    kind: interface
+    file: lib/cocore-api/mod.ts
+    line: 21
+    codegraphId: interface:8ec256e4f14d893e88afbca014d72b53
+  - name: CocoreClient
+    kind: interface
+    file: lib/cocore-api/mod.ts
+    line: 29
+    codegraphId: interface:6c1e6b8fec8cdfaf8c00a2c93ec26f2e
+  - name: createCocoreClient
+    kind: function
+    signature: '(opts: CocoreClientOptions): CocoreClient'
+    file: lib/cocore-api/mod.ts
+    line: 35
+    codegraphId: function:1fea095a0bee325bdb1aae5e86e8f6a3
+  - name: call
+    kind: function
+    signature: '(nsid: string, body?: Record<string, unknown>): Promise<unknown>'
+    file: lib/cocore-api/mod.ts
+    line: 40
+    codegraphId: function:d182b9f8d24e2ca8806313b0bcd98280
+  fingerprint: 85c3c98e84d99a541d65e2aa64667cf7370f958680a1a68a2e06f40d73abb018

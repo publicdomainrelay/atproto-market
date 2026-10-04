@@ -1,27 +1,115 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: 576545057cf681595711c4cf2d6801ece94776c014b287f6a7ef8eddf4cd1967
+realizedSpecHash: 4291659ed8752249ae19c8fcabdd2f3b24e0df8c20426cdc87ac27333f4b76e2
 conditions:
 - type: CodeSynced
   status: "False"
-  reason: InterfacesMissing
-  message: 'missing: CloudInitContext, TunnelCloudInitContext, UserDataModule, UserDataPatch,
-    WriteFileEntry, acceptBundleModule, buildDefaultUserData, buildTunnelUserData,
-    buildUserData, flattenLabel, getUserDataModules, injectJsrUrl, listUserDataModules,
-    registerUserDataModule; unresolved: r.accept-bundle: function:4b5291e8f10c0cf8f4ac044370b5d20e,
-    r.builtin-modules: file:lib/common/cloud-init-common/mod.ts, r.builtin-modules:
-    type_alias:41d76c33929582b594b1d002d3176708, r.cloud-config-header: function:b171eb2dbd8264151491ce36f02925d2,
-    r.context-fields: interface:0bccaee64ad56c10f80842c828570d30, r.deprecated-wrappers:
-    function:40149c728f060be41b2c8ee8a826902c, r.deprecated-wrappers: function:46c9fd0cecf9645ba56294190be1600c,
-    r.deprecated-wrappers: interface:a1ea99f0f39ad710f4f5c37a44b76b5a, r.flatten-label:
-    function:c42fe19fa18470a330f72a65da020d2d, r.inject-jsr-url: function:4466755423490bdd6cd4a58e579cc002,
-    r.module-registry: function:a68626e26bed80b6d685682d2680efdb, r.module-registry:
-    function:a852acc6663f06c9724c3272a33b42a4, r.module-registry: function:b757a298771ae8dcbe1086c37860fb1e,
-    r.patch-merge-semantics: interface:a70dcded359cb8e179e375b8adc0876c, r.patch-merge-semantics:
-    interface:ce3efe5cd2d89f183f1c90bd06992a98'
+  reason: CodeRefsUnresolved
+  message: 'unresolved requirement code refs: r.deprecated-wrappers: function:40149c728f060be41b2c8ee8a826902c,
+    r.deprecated-wrappers: function:46c9fd0cecf9645ba56294190be1600c, r.inject-jsr-url:
+    function:4466755423490bdd6cd4a58e579cc002'
 - type: Drifted
   status: "False"
-  reason: NotSyncedYet
-  message: no synced fingerprint has been recorded yet
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed
   message: the spec passes the validator
-observed: {}
+observed:
+  files:
+  - lib/common/cloud-init-common/mod.ts
+  treeFiles:
+  - lib/common/cloud-init-common/deno.json
+  interfaces:
+  - name: CloudInitContext
+    kind: interface
+    file: lib/common/cloud-init-common/mod.ts
+    line: 16
+    codegraphId: interface:0bccaee64ad56c10f80842c828570d30
+  - name: TunnelCloudInitContext
+    kind: interface
+    file: lib/common/cloud-init-common/mod.ts
+    line: 62
+    codegraphId: interface:a1ea99f0f39ad710f4f5c37a44b76b5a
+  - name: WriteFileEntry
+    kind: interface
+    file: lib/common/cloud-init-common/mod.ts
+    line: 77
+    codegraphId: interface:ce3efe5cd2d89f183f1c90bd06992a98
+  - name: UserDataPatch
+    kind: interface
+    file: lib/common/cloud-init-common/mod.ts
+    line: 86
+    codegraphId: interface:a70dcded359cb8e179e375b8adc0876c
+  - name: UserDataModule
+    kind: type_alias
+    file: lib/common/cloud-init-common/mod.ts
+    line: 99
+    codegraphId: type_alias:41d76c33929582b594b1d002d3176708
+  - name: flattenLabel
+    kind: function
+    signature: '(s: string): string'
+    file: lib/common/cloud-init-common/mod.ts
+    line: 102
+    codegraphId: function:c42fe19fa18470a330f72a65da020d2d
+  - name: registerUserDataModule
+    kind: function
+    signature: '(id: string, m: UserDataModule): void'
+    file: lib/common/cloud-init-common/mod.ts
+    line: 113
+    codegraphId: function:a68626e26bed80b6d685682d2680efdb
+  - name: getUserDataModules
+    kind: function
+    signature: '(ids: Array<string | UserDataModule>): UserDataModule[]'
+    file: lib/common/cloud-init-common/mod.ts
+    line: 118
+    codegraphId: function:b757a298771ae8dcbe1086c37860fb1e
+  - name: listUserDataModules
+    kind: function
+    signature: '(): string[]'
+    file: lib/common/cloud-init-common/mod.ts
+    line: 127
+    codegraphId: function:a852acc6663f06c9724c3272a33b42a4
+  - name: buildUserData
+    kind: function
+    signature: |-
+      (opts: {
+        ctx?: Partial<CloudInitContext>;
+        base?: string | null;
+        modules: Array<string | UserDataModule>;
+        overrides?: Partial<UserDataPatch>;
+      }): string
+    file: lib/common/cloud-init-common/mod.ts
+    line: 200
+    codegraphId: function:b171eb2dbd8264151491ce36f02925d2
+  - name: acceptBundleModule
+    kind: function
+    signature: |-
+      (
+        acceptPathVm: string,
+        bundle: Record<string, unknown>,
+      ): UserDataModule
+    file: lib/common/cloud-init-common/mod.ts
+    line: 220
+    codegraphId: function:4b5291e8f10c0cf8f4ac044370b5d20e
+  - name: buildDefaultUserData
+    kind: function
+    signature: '(ctx: CloudInitContext): string'
+    file: lib/common/cloud-init-common/mod.ts
+    line: 966
+    codegraphId: function:41125c28a19276b5d0ddf7a9f51b7436
+  - name: buildTunnelUserData
+    kind: function
+    signature: '(ctx: TunnelCloudInitContext): string'
+    file: lib/common/cloud-init-common/mod.ts
+    line: 974
+    codegraphId: function:72e17ff6735f25edb8145acd0e2f1775
+  - name: injectJsrUrl
+    kind: function
+    signature: '(userData: string, jsrUrl: string): string'
+    file: lib/common/cloud-init-common/mod.ts
+    line: 979
+    codegraphId: function:1035b4e24ba8cc3a1902d474bcfe3dae
+  fingerprint: 576545057cf681595711c4cf2d6801ece94776c014b287f6a7ef8eddf4cd1967
