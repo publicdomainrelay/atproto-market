@@ -321,7 +321,5 @@ observed:
         bodySerializer?: BodySerializer | null;
         serializedBody?: unknown;
       }): unknown
-observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 realizedSpecHash: 26c43ce3ebdd1dc5a91d84593462c53131a71bafc96e8b0387a1265445bc4c2e
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 7db345857e8b6877445aac371f185792cee3e360aba0ddeb898383ca876d5a35

@@ -16,7 +16,5 @@ observed:
   files:
   - lib/common/market-lexicons/network/attested.ts
   fingerprint: c7673c041255edfe8b6bcc2bc8e94c707cc2f12e17eba8f9994e766d5e478d36
-observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 realizedSpecHash: 97612fa1f7540b4f0fa7d2cf919c5d12e5dbc3d3ca11e87b6bec15f2c207d6e0
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: c7673c041255edfe8b6bcc2bc8e94c707cc2f12e17eba8f9994e766d5e478d36

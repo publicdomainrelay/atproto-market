@@ -107,7 +107,5 @@ observed:
       ): boolean
   treeFiles:
   - lib/hono-factory-did-plc-directory/deno.json
-observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 realizedSpecHash: 24bd293da611505b93f10f97e041152385e897428e3778465ebb50a7877d92d2
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 6ac00ee419ac35de281ee3412c187d99b4f7b950df196647cda1d89bbe721cb9

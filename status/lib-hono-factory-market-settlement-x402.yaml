@@ -1,11 +1,10 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
+- message: 'undeclared: X402SettlementConfig, X402SettlementEnv, createX402SettlementFactory'
+  reason: InterfacesMissing
+  status: "False"
   type: CodeSynced
-- message: no synced fingerprint has been recorded yet
-  reason: NotSyncedYet
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
   status: "False"
   type: Drifted
 - message: the spec passes the validator
@@ -35,7 +34,5 @@ observed:
     signature: '(config: X402SettlementConfig)'
   treeFiles:
   - lib/hono-factory-market-settlement-x402/deno.json
-observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 realizedSpecHash: d63a1cf9108bf7aba1f5504aff44d4cd2eb41d08a122176c28e00446255e11e0
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 9dce1b6a546cbb6d761e7561d54880cf8ca3a8531e086b9a1d6ff1b6c06f733d

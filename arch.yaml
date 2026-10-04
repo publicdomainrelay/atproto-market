@@ -952,10 +952,66 @@ system_contexts:
   id: sc.lib-hono-factory-market-settlement-x402
   name: lib-hono-factory-market-settlement-x402
   upstream: self
-- codeRefIndex:
+- code:
+  - lib/hono-factory-requester-xrpc/mod.ts
+  codeRefIndex:
   - file:lib/hono-factory-requester-xrpc/mod.ts mod.ts@lib/hono-factory-requester-xrpc/mod.ts
   depends_on:
   - sc.atproto-market
   id: sc.lib-hono-factory-requester-xrpc
   name: lib-hono-factory-requester-xrpc
+  upstream: self
+- code:
+  - lib/hono-factory-secrets-oidc/mod.ts
+  codeRefIndex:
+  - file:lib/hono-factory-secrets-oidc/mod.ts mod.ts@lib/hono-factory-secrets-oidc/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-hono-factory-secrets-oidc
+  name: lib-hono-factory-secrets-oidc
+  upstream: self
+- code:
+  - lib/market-atproto/attest.ts
+  - lib/market-atproto/auth.ts
+  - lib/market-atproto/badge-blue-keys.ts
+  - lib/market-atproto/bid.ts
+  - lib/market-atproto/client.ts
+  - lib/market-atproto/contract.ts
+  - lib/market-atproto/mod.ts
+  - lib/market-atproto/records.ts
+  - lib/market-atproto/server.ts
+  - lib/market-atproto/signing.ts
+  codeRefIndex:
+  - file:lib/market-atproto/attest.ts attest.ts@lib/market-atproto/attest.ts
+  - file:lib/market-atproto/auth.ts auth.ts@lib/market-atproto/auth.ts
+  - file:lib/market-atproto/badge-blue-keys.ts badge-blue-keys.ts@lib/market-atproto/badge-blue-keys.ts
+  - file:lib/market-atproto/bid.ts bid.ts@lib/market-atproto/bid.ts
+  - file:lib/market-atproto/client.ts client.ts@lib/market-atproto/client.ts
+  - file:lib/market-atproto/contract.ts contract.ts@lib/market-atproto/contract.ts
+  - file:lib/market-atproto/mod.ts mod.ts@lib/market-atproto/mod.ts
+  - file:lib/market-atproto/records.ts records.ts@lib/market-atproto/records.ts
+  - file:lib/market-atproto/server.ts server.ts@lib/market-atproto/server.ts
+  - file:lib/market-atproto/signing.ts signing.ts@lib/market-atproto/signing.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-market-atproto
+  name: lib-market-atproto
+  upstream: self
+- code:
+  - lib/market-bidder/mod.ts
+  codeRefIndex:
+  - file:lib/market-bidder/mod.ts mod.ts@lib/market-bidder/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-market-bidder
+  name: lib-market-bidder
+  upstream: self
+- code:
+  - lib/market-bidder-agent/mod.ts
+  codeRefIndex:
+  - file:lib/market-bidder-agent/mod.ts mod.ts@lib/market-bidder-agent/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-market-bidder-agent
+  name: lib-market-bidder-agent
   upstream: self

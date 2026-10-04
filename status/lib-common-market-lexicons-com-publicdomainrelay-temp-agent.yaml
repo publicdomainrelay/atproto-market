@@ -19,7 +19,5 @@ observed:
   - lib/common/market-lexicons/com/publicdomainrelay/temp/agent/skill.defs.ts
   - lib/common/market-lexicons/com/publicdomainrelay/temp/agent/skill.ts
   fingerprint: 861aa24b4224ba0d2928753881e57ae81b5aac4236b564ad0bf83f0c05e38866
-observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 realizedSpecHash: be240053bfbaeb94ba75b07ba74f7d4684b3fd688265bdaa10a9f2f23406f2ba
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 861aa24b4224ba0d2928753881e57ae81b5aac4236b564ad0bf83f0c05e38866

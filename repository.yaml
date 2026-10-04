@@ -16,4 +16,6 @@ spec:
 status:
   headCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
   indexedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
+  observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
   phase: Indexing
+  syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b

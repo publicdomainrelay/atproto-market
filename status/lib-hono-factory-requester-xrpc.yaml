@@ -1,1 +1,36 @@
-observed: {}
+conditions:
+- message: 'undeclared: RequesterFactoryOptions, createRequesterFactory'
+  reason: InterfacesMissing
+  status: "False"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/hono-factory-requester-xrpc/mod.ts
+  fingerprint: f0becfeadc3d2372da177a4b9e8342ec9f2ba1d78585787d6f03e7032924544d
+  interfaces:
+  - codegraphId: interface:24e3920dde2766781bd325714476a696
+    file: lib/hono-factory-requester-xrpc/mod.ts
+    kind: interface
+    line: 17
+    name: RequesterFactoryOptions
+  - codegraphId: function:4adb00e3e75b63bbad98d6f295adf81c
+    file: lib/hono-factory-requester-xrpc/mod.ts
+    kind: function
+    line: 57
+    name: createRequesterFactory
+    signature: |-
+      (
+        opts: RequesterFactoryOptions,
+      ): Promise<{ stop: () => void }>
+  treeFiles:
+  - lib/hono-factory-requester-xrpc/deno.json
+realizedSpecHash: 7fa28551fc3d9207cd1966905c6770831ccc0770b125e8ff8f0d1871be5ac62f
+syncedFingerprint: f0becfeadc3d2372da177a4b9e8342ec9f2ba1d78585787d6f03e7032924544d
