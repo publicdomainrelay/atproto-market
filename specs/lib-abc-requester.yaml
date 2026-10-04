@@ -1,0 +1,12 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/abc/requester/mod.ts mod.ts@lib/abc/requester/mod.ts
+kind: SystemContext
+metadata:
+  name: lib-abc-requester
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

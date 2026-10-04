@@ -1,0 +1,12 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/abc/compute-contract-gateway/mod.ts mod.ts@lib/abc/compute-contract-gateway/mod.ts
+kind: SystemContext
+metadata:
+  name: lib-abc-compute-contract-gateway
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

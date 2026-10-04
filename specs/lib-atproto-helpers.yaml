@@ -1,0 +1,15 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/atproto-helpers/agent.ts agent.ts@lib/atproto-helpers/agent.ts
+- file:lib/atproto-helpers/misc.ts misc.ts@lib/atproto-helpers/misc.ts
+- file:lib/atproto-helpers/mod.ts mod.ts@lib/atproto-helpers/mod.ts
+- file:lib/atproto-helpers/oauth-qr-session.ts oauth-qr-session.ts@lib/atproto-helpers/oauth-qr-session.ts
+kind: SystemContext
+metadata:
+  name: lib-atproto-helpers
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

@@ -1,0 +1,297 @@
+conditions:
+- message: 'undeclared: ATProto, AtprotoAgentLike, CreateATProtoOpts, CreateLocalPDSAgentOpts,
+    CreateOAuthAgentOpts, CreateRemoteAgentOpts, LocalPDSAgent, OAuthAgent, OAuthSessionData,
+    OAuthSessionExpiredError, OAuthSessionExpiredError.constructor, atUriAuthority,
+    callService, checkSession, createATProto, createLocalPDSAgent, createOAuthAgent,
+    createOAuthAgentFromSession, createRecord, createRemoteAgent, createRepoRecord,
+    createSignedRepoRecord, deleteRecord, getRecord, getSession, listReposByCollection,
+    loginAgent, ownServiceDidWeb, parseAtUri, pdsForDid, pollForOAuthSession, refreshTokens,
+    requestCrawl, resolveAs, saveOAuthQRSession, tryRestoreOAuthQRSession, updateRecord'
+  reason: InterfacesMissing
+  status: "False"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/atproto-helpers/agent.ts
+  - lib/atproto-helpers/misc.ts
+  - lib/atproto-helpers/mod.ts
+  - lib/atproto-helpers/oauth-qr-session.ts
+  fingerprint: 0504f641f7ac23b9b163d968c308c8df75ac00a51fa62b5cec413f7f091fabc4
+  interfaces:
+  - codegraphId: interface:e0ab4ec3b2df74288a9ef13801013959
+    file: lib/atproto-helpers/agent.ts
+    kind: interface
+    line: 27
+    name: AtprotoAgentLike
+  - codegraphId: interface:f7ce7dfac1fcdf268e6ed934d41a6b29
+    file: lib/atproto-helpers/agent.ts
+    kind: interface
+    line: 39
+    name: CreateATProtoOpts
+  - codegraphId: interface:807e9a2852208ca9fa9c3f3dc245262f
+    file: lib/atproto-helpers/agent.ts
+    kind: interface
+    line: 46
+    name: ATProto
+  - codegraphId: function:31c65f0f185060332167efd7fc6e6d7c
+    file: lib/atproto-helpers/agent.ts
+    kind: function
+    line: 76
+    name: createATProto
+    signature: '(opts: CreateATProtoOpts): Promise<ATProto>'
+  - codegraphId: function:3e90f5dbb5111b07df987d91fcdeaf1c
+    file: lib/atproto-helpers/agent.ts
+    kind: function
+    line: 83
+    name: createRecord
+    signature: |-
+      (
+          collection: string,
+          record: Record<string, unknown>,
+        ): Promise<StrongRef>
+  - codegraphId: function:6a0c4068be3b125828b666d263cc18ea
+    file: lib/atproto-helpers/agent.ts
+    kind: function
+    line: 101
+    name: updateRecord
+    signature: |-
+      (
+          collection: string,
+          rkey: string,
+          record: Record<string, unknown>,
+        ): Promise<StrongRef>
+  - codegraphId: function:c81124baa930594366258e2c4bec56be
+    file: lib/atproto-helpers/agent.ts
+    kind: function
+    line: 119
+    name: createRepoRecord
+    signature: |-
+      (
+          collection: string,
+          record: Record<string, unknown>,
+        ): Promise<{ uri: string; cid: string }>
+  - codegraphId: function:ee9ae97184cfe644c817bf83f01cc4e5
+    file: lib/atproto-helpers/agent.ts
+    kind: function
+    line: 133
+    name: createSignedRepoRecord
+    signature: |-
+      (
+          collection: string,
+          record: Record<string, unknown>,
+          issuer?: string,
+        ): Promise<{ uri: string; cid: string; record: Record<string, unknown> }>
+  - codegraphId: function:37176259ad0bf8cca398f47d8181537d
+    file: lib/atproto-helpers/agent.ts
+    kind: function
+    line: 151
+    name: deleteRecord
+    signature: '(collection: string, rkey: string): Promise<void>'
+  - codegraphId: function:3caa35e6f44a7b681959c9df2a5753fa
+    file: lib/atproto-helpers/agent.ts
+    kind: function
+    line: 155
+    name: callService
+    signature: |-
+      (
+          endpointUrl: string,
+          nsid: string,
+          lxm: string,
+          body: Record<string, unknown>,
+        ): Promise<{ status: number; ok: boolean; body: unknown }>
+  - codegraphId: function:6b6cc11628f77edf2c2c12e68f5a75c4
+    file: lib/atproto-helpers/agent.ts
+    kind: function
+    line: 193
+    name: requestCrawl
+    signature: '(relayUrl: string, hostname: string): Promise<void>'
+  - codegraphId: function:09f008e00ce5312275207c9bb985bf56
+    file: lib/atproto-helpers/agent.ts
+    kind: function
+    line: 213
+    name: listReposByCollection
+    signature: '(relayUrl: string, collection: string): Promise<string[]>'
+  - codegraphId: interface:c01302c11785b2aad10f98ef090f5ab9
+    file: lib/atproto-helpers/agent.ts
+    kind: interface
+    line: 249
+    name: CreateLocalPDSAgentOpts
+  - codegraphId: interface:b317984f729313aa3263448156dc7422
+    file: lib/atproto-helpers/agent.ts
+    kind: interface
+    line: 262
+    name: LocalPDSAgent
+  - codegraphId: function:1d90901125c6e1d8dfd922e2ed845766
+    file: lib/atproto-helpers/agent.ts
+    kind: function
+    line: 276
+    name: createLocalPDSAgent
+    signature: '(opts: CreateLocalPDSAgentOpts): Promise<LocalPDSAgent>'
+  - codegraphId: interface:4f0df49504aa975e2e54a985698793b2
+    file: lib/atproto-helpers/agent.ts
+    kind: interface
+    line: 435
+    name: CreateRemoteAgentOpts
+  - codegraphId: function:9bec0d16cfa15fbf75d6c2c9d9ce955f
+    file: lib/atproto-helpers/agent.ts
+    kind: function
+    line: 441
+    name: createRemoteAgent
+    signature: '(opts: CreateRemoteAgentOpts): Promise<AtprotoAgentLike>'
+  - codegraphId: interface:3909e6cc4ffe1847476e7bebfc2b5cdd
+    file: lib/atproto-helpers/agent.ts
+    kind: interface
+    line: 507
+    name: CreateOAuthAgentOpts
+  - codegraphId: interface:21b8d823b481d84d8026709425577f6a
+    file: lib/atproto-helpers/agent.ts
+    kind: interface
+    line: 518
+    name: OAuthAgent
+  - codegraphId: function:86f938ce1d76c8a1f32a886fb2fb32e9
+    file: lib/atproto-helpers/agent.ts
+    kind: function
+    line: 525
+    name: createOAuthAgent
+    signature: '(opts: CreateOAuthAgentOpts): Promise<OAuthAgent>'
+  - codegraphId: function:2939f2ecc3f558571114fcb90118a88f
+    file: lib/atproto-helpers/agent.ts
+    kind: function
+    line: 560
+    name: getSession
+    signature: ()
+  - codegraphId: class:1566ce3568946d393c5b85eaa61b269a
+    file: lib/atproto-helpers/agent.ts
+    kind: class
+    line: 685
+    name: OAuthSessionExpiredError
+  - codegraphId: method:185b959a4bfe59388a3e65533b314ec1
+    file: lib/atproto-helpers/agent.ts
+    kind: method
+    line: 686
+    name: OAuthSessionExpiredError.constructor
+    signature: '(message: string, public readonly sessionPath?: string)'
+  - codegraphId: interface:58f1e081030b997d8b6d09a946945b14
+    file: lib/atproto-helpers/agent.ts
+    kind: interface
+    line: 692
+    name: OAuthSessionData
+  - codegraphId: function:664162a0c26c952691307bc83f9e48a6
+    file: lib/atproto-helpers/agent.ts
+    kind: function
+    line: 706
+    name: pollForOAuthSession
+    signature: |-
+      (opts: {
+        cliDid: string;
+        signer: { did(): string; sign(bytes: Uint8Array): Promise<Uint8Array> };
+        qrFedforkOrigin: string;
+        pollIntervalMs?: number;
+        timeoutMs?: number;
+        logger?: StructuredLoggerInterface;
+      }): Promise<OAuthSessionData>
+  - codegraphId: function:61e36407a3a21d0845f4433419538d37
+    file: lib/atproto-helpers/agent.ts
+    kind: function
+    line: 958
+    name: createOAuthAgentFromSession
+    signature: |-
+      (
+        sessionData: OAuthSessionData,
+        opts?: OAuthAgentFromSessionOpts,
+      ): Promise<AtprotoAgentLike & { sessionData: OAuthSessionData; dispose(): void; proactiveRefresh(): Promise<void> }>
+  - codegraphId: function:e3db23bd44e56bd354195ad1232a79a5
+    file: lib/atproto-helpers/agent.ts
+    kind: function
+    line: 977
+    name: checkSession
+    signature: '(): void'
+  - codegraphId: function:66ccdff293ab5a09aac5708669d6cef4
+    file: lib/atproto-helpers/agent.ts
+    kind: function
+    line: 988
+    name: refreshTokens
+    signature: '(): Promise<void>'
+  - codegraphId: function:d6435492681cef08f5a89f2c4ae353d5
+    file: lib/atproto-helpers/misc.ts
+    kind: function
+    line: 10
+    name: ownServiceDidWeb
+    signature: '(base_url: string): string'
+  - codegraphId: function:7e251839adec5d1acb7a20677dc42d17
+    file: lib/atproto-helpers/misc.ts
+    kind: function
+    line: 14
+    name: atUriAuthority
+    signature: '(uri: string): string'
+  - codegraphId: function:a907c5bbc24af7160b7fa45b125f67f5
+    file: lib/atproto-helpers/misc.ts
+    kind: function
+    line: 18
+    name: loginAgent
+    signature: '(handle: string, password: string): Promise<void>'
+  - codegraphId: function:5e05dbc129e7d20330a96f2b8b371acc
+    file: lib/atproto-helpers/misc.ts
+    kind: function
+    line: 36
+    name: parseAtUri
+    signature: '(uri: string): { repo: string; collection: string; rkey: string }'
+  - codegraphId: function:a3ab0f133ae10b069bf4b6a4f08b7db5
+    file: lib/atproto-helpers/misc.ts
+    kind: function
+    line: 41
+    name: pdsForDid
+    signature: '(did: string): Promise<string>'
+  - codegraphId: function:89a524c1470f01c9a5732de495c47427
+    file: lib/atproto-helpers/misc.ts
+    kind: function
+    line: 49
+    name: getRecord
+    signature: '(atUri: string, cid: string): Promise<{ uri: string; cid: string;
+      value: Record<string, unknown> }>'
+  - codegraphId: function:08d6aae41cdb39780531e4b0b9970c5d
+    file: lib/atproto-helpers/misc.ts
+    kind: function
+    line: 57
+    name: resolveAs
+    signature: '(atUri: string, cid: string): Promise<T & { _uri: string; _cid: string
+      }>'
+  - codegraphId: function:b34dbba7673214aea15a7263a57fa04d
+    file: lib/atproto-helpers/oauth-qr-session.ts
+    kind: function
+    line: 24
+    name: tryRestoreOAuthQRSession
+    signature: |-
+      (opts: {
+        logger?: StructuredLoggerInterface;
+        sessionPath?: string;
+        label?: string;
+        /** AT Protocol handle (e.g. "alice.bsky.social") -- keys the cache file per account. */
+        handle?: string;
+        autoRefreshThresholdMs?: number;
+        /** OAuth client_id the stored session was issued to; refreshes must use it. */
+        clientId?: string;
+        onSessionExpired?: (err: OAuthSessionExpiredError) => void;
+      }): Promise<(AtprotoAgentLike & { sessionData: OAuthSessionData; dispose(): void; proactiveRefresh(): Promise<void> }) | null>
+  - codegraphId: function:7bb086235074f3f23a228b28c80d8f33
+    file: lib/atproto-helpers/oauth-qr-session.ts
+    kind: function
+    line: 73
+    name: saveOAuthQRSession
+    signature: |-
+      (
+        session: OAuthSessionData,
+        opts?: { sessionPath?: string; label?: string; /** AT Protocol handle -- keys the cache file per account. */ handle?: string },
+      ): Promise<void>
+  treeFiles:
+  - lib/atproto-helpers/deno.json
+realizedSpecHash: 78f58f32af8545571186239ea6cf9219f7ad349a4c9c98e9406cf1afa06a7a9b
+syncedFingerprint: 0504f641f7ac23b9b163d968c308c8df75ac00a51fa62b5cec413f7f091fabc4

@@ -1,0 +1,23 @@
+conditions:
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  fingerprint: c615d9a5fb01683177aab2bc918332dd6ec5ca88dd5f90e744df41b5462d1f34
+  treeFiles:
+  - .gitignore
+  - LEXICONS.md
+  - deno.json
+  - deno.lock
+realizedSpecHash: 0303f9c3187a2140c99f417f8e7febbca7f4801cffb6a1a5ccc184ad9d182461
+syncedFingerprint: c615d9a5fb01683177aab2bc918332dd6ec5ca88dd5f90e744df41b5462d1f34

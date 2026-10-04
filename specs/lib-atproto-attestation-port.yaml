@@ -1,0 +1,19 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/atproto-attestation-port/attestation.ts attestation.ts@lib/atproto-attestation-port/attestation.ts
+- file:lib/atproto-attestation-port/cid.ts cid.ts@lib/atproto-attestation-port/cid.ts
+- file:lib/atproto-attestation-port/compat.ts compat.ts@lib/atproto-attestation-port/compat.ts
+- file:lib/atproto-attestation-port/errors.ts errors.ts@lib/atproto-attestation-port/errors.ts
+- file:lib/atproto-attestation-port/input.ts input.ts@lib/atproto-attestation-port/input.ts
+- file:lib/atproto-attestation-port/mod.ts mod.ts@lib/atproto-attestation-port/mod.ts
+- file:lib/atproto-attestation-port/signature.ts signature.ts@lib/atproto-attestation-port/signature.ts
+- file:lib/atproto-attestation-port/types.ts types.ts@lib/atproto-attestation-port/types.ts
+kind: SystemContext
+metadata:
+  name: lib-atproto-attestation-port
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

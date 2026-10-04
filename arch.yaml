@@ -1,0 +1,169 @@
+apiVersion: open-architecture.dffml.github.io/v0alpha1
+kind: GeneratedArchitecture
+metadata:
+  branch: open-architecture/atproto-market--spec-iroh-dumbpipe-20261004141803
+  name: atproto-market
+system_contexts:
+- id: sc.atproto-market
+  name: atproto-market
+  upstream: self
+- code:
+  - compute-contract-full-flow/run_full_flow.ts
+  codeRefIndex:
+  - file:compute-contract-full-flow/run_full_flow.ts run_full_flow.ts@compute-contract-full-flow/run_full_flow.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.compute-contract-full-flow
+  name: compute-contract-full-flow
+  upstream: self
+- code:
+  - hono-bidder/cli-args-env.ts
+  - hono-bidder/mod.ts
+  codeRefIndex:
+  - file:hono-bidder/cli-args-env.ts cli-args-env.ts@hono-bidder/cli-args-env.ts
+  - file:hono-bidder/mod.ts mod.ts@hono-bidder/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.hono-bidder
+  name: hono-bidder
+  upstream: self
+- code:
+  - hono-compute-contract-gateway/mod.ts
+  codeRefIndex:
+  - file:hono-compute-contract-gateway/mod.ts mod.ts@hono-compute-contract-gateway/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.hono-compute-contract-gateway
+  name: hono-compute-contract-gateway
+  upstream: self
+- code:
+  - hono-market/mod.ts
+  codeRefIndex:
+  - file:hono-market/mod.ts mod.ts@hono-market/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.hono-market
+  name: hono-market
+  upstream: self
+- code:
+  - hono-plc/mod.ts
+  codeRefIndex:
+  - file:hono-plc/mod.ts mod.ts@hono-plc/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.hono-plc
+  name: hono-plc
+  upstream: self
+- code:
+  - lib/abc/compute-contract-gateway/mod.ts
+  codeRefIndex:
+  - file:lib/abc/compute-contract-gateway/mod.ts mod.ts@lib/abc/compute-contract-gateway/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-abc-compute-contract-gateway
+  name: lib-abc-compute-contract-gateway
+  upstream: self
+- code:
+  - lib/abc/guest-capability/mod.ts
+  codeRefIndex:
+  - file:lib/abc/guest-capability/mod.ts mod.ts@lib/abc/guest-capability/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-abc-guest-capability
+  name: lib-abc-guest-capability
+  upstream: self
+- code:
+  - lib/abc/market/attestation.ts
+  - lib/abc/market/callbacks.ts
+  - lib/abc/market/contract.ts
+  - lib/abc/market/mod.ts
+  - lib/abc/market/resolve.ts
+  - lib/abc/market/settlement.ts
+  codeRefIndex:
+  - file:lib/abc/market/attestation.ts attestation.ts@lib/abc/market/attestation.ts
+  - file:lib/abc/market/callbacks.ts callbacks.ts@lib/abc/market/callbacks.ts
+  - file:lib/abc/market/contract.ts contract.ts@lib/abc/market/contract.ts
+  - file:lib/abc/market/mod.ts mod.ts@lib/abc/market/mod.ts
+  - file:lib/abc/market/resolve.ts resolve.ts@lib/abc/market/resolve.ts
+  - file:lib/abc/market/settlement.ts settlement.ts@lib/abc/market/settlement.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-abc-market
+  name: lib-abc-market
+  upstream: self
+- code:
+  - lib/abc/market-bidder/mod.ts
+  codeRefIndex:
+  - file:lib/abc/market-bidder/mod.ts mod.ts@lib/abc/market-bidder/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-abc-market-bidder
+  name: lib-abc-market-bidder
+  upstream: self
+- code:
+  - lib/abc/requester/mod.ts
+  codeRefIndex:
+  - file:lib/abc/requester/mod.ts mod.ts@lib/abc/requester/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-abc-requester
+  name: lib-abc-requester
+  upstream: self
+- code:
+  - lib/abc/trust-graph/mod.ts
+  codeRefIndex:
+  - file:lib/abc/trust-graph/mod.ts mod.ts@lib/abc/trust-graph/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-abc-trust-graph
+  name: lib-abc-trust-graph
+  upstream: self
+- code:
+  - lib/atproto-attestation-port/attestation.ts
+  - lib/atproto-attestation-port/cid.ts
+  - lib/atproto-attestation-port/compat.ts
+  - lib/atproto-attestation-port/errors.ts
+  - lib/atproto-attestation-port/input.ts
+  - lib/atproto-attestation-port/mod.ts
+  - lib/atproto-attestation-port/signature.ts
+  - lib/atproto-attestation-port/types.ts
+  codeRefIndex:
+  - file:lib/atproto-attestation-port/attestation.ts attestation.ts@lib/atproto-attestation-port/attestation.ts
+  - file:lib/atproto-attestation-port/cid.ts cid.ts@lib/atproto-attestation-port/cid.ts
+  - file:lib/atproto-attestation-port/compat.ts compat.ts@lib/atproto-attestation-port/compat.ts
+  - file:lib/atproto-attestation-port/errors.ts errors.ts@lib/atproto-attestation-port/errors.ts
+  - file:lib/atproto-attestation-port/input.ts input.ts@lib/atproto-attestation-port/input.ts
+  - file:lib/atproto-attestation-port/mod.ts mod.ts@lib/atproto-attestation-port/mod.ts
+  - file:lib/atproto-attestation-port/signature.ts signature.ts@lib/atproto-attestation-port/signature.ts
+  - file:lib/atproto-attestation-port/types.ts types.ts@lib/atproto-attestation-port/types.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-atproto-attestation-port
+  name: lib-atproto-attestation-port
+  upstream: self
+- code:
+  - lib/atproto-helpers/agent.ts
+  - lib/atproto-helpers/misc.ts
+  - lib/atproto-helpers/mod.ts
+  - lib/atproto-helpers/oauth-qr-session.ts
+  codeRefIndex:
+  - file:lib/atproto-helpers/agent.ts agent.ts@lib/atproto-helpers/agent.ts
+  - file:lib/atproto-helpers/misc.ts misc.ts@lib/atproto-helpers/misc.ts
+  - file:lib/atproto-helpers/mod.ts mod.ts@lib/atproto-helpers/mod.ts
+  - file:lib/atproto-helpers/oauth-qr-session.ts oauth-qr-session.ts@lib/atproto-helpers/oauth-qr-session.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-atproto-helpers
+  name: lib-atproto-helpers
+  upstream: self
+- code:
+  - lib/atproto-oauth-helpers/key.ts
+  - lib/atproto-oauth-helpers/mod.ts
+  codeRefIndex:
+  - file:lib/atproto-oauth-helpers/key.ts key.ts@lib/atproto-oauth-helpers/key.ts
+  - file:lib/atproto-oauth-helpers/mod.ts mod.ts@lib/atproto-oauth-helpers/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-atproto-oauth-helpers
+  name: lib-atproto-oauth-helpers
+  upstream: self

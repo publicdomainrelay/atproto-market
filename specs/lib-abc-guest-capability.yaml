@@ -1,0 +1,12 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/abc/guest-capability/mod.ts mod.ts@lib/abc/guest-capability/mod.ts
+kind: SystemContext
+metadata:
+  name: lib-abc-guest-capability
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

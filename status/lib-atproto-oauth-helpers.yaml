@@ -1,0 +1,113 @@
+conditions:
+- message: 'undeclared: WebCryptoKey, WebCryptoKey.constructor, WebCryptoKey.createJwt,
+    WebCryptoKey.verifyJwt, createWebCryptoKey, jsonSessionStore, load, memoryStateStore,
+    oauthClientMetadata, save, startLoopbackCallbackServer, webCryptoRuntime'
+  reason: InterfacesMissing
+  status: "False"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/atproto-oauth-helpers/key.ts
+  - lib/atproto-oauth-helpers/mod.ts
+  fingerprint: 1b70ada817d729068f36dbbc31ec327c7ebca73a9fe5861620b4b3a01eb100cc
+  interfaces:
+  - codegraphId: class:5a1bec4d77c5f5a5cde8c04bb59bca88
+    file: lib/atproto-oauth-helpers/key.ts
+    kind: class
+    line: 11
+    name: WebCryptoKey
+  - codegraphId: method:2c62f219629eb196fc241a82271bf951
+    file: lib/atproto-oauth-helpers/key.ts
+    kind: method
+    line: 16
+    name: WebCryptoKey.constructor
+    signature: |-
+      (
+          cryptoKey: CryptoKey,
+          publicJwk: Record<string, unknown>,
+          privateJwk: Record<string, unknown>,
+          alg: string,
+          kid: string,
+        )
+  - codegraphId: method:26adc3684a97b0c5cac3325b5165757c
+    file: lib/atproto-oauth-helpers/key.ts
+    kind: method
+    line: 30
+    name: WebCryptoKey.createJwt
+    signature: '(header: any, payload: any): Promise<`${string}.${string}.${string}`>'
+  - codegraphId: method:e6fca13262fb7317e7cd6ca588b27877
+    file: lib/atproto-oauth-helpers/key.ts
+    kind: method
+    line: 45
+    name: WebCryptoKey.verifyJwt
+    signature: '(_token: string, _options?: any): Promise<any>'
+  - codegraphId: function:a1f1c096bf7c6dd3ad9ba01660767894
+    file: lib/atproto-oauth-helpers/key.ts
+    kind: function
+    line: 55
+    name: createWebCryptoKey
+    signature: '(algs: string[]): Promise<Key>'
+  - codegraphId: function:c4b50dc71822e21c61d8462aa6849574
+    file: lib/atproto-oauth-helpers/mod.ts
+    kind: function
+    line: 8
+    name: webCryptoRuntime
+    signature: '(): RuntimeImplementation'
+  - codegraphId: function:7981a0b8b11bca99dd8741f34edb3e25
+    file: lib/atproto-oauth-helpers/mod.ts
+    kind: function
+    line: 22
+    name: memoryStateStore
+    signature: '(): StateStore'
+  - codegraphId: function:d160bc8be496a8089360e4f03266343f
+    file: lib/atproto-oauth-helpers/mod.ts
+    kind: function
+    line: 32
+    name: jsonSessionStore
+    signature: '(filePath: string): SessionStore'
+  - codegraphId: function:3cb1b51f5aea3838133b4e60f686144d
+    file: lib/atproto-oauth-helpers/mod.ts
+    kind: function
+    line: 34
+    name: load
+    signature: '(): Promise<Record<string, unknown>>'
+  - codegraphId: function:fdf5c99b8f6ee5d65a5a59079345a3b3
+    file: lib/atproto-oauth-helpers/mod.ts
+    kind: function
+    line: 44
+    name: save
+    signature: '(): Promise<void>'
+  - codegraphId: function:d03b1bd1ba44ea92ad6b5bb772af7fe3
+    file: lib/atproto-oauth-helpers/mod.ts
+    kind: function
+    line: 55
+    name: oauthClientMetadata
+    signature: |-
+      (opts: {
+        clientId?: string;
+        redirectUri?: string;
+        scope: string;
+        clientName?: string;
+      }): Record<string, unknown>
+  - codegraphId: function:653db074b84283be302a08bc6df60d44
+    file: lib/atproto-oauth-helpers/mod.ts
+    kind: function
+    line: 75
+    name: startLoopbackCallbackServer
+    signature: |-
+      (port: number): {
+        promise: Promise<Record<string, string>>;
+        shutdown(): void;
+      }
+  treeFiles:
+  - lib/atproto-oauth-helpers/deno.json
+realizedSpecHash: 4394d799dcb40f071ad6a091853213c5d771533fab47c5db824f3c5e274054a9
+syncedFingerprint: 1b70ada817d729068f36dbbc31ec327c7ebca73a9fe5861620b4b3a01eb100cc

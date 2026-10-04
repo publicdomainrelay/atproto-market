@@ -1,0 +1,58 @@
+conditions:
+- message: 'undeclared: ActiveContract, CallbackFactoryDeps, CallbackSet, ContractEvent,
+    GuestContractEntry, MarketBidderProviderRef, PolicyExecOptions'
+  reason: InterfacesMissing
+  status: "False"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/abc/market-bidder/mod.ts
+  fingerprint: 7b57f4f6f9691308c1770235363a8cfb91aed6336f5c81d5b5552ca7041fb45f
+  interfaces:
+  - codegraphId: interface:9e5d28d053bf9ead50572ed7deb21bda
+    file: lib/abc/market-bidder/mod.ts
+    kind: interface
+    line: 13
+    name: GuestContractEntry
+  - codegraphId: interface:92e6f8d9226ce7be70eb5107af0d0b2d
+    file: lib/abc/market-bidder/mod.ts
+    kind: interface
+    line: 20
+    name: ActiveContract
+  - codegraphId: interface:7caf4582318b20bae5d3f32ec19f2169
+    file: lib/abc/market-bidder/mod.ts
+    kind: interface
+    line: 28
+    name: ContractEvent
+  - codegraphId: interface:5609df4ae617cdffc9fce7738e5e75be
+    file: lib/abc/market-bidder/mod.ts
+    kind: interface
+    line: 39
+    name: CallbackSet
+  - codegraphId: interface:2c4596abe13b14dd4988fbb0b94602fc
+    file: lib/abc/market-bidder/mod.ts
+    kind: interface
+    line: 46
+    name: CallbackFactoryDeps
+  - codegraphId: interface:6ec00215165ec55bc47d1c24c39bb995
+    file: lib/abc/market-bidder/mod.ts
+    kind: interface
+    line: 80
+    name: PolicyExecOptions
+  - codegraphId: interface:647384108ca521aa1b24b60fbbf8e53a
+    file: lib/abc/market-bidder/mod.ts
+    kind: interface
+    line: 87
+    name: MarketBidderProviderRef
+  treeFiles:
+  - lib/abc/market-bidder/deno.json
+realizedSpecHash: 5c58602d96d7880c7c05097e6aa92fde34d2a71c3e2725ff1d0f5ac712319ab1
+syncedFingerprint: 7b57f4f6f9691308c1770235363a8cfb91aed6336f5c81d5b5552ca7041fb45f

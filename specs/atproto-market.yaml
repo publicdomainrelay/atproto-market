@@ -1,0 +1,8 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SystemContext
+metadata:
+  name: atproto-market
+  namespace: default
+spec:
+  repository: atproto-market
+  upstream: self

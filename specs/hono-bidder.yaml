@@ -1,0 +1,13 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:hono-bidder/cli-args-env.ts cli-args-env.ts@hono-bidder/cli-args-env.ts
+- file:hono-bidder/mod.ts mod.ts@hono-bidder/mod.ts
+kind: SystemContext
+metadata:
+  name: hono-bidder
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

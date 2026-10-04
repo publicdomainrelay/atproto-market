@@ -1,0 +1,12 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:compute-contract-full-flow/run_full_flow.ts run_full_flow.ts@compute-contract-full-flow/run_full_flow.ts
+kind: SystemContext
+metadata:
+  name: compute-contract-full-flow
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

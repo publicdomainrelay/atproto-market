@@ -1,0 +1,37 @@
+conditions:
+- message: 'undeclared: DelegatedTrustResolver, OperatorDiscovery, VouchResolver'
+  reason: InterfacesMissing
+  status: "False"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/abc/trust-graph/mod.ts
+  fingerprint: c4474a949fb36c0f188293dac3f1a5bc5f8fac71e52316d2fcb728490b334834
+  interfaces:
+  - codegraphId: interface:b2933b2ab4555371bb0e5ec335ba619e
+    file: lib/abc/trust-graph/mod.ts
+    kind: interface
+    line: 1
+    name: VouchResolver
+  - codegraphId: interface:f67ff70cf97f5034470e6129668b747a
+    file: lib/abc/trust-graph/mod.ts
+    kind: interface
+    line: 6
+    name: OperatorDiscovery
+  - codegraphId: interface:38a3bf6bf78442c7b5b45b6d9bf4808a
+    file: lib/abc/trust-graph/mod.ts
+    kind: interface
+    line: 10
+    name: DelegatedTrustResolver
+  treeFiles:
+  - lib/abc/trust-graph/deno.json
+realizedSpecHash: ede1e60bb6191d33171807e6a9dfb6b97998d3eb2d8265251eb617fdb61336bc
+syncedFingerprint: c4474a949fb36c0f188293dac3f1a5bc5f8fac71e52316d2fcb728490b334834

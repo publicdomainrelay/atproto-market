@@ -1,0 +1,23 @@
+conditions:
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - hono-plc/mod.ts
+  fingerprint: ee7236b279d65d80cc9607a473172a3ad482dfec27eaa89a6f372e16ab81aa24
+  treeFiles:
+  - hono-plc/cli-args-env.json
+  - hono-plc/config.json
+realizedSpecHash: 637f2ccd18a23cb0973e396436289cb5c06062b49ccf1cd6a83b01dc9882a10c
+syncedFingerprint: ee7236b279d65d80cc9607a473172a3ad482dfec27eaa89a6f372e16ab81aa24

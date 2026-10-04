@@ -1,0 +1,12 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:hono-market/mod.ts mod.ts@hono-market/mod.ts
+kind: SystemContext
+metadata:
+  name: hono-market
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

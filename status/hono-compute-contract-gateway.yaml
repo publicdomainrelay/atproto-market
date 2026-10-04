@@ -1,0 +1,26 @@
+conditions:
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - hono-compute-contract-gateway/mod.ts
+  fingerprint: 14a1ed105a3c3442e17143adbc8d6e54f2d0b3e2f67b33108d43a6ff96e46ba3
+  treeFiles:
+  - hono-compute-contract-gateway/GOAL.md
+  - hono-compute-contract-gateway/README.md
+  - hono-compute-contract-gateway/cli-args-env.json
+  - hono-compute-contract-gateway/config.json
+  - hono-compute-contract-gateway/deno.json
+realizedSpecHash: ef9026ec9b45a3b765e611ed165dd3bcead336ad153f0937676116d8d2250e1a
+syncedFingerprint: 14a1ed105a3c3442e17143adbc8d6e54f2d0b3e2f67b33108d43a6ff96e46ba3

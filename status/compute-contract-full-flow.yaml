@@ -1,0 +1,24 @@
+conditions:
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - compute-contract-full-flow/run_full_flow.ts
+  fingerprint: ef71721badee95829280be26787af6ff04b37a16da6de725063016a2695d9f65
+  treeFiles:
+  - compute-contract-full-flow/SUMMARY.md
+  - compute-contract-full-flow/atproto-records.json
+  - compute-contract-full-flow/full-flow.log
+realizedSpecHash: 186f491ffa12d9ca403de64b62fe579a1434afbc916126a7bd88aaea637bff11
+syncedFingerprint: ef71721badee95829280be26787af6ff04b37a16da6de725063016a2695d9f65

@@ -1,0 +1,556 @@
+conditions:
+- message: 'undeclared: AnyInput, AnyInput.isSerialize, AnyInput.isString, AnyInput.serialize,
+    AnyInput.string, AnyInput.unwrap, AnyInputError, AnyInputError.constructor, Attestation,
+    Attestation.constructor, Attestation.findOwnIndex, Attestation.sign, Attestation.signAndAppend,
+    AttestationError, AttestationError.constructor, AttestationMetadata, AttestationOptions,
+    AttestationSignature, CidMismatchError, CidMismatchError.constructor, CidString,
+    DagCborError, DagCborError.constructor, DanglingProofError, DanglingProofError.constructor,
+    InlineAttestation, InvalidAttestationError, InvalidAttestationError.constructor,
+    InvalidProofError, InvalidProofError.constructor, InvalidSignatureError, InvalidSignatureError.constructor,
+    JsonError, JsonError.constructor, JsonObject, JsonValue, KeyData, KeyResolutionError,
+    KeyResolutionError.constructor, KeyResolver, KeyType, LexiconType, MetadataMissingFieldError,
+    MetadataMissingFieldError.constructor, MetadataMustBeObjectError, MetadataMustBeObjectError.constructor,
+    RecordMap, RecordMustBeObjectError, RecordMustBeObjectError.constructor, RecordResolutionError,
+    RecordResolutionError.constructor, RecordResolver, SignOptions, SignatureDecodingFailedError,
+    SignatureDecodingFailedError.constructor, UnsupportedKeyTypeError, UnsupportedKeyTypeError.constructor,
+    VerifyEntryResult, VerifyOptions, appendInlineAttestation, appendRemoteAttestation,
+    createAttestationCid, createDagCborCid, createInlineAttestation, createRemoteAttestation,
+    createSignature, defaultKeyResolver, didForKey, formatDidKey, formatPrivateMultibase,
+    isAttestationCidString, normalizeSignature, parseDidKey, parsePrivateMultibase,
+    signBytes, validateDagCborCid, verify, verifyBytes, verifyRecord'
+  reason: InterfacesMissing
+  status: "False"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/atproto-attestation-port/attestation.ts
+  - lib/atproto-attestation-port/cid.ts
+  - lib/atproto-attestation-port/compat.ts
+  - lib/atproto-attestation-port/errors.ts
+  - lib/atproto-attestation-port/input.ts
+  - lib/atproto-attestation-port/mod.ts
+  - lib/atproto-attestation-port/signature.ts
+  - lib/atproto-attestation-port/types.ts
+  fingerprint: 09e1f232cdea49345e02eb499246f99e7741eaf4ac3c2494cf257d02be03e8cd
+  interfaces:
+  - codegraphId: function:b0cd1a5e6e1cfce2bb54c88d0804a9fc
+    file: lib/atproto-attestation-port/attestation.ts
+    kind: function
+    line: 182
+    name: didForKey
+    signature: '(keyData: KeyData): string'
+  - codegraphId: function:e41589b91c43965e4145a8db999ccd50
+    file: lib/atproto-attestation-port/attestation.ts
+    kind: function
+    line: 590
+    name: createInlineAttestation
+    signature: |-
+      (
+        recordInput: AnyInput<JsonObject>,
+        metadataInput: AnyInput<JsonObject>,
+        repository: string,
+        privateKeyData: KeyData,
+      ): Promise<JsonObject>
+  - codegraphId: function:fd28e595b10aa4b5350b5d3a05771cad
+    file: lib/atproto-attestation-port/attestation.ts
+    kind: function
+    line: 653
+    name: createRemoteAttestation
+    signature: |-
+      (
+        recordInput: AnyInput<JsonObject>,
+        metadataInput: AnyInput<JsonObject>,
+        repository: string,
+        attestationRepository: string,
+      ): Promise<[JsonObject, JsonObject]>
+  - codegraphId: function:373c7553e6b2efc4ff0ec7fe00b4c353
+    file: lib/atproto-attestation-port/attestation.ts
+    kind: function
+    line: 721
+    name: createSignature
+    signature: |-
+      (
+        recordInput: AnyInput<JsonObject>,
+        attestationInput: AnyInput<JsonObject>,
+        repository: string,
+        privateKeyData: KeyData,
+      ): Promise<Uint8Array>
+  - codegraphId: function:877a563a87f49d44fab8e99b97d02560
+    file: lib/atproto-attestation-port/attestation.ts
+    kind: function
+    line: 764
+    name: appendInlineAttestation
+    signature: |-
+      (
+        recordInput: AnyInput<JsonObject>,
+        attestationInput: AnyInput<JsonObject>,
+        repository: string,
+        keyResolver: KeyResolver,
+      ): Promise<JsonObject>
+  - codegraphId: function:7b5845af2c94749bc3dc4f342f504cf6
+    file: lib/atproto-attestation-port/attestation.ts
+    kind: function
+    line: 885
+    name: appendRemoteAttestation
+    signature: |-
+      (
+        recordInput: AnyInput<JsonObject>,
+        metadataInput: AnyInput<JsonObject>,
+        repository: string,
+        attestationUri: string,
+      ): Promise<JsonObject>
+  - codegraphId: function:1b60292c7cb868bcdb52dd7a84d34a7c
+    file: lib/atproto-attestation-port/attestation.ts
+    kind: function
+    line: 975
+    name: verifyRecord
+    signature: |-
+      (
+        verifyInput: AnyInput<JsonObject>,
+        repository: string,
+        keyResolver: KeyResolver,
+        recordResolver: RecordResolver,
+      ): Promise<void>
+  - codegraphId: function:03e63b4d0a85548561fea6f9162f6de3
+    file: lib/atproto-attestation-port/cid.ts
+    kind: function
+    line: 50
+    name: createDagCborCid
+    signature: '(value: JsonValue): Promise<string>'
+  - codegraphId: function:65d90d22f60b7e69321cabd8fddea572
+    file: lib/atproto-attestation-port/cid.ts
+    kind: function
+    line: 64
+    name: createAttestationCid
+    signature: |-
+      (
+        record: JsonObject,
+        metadata: JsonObject,
+        repository: string,
+      ): Promise<string>
+  - codegraphId: function:4359bf6648cbb29b659affcb66d34e5b
+    file: lib/atproto-attestation-port/cid.ts
+    kind: function
+    line: 85
+    name: validateDagCborCid
+    signature: |-
+      (
+        value: JsonObject,
+        expectedCid: string,
+      ): Promise<void>
+  - codegraphId: function:2ac9c256ee837efd842fad4895311014
+    file: lib/atproto-attestation-port/compat.ts
+    kind: function
+    line: 45
+    name: normalizeSignature
+    signature: |-
+      (
+        signature: Uint8Array,
+        type: string,
+      ): Uint8Array
+  - codegraphId: type_alias:bb3df8c349da3621f88bc8980511cd98
+    file: lib/atproto-attestation-port/compat.ts
+    kind: type_alias
+    line: 90
+    name: RecordMap
+  - codegraphId: type_alias:7a5fd567555c1713d27cd011938717e2
+    file: lib/atproto-attestation-port/compat.ts
+    kind: type_alias
+    line: 93
+    name: KeyType
+  - codegraphId: interface:d8a31168183b237df7107cf18880c56e
+    file: lib/atproto-attestation-port/compat.ts
+    kind: interface
+    line: 102
+    name: KeyData
+  - codegraphId: interface:7277524e39c1b2fe5fb2f39cd9624c3c
+    file: lib/atproto-attestation-port/compat.ts
+    kind: interface
+    line: 109
+    name: InlineAttestation
+  - codegraphId: function:40424f5cff36d401b4f23beeb37acdeb
+    file: lib/atproto-attestation-port/compat.ts
+    kind: function
+    line: 201
+    name: parseDidKey
+    signature: '(didKey: string): KeyData'
+  - codegraphId: function:a3678e92d28cad3924670c536c044e80
+    file: lib/atproto-attestation-port/compat.ts
+    kind: function
+    line: 219
+    name: formatDidKey
+    signature: '(key: KeyData): string'
+  - codegraphId: function:3608a744291922c8015b11ff35055a19
+    file: lib/atproto-attestation-port/compat.ts
+    kind: function
+    line: 231
+    name: parsePrivateMultibase
+    signature: '(mb: string): KeyData'
+  - codegraphId: function:762dfb4e999f89f85e65a2c0b4c0839f
+    file: lib/atproto-attestation-port/compat.ts
+    kind: function
+    line: 243
+    name: formatPrivateMultibase
+    signature: '(key: KeyData): string'
+  - codegraphId: function:060cd79cf0174d1b688b0cd665ad811f
+    file: lib/atproto-attestation-port/compat.ts
+    kind: function
+    line: 325
+    name: isAttestationCidString
+    signature: '(value: string): boolean'
+  - codegraphId: function:005bf0c2d952033654ed028e8308675e
+    file: lib/atproto-attestation-port/compat.ts
+    kind: function
+    line: 352
+    name: signBytes
+    signature: '(payload: Uint8Array, privateKey: KeyData): Uint8Array'
+  - codegraphId: function:56f3586f0b1530f49d9036375ff82ebe
+    file: lib/atproto-attestation-port/compat.ts
+    kind: function
+    line: 392
+    name: verifyBytes
+    signature: |-
+      (
+        payload: Uint8Array,
+        signature: Uint8Array,
+        publicKey: KeyData,
+      ): boolean
+  - codegraphId: interface:d51229f6b13e3dff6b991c37add6ea5f
+    file: lib/atproto-attestation-port/compat.ts
+    kind: interface
+    line: 417
+    name: AttestationOptions
+  - codegraphId: interface:fa9b61dff1a54f899bc11b1c8b57197e
+    file: lib/atproto-attestation-port/compat.ts
+    kind: interface
+    line: 435
+    name: SignOptions
+  - codegraphId: class:78c68037004092ea70086bb747ce8093
+    file: lib/atproto-attestation-port/compat.ts
+    kind: class
+    line: 453
+    name: Attestation
+  - codegraphId: method:f4ea7110ae842973077307601ed58831
+    file: lib/atproto-attestation-port/compat.ts
+    kind: method
+    line: 462
+    name: Attestation.constructor
+    signature: '(options: AttestationOptions)'
+  - codegraphId: method:1a3487a9c57591bc4b1c084dfab01af3
+    file: lib/atproto-attestation-port/compat.ts
+    kind: method
+    line: 489
+    name: Attestation.sign
+    signature: '(options: SignOptions): Promise<InlineAttestation | RecordMap>'
+  - codegraphId: method:a52d4e68aefb09274402d893f1ab8491
+    file: lib/atproto-attestation-port/compat.ts
+    kind: method
+    line: 546
+    name: Attestation.signAndAppend
+    signature: |-
+      (input: {
+          record: RecordMap;
+          repository: string;
+          signatureType?: string;
+          metadata?: RecordMap;
+          fields?: string[];
+        }): Promise<RecordMap>
+  - codegraphId: method:524c92eeb4918f18f46c07bed25b9f8c
+    file: lib/atproto-attestation-port/compat.ts
+    kind: method
+    line: 571
+    name: Attestation.findOwnIndex
+    signature: '({ signatures }: { signatures: unknown[] }): number'
+  - codegraphId: type_alias:619e1e75bd8343d6113e117e85109e46
+    file: lib/atproto-attestation-port/compat.ts
+    kind: type_alias
+    line: 655
+    name: KeyResolver
+  - codegraphId: type_alias:e57103cf0712dcb824500aabc028de4c
+    file: lib/atproto-attestation-port/compat.ts
+    kind: type_alias
+    line: 660
+    name: RecordResolver
+  - codegraphId: interface:be596c493285769fb57191618da2f945
+    file: lib/atproto-attestation-port/compat.ts
+    kind: interface
+    line: 664
+    name: VerifyOptions
+  - codegraphId: interface:01516a0f8e74129f27c7dce2c73740b1
+    file: lib/atproto-attestation-port/compat.ts
+    kind: interface
+    line: 673
+    name: VerifyEntryResult
+  - codegraphId: function:a74e1c1c55bfcab0e180e66f01a40d81
+    file: lib/atproto-attestation-port/compat.ts
+    kind: function
+    line: 683
+    name: defaultKeyResolver
+    signature: '(did: string): KeyData'
+  - codegraphId: function:7202ad9631166c21ad22faaf1b5c8074
+    file: lib/atproto-attestation-port/compat.ts
+    kind: function
+    line: 695
+    name: verify
+    signature: |-
+      (
+        options: VerifyOptions,
+      ): Promise<VerifyEntryResult[]>
+  - codegraphId: class:b0fd453e73ea91c4d134eb84b58c9638
+    file: lib/atproto-attestation-port/errors.ts
+    kind: class
+    line: 6
+    name: AttestationError
+  - codegraphId: method:64cec5bb4887ad9d8d89e292356ea47d
+    file: lib/atproto-attestation-port/errors.ts
+    kind: method
+    line: 7
+    name: AttestationError.constructor
+    signature: |-
+      (
+          message: string,
+          public readonly variant: string = "General",
+          public readonly source?: unknown,
+        )
+  - codegraphId: class:a20cf26f25619bd856befe573b43073e
+    file: lib/atproto-attestation-port/errors.ts
+    kind: class
+    line: 18
+    name: AnyInputError
+  - codegraphId: method:fb948bea7a4aa9afa4a0fb389c691872
+    file: lib/atproto-attestation-port/errors.ts
+    kind: method
+    line: 19
+    name: AnyInputError.constructor
+    signature: '(message: string)'
+  - codegraphId: class:64210da3888fe20806521fd0773dd307
+    file: lib/atproto-attestation-port/errors.ts
+    kind: class
+    line: 27
+    name: RecordMustBeObjectError
+  - codegraphId: method:cd7030e3d1874aabda4fb2848188e5e1
+    file: lib/atproto-attestation-port/errors.ts
+    kind: method
+    line: 28
+    name: RecordMustBeObjectError.constructor
+    signature: '(source?: unknown)'
+  - codegraphId: class:0cbfdd727ed1d1ee628497b007abc14c
+    file: lib/atproto-attestation-port/errors.ts
+    kind: class
+    line: 33
+    name: MetadataMustBeObjectError
+  - codegraphId: method:ce3b6833ffce1854a2bb2e4e15d71134
+    file: lib/atproto-attestation-port/errors.ts
+    kind: method
+    line: 34
+    name: MetadataMustBeObjectError.constructor
+    signature: '(source?: unknown)'
+  - codegraphId: class:6fa70196e50d7a23495de3b871e47550
+    file: lib/atproto-attestation-port/errors.ts
+    kind: class
+    line: 39
+    name: MetadataMissingFieldError
+  - codegraphId: method:ab9e9c5982aa8e3a71ec9ca29eed63cd
+    file: lib/atproto-attestation-port/errors.ts
+    kind: method
+    line: 40
+    name: MetadataMissingFieldError.constructor
+    signature: '(field: string, source?: unknown)'
+  - codegraphId: class:9f387f80617d507785b3fabd867cd0d7
+    file: lib/atproto-attestation-port/errors.ts
+    kind: class
+    line: 45
+    name: DagCborError
+  - codegraphId: method:8a743f0ef44a620b11b2f79dfd133c22
+    file: lib/atproto-attestation-port/errors.ts
+    kind: method
+    line: 46
+    name: DagCborError.constructor
+    signature: '(message: string, source?: unknown)'
+  - codegraphId: class:6f51439a0a9292422b2f2f4271954324
+    file: lib/atproto-attestation-port/errors.ts
+    kind: class
+    line: 51
+    name: InvalidSignatureError
+  - codegraphId: method:a9b6c9cff4c6e80c2ba62baea2315a14
+    file: lib/atproto-attestation-port/errors.ts
+    kind: method
+    line: 52
+    name: InvalidSignatureError.constructor
+    signature: '(message: string, source?: unknown)'
+  - codegraphId: class:7bfc2359c105a76a440e60e99b480434
+    file: lib/atproto-attestation-port/errors.ts
+    kind: class
+    line: 57
+    name: SignatureDecodingFailedError
+  - codegraphId: method:b0417aa374ee62d106f6f81720d9a6ca
+    file: lib/atproto-attestation-port/errors.ts
+    kind: method
+    line: 58
+    name: SignatureDecodingFailedError.constructor
+    signature: '(message: string, source?: unknown)'
+  - codegraphId: class:c8f55e166625532f3f7830310d6b6e69
+    file: lib/atproto-attestation-port/errors.ts
+    kind: class
+    line: 63
+    name: KeyResolutionError
+  - codegraphId: method:cd20402ab1690cd71e6a26be3fc3fa4b
+    file: lib/atproto-attestation-port/errors.ts
+    kind: method
+    line: 64
+    name: KeyResolutionError.constructor
+    signature: '(did: string, source?: unknown)'
+  - codegraphId: class:28318086515aeda2b5c46589074c4e08
+    file: lib/atproto-attestation-port/errors.ts
+    kind: class
+    line: 69
+    name: JsonError
+  - codegraphId: method:089a493bb3214cdf1ecf1de95251dd29
+    file: lib/atproto-attestation-port/errors.ts
+    kind: method
+    line: 70
+    name: JsonError.constructor
+    signature: '(message: string, source?: unknown)'
+  - codegraphId: class:6cdd06d793526feb3cfa6807b7adabaf
+    file: lib/atproto-attestation-port/errors.ts
+    kind: class
+    line: 75
+    name: InvalidProofError
+  - codegraphId: method:629f102801a53465ebb52347d7ca2918
+    file: lib/atproto-attestation-port/errors.ts
+    kind: method
+    line: 76
+    name: InvalidProofError.constructor
+    signature: '(message: string, source?: unknown)'
+  - codegraphId: class:6534520933c6c857cd2077cc28b5a5f0
+    file: lib/atproto-attestation-port/errors.ts
+    kind: class
+    line: 81
+    name: InvalidAttestationError
+  - codegraphId: method:9a6b12e40b2f0fc739a6e1ff3b2f9057
+    file: lib/atproto-attestation-port/errors.ts
+    kind: method
+    line: 82
+    name: InvalidAttestationError.constructor
+    signature: '(message: string, source?: unknown)'
+  - codegraphId: class:dfade15defe0f3ccc30c2e0ee1630bc4
+    file: lib/atproto-attestation-port/errors.ts
+    kind: class
+    line: 87
+    name: RecordResolutionError
+  - codegraphId: method:cc29d174f01d8108fe8e3765e4b36f3d
+    file: lib/atproto-attestation-port/errors.ts
+    kind: method
+    line: 88
+    name: RecordResolutionError.constructor
+    signature: '(aturi: string, source?: unknown)'
+  - codegraphId: class:1f1db44ad3e4784846f51be597dcb97d
+    file: lib/atproto-attestation-port/errors.ts
+    kind: class
+    line: 93
+    name: DanglingProofError
+  - codegraphId: method:7106f3e23c03dc937bbef4bd65d7e69c
+    file: lib/atproto-attestation-port/errors.ts
+    kind: method
+    line: 94
+    name: DanglingProofError.constructor
+    signature: '(message: string, source?: unknown)'
+  - codegraphId: class:8c5a146784cd14ea91a95e85b9aa1495
+    file: lib/atproto-attestation-port/errors.ts
+    kind: class
+    line: 99
+    name: CidMismatchError
+  - codegraphId: method:db27c3d7fe3576fec0106c8a84122abc
+    file: lib/atproto-attestation-port/errors.ts
+    kind: method
+    line: 100
+    name: CidMismatchError.constructor
+    signature: '(expected: string, actual?: string, source?: unknown)'
+  - codegraphId: class:7421474df18b13f945085c0287be3349
+    file: lib/atproto-attestation-port/errors.ts
+    kind: class
+    line: 108
+    name: UnsupportedKeyTypeError
+  - codegraphId: method:293020e4de2e1c3e885848b03ef057cc
+    file: lib/atproto-attestation-port/errors.ts
+    kind: method
+    line: 109
+    name: UnsupportedKeyTypeError.constructor
+    signature: '(keyType: string, source?: unknown)'
+  - codegraphId: class:1a37e5e99c2f4686933593eaa60984ba
+    file: lib/atproto-attestation-port/input.ts
+    kind: class
+    line: 11
+    name: AnyInput
+  - codegraphId: method:cac29564982c30bd3d715b12f82c39cf
+    file: lib/atproto-attestation-port/input.ts
+    kind: method
+    line: 33
+    name: AnyInput.string
+    signature: '(json: string): AnyInput<never>'
+  - codegraphId: method:30ab2cdc2d7313e77f1c432546b9ac5b
+    file: lib/atproto-attestation-port/input.ts
+    kind: method
+    line: 40
+    name: AnyInput.serialize
+    signature: '(value: T): AnyInput<T>'
+  - codegraphId: method:fcd307bc25f1c5640baaf03fe65bc70b
+    file: lib/atproto-attestation-port/input.ts
+    kind: method
+    line: 47
+    name: AnyInput.isString
+    signature: '(): boolean'
+  - codegraphId: method:e1982fb1967a1379ef0321784b96cbe4
+    file: lib/atproto-attestation-port/input.ts
+    kind: method
+    line: 54
+    name: AnyInput.isSerialize
+    signature: '(): boolean'
+  - codegraphId: method:91503af86adefbc94fa747b007fe8479
+    file: lib/atproto-attestation-port/input.ts
+    kind: method
+    line: 67
+    name: AnyInput.unwrap
+    signature: '(): JsonObject'
+  - codegraphId: type_alias:11b501c7d99ec0e269c179fdbb14016f
+    file: lib/atproto-attestation-port/types.ts
+    kind: type_alias
+    line: 51
+    name: JsonValue
+  - codegraphId: type_alias:4391a7fee2929d2acc97a4e264636db5
+    file: lib/atproto-attestation-port/types.ts
+    kind: type_alias
+    line: 59
+    name: JsonObject
+  - codegraphId: interface:c8af39ac7d15bb1ffa3d65e332c61a1f
+    file: lib/atproto-attestation-port/types.ts
+    kind: interface
+    line: 64
+    name: CidString
+  - codegraphId: interface:dd2def9b45a6c0699a904f21d6cf2f30
+    file: lib/atproto-attestation-port/types.ts
+    kind: interface
+    line: 74
+    name: AttestationMetadata
+  - codegraphId: interface:4827b37ed0f5dca721317364d7c7041a
+    file: lib/atproto-attestation-port/types.ts
+    kind: interface
+    line: 82
+    name: AttestationSignature
+  - codegraphId: interface:35db749ae49ede3dbb8fdfc3de0ad143
+    file: lib/atproto-attestation-port/types.ts
+    kind: interface
+    line: 94
+    name: LexiconType
+  treeFiles:
+  - lib/atproto-attestation-port/deno.json
+realizedSpecHash: 47fdb2fdc2332f4e9e01b34e0d818ad5e01a13ab888a2ba6af7e52e53097601f
+syncedFingerprint: 09e1f232cdea49345e02eb499246f99e7741eaf4ac3c2494cf257d02be03e8cd

@@ -1,0 +1,13 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/atproto-oauth-helpers/key.ts key.ts@lib/atproto-oauth-helpers/key.ts
+- file:lib/atproto-oauth-helpers/mod.ts mod.ts@lib/atproto-oauth-helpers/mod.ts
+kind: SystemContext
+metadata:
+  name: lib-atproto-oauth-helpers
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self
