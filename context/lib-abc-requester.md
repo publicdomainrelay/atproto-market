@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-This context exists to pin down the contract boundary of the requester: the types and pure helpers every requester transport, CLI and test agrees on, so that bid collection, winner selection and the option surface can change implementation without changing the modules that consume them. It is deliberately dependency-light and side-effect-free, which lets the flow implementation in lib/requester-xrpc/mod.ts and the tests under test/ be exercised against fakes; the only behavior it owns is deterministic bid bookkeeping. The SSH transport surface is now transport-neutral: the flow's target is an iroh ticket by default and a relay FQDN only for the legacy transport.
+This context exists so bid collection, winner selection and the requester option surface can change implementation without changing the modules that consume them. It pins the exact shape of a CollectedBid, the deterministic bookkeeping rules of BidCollector (uri dedupe, arrival order, single early-winner settlement, drain of in-flight policy checks), the pricing and NSID extraction helpers, and the option bags for the PDS, SSH provider, contract flow and console buffer. Because the module is side-effect-free and its imports are type-level only, the same types describe both the real requester and the fakes used in tests, which is what keeps the flow implementation and the CLI honest about what the requester actually offers.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

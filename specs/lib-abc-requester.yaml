@@ -1,8 +1,25 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
 codeRefIndex:
+- class:b0511bdf9205af51070904ceb3cebe46 BidCollector@lib/abc/requester/mod.ts:276
+- file:lib/abc/requester/deno.json deno.json@lib/abc/requester/deno.json
 - file:lib/abc/requester/mod.ts mod.ts@lib/abc/requester/mod.ts
+- function:357285344d5e1ed273ccb6b4a83e6f58 bidPayloadNsid@lib/abc/requester/mod.ts:241
+- function:7d2178c8391b536975f479eb6f18b574 bidCost@lib/abc/requester/mod.ts:248
+- function:7f9e9285bf0541c78508fac23abb0f6a selectWinner@lib/abc/requester/mod.ts:253
+- interface:13cf3c528eda36cb6841b2dd983b53be ContractFlowResult@lib/abc/requester/mod.ts:211
+- interface:22b6dbdf25ff617b21276922dddd9172 ConsoleBuffer@lib/abc/requester/mod.ts:236
+- interface:3917ad87d46039428eaafd04a57c85ba RequesterPDS@lib/abc/requester/mod.ts:141
+- interface:3ca1df3473768560238d9bf874a7007d BidCollectorOptions@lib/abc/requester/mod.ts:258
+- interface:5b2410a21ad68d7492443d9c2f4ed1b3 SshSessionProvider@lib/abc/requester/mod.ts:205
+- interface:741a0c20adbb6bc0d938265b22ce885f PDSOptions@lib/abc/requester/mod.ts:130
 - interface:7fb903e1181ae51a3d69c0a40484e610 ContractFlowOptions@lib/abc/requester/mod.ts:15
 - interface:f25a32e8c06ef59f558fa95805408414 CollectedBid@lib/abc/requester/mod.ts:8
+- method:16f9f058b4ad22665924e3c9caad330a BidCollector.isFree@lib/abc/requester/mod.ts:290
+- method:1b90a2bdcee27c1bcd4ebf1f441f2df6 BidCollector.add@lib/abc/requester/mod.ts:294
+- method:3a8fc16e97f5c00ee9afe0af3a6cf4ec BidCollector.addAll@lib/abc/requester/mod.ts:313
+- method:6c9c2a66e9549e7c40c1877f02054f45 BidCollector.constructor@lib/abc/requester/mod.ts:284
+- method:b7337014e6d88bef850d60a5bc2eb6b7 BidCollector.all@lib/abc/requester/mod.ts:317
+- method:d99d03b741c7fe79db2a1d2d5830cec3 BidCollector.drain@lib/abc/requester/mod.ts:322
 kind: SystemContext
 metadata:
   name: lib-abc-requester
@@ -10,15 +27,15 @@ metadata:
 spec:
   dependsOn:
   - sc.atproto-market
-  intent: 'This context exists to pin down the contract boundary of the requester:
-    the types and pure helpers every requester transport, CLI and test agrees on,
-    so that bid collection, winner selection and the option surface can change implementation
-    without changing the modules that consume them. It is deliberately dependency-light
-    and side-effect-free, which lets the flow implementation in lib/requester-xrpc/mod.ts
-    and the tests under test/ be exercised against fakes; the only behavior it owns
-    is deterministic bid bookkeeping. The SSH transport surface is now transport-neutral:
-    the flow''s target is an iroh ticket by default and a relay FQDN only for the
-    legacy transport.'
+  intent: This context exists so bid collection, winner selection and the requester
+    option surface can change implementation without changing the modules that consume
+    them. It pins the exact shape of a CollectedBid, the deterministic bookkeeping
+    rules of BidCollector (uri dedupe, arrival order, single early-winner settlement,
+    drain of in-flight policy checks), the pricing and NSID extraction helpers, and
+    the option bags for the PDS, SSH provider, contract flow and console buffer. Because
+    the module is side-effect-free and its imports are type-level only, the same types
+    describe both the real requester and the fakes used in tests, which is what keeps
+    the flow implementation and the CLI honest about what the requester actually offers.
   interfaces:
   - file: lib/abc/requester/mod.ts
     kind: class
@@ -51,7 +68,7 @@ spec:
   - file: lib/abc/requester/mod.ts
     kind: interface
     name: BidCollectorOptions
-    signature: interface BidCollectorOptions ()
+    signature: interface BidCollectorOptions
   - file: lib/abc/requester/mod.ts
     kind: interface
     name: CollectedBid
@@ -64,23 +81,23 @@ spec:
   - file: lib/abc/requester/mod.ts
     kind: interface
     name: ContractFlowOptions
-    signature: interface ContractFlowOptions ()
+    signature: interface ContractFlowOptions
   - file: lib/abc/requester/mod.ts
     kind: interface
     name: ContractFlowResult
-    signature: interface ContractFlowResult ()
+    signature: interface ContractFlowResult
   - file: lib/abc/requester/mod.ts
     kind: interface
     name: PDSOptions
-    signature: interface PDSOptions ()
+    signature: interface PDSOptions
   - file: lib/abc/requester/mod.ts
     kind: interface
     name: RequesterPDS
-    signature: interface RequesterPDS ()
+    signature: interface RequesterPDS
   - file: lib/abc/requester/mod.ts
     kind: interface
     name: SshSessionProvider
-    signature: interface SshSessionProvider ()
+    signature: interface SshSessionProvider
   - file: lib/abc/requester/mod.ts
     kind: function
     name: bidCost
@@ -96,18 +113,18 @@ spec:
   repository: atproto-market
   requirements:
   - codeRefs:
-    - class:16d39bb38a118fc0fb3fe14223562247
-    - method:234812e0614aaa8d9ef21f3bf4032910
-    - method:8beccf740102cdc12505e185d8271765
-    - method:a375d27196d03a11f471e5c9e2bc799a
+    - class:b0511bdf9205af51070904ceb3cebe46
+    - method:1b90a2bdcee27c1bcd4ebf1f441f2df6
+    - method:3a8fc16e97f5c00ee9afe0af3a6cf4ec
+    - method:b7337014e6d88bef850d60a5bc2eb6b7
     id: r.bid-collector-dedupe
     level: MUST
     text: BidCollector.add ignores a bid whose uri has already been seen, otherwise
       records the uri and appends the bid, so all() returns the arrival-ordered list
       of distinct bids and addAll is a repeated add over an array.
   - codeRefs:
-    - class:16d39bb38a118fc0fb3fe14223562247
-    - method:8471dcc6f8e0b25bd63a74706b5003cd
+    - class:b0511bdf9205af51070904ceb3cebe46
+    - method:d99d03b741c7fe79db2a1d2d5830cec3
     id: r.bid-collector-drain
     level: MUST
     text: drain waits for every in-flight early-path policy check to settle, looping
@@ -115,20 +132,21 @@ spec:
       stops waiting out the bid window still observes all policy checks complete before
       it proceeds.
   - codeRefs:
-    - class:16d39bb38a118fc0fb3fe14223562247
-    - interface:330c2d6e1bc25d27c1db597ccfc31a6e
-    - method:234812e0614aaa8d9ef21f3bf4032910
-    - method:f0e93b3ced1b767ab92656b6071e05ea
+    - class:b0511bdf9205af51070904ceb3cebe46
+    - interface:3ca1df3473768560238d9bf874a7007d
+    - method:16f9f058b4ad22665924e3c9caad330a
+    - method:1b90a2bdcee27c1bcd4ebf1f441f2df6
     id: r.bid-collector-early-winner
     level: MUST
     text: 'When firstFree is set, add starts the early-exit path only for a bid whose
       payload NSID equals freeBidNsid: it awaits opts.allow(bid) and, if that policy
       gate resolves true and no earlier free bid has already settled the collector,
       marks it settled, invokes onEarlyWinner and resolves the public earlyWinner
-      promise with that bid; a rejected gate is swallowed and leaves the window open.'
+      promise with that bid; a rejected gate is swallowed and leaves the window open.
+      isFree is the NSID comparison the early path gates on.'
   - codeRefs:
-    - class:16d39bb38a118fc0fb3fe14223562247
-    - method:cce3fb92bff243280237741351ec0705
+    - class:b0511bdf9205af51070904ceb3cebe46
+    - method:6c9c2a66e9549e7c40c1877f02054f45
     id: r.bid-collector-early-winner-once
     level: MUST
     text: earlyWinner is created in the constructor and settles at most once per collector;
@@ -136,22 +154,22 @@ spec:
       a second free bid arriving while the first policy check is in flight can never
       produce a second resolution or callback.
   - codeRefs:
-    - interface:330c2d6e1bc25d27c1db597ccfc31a6e
-    - method:cce3fb92bff243280237741351ec0705
+    - interface:3ca1df3473768560238d9bf874a7007d
+    - method:6c9c2a66e9549e7c40c1877f02054f45
     id: r.bid-collector-options
     level: MUST
     text: BidCollector is constructed from options that supply the NSID marking a
       bid free, the firstFree toggle and the async allow gate; only onEarlyWinner
       is optional, so the gate and the free-bid NSID must be provided by every caller.
   - codeRefs:
-    - function:66b7603e9bf193b0f4990c9418718750
+    - function:7d2178c8391b536975f479eb6f18b574
     id: r.bid-cost
     level: MUST
     text: bidCost reads record.payload.cost and coerces it with Number, yielding Infinity
       when the payload or cost is absent or not numeric, so an unpriced bid never
       wins on price.
   - codeRefs:
-    - function:3d3875fa8240403acfc320be5e313f3a
+    - function:357285344d5e1ed273ccb6b4a83e6f58
     - interface:f25a32e8c06ef59f558fa95805408414
     id: r.bid-payload-nsid
     level: MUST
@@ -169,7 +187,7 @@ spec:
       than carried as top-level fields, so callers pass the raw atproto record through
       untouched.
   - codeRefs:
-    - interface:91c57701082294b94623335812685327
+    - interface:22b6dbdf25ff617b21276922dddd9172
     id: r.console-buffer
     level: MUST
     text: 'ConsoleBuffer lets the flow stop and restart console output around interactive
@@ -207,7 +225,7 @@ spec:
       flow never names an individual capability, so adding one does not change the
       module.'
   - codeRefs:
-    - interface:e7d2504efcd0625ee0843e6ca37af80e
+    - interface:13cf3c528eda36cb6841b2dd983b53be
     id: r.contract-flow-result
     level: MUST
     text: ContractFlowResult reports the terminal event name plus whichever URIs and
@@ -216,24 +234,25 @@ spec:
       and an error string; every field other than event is optional, so partial results
       can be returned for a failed run.
   - codeRefs:
-    - file:lib/abc/requester/mod.ts
+    - file:lib/abc/requester/deno.json
     id: r.deno-json
     level: SHOULD
     text: The package ships a deno.json alongside mod.ts declaring the module's imports,
       so the type-only dependencies on logger, serve, policy-common, cloud-init-common
       and guest-capability-abc resolve when the package is consumed on its own.
   - codeRefs:
-    - interface:6e1c7583bbdd18e7a9136c0da721214c
+    - interface:3917ad87d46039428eaafd04a57c85ba
+    - interface:5b2410a21ad68d7492443d9c2f4ed1b3
     id: r.iroh-ticket-transport-surface
     level: MUST
     text: The iroh ticket is the flow's SSH transport target under the default transport;
       it is published on the contract's event path by the bidder and reaches the requester
       through the same onNetwork/registerIdentity handling that already feeds the
-      RequesterPDS irohNodeId promise, and runComputeContract must settle its SSH
-      wait from that ticket rather than requiring a hostname-shaped address. skipSsh
-      must skip ticket resolution entirely and keepVm must not change it.
+      RequesterPDS irohNodeId promise, and the flow must settle its SSH wait from
+      that ticket rather than requiring a hostname-shaped address. skipSsh must skip
+      ticket resolution entirely and keepVm must not change it.
   - codeRefs:
-    - interface:6e1c7583bbdd18e7a9136c0da721214c
+    - interface:3917ad87d46039428eaafd04a57c85ba
     id: r.on-network-keyed-by-receipt
     level: MUST
     text: onNetwork interest is registered through setOnNetworkResolved and cleared
@@ -241,7 +260,7 @@ spec:
       requester serves many contracts concurrently and the key is what keeps one run's
       onNetwork event from resolving another run's wait.
   - codeRefs:
-    - interface:494d188099d646e00135e8028183de2b
+    - interface:741a0c20adbb6bc0d938265b22ce885f
     id: r.pds-options
     level: MUST
     text: PDSOptions requires a structured logger and a serve handle and accepts optional
@@ -257,7 +276,7 @@ spec:
       serve, policy-common, cloud-init-common and guest-capability-abc are type-level
       imports only, so the file can be loaded in any JS runtime without side effects.'
   - codeRefs:
-    - interface:6e1c7583bbdd18e7a9136c0da721214c
+    - interface:3917ad87d46039428eaafd04a57c85ba
     id: r.requester-pds-bidder-calls
     level: MUST
     text: RequesterPDS resolves a bidder's endpoint from an endpoint URL to a target
@@ -265,7 +284,7 @@ spec:
       callBidder with a target base, NSID, lxm, audience DID and body, returning the
       raw status, ok flag and decoded body so the flow never speaks HTTP itself.
   - codeRefs:
-    - interface:6e1c7583bbdd18e7a9136c0da721214c
+    - interface:3917ad87d46039428eaafd04a57c85ba
     id: r.requester-pds-bids-and-association
     level: MUST
     text: 'RequesterPDS buffers incoming bids in a pendingBids map keyed by contract
@@ -274,7 +293,7 @@ spec:
       resolves that pending XRPC response and rejectAssociation rejects it with the
       supplied error.'
   - codeRefs:
-    - interface:6e1c7583bbdd18e7a9136c0da721214c
+    - interface:3917ad87d46039428eaafd04a57c85ba
     id: r.requester-pds-ingress-lifecycle
     level: MUST
     text: RequesterPDS exposes did, serve and relay immediately, but ingressRef, relaySubdomain,
@@ -282,14 +301,14 @@ spec:
       before the relay connects the URL and host accessors return the empty string
       rather than throwing.
   - codeRefs:
-    - interface:6e1c7583bbdd18e7a9136c0da721214c
+    - interface:3917ad87d46039428eaafd04a57c85ba
     id: r.requester-pds-iroh-and-dispose
     level: MUST
     text: RequesterPDS optionally exposes an irohNodeId promise with resolveIrohNodeId
       to settle it (a no-op after the first call), and dispose() releases storage
       resources such as a Deno.Kv handle.
   - codeRefs:
-    - interface:6e1c7583bbdd18e7a9136c0da721214c
+    - interface:3917ad87d46039428eaafd04a57c85ba
     id: r.requester-pds-records
     level: MUST
     text: RequesterPDS writes to its own repo through createRepoRecord and createSignedRepoRecord,
@@ -298,15 +317,15 @@ spec:
       key other than the repo owner, and both are backed by a signer plus an attestation
       keypair exposed as properties.
   - codeRefs:
-    - function:3c8d8d8546ff4701fb29d8fbe9795d8c
-    - function:66b7603e9bf193b0f4990c9418718750
+    - function:7d2178c8391b536975f479eb6f18b574
+    - function:7f9e9285bf0541c78508fac23abb0f6a
     id: r.select-winner-cheapest
     level: MUST
     text: selectWinner returns the bid with the strictly lowest bidCost, keeping the
       earliest of equal-cost bids because the reduce only replaces the incumbent on
       a strict less-than; it returns undefined for an empty bid list.
   - codeRefs:
-    - interface:780ccb6e208a6173bf860193cc9dc0b2
+    - interface:5b2410a21ad68d7492443d9c2f4ed1b3
     id: r.ssh-session-provider
     level: MUST
     text: 'SshSessionProvider is the whole SSH surface the flow may assume: generateKeypair

@@ -237,5 +237,15 @@ spec:
   systemContext: lib-abc-requester
   toCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
 status:
-  message: the agent is summarizing lib-abc-requester
-  phase: Running
+  agentLog: 'lib/abc/requester/mod.ts is the dependency-light contract boundary the
+    requester side of atproto-market is written against. It defines the collected
+    bid shape and the three pure helpers every transport shares (bidPayloadNsid, bidCost,
+    selectWinner), the BidCollector class that dedupes bids by uri and can settle
+    an early winner through an async policy gate, and the option/result interfaces
+    for the PDS, SSH session provider, contract flow and console buffering. Nothing
+    in the module performs I/O: the Deno, serve, policy, cloud-init and capability
+    dependencies are type-only, so the flow in lib/requester-xrpc and the tests under
+    test/ can drive it against fakes, and the SSH surface it describes is transport-neutral
+    (iroh ticket by default, relay FQDN only for the legacy transport).'
+  message: wrote 25 requirement(s) and 18 interface(s) for lib-abc-requester
+  phase: Succeeded
