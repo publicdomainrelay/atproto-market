@@ -1238,9 +1238,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-market-bidder-agent-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-market-bidder-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-market-bidder-compute-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-market-bidder-compute-s2c-e583cca0ffeb | SpecToCode | Failed |  | 1 | - |
-| lib-market-bidder-compute-s2c-e583cca0ffeb-a2 | SpecToCode | Failed |  | 1 | - |
-| lib-market-bidder-compute-s2c-e583cca0ffeb-a3 | SpecToCode | Failed |  | 1 | - |
+| lib-market-bidder-compute-s2c-e583cca0ffeb | SpecToCode | Pending |  | 0 | - |
 | lib-market-bidder-s2c-57311f62afad | SpecToCode | Failed |  | 1 | - |
 | lib-market-bidder-s2c-57311f62afad-a2 | SpecToCode | Failed |  | 1 | - |
 | lib-market-bidder-s2c-57311f62afad-a3 | SpecToCode | Failed |  | 1 | - |
