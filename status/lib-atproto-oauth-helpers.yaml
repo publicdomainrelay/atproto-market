@@ -1,9 +1,8 @@
 conditions:
-- message: 'undeclared: WebCryptoKey, WebCryptoKey.constructor, WebCryptoKey.createJwt,
-    WebCryptoKey.verifyJwt, createWebCryptoKey, jsonSessionStore, load, memoryStateStore,
-    oauthClientMetadata, save, startLoopbackCallbackServer, webCryptoRuntime'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -109,5 +108,5 @@ observed:
       }
   treeFiles:
   - lib/atproto-oauth-helpers/deno.json
-realizedSpecHash: 4394d799dcb40f071ad6a091853213c5d771533fab47c5db824f3c5e274054a9
+realizedSpecHash: 4e7161ce65d12a40d36bede4c6a19620c3451444a7f3e2eb1d96c90c02b4e142
 syncedFingerprint: 1b70ada817d729068f36dbbc31ec327c7ebca73a9fe5861620b4b3a01eb100cc

@@ -10,5 +10,20 @@ spec:
   systemContext: lib-atproto-oauth-helpers
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-atproto-oauth-helpers
-  phase: Running
+  agentLog: lib/atproto-oauth-helpers is a two-file Deno module that supplies the
+    shared plumbing the @atproto/oauth-client needs in environments without a Node-style
+    crypto adapter. key.ts implements WebCryptoKey, a subclass of the @atproto/jwk
+    Key that holds an ECDSA P-256 CryptoKey plus its public/private JWKs and signs
+    compact JWS tokens through crypto.subtle, and createWebCryptoKey which generates
+    that key pair and prefers ES256 when offered. mod.ts exports webCryptoRuntime
+    (a RuntimeImplementation wired to createWebCryptoKey, crypto.getRandomValues and
+    a sha256/sha384/sha512-naming digest), memoryStateStore (a Map-backed StateStore
+    for short-lived auth state), jsonSessionStore (a file-backed SessionStore that
+    caches a JSON object, tolerating a missing or unparsable file, and rewrites it
+    on every set/del), oauthClientMetadata (the well-known client metadata document
+    with localhost/loopback defaults) and startLoopbackCallbackServer (a 127.0.0.1
+    loopback server that resolves with the query parameters of the /callback redirect).
+    Both the bidder's createOAuthAgent and the requester's createOAuthRequester consume
+    these helpers, which is why they live in a shared lib rather than in either caller.
+  message: wrote 11 requirement(s) and 12 interface(s) for lib-atproto-oauth-helpers
+  phase: Succeeded
