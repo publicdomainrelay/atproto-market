@@ -1220,3 +1220,4 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | test-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | test-fixtures-cloud-init-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Failed |  | 0 | - |
 | test-fixtures-cloud-init-c2s-d20070c3bfb0-d20070c3bfb0-a2 | CodeToSpec | Failed |  | 0 | - |
+| test-fixtures-cloud-init-c2s-d20070c3bfb0-d20070c3bfb0-a3 | CodeToSpec | Running |  | 0 | - |
