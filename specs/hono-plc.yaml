@@ -1,5 +1,7 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
 codeRefIndex:
+- file:hono-plc/cli-args-env.json cli-args-env.json@hono-plc/cli-args-env.json
+- file:hono-plc/config.json config.json@hono-plc/config.json
 - file:hono-plc/mod.ts mod.ts@hono-plc/mod.ts
 kind: SystemContext
 metadata:
@@ -8,5 +10,69 @@ metadata:
 spec:
   dependsOn:
   - sc.atproto-market
+  intent: 'This context exists so the did:plc directory server can be launched as
+    a standalone process from a declarative, layer-respecting Deno entrypoint. It
+    carries the process-level wiring only: how the CLI''s configuration surface (flags,
+    environment variables, defaults, and the optional config.json override) becomes
+    a bound TCP listener, which Hono app is mounted at the root path, and how the
+    process terminates on signal. The PLC operation storage and directory semantics
+    themselves belong to the hono-factory-did-plc-directory package it depends on;
+    hono-plc''s job is composition and lifecycle.'
   repository: atproto-market
+  requirements:
+  - codeRefs:
+    - file:hono-plc/mod.ts
+    id: r.bind-address
+    level: MUST
+    text: The TCP listener binds to the resolved hostname when it is a non-empty string
+      and otherwise falls back to 127.0.0.1, using the resolved port, so the server
+      never binds to an unset address.
+  - codeRefs:
+    - file:hono-plc/cli-args-env.json
+    - file:hono-plc/mod.ts
+    id: r.config-resolution
+    level: MUST
+    text: Options are resolved by a single Command instance named CONFIG_PATH_HONO_PLC
+      that takes the declarative cli-args-env.json plus an optional runtime config
+      object and returns the resolved options; the module must not read environment
+      variables directly.
+  - codeRefs:
+    - file:hono-plc/cli-args-env.json
+    - file:hono-plc/config.json
+    - file:hono-plc/mod.ts
+    id: r.config-surface
+    level: MUST
+    text: 'The configuration surface is two options: port, exposed as environment
+      variable PORT with default 2587, and hostname, exposed as environment variable
+      HOSTNAME with default 127.0.0.1; the optional hono-plc/config.json in the package
+      supplies overrides (shipped values port 2587 and hostname 0.0.0.0) and its location
+      is selected by the CONFIG_PATH_HONO_PLC environment variable.'
+  - codeRefs:
+    - file:hono-plc/mod.ts
+    id: r.graceful-shutdown
+    level: MUST
+    text: SIGINT and SIGTERM listeners both run the same shutdown routine that calls
+      the server's shutdown and then Deno.exit, so the process exits cleanly on either
+      signal.
+  - codeRefs:
+    - file:hono-plc/mod.ts
+    id: r.non-persistent-storage
+    level: MAY
+    text: Because the store is the in-memory MemoryPlcStore, PLC operations are held
+      in process memory only and are not persisted across restarts.
+  - codeRefs:
+    - file:hono-plc/mod.ts
+    id: r.optional-runtime-config
+    level: SHOULD
+    text: Importing config.json is wrapped so a missing or unresolvable file leaves
+      the runtime config null and the run proceeds from flags and environment variables
+      alone.
+  - codeRefs:
+    - file:hono-plc/mod.ts
+    id: r.server-composition
+    level: MUST
+    text: The entrypoint constructs an in-memory PLC store (MemoryPlcStore), wraps
+      it with createPlcDirectoryFactory, creates a server through createServe with
+      the resolved TCP address, mounts the factory's Hono app at the root path, and
+      then begins serving.
   upstream: self

@@ -81,6 +81,27 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.no-reimplementation` (SHOULD): "While the entry module stays empty, market HTTP behaviour must continue to come from the existing repository packages rather than from this package, so no Hono factory, XRPC handler, or client is duplicated into hono-market."
 - added `r.package-manifest` (MUST): "The package manifest hono-market/deno.json declares the package identity as version "0.0.0" under the "Unlicense" license, and carries no imports, tasks, or export mappings, so the stub package resolves with Deno's defaults."
 
+### hono-plc
+
+- intent: "" -> "This context exists so the did:plc directory server can be launched as a standalone process from a declarative, layer-respecting Deno entrypoint. It carries the process-level wiring only: how the CLI's configuration surface (flags, environment variables, defaults, and the optional config.json override) becomes a bound TCP listener, which Hono app is mounted at the root path, and how the process terminates on signal. The PLC operation storage and directory semantics themselves belong to the hono-factory-did-plc-directory package it depends on; hono-plc's job is composition and lifecycle."
+- added `r.bind-address` (MUST): "The TCP listener binds to the resolved hostname when it is a non-empty string and otherwise falls back to 127.0.0.1, using the resolved port, so the server never binds to an unset address."
+- added `r.config-resolution` (MUST): "Options are resolved by a single Command instance named CONFIG_PATH_HONO_PLC that takes the declarative cli-args-env.json plus an optional runtime config object and returns the resolved options; the module must not read environment variables directly."
+- added `r.config-surface` (MUST): "The configuration surface is two options: port, exposed as environment variable PORT with default 2587, and hostname, exposed as environment variable HOSTNAME with default 127.0.0.1; the optional hono-plc/config.json in the package supplies overrides (shipped values port 2587 and hostname 0.0.0.0) and its location is selected by the CONFIG_PATH_HONO_PLC environment variable."
+- added `r.graceful-shutdown` (MUST): "SIGINT and SIGTERM listeners both run the same shutdown routine that calls the server's shutdown and then Deno.exit, so the process exits cleanly on either signal."
+- added `r.non-persistent-storage` (MAY): "Because the store is the in-memory MemoryPlcStore, PLC operations are held in process memory only and are not persisted across restarts."
+- added `r.optional-runtime-config` (SHOULD): "Importing config.json is wrapped so a missing or unresolvable file leaves the runtime config null and the run proceeds from flags and environment variables alone."
+- added `r.server-composition` (MUST): "The entrypoint constructs an in-memory PLC store (MemoryPlcStore), wraps it with createPlcDirectoryFactory, creates a server through createServe with the resolved TCP address, mounts the factory's Hono app at the root path, and then begins serving."
+
+### lib-abc-compute-contract-gateway
+
+- intent: "" -> "This context exists to fix the contract that separates compute provisioning consumers from the gateway transport that actually talks to a PDS and a VM provider. By naming ComputeContractGateway as a standalone interface in the abc layer, callers in the market can request a VM or an ephemeral or persistent worker and delete an existing compute receipt without importing the xrpc implementation or its dependencies on requester PDS wiring, SSH session providers and cloud-init helpers. The interface also pins the lifecycle obligation that a gateway must be started before use and torn down afterwards, and pins the shared shapes (CallerIdentity, ComputeRequestVMInput, ComputeRequestWorkerInput, GatewayComputeResponse) that cross that boundary, so a second transport or a test double can be substituted without changing call sites."
+- added `r.caller-and-input-types` (SHOULD): "The interface should keep CallerIdentity, ComputeRequestVMInput, ComputeRequestWorkerInput and GatewayComputeResponse as the shared types crossing the boundary, so callers and implementations agree on request identity, request payload and response shape without redefining them per transport."
+- added `r.delete-compute` (MUST): "ComputeContractGateway must expose deleteCompute taking a CallerIdentity, a receipt URI, a receipt CID and a token, resolving to an object with a boolean ok field, so a caller can tear down an existing compute allocation identified by its receipt record and learn whether the deletion succeeded."
+- added `r.expose-gateway-interface` (MUST): "The compute-contract-gateway abc module must export a single ComputeContractGateway interface that the transport, Hono factory and market callers all depend on, so that provisioning callers never import a concrete gateway implementation directly."
+- added `r.gateway-identity-field` (MUST): "ComputeContractGateway must expose a did string field identifying the gateway, so callers can address the gateway's own repository and service endpoint without inspecting the underlying PDS object."
+- added `r.gateway-lifecycle` (MUST): "ComputeContractGateway must expose an async beginServe that brings the gateway into a serving state and an async dispose that releases it, so a caller can start and stop a gateway deterministically around its use rather than relying on implicit startup."
+- added `r.provisioning-calls` (MUST): "ComputeContractGateway must expose requestComputeVM, requestComputeWorkerEphemeral and requestComputeWorkerPersistent, each accepting a CallerIdentity plus a VM or worker input record and resolving to a GatewayComputeResponse, so VM and worker provisioning differ only by the call made and the input shape passed."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance |
@@ -90,5 +111,5 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | hono-bidder-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | hono-compute-contract-gateway-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | hono-market-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| hono-plc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
-| lib-abc-compute-contract-gateway-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| hono-plc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
+| lib-abc-compute-contract-gateway-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |

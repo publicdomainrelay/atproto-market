@@ -10,5 +10,27 @@ spec:
   systemContext: lib-abc-compute-contract-gateway
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-abc-compute-contract-gateway
-  phase: Running
+  agentLog: 'This context is the abstract compute-contract gateway boundary of atproto-market:
+    a single Deno TypeScript module, lib/abc/compute-contract-gateway/mod.ts, exporting
+    one interface, ComputeContractGateway, alongside a deno.json package manifest.
+    The interface is the ABC abstraction layer that a market-side caller programs
+    against when it wants compute provisioned through a gateway DID. It declares an
+    identity field, did, a lifecycle pair (beginServe and dispose), three provisioning
+    calls that each take a CallerIdentity plus an input record and resolve to a GatewayComputeResponse
+    (requestComputeVM for a long-lived VM, requestComputeWorkerEphemeral for a throwaway
+    worker, requestComputeWorkerPersistent for a durable worker), and a deleteCompute
+    that takes a receipt URI, receipt CID and token and resolves to a bare ok flag.
+    The transport implementation lives elsewhere (lib/compute-contract-gateway-xrpc),
+    which builds this interface over a requester PDS; the Hono factory layer in lib/hono-factory-compute-contract-gateway-xrpc
+    injects it into the HTTP surface, so the interface is what both sides depend on
+    rather than either concrete module.'
+  message: wrote 6 requirement(s) and 1 interface(s) for lib-abc-compute-contract-gateway;
+    interface ComputeContractGateway.did is not in the observed facts; dropped; interface
+    ComputeContractGateway.beginServe is not in the observed facts; dropped; interface
+    ComputeContractGateway.dispose is not in the observed facts; dropped; interface
+    ComputeContractGateway.requestComputeVM is not in the observed facts; dropped;
+    interface ComputeContractGateway.requestComputeWorkerEphemeral is not in the observed
+    facts; dropped; interface ComputeContractGateway.requestComputeWorkerPersistent
+    is not in the observed facts; dropped; interface ComputeContractGateway.deleteCompute
+    is not in the observed facts; dropped
+  phase: Succeeded

@@ -19,5 +19,5 @@ observed:
   treeFiles:
   - hono-plc/cli-args-env.json
   - hono-plc/config.json
-realizedSpecHash: 637f2ccd18a23cb0973e396436289cb5c06062b49ccf1cd6a83b01dc9882a10c
+realizedSpecHash: ea8a80e81d8b84551fef1b1e7f4604d0e31035c7764602d8236e61cb6bc1709a
 syncedFingerprint: ee7236b279d65d80cc9607a473172a3ad482dfec27eaa89a6f372e16ab81aa24

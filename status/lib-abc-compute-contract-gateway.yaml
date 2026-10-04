@@ -1,7 +1,8 @@
 conditions:
-- message: 'undeclared: ComputeContractGateway'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -23,5 +24,5 @@ observed:
     name: ComputeContractGateway
   treeFiles:
   - lib/abc/compute-contract-gateway/deno.json
-realizedSpecHash: e69c49e3b106f7e787823b96c0c3b0ac0e301d8c16aaf55f24d1400cf57f72b5
+realizedSpecHash: 881a850c00cd0e7748bbed71aa91f9f3d0b54a4515dd2d53f956cccb02094f52
 syncedFingerprint: 3ace54d94a28605fd535e1685d355c9b5b2f7456a18aee9347b6e44991572b24
