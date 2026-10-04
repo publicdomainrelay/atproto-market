@@ -50,8 +50,13 @@
 {"from":1180017501898260,"fromLabel":"SpecContext","to":1097343171277809,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":1180017501898260,"fromLabel":"SpecContext","to":2700997557491277,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":1180017501898260,"fromLabel":"SpecContext","to":32347973983186,"toLabel":"CodeRef","type":"REFERENCES"}
+{"from":1180017501898260,"fromLabel":"SpecContext","to":356843011469211,"toLabel":"SpecRequirement","type":"REQUIRES"}
 {"from":1180017501898260,"fromLabel":"SpecContext","to":4714294931309970,"toLabel":"SpecContext","type":"DEPENDS_ON"}
 {"from":1180017501898260,"fromLabel":"SpecContext","to":5158494392170373,"toLabel":"CodeRef","type":"REFERENCES"}
+{"from":1180017501898260,"fromLabel":"SpecContext","to":7335693078336782,"toLabel":"SpecRequirement","type":"REQUIRES"}
+{"from":1180017501898260,"fromLabel":"SpecContext","to":7878733127157493,"toLabel":"SpecRequirement","type":"REQUIRES"}
+{"from":1180017501898260,"fromLabel":"SpecContext","to":7878982173278028,"toLabel":"SpecRequirement","type":"REQUIRES"}
+{"from":1180017501898260,"fromLabel":"SpecContext","to":8729653014403493,"toLabel":"SpecRequirement","type":"REQUIRES"}
 {"from":1181831651923261,"fromLabel":"SpecRepo","to":1066856006091469,"toLabel":"SpecContext","type":"HAS_CONTEXT"}
 {"from":1181831651923261,"fromLabel":"SpecRepo","to":1180017501898260,"toLabel":"SpecContext","type":"HAS_CONTEXT"}
 {"from":1181831651923261,"fromLabel":"SpecRepo","to":1457061499984214,"toLabel":"SpecContext","type":"HAS_CONTEXT"}
@@ -1109,6 +1114,7 @@
 {"from":3562230500769946,"fromLabel":"SpecRequirement","to":7832382496086381,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":3562591506028171,"fromLabel":"SpecRequirement","to":7590764066427377,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":3562591506028171,"fromLabel":"SpecRequirement","to":7855815795555049,"toLabel":"CodeRef","type":"REFERENCES"}
+{"from":356843011469211,"fromLabel":"SpecRequirement","to":32347973983186,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":3573343924502648,"fromLabel":"SpecRequirement","to":1361392719884158,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":3573343924502648,"fromLabel":"SpecRequirement","to":8704066796179333,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":358493737753156,"fromLabel":"SpecContext","to":1896060661744931,"toLabel":"SpecRequirement","type":"REQUIRES"}
@@ -2909,6 +2915,7 @@
 {"from":7327098578306318,"fromLabel":"SpecRequirement","to":8734770639029774,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":7334679004245802,"fromLabel":"SpecRequirement","to":1572737167924790,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":7334679004245802,"fromLabel":"SpecRequirement","to":3137876073070469,"toLabel":"CodeRef","type":"REFERENCES"}
+{"from":7335693078336782,"fromLabel":"SpecRequirement","to":1097343171277809,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":7344817755308225,"fromLabel":"SpecRequirement","to":5318408870819340,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":7344893289082378,"fromLabel":"SpecRequirement","to":5386907213580923,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":7344893289082378,"fromLabel":"SpecRequirement","to":5792978150351509,"toLabel":"CodeRef","type":"REFERENCES"}
@@ -3068,6 +3075,11 @@
 {"from":7868609534762424,"fromLabel":"SpecRequirement","to":6457947554925182,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":7868609534762424,"fromLabel":"SpecRequirement","to":7401853058256582,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":7870991246989979,"fromLabel":"SpecRequirement","to":5343039767774858,"toLabel":"CodeRef","type":"REFERENCES"}
+{"from":7878733127157493,"fromLabel":"SpecRequirement","to":1097343171277809,"toLabel":"CodeRef","type":"REFERENCES"}
+{"from":7878733127157493,"fromLabel":"SpecRequirement","to":2700997557491277,"toLabel":"CodeRef","type":"REFERENCES"}
+{"from":7878733127157493,"fromLabel":"SpecRequirement","to":32347973983186,"toLabel":"CodeRef","type":"REFERENCES"}
+{"from":7878733127157493,"fromLabel":"SpecRequirement","to":5158494392170373,"toLabel":"CodeRef","type":"REFERENCES"}
+{"from":7878982173278028,"fromLabel":"SpecRequirement","to":2700997557491277,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":7884219172541507,"fromLabel":"SpecRequirement","to":161036192161661,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":7884219172541507,"fromLabel":"SpecRequirement","to":3753569733568925,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":7884219172541507,"fromLabel":"SpecRequirement","to":4515179929826691,"toLabel":"CodeRef","type":"REFERENCES"}
@@ -3410,6 +3422,7 @@
 {"from":8713425276845626,"fromLabel":"SpecContext","to":8307293505553828,"toLabel":"SpecRequirement","type":"REQUIRES"}
 {"from":8717154696317951,"fromLabel":"SpecRequirement","to":3201567355306209,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":8717154696317951,"fromLabel":"SpecRequirement","to":4919800831705894,"toLabel":"CodeRef","type":"REFERENCES"}
+{"from":8729653014403493,"fromLabel":"SpecRequirement","to":5158494392170373,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":8746894026050436,"fromLabel":"SpecRequirement","to":5644647849163386,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":8746894026050436,"fromLabel":"SpecRequirement","to":5959427646425559,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":8746894026050436,"fromLabel":"SpecRequirement","to":6171013006714935,"toLabel":"CodeRef","type":"REFERENCES"}

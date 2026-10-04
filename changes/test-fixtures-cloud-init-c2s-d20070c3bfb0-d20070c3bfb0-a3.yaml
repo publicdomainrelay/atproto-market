@@ -10,8 +10,21 @@ spec:
   systemContext: test-fixtures-cloud-init
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing test-fixtures-cloud-init
-  phase: Running
+  agentLog: 'This context is the set of golden cloud-init fixtures under test/fixtures/cloud-init:
+    tunnel.yaml, tunnel-secrets.yaml, fedproxy-ssh.yaml and fedproxy-web-wootty.yaml.
+    They are byte-stable outputs of the cloud-init-common composer (buildUserData
+    / buildTunnelUserData / buildDefaultUserData), captured once during the migration
+    and compared with assertEquals in test/cloud_init_snapshot_test.ts under the shared
+    CTX (vmName vm-test, did:plc:abc123, relay xrpc.fedproxy.com, subdomain rly-xyz,
+    ingress relay.local:443, aud relay.local, key ''ssh-ed25519 AAAA test@example'').
+    tunnel.yaml carries the SSH-over-relay subscriber unit dialing relay.local:443
+    with target port 22 and deliberately no ListenAddress, fedproxy-ssh.yaml carries
+    a loopback-only sshd plus websocat/fedproxy-client units, fedproxy-web-wootty.yaml
+    wires the woottyd browser terminal with a WooTTY auth token fetched via service-auth
+    token exchange, and tunnel-secrets.yaml layers the secrets module on top of the
+    tunnel transport.'
+  message: wrote 5 requirement(s) and 0 interface(s) for test-fixtures-cloud-init
+  phase: Succeeded
 superseded:
 - message: '...lting url_route to `/v1/oidc/issue`), reads `sub` from the workload
     identity token, exchanges it for an aud `api://ATProto?actx=did:plc:requester123`

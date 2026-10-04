@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+These fixtures exist so the generated cloud-config for each module combination is pinned: the snapshot test renders each composition and asserts exact equality, so any accidental change to the composer's emitted YAML (escaping, unit contents, ordering, hardening flags) fails loudly. They also serve as the readable reference for what each module emits on the guest, since the composed strings are otherwise only visible at runtime.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 
