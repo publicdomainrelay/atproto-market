@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so that atproto-market can issue and check attestations without depending on the upstream JavaScript attestation package: a record is bound to an attestation metadata object through a deterministic DAG-CBOR CID, that CID is signed with an Ed25519/Secp256k1 did:key, and the resulting $sig entry is either embedded in the record (inline) or written to a separate attestation repository and referenced by a strongRef (remote). The port keeps the old call shapes alive in compat.ts while the rest of the repo consumes the typed functions, and its error hierarchy (errors.ts) lets callers distinguish a bad CID from an unresolvable key, a decode failure or a dangling proof instead of getting one opaque throw.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 
