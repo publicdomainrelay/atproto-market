@@ -27,7 +27,10 @@ spec:
     YAML per transport: transports are registered as named modules, and callers select
     and layer them. The context is consumed by the requester-XRPC, compute-contract-gateway-XRPC,
     abc/requester and abc/guest-capability packages, so its merge semantics, precedence
-    and module ids are a cross-package contract.'
+    and module ids are a cross-package contract. The `iroh` module is the guest-side
+    SSH transport that replaces the did-key-ingress-proxy tunnel-subscriber: it installs
+    dumbpipe, listens on the guest''s sshd, and writes the iroh ticket where the compute
+    provider reads it.'
   interfaces:
   - file: lib/common/cloud-init-common/mod.ts
     kind: interface
@@ -160,6 +163,42 @@ spec:
       before the ExecStart of the tunnel-subscriber deno run command inside an already-rendered
       cloud-init YAML string, leaving the string unchanged when no such command is
       present.
+  - codeRefs:
+    - file:lib/common/cloud-init-common/mod.ts
+    id: r.iroh-dumbpipe-listener
+    level: MUST
+    text: The iroh module must install the dumbpipe binary from its release archive
+      (dumbpipe-v<version>-linux-x86_64.tar.gz, or the aarch64 archive on arm64 guests)
+      into /usr/local/bin and make it executable, and write a systemd unit (dumbpipe-listen.service)
+      that runs `dumbpipe listen-tcp --host 127.0.0.1:22` as root, ordered After=network-online.target
+      and sshd, with Restart=always, enabled and started from runcmd after sshd; the
+      guest sshd must stay reachable at 127.0.0.1:22 with no ListenAddress directive
+      so the compute-provider harness can still TCP-probe port 22 directly.
+  - codeRefs:
+    - file:lib/common/cloud-init-common/mod.ts
+    id: r.iroh-ticket-file
+    level: MUST
+    text: 'The iroh module must capture the ticket that dumbpipe prints for the listener
+      and write it, alone and unmodified, to /root/secrets/iroh-node-id owned root:root
+      mode 0600, because that exact path is the cross-repo contract: the compute provider''s
+      getNodeId(providerId) hook reads it (the local provider runs `cat /root/secrets/iroh-node-id`)
+      and returns its content as the guest''s iroh endpoint id. dumbpipe writes its
+      control output, including the ticket as the argument of the `dumbpipe connect
+      <ticket>` line, to the listener''s output stream (stdout and stderr in current
+      releases), so the module must capture the listener''s combined output, extract
+      the ticket token, persist it to that file, and leave the listener running afterwards
+      so the ticket stays valid.'
+  - codeRefs:
+    - file:lib/common/cloud-init-common/mod.ts
+    id: r.iroh-transport-module
+    level: MUST
+    text: 'Importing the module must also register an `iroh` user-data module under
+      that exact id, so listUserDataModules() reports `iroh` and buildUserData({ctx,
+      modules: ["iroh"]}) renders it; `iroh` is the guest-side SSH transport that
+      replaces the did-key-ingress-proxy tunnel-subscriber. It must write /root/.ssh/authorized_keys
+      from ctx.sshAuthorizedKey with owner root:root mode 0600 and an sshd drop-in
+      enabling key-only root login (PermitRootLogin prohibit-password, PasswordAuthentication
+      no), matching the tunnel module''s hardening.'
   - codeRefs:
     - function:46c9fd0cecf9645ba56294190be1600c
     - function:b171eb2dbd8264151491ce36f02925d2
