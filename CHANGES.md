@@ -1170,7 +1170,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-abc-market-bidder-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-abc-market-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-abc-requester-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-abc-requester-s2c-c367b58eb280 | SpecToCode | Running |  | 0 | - |
+| lib-abc-requester-s2c-c367b58eb280 | SpecToCode | Succeeded | b296a7ee | 0 | - |
 | lib-abc-trust-graph-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-atproto-attestation-port-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-atproto-helpers-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
@@ -1245,7 +1245,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-market-settlement-x402-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-operator-discovery-badge-blue-keys-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-requester-xrpc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-requester-xrpc-s2c-fc3eb42383f9 | SpecToCode | Running |  | 0 | - |
+| lib-requester-xrpc-s2c-fc3eb42383f9 | SpecToCode | Succeeded | b296a7ee | 0 | - |
 | lib-secrets-oidc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-trust-graph-bsky-mutuals-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-trust-graph-tangled-graph-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
