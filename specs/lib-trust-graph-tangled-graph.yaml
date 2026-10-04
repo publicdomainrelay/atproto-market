@@ -1,6 +1,10 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
 codeRefIndex:
+- file:lib/trust-graph-tangled-graph/deno.json deno.json@lib/trust-graph-tangled-graph/deno.json
 - file:lib/trust-graph-tangled-graph/mod.ts mod.ts@lib/trust-graph-tangled-graph/mod.ts
+- function:c548791fdd9c126249e41e29c7d44c44 createTangledGraphVouchResolver@lib/trust-graph-tangled-graph/mod.ts:14
+- interface:96c0ea570aaadab563b357e40f8b2254 TangledGraphVouchResolverOpts@lib/trust-graph-tangled-graph/mod.ts:9
+- interface:f3b2726e5ba78287474a3382ccf87cc2 ListedRecord@lib/trust-graph-tangled-graph/mod.ts:4
 kind: SystemContext
 metadata:
   name: lib-trust-graph-tangled-graph
@@ -8,5 +12,106 @@ metadata:
 spec:
   dependsOn:
   - sc.atproto-market
+  intent: 'This context exists so the generic trust graph can resolve web-of-trust
+    vouches from records stored in a repository without knowing anything about the
+    record layout, the transport, or how the records are fetched. Callers (the market
+    bidder and the requester XRPC paths) supply a repo-scoped listRecords function,
+    optionally a logger, and receive a VouchResolver they can hand to trust-graph
+    evaluation. The module is deliberately transport-agnostic: it never performs I/O
+    itself, and it treats lookup failure as "no vouches" rather than an error so a
+    transient repository outage degrades trust rather than breaking the caller.'
+  interfaces:
+  - file: lib/trust-graph-tangled-graph/mod.ts
+    kind: interface
+    name: ListedRecord
+    signature: 'interface ListedRecord { uri: string; value: Record<string, unknown>
+      }'
+  - file: lib/trust-graph-tangled-graph/mod.ts
+    kind: interface
+    name: TangledGraphVouchResolverOpts
+    signature: 'interface TangledGraphVouchResolverOpts { listRecords(repo: string,
+      collection: string): Promise<ListedRecord[]>; log?(level: string, msg: string,
+      meta?: Record<string, unknown>): void }'
+  - file: lib/trust-graph-tangled-graph/mod.ts
+    kind: function
+    name: createTangledGraphVouchResolver
+    signature: '(opts: TangledGraphVouchResolverOpts): VouchResolver'
   repository: atproto-market
+  requirements:
+  - codeRefs:
+    - file:lib/trust-graph-tangled-graph/mod.ts
+    - interface:f3b2726e5ba78287474a3382ccf87cc2
+    id: r.export-listed-record
+    level: MUST
+    text: Export a ListedRecord shape carrying the record's uri and its decoded value
+      object, so callers can hand back raw listed records without adapting them.
+  - codeRefs:
+    - file:lib/trust-graph-tangled-graph/mod.ts
+    - function:c548791fdd9c126249e41e29c7d44c44
+    id: r.fail-closed-on-lookup-error
+    level: MUST
+    text: 'A rejection from listRecords must not propagate: it is logged at warn level
+      with the message "tangled-graph vouch lookup failed" and metadata containing
+      the did and the stringified error, and getVouchedDids returns the vouches collected
+      so far (an empty set) instead of throwing.'
+  - codeRefs:
+    - file:lib/trust-graph-tangled-graph/mod.ts
+    - function:c548791fdd9c126249e41e29c7d44c44
+    id: r.is-vouched-membership
+    level: MUST
+    text: isVouched(voucher, vouchee) must resolve the voucher's vouched set via getVouchedDids
+      and return whether that set contains the vouchee, inheriting the same fail-closed
+      behaviour on lookup errors.
+  - codeRefs:
+    - file:lib/trust-graph-tangled-graph/mod.ts
+    - function:c548791fdd9c126249e41e29c7d44c44
+    id: r.list-vouch-collection
+    level: MUST
+    text: getVouchedDids must list records for the given did under the module's vouch
+      collection NSID (VOUCH_NSID) through the injected listRecords callback.
+  - codeRefs:
+    - file:lib/trust-graph-tangled-graph/mod.ts
+    - interface:96c0ea570aaadab563b357e40f8b2254
+    id: r.opts-list-records-callback
+    level: MUST
+    text: Take the repository read as an injected listRecords(repo, collection) callback
+      returning a promise of ListedRecord[], so the resolver performs no network or
+      PDS access of its own.
+  - codeRefs:
+    - file:lib/trust-graph-tangled-graph/mod.ts
+    - interface:96c0ea570aaadab563b357e40f8b2254
+    id: r.opts-optional-logger
+    level: MAY
+    text: Accept an optional log(level, msg, meta) callback; when it is absent the
+      resolver substitutes a no-op logger so logging never throws.
+  - codeRefs:
+    - file:lib/trust-graph-tangled-graph/mod.ts
+    - function:c548791fdd9c126249e41e29c7d44c44
+    id: r.returns-vouch-resolver
+    level: MUST
+    text: createTangledGraphVouchResolver must return a VouchResolver value exposing
+      getVouchedDids(did) -> Promise<Set<string>> and isVouched(voucher, vouchee)
+      -> Promise<boolean>, not a bare function or a thrown error.
+  - codeRefs:
+    - file:lib/trust-graph-tangled-graph/mod.ts
+    - function:c548791fdd9c126249e41e29c7d44c44
+    id: r.rkey-must-be-did
+    level: MUST
+    text: The vouched identity must be taken from the record's rkey (the last slash-separated
+      segment of uri, empty string when absent) and added to the result set only when
+      that rkey starts with "did:"; all other rkeys are discarded.
+  - codeRefs:
+    - file:lib/trust-graph-tangled-graph/deno.json
+    - file:lib/trust-graph-tangled-graph/mod.ts
+    id: r.single-mod-entrypoint
+    level: SHOULD
+    text: The package should expose its surface through the single mod.ts entrypoint,
+      with the module configuration in deno.json alongside it.
+  - codeRefs:
+    - file:lib/trust-graph-tangled-graph/mod.ts
+    - function:c548791fdd9c126249e41e29c7d44c44
+    id: r.skip-denounce
+    level: MUST
+    text: Records whose value.kind is "denounce" must be skipped entirely, so a denouncement
+      is never counted as a vouch for its subject.
   upstream: self

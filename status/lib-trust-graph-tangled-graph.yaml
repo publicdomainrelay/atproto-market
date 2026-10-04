@@ -1,7 +1,8 @@
 conditions:
-- message: 'undeclared: ListedRecord, TangledGraphVouchResolverOpts, createTangledGraphVouchResolver'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -34,5 +35,5 @@ observed:
     signature: '(opts: TangledGraphVouchResolverOpts): VouchResolver'
   treeFiles:
   - lib/trust-graph-tangled-graph/deno.json
-realizedSpecHash: d2889896160725a6460948021e9eb7b73c426e40a35d93ab16217d902ce35826
+realizedSpecHash: ed4946b11477698cd5eb3bcb503bc8c7691049e0c5372bd82cb3fcbf3a000888
 syncedFingerprint: 6bbaa70d0390cb36fd3ffb5aba6c3e84e9eac42b2e8218e46a400f022d7358b8

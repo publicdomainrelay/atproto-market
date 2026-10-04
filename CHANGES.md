@@ -1075,6 +1075,29 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.vouched-dids-are-follows` (MUST): "getVouchedDids(did) must return the Set produced by getFollows(did) unchanged, treating the actor's follow set as exactly the set of DIDs that actor vouches for."
 - added `r.warn-log-on-error` (MUST): "On a caught lookup error the resolver must log level "warn" with the message "bsky-mutuals follow lookup failed" and metadata carrying the actor DID (the did argument for getVouchedDids, the voucher for isVouched) plus the error stringified via String(err)."
 
+### lib-trust-graph-tangled-graph
+
+- intent: "" -> "This context exists so the generic trust graph can resolve web-of-trust vouches from records stored in a repository without knowing anything about the record layout, the transport, or how the records are fetched. Callers (the market bidder and the requester XRPC paths) supply a repo-scoped listRecords function, optionally a logger, and receive a VouchResolver they can hand to trust-graph evaluation. The module is deliberately transport-agnostic: it never performs I/O itself, and it treats lookup failure as "no vouches" rather than an error so a transient repository outage degrades trust rather than breaking the caller."
+- added `r.export-listed-record` (MUST): "Export a ListedRecord shape carrying the record's uri and its decoded value object, so callers can hand back raw listed records without adapting them."
+- added `r.fail-closed-on-lookup-error` (MUST): "A rejection from listRecords must not propagate: it is logged at warn level with the message "tangled-graph vouch lookup failed" and metadata containing the did and the stringified error, and getVouchedDids returns the vouches collected so far (an empty set) instead of throwing."
+- added `r.is-vouched-membership` (MUST): "isVouched(voucher, vouchee) must resolve the voucher's vouched set via getVouchedDids and return whether that set contains the vouchee, inheriting the same fail-closed behaviour on lookup errors."
+- added `r.list-vouch-collection` (MUST): "getVouchedDids must list records for the given did under the module's vouch collection NSID (VOUCH_NSID) through the injected listRecords callback."
+- added `r.opts-list-records-callback` (MUST): "Take the repository read as an injected listRecords(repo, collection) callback returning a promise of ListedRecord[], so the resolver performs no network or PDS access of its own."
+- added `r.opts-optional-logger` (MAY): "Accept an optional log(level, msg, meta) callback; when it is absent the resolver substitutes a no-op logger so logging never throws."
+- added `r.returns-vouch-resolver` (MUST): "createTangledGraphVouchResolver must return a VouchResolver value exposing getVouchedDids(did) -> Promise<Set<string>> and isVouched(voucher, vouchee) -> Promise<boolean>, not a bare function or a thrown error."
+- added `r.rkey-must-be-did` (MUST): "The vouched identity must be taken from the record's rkey (the last slash-separated segment of uri, empty string when absent) and added to the result set only when that rkey starts with "did:"; all other rkeys are discarded."
+- added `r.single-mod-entrypoint` (SHOULD): "The package should expose its surface through the single mod.ts entrypoint, with the module configuration in deno.json alongside it."
+- added `r.skip-denounce` (MUST): "Records whose value.kind is "denounce" must be skipped entirely, so a denouncement is never counted as a vouch for its subject."
+
+### lib-utils-attestation-key
+
+- intent: "" -> "This context exists so that processes needing to sign AT Protocol attestations have one idempotent, deterministic place to obtain their signing key material: point it at a JWK path and it either loads the existing key or mints and persists a new one. It deliberately refuses to overwrite a file that is not a secp256k1 private JWK, guarding against clobbering an unrelated or misconfigured key store, and it returns the raw hex scalar so callers can feed it into the attestation layer without re-parsing the JWK."
+- added `r.generate-and-persist-key` (MUST): "When no file exists, draw 32 random bytes with crypto.getRandomValues, write a JWK with kty "EC", crv "secp256k1", use "sig", alg "ES256K" and base64url-encoded d to jwkPath as JSON with two-space indentation plus a trailing newline, and return the same scalar as lowercase hex."
+- added `r.load-existing-jwk` (MUST): "When the file at jwkPath exists, read and JSON-parse it, and return bytesToHex(base64UrlDecode(jwk.d)) so the caller receives the private scalar as lowercase hex rather than the JWK itself."
+- added `r.only-notfound-triggers-creation` (MUST): "A Deno.errors.NotFound on the read is the only failure that falls through to key creation; every other read error is rethrown unchanged so permission and I/O problems surface instead of silently generating a new key."
+- added `r.refuse-non-secp256k1-jwk` (MUST): "A pre-existing file whose parsed contents do not have kty === "EC", crv === "secp256k1" and a string d must cause a thrown error naming the path and stating it is not a secp256k1 private JWK; the file must not be overwritten."
+- added `r.restrict-key-file-mode` (SHOULD): "After writing a newly generated JWK the file mode is set to 0600, and a chmod failure is swallowed so platforms without chmod support still complete key creation."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance |
@@ -1158,5 +1181,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-requester-xrpc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-secrets-oidc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-trust-graph-bsky-mutuals-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-trust-graph-tangled-graph-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
-| lib-utils-attestation-key-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-trust-graph-tangled-graph-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
+| lib-utils-attestation-key-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
+| request-vm-ssh-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Pending |  | 0 | - |
+| test-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Pending |  | 0 | - |

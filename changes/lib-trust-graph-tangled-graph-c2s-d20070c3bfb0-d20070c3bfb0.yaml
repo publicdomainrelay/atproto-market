@@ -10,5 +10,16 @@ spec:
   systemContext: lib-trust-graph-tangled-graph
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-trust-graph-tangled-graph
-  phase: Running
+  agentLog: 'lib/trust-graph-tangled-graph is a single-module library that adapts
+    Tangled-style vouch records into the VouchResolver shape the trust graph consumes.
+    It exports a ListedRecord record shape (uri plus an untyped value object), a TangledGraphVouchResolverOpts
+    options bag carrying a listRecords callback and an optional log callback, and
+    createTangledGraphVouchResolver, which closes over those options and returns an
+    object with getVouchedDids and isVouched. getVouchedDids lists the vouch collection
+    for a repo, skips denounce records, takes each remaining record''s rkey (the last
+    path segment of its uri) and keeps it only when it starts with "did:", collecting
+    the survivors into a Set. A listRecords failure is swallowed: it is logged at
+    warn level through the optional logger and an empty set is returned instead. isVouched
+    delegates to getVouchedDids for the voucher and tests set membership of the vouchee.'
+  message: wrote 10 requirement(s) and 3 interface(s) for lib-trust-graph-tangled-graph
+  phase: Succeeded
