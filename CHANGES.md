@@ -1211,6 +1211,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-common-market-lexicons-network-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-common-secrets-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-compute-contract-gateway-xrpc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
+| lib-compute-contract-gateway-xrpc-s2c-956120f96e75 | SpecToCode | Pending |  | 0 | - |
 | lib-delegated-trust-badge-blue-keys-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-did-key-ingress-proxy-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-did-plc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
