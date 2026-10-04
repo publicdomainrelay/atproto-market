@@ -1184,4 +1184,4 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-trust-graph-tangled-graph-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-utils-attestation-key-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | request-vm-ssh-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
-| test-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| test-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
