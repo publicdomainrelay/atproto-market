@@ -11840,15 +11840,18 @@ system_contexts:
   depends_on:
   - sc.atproto-market
   id: sc.lib-requester-xrpc
-  intent: This context exists so the atproto-market requester can find who is offering
+  intent: 'This context exists so the atproto-market requester can find who is offering
     a compute service, prove the bidder is discoverable through relays, stand up a
     requester identity/repo, and then drive an SSH-tunnelled session against the winning
     bidder. It holds both the discovery/verification half (relay queries, relay visibility,
     endpoint resolution, bidder calls) and the transport half (keypair generation,
     ssh args, session provider, websocat, readiness polling, program execution), because
-    the contract flow needs them in one place to run end to end. The OAuth handle
-    and agent-application helpers exist so the same flow works when the requester
-    authenticates through an OAuth session rather than a locally held key.
+    the contract flow needs them in one place to run end to end. The default guest
+    transport is now iroh: the guest''s dumbpipe listener is reached through a dumbpipe
+    connection built from the iroh ticket the bidder publishes, and the legacy websocat-over-relay
+    ProxyCommand remains only for the fedproxy-ssh transport. The OAuth handle and
+    agent-application helpers exist so the same flow works when the requester authenticates
+    through an OAuth session rather than a locally held key.'
   interfaces:
   - file: lib/requester-xrpc/mod.ts
     kind: interface
@@ -11999,6 +12002,56 @@ system_contexts:
       returning the job's uri and cid, and an ATProto event-streams client used for
       cross-party firehose discovery, and it returns a ContractFlowResult.
   - codeRefs:
+    - file:lib/requester-xrpc/mod.ts
+    id: r.dumbpipe-bootstrap
+    level: MUST
+    text: 'ensureDumbpipe(logger?) must make a `dumbpipe` binary available the way
+      ensureWebsocat makes websocat available: return immediately when `which dumbpipe`
+      succeeds, otherwise resolve the host platform triple (linux/darwin, x86_64/aarch64)
+      and download the matching release archive from the n0-computer/dumbpipe GitHub
+      releases, extract the dumbpipe binary, chmod it 0755, and prepend its directory
+      to PATH, logging downloading/downloaded/found/unsupported events and never throwing
+      on a failed download.'
+  - codeRefs:
+    - file:lib/requester-xrpc/mod.ts
+    id: r.dumbpipe-ssh-proxycommand
+    level: MUST
+    text: 'Under the iroh transport the SSH ProxyCommand must be derived from the
+      dumbpipe ticket: the default is a stdio dumbpipe connection to the ticket (`dumbpipe
+      connect <ticket>`), and an implementation that instead starts `dumbpipe connect-tcp
+      --addr 127.0.0.1:<localPort> <ticket>` and bridges the ProxyCommand''s stdin/stdout
+      to that loopback port is equally valid. Both pollReady and runSession must use
+      that ProxyCommand, and ssh must still authenticate as root with the requester''s
+      own generated key and the same StrictHostKeyChecking=no / UserKnownHostsFile=/dev/null
+      / LogLevel=ERROR hardening as before. An explicit sshProxyCommandFn must still
+      fully override the default.'
+  - codeRefs:
+    - file:lib/requester-xrpc/mod.ts
+    id: r.iroh-default-transport
+    level: MUST
+    text: 'The default guest transport for the contract flow must be the iroh cloud-init
+      module: runComputeContract must compose cloud-init with transport "iroh" when
+      the caller supplies no userData.transport, the flow must call ensureDumbpipe
+      before an SSH session, and the default SSH ProxyCommand for that transport must
+      open a dumbpipe connection to the ticket the contract published rather than
+      dial a relay FQDN. skipSsh, keepVm, hold, the sshAuthorizedKeys/appended-key
+      behavior, and the fedproxy-ssh transport (selected explicitly and still using
+      the websocat ProxyCommand via sshProxyCommandFn) must keep working unchanged.'
+  - codeRefs:
+    - file:lib/requester-xrpc/mod.ts
+    id: r.iroh-ticket-onnetwork
+    level: MUST
+    text: 'The requester must resolve its SSH transport target from the iroh ticket
+      the contract publishes on the event path: the vm.onNetwork/submitEvent handling
+      that today waits for a guest FQDN must accept the reported value as the dumbpipe
+      ticket under the iroh transport (a ticket is a base32 iroh endpoint id, not
+      a hostname), settle the SSH wait with it, and feed the same value into pds.irohNodeId/resolveIrohNodeId
+      so both the firehose registerIdentity path and the direct onNetwork path agree.
+      Receipt-keyed resolver registration (setOnNetworkResolved/clearOnNetworkResolved)
+      and the stale-contract guards must stay, and the legacy FQDN path must still
+      work when an sshProxyCommandFn override or the fedproxy-ssh transport is in
+      use.'
+  - codeRefs:
     - function:9b364db7648609d2fe412033f27b13de
     id: r.keypair-generation
     level: MUST
@@ -12086,9 +12139,10 @@ system_contexts:
     id: r.session-execution
     level: MUST
     text: runSession executes the supplied program over the ssh tunnel identified
-      by the private key path and fqdn and resolves with the program's exit code;
-      ensureWebsocat must have ensured the websocat binary is available before a session
-      is run.
+      by the private key path and the transport target and resolves with the program's
+      exit code; before a session the flow must have ensured the transport's helper
+      binary is available -- ensureDumbpipe under the default iroh transport, with
+      ensureWebsocat retained only for the legacy websocat/fedproxy ProxyCommand.
   - codeRefs:
     - function:ef9dc35948925beeecf54c12a5fd9ee1
     id: r.session-readiness
@@ -12102,16 +12156,18 @@ system_contexts:
     level: MUST
     text: createSshSessionProvider returns an SshSessionProvider for the session flow,
       accepting an optional logger and an optional proxyCommandFn so the caller can
-      override how the proxy command is derived from a fqdn.
+      override how the proxy command is derived from a transport target.
   - codeRefs:
     - function:962522e8fb20541868ff3b3934e3b3e5
     - function:cc3275d83d779e08c41a10fded40e3d6
     id: r.ssh-tunnel-helpers
     level: MUST
-    text: tunnelWsUrl maps a bidder fqdn to the websocket URL the requester dials,
-      and sshTunnelArgs builds the argument list for an ssh session from a private
-      key path, an fqdn, and an optional proxy command override that replaces the
-      default proxy command.
+    text: tunnelWsUrl maps a bidder fqdn to the websocket URL the requester dials
+      for the legacy relay transport, and sshTunnelArgs builds the argument list for
+      an ssh session from a private key path, a transport target, and an optional
+      proxy command override that replaces the default proxy command; under the default
+      iroh transport the default ProxyCommand is built from the dumbpipe ticket instead
+      of tunnelWsUrl.
   upstream: self
 - code:
   - lib/secrets-oidc/mod.ts
