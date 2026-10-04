@@ -690,23 +690,37 @@ export async function createRequesterPDS(
 // ---------------------------------------------------------------------------
 
 /**
- * Tunnel URL for a guest FQDN. A guest announces `<subdomain>.<ingressProxyHost>`,
- * so an explicit port means a local dispatcher on plain HTTP; production is
- * `<subdomain>.fedproxy.com` on 443. Forcing wss:// at a plaintext listener fails
- * the TLS handshake ("record overflow") rather than falling back.
+ * Tunnel URL for a guest FQDN -- the legacy relay transport only. A guest
+ * announces `<subdomain>.<ingressProxyHost>`, so an explicit port means a local
+ * dispatcher on plain HTTP; production is `<subdomain>.fedproxy.com` on 443.
+ * Forcing wss:// at a plaintext listener fails the TLS handshake ("record
+ * overflow") rather than falling back.
  */
 export function tunnelWsUrl(fqdn: string): string {
   const scheme = fqdn.includes(":") ? "ws" : "wss";
   return `${scheme}://${fqdn}/xrpc/com.fedproxy.temp.xrpc.tunnel`;
 }
 
+/**
+ * Default ProxyCommand for a transport target. A transport target under the
+ * default iroh transport is the dumbpipe ticket the guest published -- a base32
+ * endpoint id, not a hostname -- so it is dialled with a stdio `dumbpipe
+ * connect`. A hostname-shaped target (the legacy fedproxy-ssh/tunnel plane)
+ * keeps the websocat bridge to tunnelWsUrl.
+ */
+function defaultProxyCommand(target: string): string {
+  return /[.:]/.test(target)
+    ? `websocat --binary ${tunnelWsUrl(target)}`
+    : `dumbpipe connect ${target}`;
+}
+
 export function sshTunnelArgs(
   privateKeyPath: string,
-  fqdn: string,
+  target: string,
   proxyCmdOverride?: string,
 ): string[] {
   return [
-    "-o", `ProxyCommand=${proxyCmdOverride ?? `websocat --binary ${tunnelWsUrl(fqdn)}`}`,
+    "-o", `ProxyCommand=${proxyCmdOverride ?? defaultProxyCommand(target)}`,
     "-o", `IdentityFile=${privateKeyPath}`,
     "-o", "IdentitiesOnly=yes",
     "-o", "StrictHostKeyChecking=no",
@@ -717,7 +731,7 @@ export function sshTunnelArgs(
 
 export function createSshSessionProvider(
   logger?: StructuredLoggerInterface,
-  opts?: { proxyCommandFn?: (fqdn: string) => string },
+  opts?: { proxyCommandFn?: (target: string) => string },
 ): SshSessionProvider {
   const log = (event: string, extra: Record<string, unknown> = {}) =>
     logger ? logger.info(event, extra) : console.log(JSON.stringify({ event, ...extra }));
@@ -741,20 +755,20 @@ export function createSshSessionProvider(
 
   async function pollReady(
     privateKeyPath: string,
-    fqdn: string,
+    target: string,
     timeoutMs: number,
   ): Promise<boolean> {
-    const proxyCmd = opts?.proxyCommandFn?.(fqdn);
-    log("ssh_poll_start", { fqdn, proxyCmd: proxyCmd?.slice(0, 150), timeoutMs });
+    const proxyCmd = opts?.proxyCommandFn?.(target);
+    log("ssh_poll_start", { fqdn: target, proxyCmd: proxyCmd?.slice(0, 150), timeoutMs });
     const deadline = Date.now() + timeoutMs;
     let attempt = 0;
     while (Date.now() < deadline) {
       attempt++;
       const sshArgs = [
-        ...sshTunnelArgs(privateKeyPath, fqdn, proxyCmd),
+        ...sshTunnelArgs(privateKeyPath, target, proxyCmd),
         "-o", "BatchMode=yes",
         "-o", "ConnectTimeout=10",
-        `root@${fqdn}`,
+        `root@${target}`,
         "true",
       ];
       if (attempt === 1) log("ssh_poll_cmd", { args: sshArgs.slice(0, 6) });
@@ -765,31 +779,31 @@ export function createSshSessionProvider(
       });
       const { code, stdout, stderr } = await cmd.output();
       if (code === 0) {
-        log("vm_ssh_ready", { fqdn, attempt });
+        log("vm_ssh_ready", { fqdn: target, attempt });
         return true;
       }
       const errText = new TextDecoder().decode(stderr).trim();
       const outText = new TextDecoder().decode(stdout).trim();
       const fullError = (errText + (outText ? " | stdout:" + outText : "")).slice(0, 400);
-      log("vm_ssh_poll", { fqdn, attempt, code, error: errText.slice(0, 200), fullError });
+      log("vm_ssh_poll", { fqdn: target, attempt, code, error: errText.slice(0, 200), fullError });
       await new Promise((r) => setTimeout(r, 5000));
     }
-    log("vm_ssh_timeout", { fqdn, timeoutMs });
+    log("vm_ssh_timeout", { fqdn: target, timeoutMs });
     return false;
   }
 
   async function runSession(
     privateKeyPath: string,
-    fqdn: string,
+    target: string,
     program: string,
   ): Promise<number> {
-    const proxyCmd = opts?.proxyCommandFn?.(fqdn);
+    const proxyCmd = opts?.proxyCommandFn?.(target);
     const interactive = Deno.stdin.isTerminal();
-    const args = [...sshTunnelArgs(privateKeyPath, fqdn, proxyCmd)];
+    const args = [...sshTunnelArgs(privateKeyPath, target, proxyCmd)];
     if (interactive) {
-      args.push("-tt", `root@${fqdn}`);
+      args.push("-tt", `root@${target}`);
     } else {
-      args.push(`root@${fqdn}`, program);
+      args.push(`root@${target}`, program);
     }
     const cmd = new Deno.Command("ssh", { args, stdin: "inherit", stdout: "inherit", stderr: "inherit" });
     const child = cmd.spawn();
@@ -847,6 +861,79 @@ export async function ensureWebsocat(logger?: StructuredLoggerInterface): Promis
 }
 
 // ---------------------------------------------------------------------------
+// dumbpipe bootstrap (iroh transport)
+// ---------------------------------------------------------------------------
+
+/** dumbpipe release pinned to the version the guest iroh module installs. */
+const DUMBPIPE_VERSION = "v0.39.0";
+
+/**
+ * Make a `dumbpipe` binary available for the iroh transport's SSH ProxyCommand,
+ * the way ensureWebsocat does for the legacy websocat bridge. Returns
+ * immediately when dumbpipe is already on PATH; otherwise resolves this host's
+ * platform triple, downloads the matching release archive from the
+ * n0-computer/dumbpipe releases, extracts the binary, chmods it 0755 and
+ * prepends its directory to PATH. A failed download is logged, never thrown.
+ */
+export async function ensureDumbpipe(logger?: StructuredLoggerInterface): Promise<void> {
+  const log = (event: string, extra: Record<string, unknown> = {}) =>
+    logger ? logger.info(event, extra) : console.log(JSON.stringify({ event, ...extra }));
+  const which = new Deno.Command("which", { args: ["dumbpipe"], stdout: "null", stderr: "null" });
+  if ((await which.output()).code === 0) {
+    log("dumbpipe_found", { source: "system" });
+    return;
+  }
+
+  const plat = Deno.build.os;
+  const arch = Deno.build.arch;
+  const triple: Record<string, Record<string, string>> = {
+    linux: { x86_64: "linux-x86_64", aarch64: "linux-aarch64" },
+    darwin: { x86_64: "darwin-x86_64", aarch64: "darwin-aarch64" },
+  };
+  const target = triple[plat]?.[arch];
+  if (!target) {
+    log("dumbpipe_unsupported", { plat, arch });
+    return;
+  }
+
+  const url = `https://github.com/n0-computer/dumbpipe/releases/download/${DUMBPIPE_VERSION}/dumbpipe-${DUMBPIPE_VERSION}-${target}.tar.gz`;
+  log("dumbpipe_downloading", { url });
+
+  try {
+    const dir = await Deno.makeTempDir({ prefix: "dumbpipe-" });
+    const archivePath = `${dir}/dumbpipe.tar.gz`;
+    const resp = await fetch(url);
+    if (!resp.ok || !resp.body) {
+      log("dumbpipe_download_failed", { status: resp.status });
+      return;
+    }
+    const file = await Deno.open(archivePath, { write: true, create: true });
+    await resp.body.pipeTo(file.writable);
+
+    const tar = new Deno.Command("tar", {
+      args: ["-xzf", archivePath, "-C", dir, "dumbpipe"],
+      stdout: "null",
+      stderr: "piped",
+    });
+    const extracted = await tar.output();
+    if (extracted.code !== 0) {
+      log("dumbpipe_extract_failed", {
+        error: new TextDecoder().decode(extracted.stderr).slice(0, 200),
+      });
+      return;
+    }
+    const binPath = `${dir}/dumbpipe`;
+    await Deno.chmod(binPath, 0o755);
+    log("dumbpipe_downloaded", { path: binPath });
+
+    Deno.env.set("PATH", `${dir}:${Deno.env.get("PATH") ?? ""}`);
+    log("dumbpipe_path_updated", { dir });
+  } catch (err) {
+    log("dumbpipe_download_failed", { error: String(err) });
+  }
+}
+
+// ---------------------------------------------------------------------------
 // runComputeContract -- adapted from reference server.ts
 // ---------------------------------------------------------------------------
 
@@ -885,6 +972,12 @@ export async function runComputeContract(
   const skipSsh = opts.skipSsh ?? false;
   const execProgram = opts.execProgram ?? "bash";
   const keepVm = opts.keepVm ?? false;
+  // Guest transport module. Default "iroh": the guest publishes a dumbpipe
+  // ticket on vm.onNetwork and the requester dials it with dumbpipe. The legacy
+  // "tunnel"/"fedproxy-ssh" transports publish a relay FQDN and only those keep
+  // the websocat ProxyCommand.
+  const transport = opts.userData?.transport ?? "iroh";
+  const usesDumbpipe = transport !== "fedproxy-ssh";
   const vmReadyTimeoutSec = opts.vmReadyTimeoutSec ?? 300;
   const extraBidderDids = opts.extraBidderDids ?? [];
   const denyBidderDids = opts.denyBidderDids ?? [];
@@ -1026,12 +1119,14 @@ export async function runComputeContract(
               const payloadRes = await fetch(payloadUrl);
               const payloadData = await payloadRes.json();
               const address = (payloadData.value as Record<string, unknown>)?.address as string | undefined;
-                            // Only resolve on dispatcher FQDN, not container IP.
-              // Container IPs (192.168.x.x) contain only digits+dots; FQDNs contain letters.
-              const isFqdn = address && /[a-zA-Z]/.test(address);
-if (address && isFqdn && !vmFqdn) {
+              // Only resolve on a transport target, not a container IP.
+              // Container IPs (192.168.x.x) contain only digits+dots; both the
+              // iroh dumbpipe ticket and a legacy FQDN contain letters.
+              const isTarget = address && /[a-zA-Z]/.test(address);
+              if (address && isTarget && !vmFqdn) {
                 vmFqdn = address;
                 vmFqdnReady.resolve(address);
+                if (!skipSsh && usesDumbpipe) pds.resolveIrohNodeId?.(address);
                 log("vm_fqdn_discovered", { fqdn: address, eventUri: data.uri });
               }
             } catch { /* best-effort */ }
@@ -1060,6 +1155,7 @@ if (address && isFqdn && !vmFqdn) {
               if (address && typeof address === "string" && /[a-zA-Z]/.test(address) && !vmFqdn) {
                 vmFqdn = address;
                 vmFqdnReady.resolve(address);
+                if (!skipSsh && usesDumbpipe) pds.resolveIrohNodeId?.(address);
                 log("vm_fqdn_discovered", { fqdn: address, uri: data.uri });
               }
             } catch { /* best-effort */ }
@@ -1135,15 +1231,19 @@ if (address && isFqdn && !vmFqdn) {
   // Wire guest-side onNetwork events (submitEvent) -> vmFqdnReady.
   const onNetworkFromSubmitEvent = (address: string) => {
     // Bidder-side onNetwork fires first with container IP (e.g. 192.168.x.x),
-    // guest-side fires later with dispatcher FQDN (e.g. subdomain.localhost:port).
-    // Only the FQDN is routable through SSH ProxyCommand. Wait for it.
-    const isFqdn = /[a-zA-Z]/.test(address);
-    if (isFqdn && !vmFqdn) {
+    // guest-side fires later with the transport target: the dumbpipe ticket
+    // (base32 endpoint id) under the iroh transport, or a dispatcher FQDN
+    // (e.g. subdomain.localhost:port) under the legacy one. Both carry letters,
+    // so the letters test admits either; a bare container IP is not routable
+    // through the ProxyCommand and is skipped.
+    const isTarget = /[a-zA-Z]/.test(address);
+    if (isTarget && !vmFqdn) {
       vmFqdn = address;
       vmFqdnReady.resolve(address);
+      if (!skipSsh && usesDumbpipe) pds.resolveIrohNodeId?.(address);
       log("vm_fqdn_discovered", { fqdn: address, source: "submitEvent" });
-    } else if (!isFqdn) {
-      log("vm_onnetwork_ip_skipped", { address, hint: "waiting for guest FQDN via submitEvent" });
+    } else if (!isTarget) {
+      log("vm_onnetwork_ip_skipped", { address, hint: "waiting for guest transport target via submitEvent" });
     }
   };
   // Registered only once the receipt is known, because the receipt is what keys
@@ -1182,10 +1282,10 @@ if (address && isFqdn && !vmFqdn) {
 
     // Compose user_data via the cloud-init-common buildUserData: the caller's
     // base cloud-config (if any) patched with the transport module (default
-    // "tunnel" = did-key-ingress-proxy tunnel-subscriber, never fedproxy-client;
-    // the guest derives its secp256k1 identity from the sshd host key at boot via
-    // HKDF, so no private key material sits in cloud-init) plus any extra
-    // modules. opts.userDataFactory still fully replaces the result.
+    // "iroh" = dumbpipe listener over the iroh network; the guest installs
+    // dumbpipe, bridges it to loopback sshd and publishes its ticket, so no
+    // private key material sits in cloud-init) plus any extra modules.
+    // opts.userDataFactory still fully replaces the result.
     const ud = opts.userData;
     cloudInit = buildUserData({
       ctx: {
@@ -1205,7 +1305,7 @@ if (address && isFqdn && !vmFqdn) {
       },
       base: ud?.base ?? opts.baseUserData,
       modules: [
-        ud?.transport ?? "tunnel",
+        transport,
         ...(ud?.modules ?? []),
         ...capabilities.flatMap((c) => c.userDataModule ? [c.userDataModule] : []),
       ],
@@ -1762,15 +1862,30 @@ runcmd:
   } else if (!receiptOk) {
     log("vm_poll_bailed", { reason: "no valid receipt", receiptUri, receiptCid });
   } else {
-      // SSH through fedproxy relay tunnel (websocat ProxyCommand).
-    // Default: dispatcher tunnel ProxyCommand. Route through bash for PATH.
+    // SSH over the guest's transport target: the dumbpipe ticket the contract
+    // published under the default iroh transport, or the relay FQDN of the
+    // legacy fedproxy-ssh transport. The ProxyCommand follows the transport --
+    // `dumbpipe connect <ticket>` vs `websocat --binary wss://<fqdn>` -- and an
+    // explicit sshProxyCommandFn still fully overrides it. The helper binary the
+    // ProxyCommand needs is ensured first.
+    const proxyCmdOverride = opts.sshProxyCommandFn;
+    const needsWebsocat = proxyCmdOverride
+      ? proxyCmdOverride("t").includes("websocat")
+      : !usesDumbpipe;
+    await (needsWebsocat ? ensureWebsocat(opts.logger) : ensureDumbpipe(opts.logger));
     const sshTunnel = opts.sshProvider ?? createSshSessionProvider(
       opts.logger,
-      { proxyCommandFn: opts.sshProxyCommandFn ??
-        ((fqdn: string) => `/opt/homebrew/bin/websocat --binary ${tunnelWsUrl(fqdn)}`) },
+      {
+        proxyCommandFn: proxyCmdOverride ??
+          ((target: string) =>
+            usesDumbpipe
+              ? `dumbpipe connect ${target}`
+              : `websocat --binary ${tunnelWsUrl(target)}`),
+      },
     );
-    // FQDN discovered from vm.onNetwork event (guest publishes after tunnel subscriber registers).
-    // Timeout after vmReadyTimeoutSec if onNetwork event never arrives.
+    // Transport target discovered from vm.onNetwork event (guest publishes its
+    // ticket after the dumbpipe listener starts). Timeout after
+    // vmReadyTimeoutSec if onNetwork event never arrives.
     const fqdnTimeout = setTimeout(() => {
       vmFqdnReady.resolve(""); // empty string = timeout signal
     }, vmReadyTimeoutSec * 1000);

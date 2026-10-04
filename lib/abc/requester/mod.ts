@@ -48,11 +48,14 @@ export interface ContractFlowOptions {
   onSshStart?: () => void;
   onSshEnd?: () => void | Promise<void>;
   /**
-   * Overrides the ssh ProxyCommand per guest FQDN (default:
-   * `websocat --binary wss://<fqdn>`). Lets tests and alternate ingress
-   * topologies rewrite the tunnel endpoint while keeping the RFP flow intact.
+   * Overrides the ssh ProxyCommand per guest transport target. The default is
+   * built from the dumbpipe ticket under the iroh transport (`dumbpipe connect
+   * <ticket>`); the legacy `websocat --binary wss://<fqdn>` command remains the
+   * default only for the fedproxy-ssh transport. Lets tests and alternate
+   * ingress topologies rewrite the tunnel endpoint while keeping the RFP flow
+   * intact.
    */
-  sshProxyCommandFn?: (fqdn: string) => string;
+  sshProxyCommandFn?: (target: string) => string;
   /**
    * XRPC dispatcher host: the atproto/WS relay plane the requester and guest
    * subscribe to (e.g. xrpc.fedproxy.com). Carries createRecord/submitRfp.
@@ -76,7 +79,7 @@ export interface ContractFlowOptions {
   userData?: {
     /** Caller-supplied base cloud-config (e.g. read from a --user-data file). */
     base?: string;
-    /** Transport module id. Default "tunnel". See cloud-init-common listUserDataModules. */
+    /** Transport module id. Default "iroh". See cloud-init-common listUserDataModules. */
     transport?: string;
     /** Extra modules appended after the transport module. */
     modules?: Array<string | import("@publicdomainrelay/cloud-init-common").UserDataModule>;
@@ -175,7 +178,11 @@ export interface RequesterPDS {
   rejectAssociation(err: Error): void;
   /** Release storage resources (close Deno.Kv if using DenoKvStorage). */
   dispose(): Promise<void>;
-  /** iroh nodeId promise -- resolves when guest publishes its identity via firehose. */
+  /**
+   * iroh nodeId promise -- resolves with the dumbpipe ticket the guest
+   * publishes, whether it arrives through the firehose registerIdentity path or
+   * the direct vm.onNetwork/submitEvent path.
+   */
   irohNodeId?: Promise<string>;
   /** Resolve the iroh nodeId promise. No-op after first call. */
   resolveIrohNodeId?(nodeId: string): void;
@@ -189,10 +196,16 @@ export interface RequesterPDS {
   clearOnNetworkResolved?(key: string): void;
 }
 
+/**
+ * The whole SSH surface the flow may assume. The target passed to pollReady and
+ * runSession is the iroh ticket under the default iroh transport and a relay
+ * FQDN only under the legacy transport, so no provider method may assume the
+ * target is a hostname.
+ */
 export interface SshSessionProvider {
   generateKeypair(vmName: string): Promise<{ publicKey: string; privateKeyPath: string }>;
-  pollReady(privateKeyPath: string, fqdn: string, timeoutMs: number): Promise<boolean>;
-  runSession(privateKeyPath: string, fqdn: string, program: string): Promise<number>;
+  pollReady(privateKeyPath: string, target: string, timeoutMs: number): Promise<boolean>;
+  runSession(privateKeyPath: string, target: string, program: string): Promise<number>;
 }
 
 export interface ContractFlowResult {
