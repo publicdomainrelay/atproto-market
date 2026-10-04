@@ -146,6 +146,9 @@
 {"from":2567934998177721,"fromLabel":"SpecContext","to":8179275853539744,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":2605725807592541,"fromLabel":"SpecContext","to":4714294931309970,"toLabel":"SpecContext","type":"DEPENDS_ON"}
 {"from":2605725807592541,"fromLabel":"SpecContext","to":7393811259003524,"toLabel":"CodeRef","type":"REFERENCES"}
+{"from":2671741272307987,"fromLabel":"SpecRequirement","to":2485610191320456,"toLabel":"CodeRef","type":"REFERENCES"}
+{"from":2671741272307987,"fromLabel":"SpecRequirement","to":7377413000171085,"toLabel":"CodeRef","type":"REFERENCES"}
+{"from":2671741272307987,"fromLabel":"SpecRequirement","to":740085465690781,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":2782487832797542,"fromLabel":"SpecContext","to":4714294931309970,"toLabel":"SpecContext","type":"DEPENDS_ON"}
 {"from":2782487832797542,"fromLabel":"SpecContext","to":7133846263661579,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":3088555789222157,"fromLabel":"SpecContext","to":4714294931309970,"toLabel":"SpecContext","type":"DEPENDS_ON"}
@@ -238,6 +241,13 @@
 {"from":4475128624623421,"fromLabel":"SpecContext","to":1373926816746022,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":4475128624623421,"fromLabel":"SpecContext","to":4714294931309970,"toLabel":"SpecContext","type":"DEPENDS_ON"}
 {"from":4475128624623421,"fromLabel":"SpecContext","to":5992740954505802,"toLabel":"CodeRef","type":"REFERENCES"}
+{"from":4714294931309970,"fromLabel":"SpecContext","to":2477205744012974,"toLabel":"SpecRequirement","type":"REQUIRES"}
+{"from":4714294931309970,"fromLabel":"SpecContext","to":2671741272307987,"toLabel":"SpecRequirement","type":"REQUIRES"}
+{"from":4714294931309970,"fromLabel":"SpecContext","to":3728981195060932,"toLabel":"SpecRequirement","type":"REQUIRES"}
+{"from":4714294931309970,"fromLabel":"SpecContext","to":7554750879108561,"toLabel":"SpecRequirement","type":"REQUIRES"}
+{"from":4714294931309970,"fromLabel":"SpecContext","to":7555994506995015,"toLabel":"SpecRequirement","type":"REQUIRES"}
+{"from":4714294931309970,"fromLabel":"SpecContext","to":8157903946038400,"toLabel":"SpecRequirement","type":"REQUIRES"}
+{"from":4714294931309970,"fromLabel":"SpecContext","to":877818533959298,"toLabel":"SpecRequirement","type":"REQUIRES"}
 {"from":5033633386326590,"fromLabel":"SpecContext","to":3345895900130683,"toLabel":"CodeRef","type":"REFERENCES"}
 {"from":5033633386326590,"fromLabel":"SpecContext","to":4714294931309970,"toLabel":"SpecContext","type":"DEPENDS_ON"}
 {"from":5121029116585669,"fromLabel":"SpecContext","to":4714294931309970,"toLabel":"SpecContext","type":"DEPENDS_ON"}

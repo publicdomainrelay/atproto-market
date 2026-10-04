@@ -10,5 +10,22 @@ spec:
   systemContext: atproto-market
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing atproto-market
-  phase: Running
+  agentLog: 'atproto-market is a Deno/TypeScript monorepo (deno.json, deno.lock, LEXICONS.md
+    at the root) that builds an AT Protocol marketplace. This context covers the shared
+    atproto plumbing that the rest of the repo depends on: lib/atproto-helpers/agent.ts
+    exposes createATProto, a factory that turns a structured logger, an attestation
+    keypair signer, a PLC directory client and an AtprotoAgentLike into a working
+    ATProto facade with createRecord and updateRecord helpers, and lib/market-atproto/client.ts
+    exposes createMarketClient, a factory that wraps an XrpcService into a MarketClient.
+    Record writes go through TID-generated rkeys and return com.atproto.repo.strongRef
+    values, with a fallback path that uses applyWrites plus getRecord when the agent
+    does not expose createRecord/putRecord directly.'
+  message: wrote 7 requirement(s) and 0 interface(s) for atproto-market; dropped 18
+    unresolved code ref(s); interface createATProto is not in the observed facts;
+    dropped; interface CreateATProtoOpts is not in the observed facts; dropped; interface
+    createRecord is not in the observed facts; dropped; interface updateRecord is
+    not in the observed facts; dropped; interface createMarketClient is not in the
+    observed facts; dropped; interface MarketClient is not in the observed facts;
+    dropped; interface AttestationKeypair is not in the observed facts; dropped; interface
+    PlcClient is not in the observed facts; dropped
+  phase: Succeeded
