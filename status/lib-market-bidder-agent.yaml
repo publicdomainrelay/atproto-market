@@ -137,7 +137,7 @@ observed:
       ): Promise<ATProto>
   treeFiles:
   - lib/market-bidder-agent/deno.json
-observedCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
+observedCommit: 4f1174f584309d08e68d7a1b42a7c61665b1d732
 realizedSpecHash: a310cd4b38acd7905421ad6f385d0d376ccdfa0c1f45a45670a200008681ca33
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 2076c902857ac4bea558bd1462f045436c7e0300383a9622284edbd16b81eac9

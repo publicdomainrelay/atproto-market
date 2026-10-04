@@ -35,7 +35,7 @@ observed:
     signature: '(config: X402SettlementConfig)'
   treeFiles:
   - lib/hono-factory-market-settlement-x402/deno.json
-observedCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
+observedCommit: 4f1174f584309d08e68d7a1b42a7c61665b1d732
 realizedSpecHash: d16febece93c5fea29468d14b51e19d0c6b3060058b2edeb631bc275313ecae9
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 9dce1b6a546cbb6d761e7561d54880cf8ca3a8531e086b9a1d6ff1b6c06f733d
