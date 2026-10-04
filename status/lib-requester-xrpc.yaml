@@ -258,7 +258,7 @@ observed:
     signature: ()
   treeFiles:
   - lib/requester-xrpc/deno.json
-observedCommit: 4f1174f584309d08e68d7a1b42a7c61665b1d732
-realizedSpecHash: 8ffed522ec4d01267be17f6fefcc6ff6c1d84799ebde78f20199a3a4b677010b
-syncedCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
+observedCommit: b807bd49b14ab808f967efc8bd2d2a76bceacb7a
+realizedSpecHash: 275aea2136d3f217d797136f848e8b8d58e1c52c1258f4e22d59b5ddc10feead
+syncedCommit: b807bd49b14ab808f967efc8bd2d2a76bceacb7a
 syncedFingerprint: ece173d70b90f5e0f4842a3114f7172d2b332210372fc41e6e6e40593befb953
