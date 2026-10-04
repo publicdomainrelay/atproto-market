@@ -1,0 +1,20 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/did-plc/client.ts client.ts@lib/did-plc/client.ts
+- file:lib/did-plc/fixup-openapi.ts fixup-openapi.ts@lib/did-plc/fixup-openapi.ts
+- file:lib/did-plc/genesis.ts genesis.ts@lib/did-plc/genesis.ts
+- file:lib/did-plc/keypair-state.ts keypair-state.ts@lib/did-plc/keypair-state.ts
+- file:lib/did-plc/mod.ts mod.ts@lib/did-plc/mod.ts
+- file:lib/did-plc/openapi-ts.config.ts openapi-ts.config.ts@lib/did-plc/openapi-ts.config.ts
+- file:lib/did-plc/openapi.official.yaml openapi.official.yaml@lib/did-plc/openapi.official.yaml
+- file:lib/did-plc/resolver.ts resolver.ts@lib/did-plc/resolver.ts
+- file:lib/did-plc/types.ts types.ts@lib/did-plc/types.ts
+kind: SystemContext
+metadata:
+  name: lib-did-plc
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

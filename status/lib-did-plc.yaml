@@ -1,0 +1,246 @@
+conditions:
+- message: 'undeclared: ExportOptions, GenesisOptions, GenesisResult, HealthResponse,
+    KeypairState, KeysForDid, PlcClient, PlcClient.constructor, PlcClient.export,
+    PlcClient.exportPages, PlcClient.getAuditLog, PlcClient.getData, PlcClient.getLastOp,
+    PlcClient.getLog, PlcClient.health, PlcClient.resolve, PlcClient.submitOp, PlcClientOptions,
+    PlcError, PlcError.constructor, PlcInvalidOperationError, PlcInvalidOperationError.constructor,
+    PlcKeyResolverOptions, PlcNotFoundError, PlcNotFoundError.constructor, PlcService,
+    PlcTombstonedError, PlcTombstonedError.constructor, createGenesisOp, createPlcDirectoryClient,
+    createPlcKeyResolver, keysFromDidDocument, loadKeypairState, plcClientAsKeyResolver,
+    saveKeypairState'
+  reason: InterfacesMissing
+  status: "False"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/did-plc/client.ts
+  - lib/did-plc/fixup-openapi.ts
+  - lib/did-plc/genesis.ts
+  - lib/did-plc/keypair-state.ts
+  - lib/did-plc/mod.ts
+  - lib/did-plc/openapi-ts.config.ts
+  - lib/did-plc/openapi.official.yaml
+  - lib/did-plc/resolver.ts
+  - lib/did-plc/types.ts
+  fingerprint: 9d6b71bb61cd778ba45848701776647b5a9a83e0031f4358e1d9cc48ef9e46c1
+  interfaces:
+  - codegraphId: class:a02218cd093a941f85749da7960298a5
+    file: lib/did-plc/client.ts
+    kind: class
+    line: 42
+    name: PlcError
+  - codegraphId: method:3eb76e760f6161e2133b61ae52ba09e2
+    file: lib/did-plc/client.ts
+    kind: method
+    line: 43
+    name: PlcError.constructor
+    signature: |-
+      (
+          public readonly status: number,
+          message: string,
+        )
+  - codegraphId: class:33b7d068752c38948075552d9cef40eb
+    file: lib/did-plc/client.ts
+    kind: class
+    line: 52
+    name: PlcNotFoundError
+  - codegraphId: method:56dc0a2c422513844c595e8ec9a9b661
+    file: lib/did-plc/client.ts
+    kind: method
+    line: 53
+    name: PlcNotFoundError.constructor
+    signature: '(did: string)'
+  - codegraphId: class:9b6ece3d7112f0cf0be907735c5f3d5a
+    file: lib/did-plc/client.ts
+    kind: class
+    line: 59
+    name: PlcTombstonedError
+  - codegraphId: method:72c360d1837be5bb5dcfa1140fa19cc7
+    file: lib/did-plc/client.ts
+    kind: method
+    line: 60
+    name: PlcTombstonedError.constructor
+    signature: '(did: string)'
+  - codegraphId: class:8a857a0ac52fbb0a4da6a57b447664ec
+    file: lib/did-plc/client.ts
+    kind: class
+    line: 66
+    name: PlcInvalidOperationError
+  - codegraphId: method:4a87ed875b87c760b18994d50d1b79d5
+    file: lib/did-plc/client.ts
+    kind: method
+    line: 67
+    name: PlcInvalidOperationError.constructor
+    signature: '(message: string)'
+  - codegraphId: interface:d759a391fe304d866db88c324e3e12bc
+    file: lib/did-plc/client.ts
+    kind: interface
+    line: 120
+    name: PlcClientOptions
+  - codegraphId: class:ca276d9a71683fdf566bcdf5fb46e47c
+    file: lib/did-plc/client.ts
+    kind: class
+    line: 131
+    name: PlcClient
+  - codegraphId: method:ccfc740ff0345ec11783cafe8b0545c9
+    file: lib/did-plc/client.ts
+    kind: method
+    line: 137
+    name: PlcClient.constructor
+    signature: '(opts: PlcClientOptions = {})'
+  - codegraphId: method:a608364390c07ffbcb4053df02e4f50c
+    file: lib/did-plc/client.ts
+    kind: method
+    line: 182
+    name: PlcClient.resolve
+    signature: '(did: string): Promise<DidDocument>'
+  - codegraphId: method:f049cdcb1705123200f64a903d8d30bf
+    file: lib/did-plc/client.ts
+    kind: method
+    line: 196
+    name: PlcClient.getLog
+    signature: '(did: string): Promise<Operation[]>'
+  - codegraphId: method:21f0cc8824e1b4f6b3504c835e87cf1d
+    file: lib/did-plc/client.ts
+    kind: method
+    line: 210
+    name: PlcClient.getAuditLog
+    signature: '(did: string): Promise<LogEntry[]>'
+  - codegraphId: method:acc069a9598f75909843cc79e05f199d
+    file: lib/did-plc/client.ts
+    kind: method
+    line: 224
+    name: PlcClient.getLastOp
+    signature: '(did: string): Promise<Operation>'
+  - codegraphId: method:7a27bfcb60ada39f3859bf8cd78c6fed
+    file: lib/did-plc/client.ts
+    kind: method
+    line: 238
+    name: PlcClient.getData
+    signature: '(did: string): Promise<unknown>'
+  - codegraphId: method:6265c2659cccf561f5f79d7c67669548
+    file: lib/did-plc/client.ts
+    kind: method
+    line: 252
+    name: PlcClient.submitOp
+    signature: '(did: string, op: Operation): Promise<void>'
+  - codegraphId: method:934b52fe49087234488561a3e9fa265c
+    file: lib/did-plc/client.ts
+    kind: method
+    line: 269
+    name: PlcClient.health
+    signature: '(): Promise<HealthResponse>'
+  - codegraphId: method:a8b2aede97428a79b7847a31740b5845
+    file: lib/did-plc/client.ts
+    kind: method
+    line: 283
+    name: PlcClient.export
+    signature: '(opts: ExportOptions = {}): Promise<LogEntry[]>'
+  - codegraphId: method:72f0f2fbb2ecf38e70ef7708ae62c81b
+    file: lib/did-plc/client.ts
+    kind: method
+    line: 325
+    name: PlcClient.exportPages
+    signature: '(pageSize = 1000): AsyncGenerator<LogEntry[]>'
+  - codegraphId: function:e49cc4a90e023dc47d5a2d109f1d2f08
+    file: lib/did-plc/client.ts
+    kind: function
+    line: 340
+    name: createPlcDirectoryClient
+    signature: '(opts: { plcDirectoryUrl: string }): PlcClient'
+  - codegraphId: interface:4c23cbfe2fc6db60fea7fe843a47a8f6
+    file: lib/did-plc/genesis.ts
+    kind: interface
+    line: 21
+    name: GenesisOptions
+  - codegraphId: interface:5998a6ebd292373230c747dba056be85
+    file: lib/did-plc/genesis.ts
+    kind: interface
+    line: 43
+    name: GenesisResult
+  - codegraphId: function:8da01723383daa387c12dc941628b9a7
+    file: lib/did-plc/genesis.ts
+    kind: function
+    line: 63
+    name: createGenesisOp
+    signature: '(opts: GenesisOptions): Promise<GenesisResult>'
+  - codegraphId: interface:df8391de25b80908a518669067a0216c
+    file: lib/did-plc/keypair-state.ts
+    kind: interface
+    line: 3
+    name: KeypairState
+  - codegraphId: function:689a9b51d2e09d093defe4dfd3db3deb
+    file: lib/did-plc/keypair-state.ts
+    kind: function
+    line: 17
+    name: loadKeypairState
+    signature: '(path: string): Promise<KeypairState | null>'
+  - codegraphId: function:c4d5a623ba103c6f42dd447f82559553
+    file: lib/did-plc/keypair-state.ts
+    kind: function
+    line: 37
+    name: saveKeypairState
+    signature: '(path: string, state: KeypairState): Promise<void>'
+  - codegraphId: type_alias:cda4456d40f40308bc05b5e1f3d08229
+    file: lib/did-plc/resolver.ts
+    kind: type_alias
+    line: 15
+    name: KeysForDid
+  - codegraphId: function:3b90763d12a0a4c3f820e3c6672dc372
+    file: lib/did-plc/resolver.ts
+    kind: function
+    line: 22
+    name: keysFromDidDocument
+    signature: '(doc: DidDocument): string[]'
+  - codegraphId: interface:d1adb282179ee1bc93186f577980da48
+    file: lib/did-plc/resolver.ts
+    kind: interface
+    line: 31
+    name: PlcKeyResolverOptions
+  - codegraphId: function:a44d36ee0dc159bf2beed768aaff1e61
+    file: lib/did-plc/resolver.ts
+    kind: function
+    line: 54
+    name: createPlcKeyResolver
+    signature: '(opts: PlcKeyResolverOptions = {}): KeysForDid'
+  - codegraphId: function:3a3751439dd48106c07530ecb7436c23
+    file: lib/did-plc/resolver.ts
+    kind: function
+    line: 77
+    name: plcClientAsKeyResolver
+    signature: |-
+      (
+        client: PlcClient,
+        opts: { cache?: boolean } = {},
+      ): KeysForDid
+  - codegraphId: interface:4f51012b3df9c0dc5b7b93dc7b0249ba
+    file: lib/did-plc/types.ts
+    kind: interface
+    line: 51
+    name: PlcService
+  - codegraphId: interface:da65aed4a72e5d371a6f16031aa0ef83
+    file: lib/did-plc/types.ts
+    kind: interface
+    line: 57
+    name: ExportOptions
+  - codegraphId: interface:d20f19dc21ed3a83a1714e5dd722b53e
+    file: lib/did-plc/types.ts
+    kind: interface
+    line: 65
+    name: HealthResponse
+  treeFiles:
+  - lib/did-plc/.gitignore
+  - lib/did-plc/deno.json
+  - lib/did-plc/package.json
+observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
+realizedSpecHash: 7ea5774c71256d8a76d780a29c4287ee957dfc6b1a3bac192c207e32448ea927
+syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
+syncedFingerprint: 9d6b71bb61cd778ba45848701776647b5a9a83e0031f4358e1d9cc48ef9e46c1

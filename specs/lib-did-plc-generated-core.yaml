@@ -1,0 +1,19 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/did-plc/generated/core/auth.gen.ts auth.gen.ts@lib/did-plc/generated/core/auth.gen.ts
+- file:lib/did-plc/generated/core/bodySerializer.gen.ts bodySerializer.gen.ts@lib/did-plc/generated/core/bodySerializer.gen.ts
+- file:lib/did-plc/generated/core/params.gen.ts params.gen.ts@lib/did-plc/generated/core/params.gen.ts
+- file:lib/did-plc/generated/core/pathSerializer.gen.ts pathSerializer.gen.ts@lib/did-plc/generated/core/pathSerializer.gen.ts
+- file:lib/did-plc/generated/core/queryKeySerializer.gen.ts queryKeySerializer.gen.ts@lib/did-plc/generated/core/queryKeySerializer.gen.ts
+- file:lib/did-plc/generated/core/serverSentEvents.gen.ts serverSentEvents.gen.ts@lib/did-plc/generated/core/serverSentEvents.gen.ts
+- file:lib/did-plc/generated/core/types.gen.ts types.gen.ts@lib/did-plc/generated/core/types.gen.ts
+- file:lib/did-plc/generated/core/utils.gen.ts utils.gen.ts@lib/did-plc/generated/core/utils.gen.ts
+kind: SystemContext
+metadata:
+  name: lib-did-plc-generated-core
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

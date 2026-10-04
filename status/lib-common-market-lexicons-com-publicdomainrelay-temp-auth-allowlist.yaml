@@ -17,5 +17,7 @@ observed:
   - lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist/rbacDid.defs.ts
   - lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist/rbacDid.ts
   fingerprint: 8e5d147f9f0ccdad9943481f9bbd3faf896070a1446f8e0ec111919128286678
+observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 realizedSpecHash: 5b85995816cec6399a27053f872d37d747c97fd03776c3af9842817f19635f24
+syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 8e5d147f9f0ccdad9943481f9bbd3faf896070a1446f8e0ec111919128286678

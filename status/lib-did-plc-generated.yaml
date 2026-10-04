@@ -1,0 +1,298 @@
+conditions:
+- message: 'undeclared: ClientOptions, CreateClientConfig, CreatePlcOpData, CreatePlcOpError,
+    CreatePlcOpErrors, CreatePlcOpResponses, DidDocument, ExportData, ExportError,
+    ExportErrors, ExportResponse, ExportResponses, GetLastOpData, GetLastOpError,
+    GetLastOpErrors, GetLastOpResponse, GetLastOpResponses, GetPlcAuditLogData, GetPlcAuditLogError,
+    GetPlcAuditLogErrors, GetPlcAuditLogResponse, GetPlcAuditLogResponses, GetPlcDataData,
+    GetPlcDataError, GetPlcDataErrors, GetPlcDataResponses, GetPlcOpLogData, GetPlcOpLogError,
+    GetPlcOpLogErrors, GetPlcOpLogResponse, GetPlcOpLogResponses, LegacyCreateOp,
+    LogEntry, Operation, Options, PlcOp, PlcService, ResolveDidData, ResolveDidError,
+    ResolveDidErrors, ResolveDidResponse, ResolveDidResponses, TombstoneOp, createPlcOp,
+    export_, getLastOp, getPlcAuditLog, getPlcData, getPlcOpLog, resolveDid'
+  reason: InterfacesMissing
+  status: "False"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/did-plc/generated/client.gen.ts
+  - lib/did-plc/generated/index.ts
+  - lib/did-plc/generated/sdk.gen.ts
+  - lib/did-plc/generated/types.gen.ts
+  fingerprint: 699c5b492cb9c87728afe30c7fa1cfab4c4ddc710b6852eea34aadbdad54c64d
+  interfaces:
+  - codegraphId: type_alias:6c4d76f5a7e883c1806d2ad3dc30c088
+    file: lib/did-plc/generated/client.gen.ts
+    kind: type_alias
+    line: 14
+    name: CreateClientConfig
+  - codegraphId: type_alias:82dbe8940dcd7b888caeee4317af1244
+    file: lib/did-plc/generated/sdk.gen.ts
+    kind: type_alias
+    line: 7
+    name: Options
+  - codegraphId: function:0f780cea28411c032283f1ed477292f0
+    file: lib/did-plc/generated/sdk.gen.ts
+    kind: function
+    line: 24
+    name: resolveDid
+    signature: '(options: Options<ResolveDidData, ThrowOnError>): RequestResult<ResolveDidResponses,
+      ResolveDidErrors, ThrowOnError>'
+  - codegraphId: function:1495d4cb8fc5849c95ebfe53032eb6d5
+    file: lib/did-plc/generated/sdk.gen.ts
+    kind: function
+    line: 29
+    name: createPlcOp
+    signature: '(options: Options<CreatePlcOpData, ThrowOnError>): RequestResult<CreatePlcOpResponses,
+      CreatePlcOpErrors, ThrowOnError>'
+  - codegraphId: function:8197f5c8b53dd102aab15a4859eb9eff
+    file: lib/did-plc/generated/sdk.gen.ts
+    kind: function
+    line: 41
+    name: getPlcOpLog
+    signature: '(options: Options<GetPlcOpLogData, ThrowOnError>): RequestResult<GetPlcOpLogResponses,
+      GetPlcOpLogErrors, ThrowOnError>'
+  - codegraphId: function:f88f253e570376f3c82045ceb410c964
+    file: lib/did-plc/generated/sdk.gen.ts
+    kind: function
+    line: 46
+    name: getPlcAuditLog
+    signature: '(options: Options<GetPlcAuditLogData, ThrowOnError>): RequestResult<GetPlcAuditLogResponses,
+      GetPlcAuditLogErrors, ThrowOnError>'
+  - codegraphId: function:2c8cda686039039edfb62906f1c7b8e4
+    file: lib/did-plc/generated/sdk.gen.ts
+    kind: function
+    line: 51
+    name: getLastOp
+    signature: '(options: Options<GetLastOpData, ThrowOnError>): RequestResult<GetLastOpResponses,
+      GetLastOpErrors, ThrowOnError>'
+  - codegraphId: function:c16923351c028a2524d09fd49a4e9396
+    file: lib/did-plc/generated/sdk.gen.ts
+    kind: function
+    line: 56
+    name: getPlcData
+    signature: '(options: Options<GetPlcDataData, ThrowOnError>): RequestResult<GetPlcDataResponses,
+      GetPlcDataErrors, ThrowOnError>'
+  - codegraphId: function:4d0581d5775526dc30563286eee15cf9
+    file: lib/did-plc/generated/sdk.gen.ts
+    kind: function
+    line: 61
+    name: export_
+    signature: '(options?: Options<ExportData, ThrowOnError>): RequestResult<ExportResponses,
+      ExportErrors, ThrowOnError>'
+  - codegraphId: type_alias:36deb58af6b1e6a0c1b9bfd92a509de2
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 3
+    name: ClientOptions
+  - codegraphId: type_alias:c9e396f69721efb9d82c3a68c8763f6f
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 7
+    name: Operation
+  - codegraphId: type_alias:254318a85cdcbe888f557d8dcbd18fce
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 18
+    name: PlcOp
+  - codegraphId: type_alias:f625ac32a8a6e4f700251e1c33c7d289
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 53
+    name: TombstoneOp
+  - codegraphId: type_alias:cd3e5e7ab8f4ea8a1fa2b7920d7e3a7b
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 68
+    name: LegacyCreateOp
+  - codegraphId: type_alias:49e81f3179617521132a81d448100235
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 96
+    name: LogEntry
+  - codegraphId: type_alias:2217b5041dc37a25dbb3a95b3fdc3614
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 116
+    name: DidDocument
+  - codegraphId: type_alias:f2763d175add69dd71270f735d4df310
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 136
+    name: PlcService
+  - codegraphId: type_alias:ce8bab006c72632f57179bf089fb8f1b
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 141
+    name: ResolveDidData
+  - codegraphId: type_alias:9ed6ce54421dd1e6ce96139b0ce9856b
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 150
+    name: ResolveDidErrors
+  - codegraphId: type_alias:3fd5adb34e4ac6268c5cc4a976db726d
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 165
+    name: ResolveDidError
+  - codegraphId: type_alias:2228e75a3fba8466df0a89f8602a2e3c
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 167
+    name: ResolveDidResponses
+  - codegraphId: type_alias:caabc5b2401e1f584b3c01b2df0b2c97
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 174
+    name: ResolveDidResponse
+  - codegraphId: type_alias:bf65ac75a3730bc43ef7790db94694f2
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 176
+    name: CreatePlcOpData
+  - codegraphId: type_alias:680e3694e4e92af4022983c5fdd977f9
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 185
+    name: CreatePlcOpErrors
+  - codegraphId: type_alias:43a29d1dc650ce17c4a4fa14b75fb8a0
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 206
+    name: CreatePlcOpError
+  - codegraphId: type_alias:9b356e3f3cd84e6766bfc8483c96b696
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 208
+    name: CreatePlcOpResponses
+  - codegraphId: type_alias:5d7689c932fa3a5b7c6464bf11571504
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 215
+    name: GetPlcOpLogData
+  - codegraphId: type_alias:c5375050d9a0278e54d6993b51009ae8
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 224
+    name: GetPlcOpLogErrors
+  - codegraphId: type_alias:32228359189ff0cbdd758310850b9659
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 233
+    name: GetPlcOpLogError
+  - codegraphId: type_alias:4c6c1f7432ff4192993ee2b756fa5062
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 235
+    name: GetPlcOpLogResponses
+  - codegraphId: type_alias:5fce092f48c0a00ad301ea9c9858369d
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 242
+    name: GetPlcOpLogResponse
+  - codegraphId: type_alias:6c0ab9f932c062114ab86426ca78e468
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 244
+    name: GetPlcAuditLogData
+  - codegraphId: type_alias:40f648a1dd86d8b4a12f5522753ebf80
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 253
+    name: GetPlcAuditLogErrors
+  - codegraphId: type_alias:d9495c62a1fcec6ec96fbbf76e3a8051
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 262
+    name: GetPlcAuditLogError
+  - codegraphId: type_alias:b4d6bfa8d0c23c03a6fabf2adde68710
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 264
+    name: GetPlcAuditLogResponses
+  - codegraphId: type_alias:2f29141d3db3e7e556ecc79a3d1bf76b
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 271
+    name: GetPlcAuditLogResponse
+  - codegraphId: type_alias:a6b9723073ae442c54c710865be2c294
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 273
+    name: GetLastOpData
+  - codegraphId: type_alias:22d89c51e34c8a65a3d38a599069aad1
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 282
+    name: GetLastOpErrors
+  - codegraphId: type_alias:5d3f605471b789a218efe68a3eeef0fb
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 291
+    name: GetLastOpError
+  - codegraphId: type_alias:f7238f998c97915ef77a9d07f8b82c14
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 293
+    name: GetLastOpResponses
+  - codegraphId: type_alias:879362e0a8b7e38a5ab35913c78f7751
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 300
+    name: GetLastOpResponse
+  - codegraphId: type_alias:108f456160540b2e242974b92de05751
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 302
+    name: GetPlcDataData
+  - codegraphId: type_alias:9a3e85048fb3b4540f9b5b0ef6bc3287
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 311
+    name: GetPlcDataErrors
+  - codegraphId: type_alias:50e7f2cceb97c426570ce5f034cd8981
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 326
+    name: GetPlcDataError
+  - codegraphId: type_alias:4c53550ff9f0b1530f777457b2aab4b9
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 328
+    name: GetPlcDataResponses
+  - codegraphId: type_alias:78962202220f883b01ea8937e4d66665
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 335
+    name: ExportData
+  - codegraphId: type_alias:50207c3afa79e900f577b79bf52f6aba
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 348
+    name: ExportErrors
+  - codegraphId: type_alias:171f4f0ebccfb7a1a045da8ed05a2ed0
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 357
+    name: ExportError
+  - codegraphId: type_alias:99c6e65ed84f158926b7d77175147c6c
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 359
+    name: ExportResponses
+  - codegraphId: type_alias:33177dc6a7cc22ee26f8c90bed43cdd5
+    file: lib/did-plc/generated/types.gen.ts
+    kind: type_alias
+    line: 366
+    name: ExportResponse
+observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
+realizedSpecHash: 778b74d15d6b37e5a052e4ed17920621e6102a884dba9d82a4af17d16efd37e3
+syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
+syncedFingerprint: 699c5b492cb9c87728afe30c7fa1cfab4c4ddc710b6852eea34aadbdad54c64d

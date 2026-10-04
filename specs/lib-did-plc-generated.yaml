@@ -1,0 +1,15 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/did-plc/generated/client.gen.ts client.gen.ts@lib/did-plc/generated/client.gen.ts
+- file:lib/did-plc/generated/index.ts index.ts@lib/did-plc/generated/index.ts
+- file:lib/did-plc/generated/sdk.gen.ts sdk.gen.ts@lib/did-plc/generated/sdk.gen.ts
+- file:lib/did-plc/generated/types.gen.ts types.gen.ts@lib/did-plc/generated/types.gen.ts
+kind: SystemContext
+metadata:
+  name: lib-did-plc-generated
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

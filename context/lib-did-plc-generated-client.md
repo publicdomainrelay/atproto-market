@@ -1,0 +1,36 @@
+# Context: lib-did-plc-generated-client
+
+Repository: `atproto-market`
+
+_(empty: write what this context is for)_
+
+_The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
+
+<!-- SPECD_MANAGED_BEGIN -->
+## Resolved code references
+
+- `file:lib/did-plc/generated/client/client.gen.ts` file client.gen.ts (lib/did-plc/generated/client/client.gen.ts)
+- `file:lib/did-plc/generated/client/index.ts` file index.ts (lib/did-plc/generated/client/index.ts)
+- `file:lib/did-plc/generated/client/types.gen.ts` file types.gen.ts (lib/did-plc/generated/client/types.gen.ts)
+- `file:lib/did-plc/generated/client/utils.gen.ts` file utils.gen.ts (lib/did-plc/generated/client/utils.gen.ts)
+- `function:0131a84b31ad85543599f7fcdc257d17` function createConfig (lib/did-plc/generated/client/utils.gen.ts)
+- `function:045b120064539e4384e726f1ad3a6cfd` function mergeConfigs (lib/did-plc/generated/client/utils.gen.ts)
+- `function:188d765b509d3931cfcc5bbfffb2b7dc` function createClient (lib/did-plc/generated/client/client.gen.ts)
+- `function:5cc56f8414c5363a5723ab1d53a49283` function mergeHeaders (lib/did-plc/generated/client/utils.gen.ts)
+- `function:8458ee58b9d6ddeb478f0901d8d49b7a` function getParseAs (lib/did-plc/generated/client/utils.gen.ts)
+- `function:8b30a2691d351681cfd7042ce1e15408` function buildUrl (lib/did-plc/generated/client/utils.gen.ts)
+- `function:a8e4eb7e716e14eb46c35d17b48cf48b` function createQuerySerializer (lib/did-plc/generated/client/utils.gen.ts)
+- `function:bf0bf50aa3da564c87154fb48989d79a` function createInterceptors (lib/did-plc/generated/client/utils.gen.ts)
+- `function:e9636fa71df0faaef499d2a5fb4b33cf` function setAuthParams (lib/did-plc/generated/client/utils.gen.ts)
+- `interface:060e771651286dc59512e47760351c52` interface RequestOptions (lib/did-plc/generated/client/types.gen.ts)
+- `interface:38443be81142d5646b8f37c2d0673a74` interface Config (lib/did-plc/generated/client/types.gen.ts)
+- `interface:52b8825cf135e083d7d54d23395fc970` interface ResolvedRequestOptions (lib/did-plc/generated/client/types.gen.ts)
+- `interface:6a08e48cdf00ed57e85e84d03157d051` interface Middleware (lib/did-plc/generated/client/utils.gen.ts)
+- `interface:9323c2d655bd8f9655c74438a7d51be9` interface TDataShape (lib/did-plc/generated/client/types.gen.ts)
+- `interface:c1fcf386d064ae2466c6e8d0fd2ac083` interface ClientOptions (lib/did-plc/generated/client/types.gen.ts)
+- `type_alias:2af15840ea8a34874a90d03c8c53bfca` type_alias RequestResult (lib/did-plc/generated/client/types.gen.ts)
+- `type_alias:6ae6701371118f7f03da4ff85978bdf7` type_alias Options (lib/did-plc/generated/client/types.gen.ts)
+- `type_alias:952c875d05b76621416e955f7ac584c0` type_alias ResponseStyle (lib/did-plc/generated/client/types.gen.ts)
+- `type_alias:aff9789136e33dc58e0e596ab4913239` type_alias Client (lib/did-plc/generated/client/types.gen.ts)
+- `type_alias:c165bd43ffb67fcfa6433020cbe99e52` type_alias CreateClientConfig (lib/did-plc/generated/client/types.gen.ts)
+<!-- SPECD_MANAGED_END -->
