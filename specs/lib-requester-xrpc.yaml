@@ -94,31 +94,33 @@ spec:
     level: MUST
     text: 'Under the default iroh transport, when SSH will run, the contract must
       receive the guest''s ticket over a per-contract channel of its own instead of
-      the public event path. runComputeContract must mount POST /v1/on-network on
-      the requester''s serve app -- the app the ingress actually serves -- before
-      the cloud-config is composed, and pass the endpoint URL (the requester''s own
-      ingress URL plus /v1/on-network) to the iroh module as ctx.irohReportUrl. Mounting
-      on the repo app instead is a defect: createRequesterPDS has already run serve.app.route("/",
-      repoApp), and Hono copies a child app''s routes into the parent at that call,
-      so a route added to the repo app afterwards is never reachable, the guest''s
-      POST gets 404 and the SSH wait times out. The endpoint accepts { acceptUri,
-      acceptCid, address } only when acceptUri#acceptCid equals the contract''s current
-      accept ref and the contract''s SSH wait is still open; it accepts exactly one
-      report per contract (the first settles the wait with the address, the dumbpipe
-      ticket, records it as the contract result''s ticket and answers 200 { ok: true
-      }; a later report answers 409 and never replaces a settled target), and a mismatched
-      accept ref answers 409 without resolving. The endpoint must be unmounted when
-      the contract ends, and skipSsh must not mount it. No credential may be placed
-      in the cloud-config: the composed user_data is published inside the compute.vm
-      record, so a bearer token there is public and would only appear to protect the
-      endpoint. The accept ref is public too, and a reader of the contract records
-      who races the guest''s first report can point the contract at an iroh endpoint
-      of its own; an impostor endpoint cannot complete ssh publickey auth (it does
-      not hold the guest''s host key and the requester''s key is authorized only on
-      the real guest), but it can observe the requester''s own ssh session. Closing
-      that needs a guest-held credential the cloud-init cannot carry (the workload-identity
-      / secrets-capability channel); it is a stated gap, not a claim of authentication,
-      and it must be named in the pull request and in the requirement text, not hidden.'
+      the public event path. Because the route must exist before the requester''s
+      app serves its first request -- Hono throws when a route is added to an app
+      that has already served, and serve.app.route("/", repoApp) copies the repo app''s
+      routes at that call -- createRequesterPDS must mount POST /v1/on-network on
+      the repo app as part of building the PDS, before the app is mounted under the
+      serve app, and runComputeContract must only register and drop a per-contract
+      entry on that route. Adding, removing or rebuilding the route later, or reaching
+      into Hono''s own route registry or router, is not acceptable. runComputeContract
+      passes the endpoint URL (the requester''s own ingress URL plus /v1/on-network)
+      to the iroh module as ctx.irohReportUrl. The handler accepts { acceptUri, acceptCid,
+      address } only when acceptUri#acceptCid equals a live contract''s current accept
+      ref and that contract''s SSH wait is still open; it accepts exactly one report
+      per contract (the first settles the wait with the address, the dumbpipe ticket,
+      records it as the contract result''s ticket and answers 200 { ok: true }; a
+      repeat or a ref that matches no live contract answers 409 and never replaces
+      a settled target), and the entry is dropped when the contract ends. skipSsh
+      must register nothing. No credential may be placed in the cloud-config: the
+      composed user_data is published inside the compute.vm record, so a bearer token
+      there is public and would only appear to protect the endpoint. The accept ref
+      is public too, and a reader of the contract records who races the guest''s first
+      report can point the contract at an iroh endpoint of its own; an impostor endpoint
+      cannot complete ssh publickey auth (it does not hold the guest''s host key and
+      the requester''s key is authorized only on the real guest), but it can observe
+      the requester''s own ssh session. Closing that needs a guest-held credential
+      the cloud-init cannot carry (the workload-identity / secrets-capability channel);
+      it is a stated gap, not a claim of authentication, and it must be named in the
+      pull request and in the requirement text, not hidden.'
     codeRefs:
     - file:lib/requester-xrpc/mod.ts
   - id: r.iroh-ticket-onnetwork
