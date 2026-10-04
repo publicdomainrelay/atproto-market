@@ -10,5 +10,20 @@ spec:
   systemContext: lib-common-market-lexicons-network
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-common-market-lexicons-network
-  phase: Running
+  agentLog: 'A generated barrel module, lib/common/market-lexicons/network/attested.ts,
+    that re-exports the three network.attested.* lexicon definitions of the atproto-market
+    shared attestation vocabulary as the namespaces verify, proof and signature. Each
+    namespace resolves to a sibling *.defs.ts file produced by @atproto/lex: network.attested.verify
+    is a query with a single at-uri `uri` parameter whose output carries uri, optional
+    cid, a boolean valid, a signatures array and an optional workflow; network.attested.proof
+    is a tid-keyed record holding a com.atproto.repo.strongRef subject, a required
+    canonical cid, optional issuer/role/status, createdAt and an optional signatures
+    array; network.attested.signature is an inline typed object holding a did:key
+    `key`, a cid, low-S normalized ECDSA `signature` bytes, plus optional issuer,
+    issuedAt and role, and it also exports the Signatures union array of inline signatures
+    and strongRefs. The file itself contains no logic beyond the three namespace re-exports.'
+  message: wrote 6 requirement(s) and 0 interface(s) for lib-common-market-lexicons-network;
+    interface verify is not in the observed facts; dropped; interface proof is not
+    in the observed facts; dropped; interface signature is not in the observed facts;
+    dropped
+  phase: Succeeded

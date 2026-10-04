@@ -10,5 +10,15 @@ spec:
   systemContext: lib-common-market-lexicons-network-attested
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-common-market-lexicons-network-attested
-  phase: Running
+  agentLog: 'Lexicon modules under lib/common/market-lexicons/network/attested define
+    the shared network.attested.* attestation vocabulary for the market: an XRPC query
+    (network.attested.verify) that verifies attestations on a record, a record type
+    (network.attested.proof) binding a remote attestor''s repository to a subject
+    record through a canonical attestation CID, and a typed object (network.attested.signature)
+    holding an inline ECDSA signature over that CID, plus a Signatures union array
+    that mixes inline signatures with strongRefs to remote proofs. Each concept follows
+    the generated @atproto/lex layout: a *.defs.ts module carrying the l.* schema
+    and the exported types, and a sibling *.ts module that re-exports the defs and
+    default-exports the lexicon''s main.'
+  message: wrote 7 requirement(s) and 3 interface(s) for lib-common-market-lexicons-network-attested
+  phase: Succeeded

@@ -8,5 +8,57 @@ metadata:
 spec:
   dependsOn:
   - sc.atproto-market
+  intent: 'This context exists so the shared network.attested.* lexicon surface has
+    a single documented entry point in the market-lexicons common layer: it is the
+    vocabulary any network.attested.* speaker can import to verify attestations without
+    re-deriving the canonical-CID machinery. It is a codegen artifact, so the spec
+    records the NSIDs, the record/query shapes and the generated-file constraint rather
+    than any hand-written behaviour.'
   repository: atproto-market
+  requirements:
+  - codeRefs:
+    - file:lib/common/market-lexicons/network/attested.ts
+    id: r.generated-do-not-edit
+    level: MUST
+    text: The file must remain a @atproto/lex codegen output; its header states it
+      was generated and must not be edited by hand, so any change to the lexicon surface
+      belongs in the generator input, not here.
+  - codeRefs:
+    - file:lib/common/market-lexicons/network/attested.ts
+    id: r.namespace-reexports
+    level: MUST
+    text: The module must re-export exactly the three sibling lexicon modules as the
+      namespaces verify, proof and signature, so callers reach every network.attested.*
+      definition through this one file.
+  - codeRefs:
+    - file:lib/common/market-lexicons/network/attested.ts
+    id: r.proof-record-shape
+    level: MUST
+    text: The network.attested.proof record must be tid-keyed and must require a com.atproto.repo.strongRef
+      `subject`, a canonical `cid` and `createdAt`, while issuer, role, status and
+      signatures must be optional, so a standalone proof can bind to a subject record
+      living in another repository.
+  - codeRefs:
+    - file:lib/common/market-lexicons/network/attested.ts
+    id: r.signature-inline-shape
+    level: MUST
+    text: The network.attested.signature typed object must require a did:key `key`,
+      a `cid` and raw `signature` bytes, with issuer, issuedAt and role optional,
+      so an ECDSA attestation can be embedded inline in a record's signatures array.
+  - codeRefs:
+    - file:lib/common/market-lexicons/network/attested.ts
+    id: r.signatures-union
+    level: MUST
+    text: The signatures array must be a typed union of inline network.attested.signature
+      entries and com.atproto.repo.strongRef references to remote network.attested.proof
+      records, and it must be stripped from a record before the attestation CID is
+      computed so attaching attestations never changes the signing payload.
+  - codeRefs:
+    - file:lib/common/market-lexicons/network/attested.ts
+    id: r.verify-query-shape
+    level: MUST
+    text: The network.attested.verify query must accept a single required at-uri `uri`
+      parameter and must return uri, an optional cid, a boolean valid, a signatures
+      array and an optional workflow, so any network.attested.* speaker can verify
+      attestations without re-deriving the CID machinery.
   upstream: self
