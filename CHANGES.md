@@ -676,4 +676,5 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-common-market-lexicons-com-publicdomainrelay-temp-requester-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-common-market-lexicons-com-publicdomainrelay-temp-tangled-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-common-market-lexicons-com-publicdomainrelay-temp-tangled-spindle-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
+| lib-common-market-lexicons-network-attested-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
 | lib-common-market-lexicons-network-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
