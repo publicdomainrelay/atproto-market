@@ -1170,9 +1170,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-abc-market-bidder-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-abc-market-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-abc-requester-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-abc-requester-s2c-c367b58eb280 | SpecToCode | Failed |  | 1 | - |
-| lib-abc-requester-s2c-c367b58eb280-a2 | SpecToCode | Failed |  | 1 | - |
-| lib-abc-requester-s2c-c367b58eb280-a3 | SpecToCode | Failed |  | 1 | - |
+| lib-abc-requester-s2c-c367b58eb280 | SpecToCode | Pending |  | 0 | - |
 | lib-abc-trust-graph-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-atproto-attestation-port-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-atproto-helpers-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
