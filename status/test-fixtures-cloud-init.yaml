@@ -20,7 +20,7 @@ observed:
   - test/fixtures/cloud-init/tunnel-secrets.yaml
   - test/fixtures/cloud-init/tunnel.yaml
   fingerprint: 904c929b810a40ac47a18e298001c868b04af0c2e0f6351f12eb10609a868f04
-observedCommit: b296a7ee7c1aae256a81c378b419bf16b3a3aca6
+observedCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
 realizedSpecHash: 3b40733c113f2e6bbc9dd7a510266f436a9a53297e7024983d6ead0a758903dd
 syncedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
 syncedFingerprint: 904c929b810a40ac47a18e298001c868b04af0c2e0f6351f12eb10609a868f04

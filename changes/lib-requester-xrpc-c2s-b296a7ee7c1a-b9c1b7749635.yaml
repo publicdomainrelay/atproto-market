@@ -116,4 +116,5 @@ spec:
   systemContext: lib-requester-xrpc
   toCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
 status:
-  phase: Pending
+  message: the agent is summarizing lib-requester-xrpc
+  phase: Running
