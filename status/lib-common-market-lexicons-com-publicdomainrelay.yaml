@@ -16,7 +16,5 @@ observed:
   files:
   - lib/common/market-lexicons/com/publicdomainrelay/temp.ts
   fingerprint: 862119747c68a60c8a9ae7a42f27a20711c5bf0c856c5997358770ed76c2d0b8
-observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 realizedSpecHash: 0e8de19b2f330b96937445fe5e0e3496fbeff4415f8f94e4f0bb2d86dcb535b0
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 862119747c68a60c8a9ae7a42f27a20711c5bf0c856c5997358770ed76c2d0b8

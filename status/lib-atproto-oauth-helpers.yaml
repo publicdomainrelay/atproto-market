@@ -109,7 +109,5 @@ observed:
       }
   treeFiles:
   - lib/atproto-oauth-helpers/deno.json
-observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 realizedSpecHash: 4394d799dcb40f071ad6a091853213c5d771533fab47c5db824f3c5e274054a9
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 1b70ada817d729068f36dbbc31ec327c7ebca73a9fe5861620b4b3a01eb100cc

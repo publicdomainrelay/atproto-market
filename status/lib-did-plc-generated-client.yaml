@@ -1,11 +1,13 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
+- message: 'undeclared: Client, ClientOptions, Config, CreateClientConfig, Middleware,
+    Options, RequestOptions, RequestResult, ResolvedRequestOptions, ResponseStyle,
+    TDataShape, buildUrl, createClient, createConfig, createInterceptors, createQuerySerializer,
+    getParseAs, mergeConfigs, mergeHeaders, setAuthParams'
+  reason: InterfacesMissing
+  status: "False"
   type: CodeSynced
-- message: no synced fingerprint has been recorded yet
-  reason: NotSyncedYet
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
   status: "False"
   type: Drifted
 - message: the spec passes the validator
@@ -150,7 +152,5 @@ observed:
       (
         override: Config<Omit<ClientOptions, keyof T> & T> = {},
       ): Config<Omit<ClientOptions, keyof T> & T>
-observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 realizedSpecHash: 360f2ec4a371f68e414de37ab1071b3959a3f5a77d7d26d89ac9581922a76342
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 139ca181cf4f4709194afd06757cccf0fb514019c4a7518e77944479978181c5

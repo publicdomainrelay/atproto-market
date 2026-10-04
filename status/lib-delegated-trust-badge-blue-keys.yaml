@@ -37,7 +37,5 @@ observed:
       ): DelegatedTrustResolver
   treeFiles:
   - lib/delegated-trust-badge-blue-keys/deno.json
-observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 realizedSpecHash: fce4da8a60e422551f4cc65fc0728116eb7d76154426fc62a770590e51962507
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: b29671533054f5810c22010be833c835766105b429a3fa3c83f24b71d831e11f
