@@ -1,0 +1,48 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: request-vm-ssh-s2c-f1cc934aee1d
+  namespace: default
+spec:
+  delta:
+    requirements:
+    - fields:
+      - text
+      from:
+        codeRefs:
+        - file:request-vm-ssh/mod.ts
+        id: r.iroh-default-transport
+        level: MUST
+        text: The CLI must default --user-data-transport to the iroh module so a run
+          with no transport flag provisions the guest with the dumbpipe listener,
+          must ensure the dumbpipe binary is available (via the requester library's
+          ensureDumbpipe) whenever SSH will run, and must not pass a hard-coded websocat
+          ProxyCommand; the legacy websocat/fedproxy-ssh path must remain reachable
+          only by explicitly selecting that transport. --skip-ssh must still skip
+          all SSH and ticket handling, --keep-vm must still leave the VM running,
+          and an explicitly unknown --user-data-transport id must still fail with
+          the cloud-init module registry's unknown user-data module error.
+      id: r.iroh-default-transport
+      op: changed
+      to:
+        codeRefs:
+        - file:request-vm-ssh/mod.ts
+        id: r.iroh-default-transport
+        level: MUST
+        text: The CLI must default --user-data-transport to the iroh module so a run
+          with no transport flag provisions the guest with the dumbpipe listener,
+          must ensure the helper the selected transport's SSH path actually needs
+          -- the requester library's ensureDumbpipe for `iroh`, ensureWebsocat for
+          `tunnel` and `fedproxy-ssh` -- whenever SSH will run, and must not pass
+          a hard-coded websocat ProxyCommand; the legacy websocat/fedproxy-ssh path
+          must remain reachable only by explicitly selecting that transport. --skip-ssh
+          must still skip all SSH and ticket handling (and fetch neither helper),
+          --keep-vm must still leave the VM running, and an explicitly unknown --user-data-transport
+          id must still fail with the cloud-init module registry's unknown user-data
+          module error.
+  direction: SpecToCode
+  fromSpecHash: d2a673493193432744b0aa2f785835f404b2d638ceacbf01738f3bc0ce05276b
+  systemContext: request-vm-ssh
+  toSpecHash: f1cc934aee1db7971c41a2c575edcc9d204e51c73e508bf7a417151f51250d77
+status:
+  phase: Pending

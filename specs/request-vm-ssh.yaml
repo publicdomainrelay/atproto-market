@@ -141,13 +141,14 @@ spec:
     level: MUST
     text: The CLI must default --user-data-transport to the iroh module so a run with
       no transport flag provisions the guest with the dumbpipe listener, must ensure
-      the dumbpipe binary is available (via the requester library's ensureDumbpipe)
-      whenever SSH will run, and must not pass a hard-coded websocat ProxyCommand;
+      the helper the selected transport's SSH path actually needs -- the requester
+      library's ensureDumbpipe for `iroh`, ensureWebsocat for `tunnel` and `fedproxy-ssh`
+      -- whenever SSH will run, and must not pass a hard-coded websocat ProxyCommand;
       the legacy websocat/fedproxy-ssh path must remain reachable only by explicitly
-      selecting that transport. --skip-ssh must still skip all SSH and ticket handling,
-      --keep-vm must still leave the VM running, and an explicitly unknown --user-data-transport
-      id must still fail with the cloud-init module registry's unknown user-data module
-      error.
+      selecting that transport. --skip-ssh must still skip all SSH and ticket handling
+      (and fetch neither helper), --keep-vm must still leave the VM running, and an
+      explicitly unknown --user-data-transport id must still fail with the cloud-init
+      module registry's unknown user-data module error.
   - codeRefs:
     - file:request-vm-ssh/mod.ts
     id: r.local-dev-fetch-patch
