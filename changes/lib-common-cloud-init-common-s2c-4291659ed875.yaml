@@ -64,4 +64,6 @@ spec:
   systemContext: lib-common-cloud-init-common
   toSpecHash: 4291659ed8752249ae19c8fcabdd2f3b24e0df8c20426cdc87ac27333f4b76e2
 status:
-  phase: Pending
+  message: the agent is realizing lib-common-cloud-init-common in a batch of 2 led
+    by lib-common-cloud-init-common
+  phase: Running

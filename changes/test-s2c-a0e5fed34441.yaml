@@ -57,4 +57,5 @@ spec:
   systemContext: test
   toSpecHash: a0e5fed34441618c1a835d237386893cd7094eb719030ba9287ece8437500f33
 status:
-  phase: Pending
+  message: the agent is realizing test in a batch of 2 led by lib-common-cloud-init-common
+  phase: Running
