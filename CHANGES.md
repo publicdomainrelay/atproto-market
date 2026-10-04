@@ -773,6 +773,20 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.sse-hooks` (SHOULD): "ServerSentEventsOptions lets a caller intercept the outgoing request through onRequest (receiving the url and RequestInit and returning the Request to send), observe errors through onSseError, observe each parsed event through onSseEvent, and replace the retry sleep through sseSleepFn, with the remaining RequestInit fields spread onto the underlying fetch call."
 - added `r.url-assembly` (MUST): "getUrl assembles the final request URL from a baseUrl and/or url, a path parameter record, and a query record rendered through the supplied QuerySerializer, while defaultPathSerializer substitutes each path placeholder of the form {name} with its serialized value and leaves the remaining template intact."
 
+### lib-guest-capability-secrets
+
+- intent: "" -> "This context exists to specify the guest-side secrets capability: the unit that exposes a set of SecretEntry values to a sandboxed guest over a per-contract OIDC-authorized HTTPS ingress, and that ties that exposure to the lifecycle of the capability grant. It exists so the host can hand a guest an addressable secrets endpoint (URL, route, audience, accept path) during prepare, grant scoped access on contract, and guarantee teardown on revoke or dispose, without the caller having to know about the keypair, relay, serve or authorizer wiring."
+- added `r.capability-identity` (MUST): "The returned GuestCapability must identify itself with id SECRETS_CAPABILITY_ID and userDataModule "secrets", so the host can key its user data and capability registry on stable names."
+- added `r.exports-secrets-capability-factory` (MUST): "The package must export createSecretsCapability(opts: CreateSecretsCapabilityOpts): GuestCapability from lib/guest-capability-secrets/mod.ts, so a host can construct the secrets capability from a plain options object."
+- added `r.oncontract-installs-grant` (MUST): "onContract must build an RBAC record from the grant vars (role, subject, issuerUri, expectedAud) plus the relay's ingressUrl and the resolved route, install it on the authorizer together with issuerUri and expectedAud, and log secrets_grant_installed; the service URL must degrade to the empty string when no relay exists yet."
+- added `r.option-defaults` (MUST): "When opts.route is absent the capability must fall back to SECRETS_ROUTE, and when opts.acceptPathVm is absent it must fall back to DEFAULT_ACCEPT_PATH_VM, so callers may omit both without losing a usable route or accept path."
+- added `r.options-shape` (MUST): "CreateSecretsCapabilityOpts must carry the secrets to serve as SecretEntry[], a StructuredLoggerInterface logger, and optional route and acceptPathVm strings; the logger is required because every lifecycle step logs through it."
+- added `r.prepare-mounts-secrets-app` (MUST): "prepare must route "/" on the serve app to createSecretsApp, passing the shared authorizer, a getSecrets callback that returns opts.secrets, the resolved route, and a log adapter that forwards to logger.info, so secrets are only ever read through the authorizer-protected app."
+- added `r.prepare-returns-context` (MUST): "prepare must return a context containing secretsUrl from the relay's ingressUrl, secretsRoute set to the resolved route, secretsAcceptPath set to the resolved accept path, and secretsAud formatted as `api://ATProto?actx=<requesterDid>` from the prepare context, and must log secrets_server_ready with the URL, route and secret count."
+- added `r.prepare-starts-ingress-and-server` (MUST): "prepare must create an exportable Secp256k1 keypair, build an ingress through createIngress using the prepare context's ingressProxyHost, signer and tls with label "secrets", wrap that relay in createServe, and await beginServe, so the secrets endpoint is listening before the guest receives its address."
+- added `r.revoke-and-dispose` (MUST): "onRevoke must revoke the authorizer's grant and log secrets_grant_revoked, and dispose must additionally shut down the serve handle and clear the serve and relay references before resolving, so no secrets endpoint outlives the capability."
+- added `r.single-module-package` (SHOULD): "The package should expose its whole surface from lib/guest-capability-secrets/mod.ts with only lib/guest-capability-secrets/deno.json beside it as package metadata, so consumers import one module path."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance |
@@ -835,5 +849,5 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-did-plc-generated-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-did-plc-generated-client-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-did-plc-generated-core-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-guest-capability-secrets-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-guest-capability-secrets-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-hono-factory-compute-contract-gateway-xrpc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
