@@ -100,17 +100,21 @@ export interface RequesterPDSImpl extends RequesterPDS {
 // ---------------------------------------------------------------------------
 //
 // Under the default iroh transport the guest reports its dumbpipe ticket to the
-// requester's own app (POST /v1/on-network), never to a public record: a record
-// on the bidder's PDS is world-readable and the ticket is the capability that
-// dials the guest's sshd. The route is mounted on the app the ingress actually
-// serves -- createRequesterPDS has already copied the repo app's routes into it
-// with serve.app.route("/", app), and Hono copies a child app's routes at that
-// call, so a route added to the repo app afterwards is never reachable. One
-// requester serves several contracts at once, so the handler matches the posted
-// accept ref against each live contract's own ref and accepts exactly one
-// report per contract. No credential is baked into the cloud-config: the
-// composed user_data is published inside the compute.vm record, so a bearer
-// token there would be public and would only appear to protect the endpoint.
+// requester's own repo app (POST /v1/on-network), never to a public record: a
+// record on the bidder's PDS is world-readable and the ticket is the capability
+// that dials the guest's sshd. The route belongs to the repo app and
+// createRequesterPDS mounts it as part of building the PDS -- before
+// serve.app.route("/", app) copies that app's routes into the serve app the
+// ingress actually serves. Hono compiles its route table at that call and
+// throws on any later app.post, and reaching into its route registry or router
+// is not a supported way to add a route, so the route must exist before the app
+// is served and is never added, removed or rebuilt later. runComputeContract
+// only registers and drops a per-contract entry on it. One requester serves
+// several contracts at once, so the handler matches the posted accept ref
+// against each live contract's own ref and accepts exactly one report per
+// contract. No credential is baked into the cloud-config: the composed
+// user_data is published inside the compute.vm record, so a bearer token there
+// would be public and would only appear to protect the endpoint.
 
 export interface OnNetworkReportEntry {
   /** The contract's current accept ref; empty until the accept is written. */
@@ -124,35 +128,14 @@ const REPORT_PATH = "/v1/on-network";
 /** Live report entries per app, keyed by entry; the value is the settled flag. */
 const onNetworkReportEntries = new WeakMap<object, Map<OnNetworkReportEntry, boolean>>();
 
-/** Hono app a requester's ingress actually serves, when it can be routed. */
-export function requesterApp(pds: RequesterPDS): HonoApp | undefined {
-  const app = (pds.serve as unknown as { app?: HonoApp } | undefined)?.app;
-  return app && typeof app.post === "function" ? app : undefined;
-}
-
 /**
- * Replay an app's route list into a fresh router. Hono compiles its matcher
- * after the first request, so mutating `app.routes` alone cannot add or remove
- * a route that has already been served; replaying into a fresh router can.
- */
-function rebuildReportRouter(app: HonoApp): boolean {
-  try {
-    const routes = (app as { routes?: Array<{ method: string; path: string; handler: unknown }> }).routes;
-    if (!Array.isArray(routes)) return false;
-    const Fresh = (app as { constructor: new () => HonoApp }).constructor;
-    const fresh = new Fresh();
-    for (const r of routes) fresh.on(r.method, r.path, r.handler);
-    (app as { router?: unknown }).router = (fresh as { router: unknown }).router;
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Mount POST /v1/on-network on the app the ingress serves. Mounted once per
- * app; a posted accept ref that matches no live contract answers 409, and a
- * second report for a contract that already settled answers 409 without
+ * Mount POST /v1/on-network on the repo app. createRequesterPDS calls this
+ * while it builds the PDS, before serve.app.route("/", app) copies the repo
+ * app's routes into the app the ingress serves; Hono throws when a route is
+ * added to an app that has already served, so this route is mounted exactly
+ * once and never added, removed or rebuilt afterwards. The handler is mounted
+ * once per app; a posted accept ref that matches no live contract answers 409,
+ * and a second report for a contract that already settled answers 409 without
  * replacing the ticket.
  */
 export function mountOnNetworkReportHandler(app: HonoApp): void {
@@ -164,12 +147,12 @@ export function mountOnNetworkReportHandler(app: HonoApp): void {
       acceptCid?: string;
       address?: string;
     };
-    if (!body?.acceptUri || !body?.acceptCid) {
+    const entries = onNetworkReportEntries.get(app as object);
+    if (!entries || !body?.acceptUri || !body?.acceptCid) {
       return c.json({ error: "accept ref mismatch" }, 409);
     }
-    const entries = onNetworkReportEntries.get(app as object);
     let match: OnNetworkReportEntry | undefined;
-    for (const entry of entries?.keys() ?? []) {
+    for (const entry of entries.keys()) {
       const current = entry.accept();
       if (current.uri === body.acceptUri && current.cid === body.acceptCid) {
         match = entry;
@@ -177,47 +160,30 @@ export function mountOnNetworkReportHandler(app: HonoApp): void {
       }
     }
     if (!match) return c.json({ error: "accept ref mismatch" }, 409);
-    if (entries!.get(match)) return c.json({ error: "already settled" }, 409);
+    if (entries.get(match)) return c.json({ error: "already settled" }, 409);
     if (!body.address) return c.json({ error: "missing address" }, 400);
-    entries!.set(match, true);
+    entries.set(match, true);
     match.onTicket(String(body.address));
     return c.json({ ok: true });
   };
-  const routes = (app as { routes?: Array<{ method: string; path: string; handler: unknown }> }).routes;
-  if (!Array.isArray(routes)) {
-    app.post(REPORT_PATH, handler);
-    return;
-  }
-  routes.push({ method: "POST", path: REPORT_PATH, handler });
-  if (!rebuildReportRouter(app)) {
-    routes.pop();
-    app.post(REPORT_PATH, handler);
-  }
-}
-
-/** Register a contract's report entry. Mounts the route on first use. */
-export function registerOnNetworkReport(app: HonoApp, entry: OnNetworkReportEntry): void {
-  mountOnNetworkReportHandler(app);
-  onNetworkReportEntries.get(app as object)!.set(entry, false);
+  app.post(REPORT_PATH, handler);
 }
 
 /**
- * Drop a contract's report entry when the contract ends. When no contract is
- * left the route is unmounted, so it can no longer accept anything.
+ * Register a contract's report entry on the already-mounted route. A contract
+ * is only ever added to or dropped from the entry map -- the route itself is
+ * created by createRequesterPDS and never touched here.
+ */
+export function registerOnNetworkReport(app: HonoApp, entry: OnNetworkReportEntry): void {
+  onNetworkReportEntries.get(app as object)?.set(entry, false);
+}
+
+/**
+ * Drop a contract's report entry when the contract ends, so a late report
+ * matches no live contract and is answered 409.
  */
 export function unregisterOnNetworkReport(app: HonoApp, entry: OnNetworkReportEntry): void {
-  const entries = onNetworkReportEntries.get(app as object);
-  if (!entries) return;
-  entries.delete(entry);
-  if (entries.size > 0) return;
-  onNetworkReportEntries.delete(app as object);
-  const routes = (app as { routes?: Array<{ method: string; path: string; handler: unknown }> }).routes;
-  if (!Array.isArray(routes)) return;
-  const kept = routes.filter((r) => !(r.method === "POST" && r.path === REPORT_PATH));
-  if (kept.length === routes.length) return;
-  routes.length = 0;
-  for (const r of kept) routes.push(r);
-  rebuildReportRouter(app);
+  onNetworkReportEntries.get(app as object)?.delete(entry);
 }
 
 // ---------------------------------------------------------------------------
@@ -698,6 +664,11 @@ export async function createRequesterPDS(
 
   // -- mount the repo app + relay on the shared serve handle ------------
 
+  // The per-contract iroh report route is part of the repo app and must exist
+  // before the app is served: route("/", app) copies the app's routes here, and
+  // Hono throws on any app.post after that point. runComputeContract only adds
+  // and drops a per-contract entry on the mounted route.
+  mountOnNetworkReportHandler(app);
   serve.app.route("/", app as never);
   serve.addRelay(relay);
 
@@ -1350,14 +1321,20 @@ export async function runComputeContract(
   let privateKeyPath = "";
   let vmFqdn = "";
   const vmFqdnReady = Promise.withResolvers<string>();
-  // The contract's current accept ref, read by the report endpoint so a ticket
-  // is only accepted from the contract that owns the bearer token.
+  // The contract's current accept ref, read by the report endpoint so a posted
+  // report only settles the contract whose accept ref it names. The ref is
+  // public -- the endpoint carries no credential, because its URL is published
+  // inside the compute.vm record.
   let acceptRef: { uri: string; cid: string } = { uri: "", cid: "" };
 
-  // Per-contract private report channel (iroh). Mounted on the app the ingress
-  // serves, before the cloud-config is composed because the endpoint URL is
-  // baked into it. skipSsh mounts nothing: no SSH means no ticket to resolve.
-  const reportApp = (usesDumbpipe && !skipSsh) ? requesterApp(pds) : undefined;
+  // Per-contract private report channel (iroh). The route lives on the repo app
+  // createRequesterPDS built and mounted under the serve app, before the
+  // cloud-config is composed because the endpoint URL is baked into it. Here
+  // only this contract's entry is registered and dropped. skipSsh registers
+  // nothing: no SSH means no ticket to resolve.
+  const reportApp = (usesDumbpipe && !skipSsh)
+    ? (pds as RequesterPDSImpl).app
+    : undefined;
   const reportUrl = reportApp
     ? `${(pds.relay.ingressUrl || pds.ingressUrl).replace(/\/+$/, "")}/v1/on-network`
     : "";
