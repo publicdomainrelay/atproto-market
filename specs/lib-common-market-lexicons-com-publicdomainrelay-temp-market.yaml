@@ -233,38 +233,63 @@ codeRefIndex:
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts.ts accepts.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/badgeBlueKey.defs.ts
   badgeBlueKey.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/badgeBlueKey.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/badgeBlueKey.ts
+  badgeBlueKey.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/badgeBlueKey.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.defs.ts bid.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.defs.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.ts bid.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderAssociation.defs.ts
   bidderAssociation.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderAssociation.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderAssociation.ts
+  bidderAssociation.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderAssociation.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderDiscovery.defs.ts
   bidderDiscovery.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderDiscovery.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderDiscovery.ts
+  bidderDiscovery.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderDiscovery.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderRegistration.defs.ts
   bidderRegistration.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderRegistration.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderRegistration.ts
+  bidderRegistration.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderRegistration.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids.ts bids.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/event.defs.ts
   event.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/event.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/event.ts event.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/event.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts
   listBidders.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.ts
   listBidders.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/offering.defs.ts
   offering.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/offering.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/offering.ts offering.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/offering.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies.ts policies.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipt.defs.ts
   receipt.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipt.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipt.ts receipt.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipt.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts.ts receipts.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts
   registerBidder.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.ts
+  registerBidder.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/relays.defs.ts
   relays.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/relays.defs.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/relays.ts relays.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/relays.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/rfp.defs.ts rfp.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/rfp.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/rfp.ts rfp.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/rfp.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitAccept.defs.ts
   submitAccept.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitAccept.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitAccept.ts
+  submitAccept.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitAccept.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitBid.defs.ts
   submitBid.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitBid.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitBid.ts submitBid.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitBid.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitEvent.defs.ts
   submitEvent.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitEvent.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitEvent.ts
+  submitEvent.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitEvent.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitRfp.defs.ts
   submitRfp.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitRfp.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitRfp.ts submitRfp.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitRfp.ts
+- type_alias:0adc1f8af630092bb7aa4cac5ebc8920 $OutputBody@lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts:34
+- type_alias:223f5d5cc4466f3f957ec28f3aad7b15 $Output@lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts:33
+- type_alias:e4d4f5aae838439d1466beefaf7ba698 $Input@lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts:22
+- type_alias:eb8e5b103503939aa7f2e56d68d1b9a2 $InputBody@lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts:23
+- type_alias:edd4c019723622fb37683f85866b881b $Params@lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts:24

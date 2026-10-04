@@ -1,42 +1,85 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: fb0b7f1681bef17253bb56eb75d3c8c62aadf1b8de2582fc9e99e38080b3202a
+realizedSpecHash: 34bd9fe957dfce42718dde488a89493c51181a6d1a0d67f5c719c572ec947270
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'missing: $Input, $InputBody, $Output, $OutputBody, $Params; unresolved:
-    r.attested-signatures: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accept.defs.ts,
-    r.attested-signatures: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.defs.ts,
-    r.attested-signatures: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderAssociation.defs.ts,
-    r.attested-signatures: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/event.defs.ts,
-    r.attested-signatures: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipt.defs.ts,
-    r.attested-signatures: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/rfp.defs.ts,
-    r.generated-module-pairing: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accept.ts,
-    r.generated-module-pairing: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.ts,
-    r.generated-module-pairing: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/relays.defs.ts,
-    r.generated-module-pairing: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/relays.ts,
-    r.list-bidders-query: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts,
-    r.list-bidders-query: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.ts,
-    r.nsid-naming: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts,
-    r.nsid-naming: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitAccept.defs.ts,
-    r.nsid-naming: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitBid.defs.ts,
-    r.payload-variant-namespaces: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts.ts,
-    r.payload-variant-namespaces: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids.ts,
-    r.payload-variant-namespaces: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies.ts,
-    r.payload-variant-namespaces: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts.ts,
-    r.procedure-contracts: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitEvent.defs.ts,
-    r.procedure-contracts: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitRfp.defs.ts,
-    r.procedure-input-types: type_alias:0adc1f8af630092bb7aa4cac5ebc8920, r.procedure-input-types:
-    type_alias:223f5d5cc4466f3f957ec28f3aad7b15, r.procedure-input-types: type_alias:e4d4f5aae838439d1466beefaf7ba698,
-    r.procedure-input-types: type_alias:eb8e5b103503939aa7f2e56d68d1b9a2, r.query-param-type:
-    type_alias:edd4c019723622fb37683f85866b881b, r.record-field-shape: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/badgeBlueKey.defs.ts,
-    r.record-field-shape: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderDiscovery.defs.ts,
-    r.record-field-shape: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderRegistration.defs.ts,
-    r.record-field-shape: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/offering.defs.ts'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
-  reason: NotSyncedYet
-  message: no synced fingerprint has been recorded yet
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed
   message: the spec passes the validator
-observed: {}
+observed:
+  files:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/accept.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/accept.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/badgeBlueKey.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/badgeBlueKey.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderAssociation.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderAssociation.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderDiscovery.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderDiscovery.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderRegistration.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderRegistration.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/event.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/event.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/offering.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/offering.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipt.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipt.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/relays.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/relays.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/rfp.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/rfp.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitAccept.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitAccept.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitBid.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitBid.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitEvent.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitEvent.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitRfp.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitRfp.ts
+  interfaces:
+  - name: $Params
+    kind: type_alias
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts
+    line: 24
+    codegraphId: type_alias:edd4c019723622fb37683f85866b881b
+  - name: $Output
+    kind: type_alias
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts
+    line: 33
+    codegraphId: type_alias:223f5d5cc4466f3f957ec28f3aad7b15
+  - name: $OutputBody
+    kind: type_alias
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts
+    line: 34
+    codegraphId: type_alias:0adc1f8af630092bb7aa4cac5ebc8920
+  - name: $Input
+    kind: type_alias
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts
+    line: 22
+    codegraphId: type_alias:e4d4f5aae838439d1466beefaf7ba698
+  - name: $InputBody
+    kind: type_alias
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts
+    line: 23
+    codegraphId: type_alias:eb8e5b103503939aa7f2e56d68d1b9a2
+  fingerprint: fb0b7f1681bef17253bb56eb75d3c8c62aadf1b8de2582fc9e99e38080b3202a

@@ -176,3 +176,9 @@ codeRefIndex:
   subscribeComputeEvents.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/subscribeComputeEvents.defs.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/subscribeComputeEvents.ts
   subscribeComputeEvents.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/subscribeComputeEvents.ts
+- type_alias:393831b8d75c1249270e671756544ddb $Input@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.defs.ts:20
+- type_alias:6cbf471842bed7607958a9024f6c1586 $Message@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/subscribeComputeEvents.defs.ts:27
+- type_alias:8dd8c3ab1dfe28788340058f4ef2def6 $OutputBody@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.defs.ts:29
+- type_alias:c6ef996f74e21ae1c38c7755e9923196 $InputBody@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.defs.ts:21
+- type_alias:ea94174ed7f56e765770915c6a088775 $Output@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.defs.ts:28
+- type_alias:f236e40d2419fcf685be494db9c50a84 $Params@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.defs.ts:13

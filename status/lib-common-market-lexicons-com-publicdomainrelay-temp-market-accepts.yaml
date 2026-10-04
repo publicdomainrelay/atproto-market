@@ -1,17 +1,25 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: 755beadc1b0bc938bcbce6f5c520321faa5cc33d85b87e21aa822ddc5ab1119d
+realizedSpecHash: bea64b9e98380092330e0c8176bd8cd16416942c40343a69547f182303248d4f
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: CodeRefsUnresolved
-  message: 'unresolved requirement code refs: r.accepts-free-record-shape: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/free.defs.ts,
-    r.accepts-x402-record-shape: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/x402.defs.ts,
-    r.barrel-module-default-export: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/free.ts,
-    r.barrel-module-default-export: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/x402.ts'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
-  reason: NotSyncedYet
-  message: no synced fingerprint has been recorded yet
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed
   message: the spec passes the validator
-observed: {}
+observed:
+  files:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/free.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/free.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/x402.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts/x402.ts
+  fingerprint: 755beadc1b0bc938bcbce6f5c520321faa5cc33d85b87e21aa822ddc5ab1119d

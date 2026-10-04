@@ -1,19 +1,27 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: 30b2850bf0f88c71b9d3edaec06559d44446b00260db864ae6355c9ba91d0091
+realizedSpecHash: 3d2a9ef60ba2201f5cc5948ef037e1dc05094c8e37c08b8560631bbab41ea6c7
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: CodeRefsUnresolved
-  message: 'unresolved requirement code refs: r.builtin-record-shape: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/builtin.defs.ts,
-    r.deno-worker-record-shape: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/denoWorker.defs.ts,
-    r.generated-files-not-edited: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/service.defs.ts,
-    r.module-export-surface: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/builtin.ts,
-    r.module-export-surface: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/denoWorker.ts,
-    r.module-export-surface: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/service.ts'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
-  reason: NotSyncedYet
-  message: no synced fingerprint has been recorded yet
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed
   message: the spec passes the validator
-observed: {}
+observed:
+  files:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/builtin.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/builtin.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/denoWorker.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/denoWorker.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/service.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/service.ts
+  fingerprint: 30b2850bf0f88c71b9d3edaec06559d44446b00260db864ae6355c9ba91d0091

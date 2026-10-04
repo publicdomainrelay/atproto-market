@@ -9,5 +9,10 @@ _The resolved code references are regenerated on every run. Cite the ids above r
 <!-- SPECD_MANAGED_BEGIN -->
 ## Resolved code references
 
-_None yet._
+- `file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/builtin.defs.ts` file builtin.defs.ts (lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/builtin.defs.ts)
+- `file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/builtin.ts` file builtin.ts (lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/builtin.ts)
+- `file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/denoWorker.defs.ts` file denoWorker.defs.ts (lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/denoWorker.defs.ts)
+- `file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/denoWorker.ts` file denoWorker.ts (lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/denoWorker.ts)
+- `file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/service.defs.ts` file service.defs.ts (lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/service.defs.ts)
+- `file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/service.ts` file service.ts (lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/service.ts)
 <!-- SPECD_MANAGED_END -->
