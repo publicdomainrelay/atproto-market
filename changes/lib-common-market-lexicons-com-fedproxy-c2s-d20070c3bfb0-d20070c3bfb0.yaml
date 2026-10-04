@@ -10,5 +10,19 @@ spec:
   systemContext: lib-common-market-lexicons-com-fedproxy
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-common-market-lexicons-com-fedproxy
-  phase: Running
+  agentLog: A generated AT Protocol lexicon module set for the `com.fedproxy` authority,
+    produced by the `@atproto/lex` code generator and vendored under `lib/common/market-lexicons/com/fedproxy/`.
+    It carries two record definitions — `com.fedproxy.rbac` (an RBAC policy record
+    mapping role names to OIDC claim constraints and policy names to JSON Schema constraints
+    over `com.atproto.repo.createRecord` for sshPublicKey records, plus an optional
+    custom-claim to role index) and `com.fedproxy.sshPublicKey` (a service name plus
+    an OpenSSH-format public key and a creation timestamp, keyed by TID) — each with
+    a thin sidecar module that re-exports the defs and its default `main`. A third
+    module, `temp.ts`, aggregates the XRPC surface under the `temp` namespace, re-exporting
+    the `registration`, `getRegistrationNonce`, and `subscribe` services that implement
+    the signed-nonce relay handshake, so a consumer imports one path to reach the
+    relay subscription protocol. Nothing here is hand-written; every file is generator
+    output and exists to give the rest of the market codebase typed access to these
+    records and RPCs.
+  message: wrote 7 requirement(s) and 0 interface(s) for lib-common-market-lexicons-com-fedproxy
+  phase: Succeeded
