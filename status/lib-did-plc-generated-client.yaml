@@ -1,10 +1,8 @@
 conditions:
-- message: 'undeclared: Client, ClientOptions, Config, CreateClientConfig, Middleware,
-    Options, RequestOptions, RequestResult, ResolvedRequestOptions, ResponseStyle,
-    TDataShape, buildUrl, createClient, createConfig, createInterceptors, createQuerySerializer,
-    getParseAs, mergeConfigs, mergeHeaders, setAuthParams'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -152,5 +150,5 @@ observed:
       (
         override: Config<Omit<ClientOptions, keyof T> & T> = {},
       ): Config<Omit<ClientOptions, keyof T> & T>
-realizedSpecHash: 360f2ec4a371f68e414de37ab1071b3959a3f5a77d7d26d89ac9581922a76342
+realizedSpecHash: 61f4ceb82b23ae1357afeaa16490461eb079feb141942793b4ae22062f7dca96
 syncedFingerprint: 139ca181cf4f4709194afd06757cccf0fb514019c4a7518e77944479978181c5
