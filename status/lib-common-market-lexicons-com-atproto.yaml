@@ -16,5 +16,7 @@ observed:
   files:
   - lib/common/market-lexicons/com/atproto/repo.ts
   fingerprint: fe9f784be07b6075e4bd058b8bd349cd27b9274be4eee697c91a9fdd1984164b
+observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 realizedSpecHash: 9786ea53d4cead0ee29ef96cd56bc7097eb02ec8f72296648d4a375ba449252f
+syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: fe9f784be07b6075e4bd058b8bd349cd27b9274be4eee697c91a9fdd1984164b

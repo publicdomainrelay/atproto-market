@@ -925,3 +925,37 @@ system_contexts:
   id: sc.lib-hono-factory-did-plc-directory-storage
   name: lib-hono-factory-did-plc-directory-storage
   upstream: self
+- code:
+  - lib/hono-factory-market-atproto/mod.ts
+  codeRefIndex:
+  - file:lib/hono-factory-market-atproto/mod.ts mod.ts@lib/hono-factory-market-atproto/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-hono-factory-market-atproto
+  name: lib-hono-factory-market-atproto
+  upstream: self
+- code:
+  - lib/hono-factory-market-settlement-free/mod.ts
+  codeRefIndex:
+  - file:lib/hono-factory-market-settlement-free/mod.ts mod.ts@lib/hono-factory-market-settlement-free/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-hono-factory-market-settlement-free
+  name: lib-hono-factory-market-settlement-free
+  upstream: self
+- code:
+  - lib/hono-factory-market-settlement-x402/mod.ts
+  codeRefIndex:
+  - file:lib/hono-factory-market-settlement-x402/mod.ts mod.ts@lib/hono-factory-market-settlement-x402/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-hono-factory-market-settlement-x402
+  name: lib-hono-factory-market-settlement-x402
+  upstream: self
+- codeRefIndex:
+  - file:lib/hono-factory-requester-xrpc/mod.ts mod.ts@lib/hono-factory-requester-xrpc/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-hono-factory-requester-xrpc
+  name: lib-hono-factory-requester-xrpc
+  upstream: self

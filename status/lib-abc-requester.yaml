@@ -120,5 +120,7 @@ observed:
     signature: '(): Promise<void>'
   treeFiles:
   - lib/abc/requester/deno.json
+observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 realizedSpecHash: a3f2ee44fe90b9009e4a7270526d2cfa753c18593a1c789aa731b0ac227779c3
+syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: c0fea03ad716578ee865037043a5b0cf1df4e63f0c62c531d3c4b600f681aeff

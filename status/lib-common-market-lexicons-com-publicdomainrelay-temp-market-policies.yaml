@@ -21,5 +21,7 @@ observed:
   - lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/service.defs.ts
   - lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies/service.ts
   fingerprint: 30b2850bf0f88c71b9d3edaec06559d44446b00260db864ae6355c9ba91d0091
+observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 realizedSpecHash: 4dc823ca094790d255f684b9e9f91a96a98ca42bd8f4fb6ba0af8f165e170532
+syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 30b2850bf0f88c71b9d3edaec06559d44446b00260db864ae6355c9ba91d0091

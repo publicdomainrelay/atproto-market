@@ -1,0 +1,44 @@
+conditions:
+- message: 'undeclared: MarketEnv, MarketFactoryHandlers, createMarketFactory'
+  reason: InterfacesMissing
+  status: "False"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/hono-factory-market-atproto/mod.ts
+  fingerprint: b65a7d98db73cca6a40d38dee5b38259cbd7b330a90527f53e83826f1b143408
+  interfaces:
+  - codegraphId: type_alias:7760b83d04c47b7681b47b9d97351064
+    file: lib/hono-factory-market-atproto/mod.ts
+    kind: type_alias
+    line: 29
+    name: MarketEnv
+  - codegraphId: interface:8e5a087b65382c18eeeb71bed01f210a
+    file: lib/hono-factory-market-atproto/mod.ts
+    kind: interface
+    line: 35
+    name: MarketFactoryHandlers
+  - codegraphId: function:800a02055445c67608223d52523a4f52
+    file: lib/hono-factory-market-atproto/mod.ts
+    kind: function
+    line: 44
+    name: createMarketFactory
+    signature: |-
+      (
+        deps: MarketServerDeps,
+        handlers?: MarketFactoryHandlers,
+      )
+  treeFiles:
+  - lib/hono-factory-market-atproto/deno.json
+observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
+realizedSpecHash: a3936df272c062d1894f7a592d813d773c565469bfc8337282fceaf1b5676107
+syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
+syncedFingerprint: b65a7d98db73cca6a40d38dee5b38259cbd7b330a90527f53e83826f1b143408

@@ -36,5 +36,7 @@ observed:
     kind: type_alias
     line: 29
     name: $OutputBody
+observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 realizedSpecHash: c5b1bc32532a885c3ebaf0256187a0fba8338eb76da4fe42f6f38d6a167fce2d
+syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: b8694d9fffd8f78760ffe2f389e12d43b4c0c8569b93d8a0abfd80ccab3bfb1f
