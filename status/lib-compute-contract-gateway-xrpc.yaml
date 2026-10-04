@@ -1,0 +1,36 @@
+conditions:
+- message: 'undeclared: GatewayOptions, createComputeContractGateway'
+  reason: InterfacesMissing
+  status: "False"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/compute-contract-gateway-xrpc/mod.ts
+  fingerprint: d0d81be78c9ecb29f5536f3d57ce1f14f2b4297f2252b672be71295d7da0d0dd
+  interfaces:
+  - codegraphId: interface:ecee421eb7bb2708411146ff260c58b2
+    file: lib/compute-contract-gateway-xrpc/mod.ts
+    kind: interface
+    line: 26
+    name: GatewayOptions
+  - codegraphId: function:03370a182fd0653c2e57c9c946423ce7
+    file: lib/compute-contract-gateway-xrpc/mod.ts
+    kind: function
+    line: 38
+    name: createComputeContractGateway
+    signature: |-
+      (
+        opts: GatewayOptions,
+      ): ComputeContractGateway
+  treeFiles:
+  - lib/compute-contract-gateway-xrpc/deno.json
+realizedSpecHash: 6b6d1b6e34efcda8c750349457cd845ac9591d1bcb82cc98dee611966c11a2d2
+syncedFingerprint: d0d81be78c9ecb29f5536f3d57ce1f14f2b4297f2252b672be71295d7da0d0dd

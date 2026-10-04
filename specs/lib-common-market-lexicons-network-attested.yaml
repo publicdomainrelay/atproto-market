@@ -1,0 +1,17 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/common/market-lexicons/network/attested/proof.defs.ts proof.defs.ts@lib/common/market-lexicons/network/attested/proof.defs.ts
+- file:lib/common/market-lexicons/network/attested/proof.ts proof.ts@lib/common/market-lexicons/network/attested/proof.ts
+- file:lib/common/market-lexicons/network/attested/signature.defs.ts signature.defs.ts@lib/common/market-lexicons/network/attested/signature.defs.ts
+- file:lib/common/market-lexicons/network/attested/signature.ts signature.ts@lib/common/market-lexicons/network/attested/signature.ts
+- file:lib/common/market-lexicons/network/attested/verify.defs.ts verify.defs.ts@lib/common/market-lexicons/network/attested/verify.defs.ts
+- file:lib/common/market-lexicons/network/attested/verify.ts verify.ts@lib/common/market-lexicons/network/attested/verify.ts
+kind: SystemContext
+metadata:
+  name: lib-common-market-lexicons-network-attested
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

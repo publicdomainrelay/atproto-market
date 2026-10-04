@@ -748,3 +748,58 @@ system_contexts:
   id: sc.lib-common-market-lexicons-network
   name: lib-common-market-lexicons-network
   upstream: self
+- code:
+  - lib/common/market-lexicons/network/attested/proof.defs.ts
+  - lib/common/market-lexicons/network/attested/proof.ts
+  - lib/common/market-lexicons/network/attested/signature.defs.ts
+  - lib/common/market-lexicons/network/attested/signature.ts
+  - lib/common/market-lexicons/network/attested/verify.defs.ts
+  - lib/common/market-lexicons/network/attested/verify.ts
+  codeRefIndex:
+  - file:lib/common/market-lexicons/network/attested/proof.defs.ts proof.defs.ts@lib/common/market-lexicons/network/attested/proof.defs.ts
+  - file:lib/common/market-lexicons/network/attested/proof.ts proof.ts@lib/common/market-lexicons/network/attested/proof.ts
+  - file:lib/common/market-lexicons/network/attested/signature.defs.ts signature.defs.ts@lib/common/market-lexicons/network/attested/signature.defs.ts
+  - file:lib/common/market-lexicons/network/attested/signature.ts signature.ts@lib/common/market-lexicons/network/attested/signature.ts
+  - file:lib/common/market-lexicons/network/attested/verify.defs.ts verify.defs.ts@lib/common/market-lexicons/network/attested/verify.defs.ts
+  - file:lib/common/market-lexicons/network/attested/verify.ts verify.ts@lib/common/market-lexicons/network/attested/verify.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-lexicons-network-attested
+  name: lib-common-market-lexicons-network-attested
+  upstream: self
+- code:
+  - lib/common/secrets-common/mod.ts
+  codeRefIndex:
+  - file:lib/common/secrets-common/mod.ts mod.ts@lib/common/secrets-common/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-secrets-common
+  name: lib-common-secrets-common
+  upstream: self
+- code:
+  - lib/compute-contract-gateway-xrpc/mod.ts
+  codeRefIndex:
+  - file:lib/compute-contract-gateway-xrpc/mod.ts mod.ts@lib/compute-contract-gateway-xrpc/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-compute-contract-gateway-xrpc
+  name: lib-compute-contract-gateway-xrpc
+  upstream: self
+- code:
+  - lib/delegated-trust-badge-blue-keys/mod.ts
+  codeRefIndex:
+  - file:lib/delegated-trust-badge-blue-keys/mod.ts mod.ts@lib/delegated-trust-badge-blue-keys/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-delegated-trust-badge-blue-keys
+  name: lib-delegated-trust-badge-blue-keys
+  upstream: self
+- code:
+  - lib/did-key-ingress-proxy/mod.ts
+  codeRefIndex:
+  - file:lib/did-key-ingress-proxy/mod.ts mod.ts@lib/did-key-ingress-proxy/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-did-key-ingress-proxy
+  name: lib-did-key-ingress-proxy
+  upstream: self

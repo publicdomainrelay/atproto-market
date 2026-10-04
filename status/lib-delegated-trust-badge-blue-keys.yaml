@@ -1,0 +1,41 @@
+conditions:
+- message: 'undeclared: DelegatedTrustBadgeBlueKeysOpts, ListedRecord, createBadgeBlueKeysDelegatedTrustResolver'
+  reason: InterfacesMissing
+  status: "False"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/delegated-trust-badge-blue-keys/mod.ts
+  fingerprint: b29671533054f5810c22010be833c835766105b429a3fa3c83f24b71d831e11f
+  interfaces:
+  - codegraphId: interface:9ba074d070c57eb2e62aa0df62cb0178
+    file: lib/delegated-trust-badge-blue-keys/mod.ts
+    kind: interface
+    line: 4
+    name: ListedRecord
+  - codegraphId: interface:05ddb65bca17c3188f02d33eda8b8481
+    file: lib/delegated-trust-badge-blue-keys/mod.ts
+    kind: interface
+    line: 9
+    name: DelegatedTrustBadgeBlueKeysOpts
+  - codegraphId: function:473e9effb9d9e91445db68e031e329ea
+    file: lib/delegated-trust-badge-blue-keys/mod.ts
+    kind: function
+    line: 15
+    name: createBadgeBlueKeysDelegatedTrustResolver
+    signature: |-
+      (
+        opts: DelegatedTrustBadgeBlueKeysOpts,
+      ): DelegatedTrustResolver
+  treeFiles:
+  - lib/delegated-trust-badge-blue-keys/deno.json
+realizedSpecHash: fce4da8a60e422551f4cc65fc0728116eb7d76154426fc62a770590e51962507
+syncedFingerprint: b29671533054f5810c22010be833c835766105b429a3fa3c83f24b71d831e11f

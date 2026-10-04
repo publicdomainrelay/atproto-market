@@ -1,0 +1,40 @@
+conditions:
+- message: 'undeclared: $Output, $OutputBody, $Params'
+  reason: InterfacesMissing
+  status: "False"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/common/market-lexicons/network/attested/proof.defs.ts
+  - lib/common/market-lexicons/network/attested/proof.ts
+  - lib/common/market-lexicons/network/attested/signature.defs.ts
+  - lib/common/market-lexicons/network/attested/signature.ts
+  - lib/common/market-lexicons/network/attested/verify.defs.ts
+  - lib/common/market-lexicons/network/attested/verify.ts
+  fingerprint: b8694d9fffd8f78760ffe2f389e12d43b4c0c8569b93d8a0abfd80ccab3bfb1f
+  interfaces:
+  - codegraphId: type_alias:a83e3643c5b8a37f2e91a7431503554c
+    file: lib/common/market-lexicons/network/attested/verify.defs.ts
+    kind: type_alias
+    line: 16
+    name: $Params
+  - codegraphId: type_alias:7489e38d4a935439d87ec3ac5bb7049d
+    file: lib/common/market-lexicons/network/attested/verify.defs.ts
+    kind: type_alias
+    line: 28
+    name: $Output
+  - codegraphId: type_alias:88f850da0d5e8b8c370e4ed509f86f74
+    file: lib/common/market-lexicons/network/attested/verify.defs.ts
+    kind: type_alias
+    line: 29
+    name: $OutputBody
+realizedSpecHash: c5b1bc32532a885c3ebaf0256187a0fba8338eb76da4fe42f6f38d6a167fce2d
+syncedFingerprint: b8694d9fffd8f78760ffe2f389e12d43b4c0c8569b93d8a0abfd80ccab3bfb1f
