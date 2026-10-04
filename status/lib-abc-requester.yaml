@@ -1,8 +1,17 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
+- message: 'unresolved requirement code refs: r.bid-collector-dedupe: class:16d39bb38a118fc0fb3fe14223562247,
+    r.bid-collector-dedupe: method:234812e0614aaa8d9ef21f3bf4032910, r.bid-collector-dedupe:
+    method:8beccf740102cdc12505e185d8271765, r.bid-collector-dedupe: method:a375d27196d03a11f471e5c9e2bc799a,
+    r.bid-collector-drain: method:8471dcc6f8e0b25bd63a74706b5003cd, r.bid-collector-early-winner-once:
+    method:cce3fb92bff243280237741351ec0705, r.bid-collector-early-winner: interface:330c2d6e1bc25d27c1db597ccfc31a6e,
+    r.bid-collector-early-winner: method:f0e93b3ced1b767ab92656b6071e05ea, r.bid-cost:
+    function:66b7603e9bf193b0f4990c9418718750, r.bid-payload-nsid: function:3d3875fa8240403acfc320be5e313f3a,
+    r.console-buffer: interface:91c57701082294b94623335812685327, r.contract-flow-result:
+    interface:e7d2504efcd0625ee0843e6ca37af80e, r.iroh-ticket-transport-surface: interface:6e1c7583bbdd18e7a9136c0da721214c,
+    r.pds-options: interface:494d188099d646e00135e8028183de2b, r.select-winner-cheapest:
+    function:3c8d8d8546ff4701fb29d8fbe9795d8c, r.ssh-session-provider: interface:780ccb6e208a6173bf860193cc9dc0b2'
+  reason: CodeRefsUnresolved
+  status: "False"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -15,7 +24,7 @@ conditions:
 observed:
   files:
   - lib/abc/requester/mod.ts
-  fingerprint: c0fea03ad716578ee865037043a5b0cf1df4e63f0c62c531d3c4b600f681aeff
+  fingerprint: f4232113afcf8cbf0951b8165475e61e9c1b2780ee80b51fde48555708cbc003
   interfaces:
   - codegraphId: interface:f25a32e8c06ef59f558fa95805408414
     file: lib/abc/requester/mod.ts
@@ -27,98 +36,98 @@ observed:
     kind: interface
     line: 15
     name: ContractFlowOptions
-  - codegraphId: interface:494d188099d646e00135e8028183de2b
+  - codegraphId: interface:741a0c20adbb6bc0d938265b22ce885f
     file: lib/abc/requester/mod.ts
     kind: interface
-    line: 127
+    line: 130
     name: PDSOptions
-  - codegraphId: interface:6e1c7583bbdd18e7a9136c0da721214c
+  - codegraphId: interface:3917ad87d46039428eaafd04a57c85ba
     file: lib/abc/requester/mod.ts
     kind: interface
-    line: 138
+    line: 141
     name: RequesterPDS
-  - codegraphId: interface:780ccb6e208a6173bf860193cc9dc0b2
+  - codegraphId: interface:5b2410a21ad68d7492443d9c2f4ed1b3
     file: lib/abc/requester/mod.ts
     kind: interface
-    line: 192
+    line: 205
     name: SshSessionProvider
-  - codegraphId: interface:e7d2504efcd0625ee0843e6ca37af80e
+  - codegraphId: interface:13cf3c528eda36cb6841b2dd983b53be
     file: lib/abc/requester/mod.ts
     kind: interface
-    line: 198
+    line: 211
     name: ContractFlowResult
-  - codegraphId: interface:91c57701082294b94623335812685327
+  - codegraphId: interface:28d26b20f1990d47d11aeed4fba9731d
     file: lib/abc/requester/mod.ts
     kind: interface
-    line: 219
+    line: 232
     name: ConsoleBuffer
-  - codegraphId: function:3d3875fa8240403acfc320be5e313f3a
+  - codegraphId: function:aab4fa241c5018327a4034e6bf0e690f
     file: lib/abc/requester/mod.ts
     kind: function
-    line: 224
+    line: 237
     name: bidPayloadNsid
     signature: '(bid: CollectedBid): string'
-  - codegraphId: function:66b7603e9bf193b0f4990c9418718750
+  - codegraphId: function:b652e236b155653ea2712ef7a9ee1aad
     file: lib/abc/requester/mod.ts
     kind: function
-    line: 231
+    line: 244
     name: bidCost
     signature: '(bid: CollectedBid): number'
-  - codegraphId: function:3c8d8d8546ff4701fb29d8fbe9795d8c
+  - codegraphId: function:daac3a41e10595e1d6748a9bfaa04248
     file: lib/abc/requester/mod.ts
     kind: function
-    line: 236
+    line: 249
     name: selectWinner
     signature: '(bids: CollectedBid[]): CollectedBid | undefined'
-  - codegraphId: interface:330c2d6e1bc25d27c1db597ccfc31a6e
+  - codegraphId: interface:9073696cc3ba5f419a6eb2cfc60ea8fa
     file: lib/abc/requester/mod.ts
     kind: interface
-    line: 241
+    line: 254
     name: BidCollectorOptions
-  - codegraphId: class:16d39bb38a118fc0fb3fe14223562247
+  - codegraphId: class:d0e1d0e94e5fa98abad7a4bef86cd7e9
     file: lib/abc/requester/mod.ts
     kind: class
-    line: 259
+    line: 272
     name: BidCollector
-  - codegraphId: method:cce3fb92bff243280237741351ec0705
+  - codegraphId: method:3ebe83ceae74fd8f138b031fc90cd91c
     file: lib/abc/requester/mod.ts
     kind: method
-    line: 267
+    line: 280
     name: BidCollector.constructor
     signature: '(readonly opts: BidCollectorOptions)'
-  - codegraphId: method:f0e93b3ced1b767ab92656b6071e05ea
+  - codegraphId: method:048fbde4089370fa13db8f85fd68ec7b
     file: lib/abc/requester/mod.ts
     kind: method
-    line: 273
+    line: 286
     name: BidCollector.isFree
     signature: '(bid: CollectedBid): boolean'
-  - codegraphId: method:234812e0614aaa8d9ef21f3bf4032910
+  - codegraphId: method:62c0c6e164372e0419aa3bdf9c4e099c
     file: lib/abc/requester/mod.ts
     kind: method
-    line: 277
+    line: 290
     name: BidCollector.add
     signature: '(bid: CollectedBid): void'
-  - codegraphId: method:8beccf740102cdc12505e185d8271765
+  - codegraphId: method:1955dcbb0a7ec4cad7548a90704f4dc7
     file: lib/abc/requester/mod.ts
     kind: method
-    line: 296
+    line: 309
     name: BidCollector.addAll
     signature: '(bids: CollectedBid[]): void'
-  - codegraphId: method:a375d27196d03a11f471e5c9e2bc799a
+  - codegraphId: method:0ee6f18c9c4217757293e46a21ad2e53
     file: lib/abc/requester/mod.ts
     kind: method
-    line: 300
+    line: 313
     name: BidCollector.all
     signature: '(): CollectedBid[]'
-  - codegraphId: method:8471dcc6f8e0b25bd63a74706b5003cd
+  - codegraphId: method:90e2b0d4cadd0775b029dd00b174b22c
     file: lib/abc/requester/mod.ts
     kind: method
-    line: 305
+    line: 318
     name: BidCollector.drain
     signature: '(): Promise<void>'
   treeFiles:
   - lib/abc/requester/deno.json
-observedCommit: 857b94a22ea058825611b4f155cdc639e3c0139d
-realizedSpecHash: 7f1e9e07bf19d4b0079546f71cc680651fde0e79bef99794f7287bef4e3fae74
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: c0fea03ad716578ee865037043a5b0cf1df4e63f0c62c531d3c4b600f681aeff
+observedCommit: b296a7ee7c1aae256a81c378b419bf16b3a3aca6
+realizedSpecHash: c367b58eb280c20a539b4e8c6eaad13552975de046c216a0e53d238df6ee0c71
+syncedCommit: b296a7ee7c1aae256a81c378b419bf16b3a3aca6
+syncedFingerprint: f4232113afcf8cbf0951b8165475e61e9c1b2780ee80b51fde48555708cbc003
