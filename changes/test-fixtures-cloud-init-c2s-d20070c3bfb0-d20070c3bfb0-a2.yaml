@@ -10,8 +10,39 @@ spec:
   systemContext: test-fixtures-cloud-init
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing test-fixtures-cloud-init
-  phase: Running
+  agentLog: '...lting url_route to `/v1/oidc/issue`), reads `sub` from the workload
+    identity token, exchanges it for an aud `api://ATProto?actx=did:plc:requester123`
+    token with ttl 300, and fails loudly when any of these are missing.","codeRefs":["file:test/fixtures/cloud-init/tunnel-secrets.yaml"]},{"id":"r.tunnel-secrets-materialization","level":"MUST","text":"After
+    a successful exchange the script fetches `com.publicdomainrelay.temp.compute.secrets.getSecrets`
+    from `https://sec-abc.relay.local`, writes each bundle entry to its declared `path`
+    under `umask 077` with parent directories 0700 root:root and files 0600 root:root,
+    retries the fetch up to 10 times, and stamps `/var/lib/setup-secrets.done` so
+    `setup-secrets.service` runs once.","codeRefs":["file:test/fixtures/cloud-init/tunnel-secrets.yaml"]},{"id":"r.stable-placeholder-identity","level":"SHOULD","text":"Fixtures
+    embed fixed placeholder credentials — `did:plc:abc123`, `relay.local`, `rly-xyz.xrpc.fedproxy.com`,
+    `sec-abc.relay.local`, `did:plc:requester123`, `vm-test`, `AAAA test@example`
+    — rather than anything derived at runtime, so rendered user-data is byte-identical
+    across runs and snapshots stay stable without leaking real secrets.","codeRefs":["file:test/fixtures/cloud-init/fedproxy-ssh.yaml","file:test/fixtures/cloud-init/fedproxy-web-wootty.yaml","file:test/fixtures/cloud-init/tunnel.yaml","file:test/fixtures/cloud-init/tunnel-secrets.yaml"]},{"id":"r.setup-scripts-idempotent","level":"SHOULD","text":"Every
+    first-boot setup script exits early when its stamp file already exists (`/var/lib/setup-websocat.done`,
+    `/var/lib/setup-wootty.done`, `/var/lib/setup-secrets.done`) and pairs with a
+    matching `.service`/`.path` unit gated by `ConditionPathExists`, so re-running
+    cloud-init does not re-download binaries or re-mint tokens.","codeRefs":["file:test/fixtures/cloud-init/fedproxy-ssh.yaml","file:test/fixtures/cloud-init/fedproxy-web-wootty.yaml","file:test/fixtures/cloud-init/tunnel-secrets.yaml"]}],"interfaces":[]}'
+  message: '...lting url_route to `/v1/oidc/issue`), reads `sub` from the workload
+    identity token, exchanges it for an aud `api://ATProto?actx=did:plc:requester123`
+    token with ttl 300, and fails loudly when any of these are missing.","codeRefs":["file:test/fixtures/cloud-init/tunnel-secrets.yaml"]},{"id":"r.tunnel-secrets-materialization","level":"MUST","text":"After
+    a successful exchange the script fetches `com.publicdomainrelay.temp.compute.secrets.getSecrets`
+    from `https://sec-abc.relay.local`, writes each bundle entry to its declared `path`
+    under `umask 077` with parent directories 0700 root:root and files 0600 root:root,
+    retries the fetch up to 10 times, and stamps `/var/lib/setup-secrets.done` so
+    `setup-secrets.service` runs once.","codeRefs":["file:test/fixtures/cloud-init/tunnel-secrets.yaml"]},{"id":"r.stable-placeholder-identity","level":"SHOULD","text":"Fixtures
+    embed fixed placeholder credentials — `did:plc:abc123`, `relay.local`, `rly-xyz.xrpc.fedproxy.com`,
+    `sec-abc.relay.local`, `did:plc:requester123`, `vm-test`, `AAAA test@example`
+    — rather than anything derived at runtime, so rendered user-data is byte-identical
+    across runs and snapshots stay stable without leaking real secrets.","codeRefs":["file:test/fixtures/cloud-init/fedproxy-ssh.yaml","file:test/fixtures/cloud-init/fedproxy-web-wootty.yaml","file:test/fixtures/cloud-init/tunnel.yaml","file:test/fixtures/cloud-init/tunnel-secrets.yaml"]},{"id":"r.setup-scripts-idempotent","level":"SHOULD","text":"Every
+    first-boot setup script exits early when its stamp file already exists (`/var/lib/setup-websocat.done`,
+    `/var/lib/setup-wootty.done`, `/var/lib/setup-secrets.done`) and pairs with a
+    matching `.service`/`.path` unit gated by `ConditionPathExists`, so re-running
+    cloud-init does not re-download binaries or re-mint tokens.","codeRefs":["file:test/fixtures/cloud-init/fedproxy-ssh.yaml","file:test/fixtures/cloud-init/fedproxy-web-wootty.yaml","file:test/fixtures/cloud-init/tunnel-secrets.yaml"]}],"interfaces":[]}'
+  phase: Failed
 superseded:
 - message: |-
     ...     ]
