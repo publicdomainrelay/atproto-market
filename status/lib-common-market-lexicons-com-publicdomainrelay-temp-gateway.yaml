@@ -56,7 +56,7 @@ observed:
     kind: type_alias
     line: 27
     name: $Message
-observedCommit: b296a7ee7c1aae256a81c378b419bf16b3a3aca6
+observedCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
 realizedSpecHash: 6ae9148b893206c0b6c1aceda20878c2f06b99b908852fae7f7701638722bc74
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 85bfbc282945fca14c0c13fdaf9404ee53ea4ab63c2585960e5df7aabcf075e0

@@ -16,7 +16,7 @@ observed:
   files:
   - lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle.ts
   fingerprint: 78c049a7dad82b04a7f91af773ab7e5d469111e9cb16fb0ea9eba68c30cf201d
-observedCommit: b296a7ee7c1aae256a81c378b419bf16b3a3aca6
+observedCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
 realizedSpecHash: 064ccc13b5a32f6fbdde35904b79b7f0d05965e3028c88609103fb705bc3c707
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 78c049a7dad82b04a7f91af773ab7e5d469111e9cb16fb0ea9eba68c30cf201d
