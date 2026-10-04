@@ -772,9 +772,15 @@ system_contexts:
     level: MUST
   - id: r.iroh-dumbpipe-listener
     level: MUST
+  - id: r.iroh-log-truncated
+    level: MUST
   - id: r.iroh-module-installs-sshd
     level: MUST
+  - id: r.iroh-secret-persisted
+    level: MUST
   - id: r.iroh-ticket-file
+    level: MUST
+  - id: r.iroh-ticket-report
     level: MUST
   - id: r.iroh-transport-module
     level: MUST
@@ -1931,6 +1937,8 @@ system_contexts:
     level: SHOULD
   - id: r.on-serve-registration
     level: MUST
+  - id: r.out-of-scope-xrpc-and-secrets-plane
+    level: MUST
   - id: r.service-auth-token
     level: MUST
   - id: r.signing-identities
@@ -2963,6 +2971,8 @@ system_contexts:
     level: MUST
   - id: r.iroh-default-transport
     level: MUST
+  - id: r.iroh-report-endpoint
+    level: MUST
   - id: r.iroh-ticket-onnetwork
     level: MUST
   - id: r.keypair-generation
@@ -3182,11 +3192,14 @@ system_contexts:
     level: MUST
   - id: r.rbac-default-on
     level: MUST
+  - id: r.readme-documents-iroh-transport
+    level: MUST
   - id: r.serve-binding
     level: MUST
   - id: r.shutdown
     level: MUST
   codeRefIndex:
+  - file:request-vm-ssh/README.md README.md@request-vm-ssh/README.md
   - file:request-vm-ssh/cli-args-env.ts cli-args-env.ts@request-vm-ssh/cli-args-env.ts
   - file:request-vm-ssh/cli_smoke_test.ts cli_smoke_test.ts@request-vm-ssh/cli_smoke_test.ts
   - file:request-vm-ssh/mod.ts mod.ts@request-vm-ssh/mod.ts
@@ -3201,7 +3214,13 @@ system_contexts:
     level: SHOULD
   - id: r.cloud-init-iroh-snapshot
     level: MUST
+  - id: r.container-harness-relay-resolves-did-keys
+    level: MUST
+  - id: r.dumbpipe-real-archive-extraction
+    level: MUST
   - id: r.integration-suites-install-interceptor
+    level: MUST
+  - id: r.iroh-private-ticket-report-tested
     level: MUST
   - id: r.iroh-ticket-extraction-tested
     level: MUST
@@ -3212,6 +3231,8 @@ system_contexts:
   - id: r.plc-directory-rewrite
     level: MUST
   - id: r.teardown-restores-fetch
+    level: MUST
+  - id: r.transport-selection-tests
     level: MUST
   - id: r.unit-suite-coverage
     level: SHOULD
@@ -3226,6 +3247,7 @@ system_contexts:
   - file:test/cloud_init_snapshot_test.ts cloud_init_snapshot_test.ts@test/cloud_init_snapshot_test.ts
   - file:test/fetch-interceptor.ts fetch-interceptor.ts@test/fetch-interceptor.ts
   - file:test/firehose_watcher_test.ts firehose_watcher_test.ts@test/firehose_watcher_test.ts
+  - file:test/fixtures/cloud-init/iroh.yaml iroh.yaml@test/fixtures/cloud-init/iroh.yaml
   - file:test/gateway_caller_rbac_integration_test.ts gateway_caller_rbac_integration_test.ts@test/gateway_caller_rbac_integration_test.ts
   - file:test/gateway_readme_smoke_test.ts gateway_readme_smoke_test.ts@test/gateway_readme_smoke_test.ts
   - file:test/gateway_request_vm_integration_test.ts gateway_request_vm_integration_test.ts@test/gateway_request_vm_integration_test.ts

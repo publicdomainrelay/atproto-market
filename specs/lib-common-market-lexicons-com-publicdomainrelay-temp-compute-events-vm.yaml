@@ -47,11 +47,20 @@ spec:
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.defs.ts
   - id: r.on-network-record
     level: MUST
-    text: Define the record lexicon com.publicdomainrelay.temp.compute.events.vm.onNetwork,
-      whose Main type carries an optional address string (hostname or IP the VM is
-      reachable at) plus a required createdAt datetime, is built as an l.record with
-      rkey type 'tid', and reports that a provisioned VM has come up on the network
-      and is reachable.
+    text: 'Define the record lexicon com.publicdomainrelay.temp.compute.events.vm.onNetwork,
+      whose Main type carries an optional address string plus a required createdAt
+      datetime, is built as an l.record with rkey type ''tid'', and reports that a
+      provisioned VM has come up on the network and is reachable. The address description
+      must say what the field actually holds after the transport change: an informational,
+      non-routable provisioned address (a container or droplet IP) or a relay FQDN
+      under the legacy transports -- never the guest''s iroh ticket, its endpoint
+      id, or any address that dials the guest, because the record is world-readable
+      and the ticket is the capability that reaches the guest''s sshd. The stale ''hostname
+      or IP the VM is reachable at'' wording must be replaced in both the source lexicon
+      lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.json and the
+      generated lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.defs.ts
+      (the TS doc comment and the l.optional(l.string()) describing address), which
+      must stay in sync.'
     codeRefs:
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.defs.ts
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.ts

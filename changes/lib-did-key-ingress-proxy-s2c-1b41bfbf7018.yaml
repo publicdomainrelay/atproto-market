@@ -1,0 +1,19 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-did-key-ingress-proxy-s2c-1b41bfbf7018
+  namespace: default
+spec:
+  systemContext: lib-did-key-ingress-proxy
+  direction: SpecToCode
+  fromSpecHash: 5c6086004314431e2da56212b552defffcf4be24c009fadeae9641834cf083f7
+  toSpecHash: 1b41bfbf701887e4ee944a0384c4be5abed57086435a73e2d55bb0b9fead46a5
+  delta:
+    counts:
+      added: 1
+      changed: 2
+    requirements:
+    - +r.out-of-scope-xrpc-and-secrets-plane
+    - ~r.xrpc-ingress-not-ssh
+status:
+  phase: Pending

@@ -1,0 +1,21 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-requester-xrpc-s2c-e9de5d5bf233
+  namespace: default
+spec:
+  systemContext: lib-requester-xrpc
+  direction: SpecToCode
+  fromSpecHash: 275aea2136d3f217d797136f848e8b8d58e1c52c1258f4e22d59b5ddc10feead
+  toSpecHash: e9de5d5bf233407751840a18de8e1a9db495926f13a3c5938a961438a18b6b2a
+  delta:
+    counts:
+      added: 1
+      changed: 4
+    requirements:
+    - +r.iroh-report-endpoint
+    - ~r.dumbpipe-bootstrap
+    - ~r.iroh-ticket-onnetwork
+    - ~r.proxycommand-follows-transport-id
+status:
+  phase: Pending

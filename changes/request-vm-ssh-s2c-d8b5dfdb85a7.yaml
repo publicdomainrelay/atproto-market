@@ -1,0 +1,17 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: request-vm-ssh-s2c-d8b5dfdb85a7
+  namespace: default
+spec:
+  systemContext: request-vm-ssh
+  direction: SpecToCode
+  fromSpecHash: f1cc934aee1db7971c41a2c575edcc9d204e51c73e508bf7a417151f51250d77
+  toSpecHash: d8b5dfdb85a7b25496a261b29d415411a4920042f7e957eb201091963ca39361
+  delta:
+    counts:
+      added: 1
+    requirements:
+    - +r.readme-documents-iroh-transport
+status:
+  phase: Pending

@@ -1,0 +1,17 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-gateway-s2c-001734beb074
+  namespace: default
+spec:
+  systemContext: lib-common-market-lexicons-com-publicdomainrelay-temp-gateway
+  direction: SpecToCode
+  fromSpecHash: 6ae9148b893206c0b6c1aceda20878c2f06b99b908852fae7f7701638722bc74
+  toSpecHash: 001734beb0748b29a0b5d71fa75755e504f03f8fda19ae86512fdc8e65bf380e
+  delta:
+    counts:
+      changed: 1
+    requirements:
+    - ~r.request-compute-vm-procedure
+status:
+  phase: Pending

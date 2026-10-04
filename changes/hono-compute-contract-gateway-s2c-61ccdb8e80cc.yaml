@@ -1,0 +1,17 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: hono-compute-contract-gateway-s2c-61ccdb8e80cc
+  namespace: default
+spec:
+  systemContext: hono-compute-contract-gateway
+  direction: SpecToCode
+  fromSpecHash: 378650749657ef8d43d2a62a7514b111592887cf2c247fe806621d019705e127
+  toSpecHash: 61ccdb8e80ccca561bcf2717f895f4f14a8b55b260234dc4200e39b53a2a66aa
+  delta:
+    counts:
+      changed: 1
+    requirements:
+    - ~r.readme-block-coverage
+status:
+  phase: Pending

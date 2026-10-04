@@ -1,0 +1,18 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-market-bidder-compute-s2c-5807b7c34327
+  namespace: default
+spec:
+  systemContext: lib-market-bidder-compute
+  direction: SpecToCode
+  fromSpecHash: e583cca0ffebd750bcc8b7e87dc7dfb3ad0b34d6dfd595b6be0c34b56930220e
+  toSpecHash: 5807b7c34327f42d276c5c8b0a78698ffbf2103f94c1f73e86c1e413ee176e89
+  delta:
+    counts:
+      changed: 2
+    requirements:
+    - ~r.iroh-ticket-emission
+    - ~r.vm-onnetwork-emission
+status:
+  phase: Pending

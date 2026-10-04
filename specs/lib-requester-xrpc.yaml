@@ -16,11 +16,11 @@ spec:
     ssh args, session provider, dumbpipe/websocat bootstrap, readiness polling, program
     execution), because the contract flow needs them in one place to run end to end.
     The default guest transport is iroh: the guest''s dumbpipe listener is reached
-    through a dumbpipe connection built from the iroh ticket the bidder publishes,
-    and the legacy websocat-over-relay ProxyCommand remains only for the fedproxy-ssh
-    transport. The OAuth handle and agent-application helpers exist so the same flow
-    works when the requester authenticates through an OAuth session rather than a
-    locally held key.'
+    through a dumbpipe connection built from the iroh ticket the guest reports to
+    this requester''s own per-contract endpoint, and the legacy websocat-over-relay
+    ProxyCommand remains only for the fedproxy-ssh and tunnel transports. The OAuth
+    handle and agent-application helpers exist so the same flow works when the requester
+    authenticates through an OAuth session rather than a locally held key.'
   requirements:
   - id: r.bidder-endpoint-resolution
     level: MUST
@@ -51,7 +51,13 @@ spec:
       and download the matching release archive from the n0-computer/dumbpipe GitHub
       releases, extract the dumbpipe binary, chmod it 0755, and prepend its directory
       to PATH, logging downloading/downloaded/found/unsupported events and never throwing
-      on a failed download.'
+      on a failed download. The release archive stores its single member as `./dumbpipe`,
+      so the extraction must name that member (`tar -xzf <archive> -C <dir> ./dumbpipe`)
+      or strip the leading path component; naming the bare member `dumbpipe` fails
+      with `tar: dumbpipe: Not found in archive` (exit 2), leaves no binary on PATH
+      and makes every SSH attempt fail. This exact extraction must be covered by a
+      test against the real v0.39.0 archive (r.dumbpipe-real-archive-extraction in
+      the test context).'
     codeRefs:
     - file:lib/requester-xrpc/mod.ts
     - function:eda58f5247bca1e7df37abfa70aa54a1
@@ -84,17 +90,42 @@ spec:
     codeRefs:
     - file:lib/requester-xrpc/mod.ts
     - function:5dc1e52cca303d506c394148228348e6
+  - id: r.iroh-report-endpoint
+    level: MUST
+    text: 'Under the default iroh transport, when SSH will run, the contract must
+      receive the guest''s ticket over a requester-only per-contract channel instead
+      of the public event path. runComputeContract must generate a random per-contract
+      report token, mount POST /v1/on-network on the requester''s own app before the
+      cloud-config is composed, and pass the endpoint URL (the requester''s own ingress
+      URL plus /v1/on-network) and that token to the iroh module as ctx.irohReportUrl
+      and ctx.irohReportToken, so the guest can report to nobody else. The endpoint
+      accepts { acceptUri, acceptCid, address } only when the Authorization: Bearer
+      token equals the contract''s token and acceptUri#acceptCid equals the contract''s
+      current accept ref; on success it resolves the contract''s SSH wait with the
+      address (the dumbpipe ticket), records it as the contract result''s ticket and
+      answers 200 { ok: true }; a missing or wrong token answers 401 and a mismatched
+      accept ref answers 409, and neither resolves the wait. The endpoint must be
+      unregistered or its token invalidated when the contract ends, and skipSsh must
+      not mount it. The token is per contract and must never be written into a repo
+      record.'
+    codeRefs:
+    - file:lib/requester-xrpc/mod.ts
   - id: r.iroh-ticket-onnetwork
     level: MUST
-    text: 'The requester must resolve its SSH transport target from the iroh ticket
-      the contract publishes on the event path: the vm.onNetwork/submitEvent handling
-      that today waits for a guest FQDN must accept the reported value as the dumbpipe
-      ticket under the iroh transport (a ticket is a base32 iroh endpoint id, not
-      a hostname), settle the SSH wait with it, and feed the same value into pds.irohNodeId/resolveIrohNodeId
-      so both the firehose registerIdentity path and the direct onNetwork path agree.
-      Receipt-keyed resolver registration (setOnNetworkResolved/clearOnNetworkResolved)
-      and the stale-contract guards must stay, and the legacy FQDN path must still
-      work when a proxy command override or the fedproxy-ssh transport is in use.'
+    text: 'Under the default iroh transport the SSH transport target must be taken
+      only from the guest''s private report (r.iroh-report-endpoint) and never from
+      a public record: the vm.onNetwork record''s address and the registerIdentity
+      nodeId are world-readable, so any reader could dial the guest, and under iroh
+      neither may settle the SSH wait (the bidder must not publish the ticket there
+      either, r.iroh-ticket-emission of the lib-market-bidder-compute context). Receipt-keyed
+      resolver registration (setOnNetworkResolved/clearOnNetworkResolved) and the
+      stale-contract guards must stay and must also key the report wait, because one
+      requester serves several contracts concurrently. The vestigial pds.irohNodeId/resolveIrohNodeId
+      feed, which createRequesterPDS never implemented and which the report replaces,
+      must be removed rather than left as a second, dead path. The legacy FQDN path
+      must keep working unchanged when the fedproxy-ssh or tunnel transport is selected,
+      or when an explicit proxy command override is in use: those still resolve the
+      transport target from the onNetwork/submitEvent event path.'
     codeRefs:
     - file:lib/requester-xrpc/mod.ts
     - function:5dc1e52cca303d506c394148228348e6
@@ -141,7 +172,10 @@ spec:
       to the relay tunnel URL and need the websocat helper. A caller that selects
       `--user-data-transport tunnel` must get the legacy tunnel-subscriber guest and
       the websocat SSH path, not a dumbpipe connection to a relay FQDN, which can
-      never succeed.'
+      never succeed. The default ProxyCommand must therefore be derived from the transport
+      id that ran and not from the shape of the target string (a ticket and a relay
+      FQDN are told apart by the transport that produced them, never by a dot/colon
+      heuristic).'
     codeRefs:
     - file:lib/requester-xrpc/mod.ts
   - id: r.relay-autodiscovery

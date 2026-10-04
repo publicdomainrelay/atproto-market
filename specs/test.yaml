@@ -46,6 +46,39 @@ spec:
       `deno check`.'
     codeRefs:
     - file:test/cloud_init_snapshot_test.ts
+  - id: r.container-harness-relay-resolves-did-keys
+    level: MUST
+    text: 'test/bidder_container_integration_test.ts is the repository''s canonical
+      live harness and must be green. Its local dispatcher must be built with a resolveDidKey
+      that resolves a subscriber DID from the local fake PLC -- GET https://plc.directory/<did>
+      through the installed fetch interceptor, take the atproto verification method''s
+      publicKeyMultibase, and return it as `did:key:<multibase>` -- so the relay can
+      verify the service-auth JWTs of the PDS/subscriber DIDs it serves. Without it
+      the relay answers 401 AuthenticationRequired with `cannot resolve signing key
+      for did:plc:...` in the first 0.3 s, before any transport or provisioning code
+      runs, and every realization gated on this harness is gated on a pre-existing
+      failure. The same resolver must be used by the other suites that stand up the
+      local dispatcher against a fake PLC: the gateway README smoke test, the gateway
+      SSH integration test, the gateway request-VM integration test, the cross-platform
+      bidder test and the OAuth session transfer test.'
+    codeRefs:
+    - file:test/cloud_init_snapshot_test.ts
+  - id: r.dumbpipe-real-archive-extraction
+    level: MUST
+    text: 'A test (test/iroh_dumbpipe_install_test.ts) must prove the dumbpipe install
+      works against the real release archive, not a stub: it takes the pinned v0.39.0
+      linux archive from the DUMBPIPE_ARCHIVE environment variable when that names
+      a readable file, and otherwise downloads it from the pinned n0-computer/dumbpipe
+      GitHub release URL; it then runs the exact tar extraction the code runs -- the
+      guest cloud-config''s install command, read out of the rendered iroh module
+      output, and the argument list ensureDumbpipe uses -- into a temporary directory,
+      and asserts that <dir>/dumbpipe exists, is executable, and that running it with
+      --help exits 0 and prints dumbpipe usage. The test must fail if the extraction
+      names the bare member `dumbpipe`, which is the defect this requirement exists
+      to catch.'
+    codeRefs:
+    - file:test/cloud_init_snapshot_test.ts
+    - file:test/fixtures/cloud-init/iroh.yaml
   - id: r.integration-suites-install-interceptor
     level: MUST
     text: The bidder container, bidder cross-platform, gateway caller RBAC, gateway
@@ -63,6 +96,20 @@ spec:
     - file:test/gateway_ssh_integration_test.ts
     - file:test/gateway_worker_integration_test.ts
     - file:test/oauth_session_transfer_test.ts
+  - id: r.iroh-private-ticket-report-tested
+    level: MUST
+    text: 'A test file test/iroh_private_report_test.ts must cover the private ticket
+      path, not only the snapshot: (a) a test drives the requester''s POST /v1/on-network
+      with the contract''s bearer token and accept ref and asserts the contract''s
+      SSH wait settles with the posted ticket and that the result carries it, while
+      a wrong token, a missing token and a mismatched accept ref each fail (401/409)
+      and leave the wait unsettled; and (b) a test drives the bidder''s vm.onNetwork
+      emission for a contract whose provider is stubbed to return a ticket-shaped
+      value from an optional getNodeId method and asserts that the published vm.onNetwork
+      record''s address never contains that ticket, so the capability cannot leak
+      into a public record.'
+    codeRefs:
+    - file:test/cloud_init_snapshot_test.ts
   - id: r.iroh-ticket-extraction-tested
     level: MUST
     text: 'test/cloud_init_snapshot_test.ts must assert the iroh module''s ticket
@@ -70,7 +117,11 @@ spec:
       rendered cloud-config must extract the ticket from a `dumbpipe connect-tcp <ticket>`
       line (the subcommand `listen-tcp` prints) and must not depend on a bare `dumbpipe
       connect ` prefix, so a guest that logs the real listener output still writes
-      /root/secrets/iroh-node-id.'
+      /root/secrets/iroh-node-id. It must also assert the identity and freshness rules:
+      the unit reads an EnvironmentFile and the secret file is created once with umask
+      077 in the same command that starts the listener, the log is truncated on each
+      start rather than appended to, and the ticket is re-extracted and reported on
+      each start rather than only at first boot.'
     codeRefs:
     - file:test/cloud_init_snapshot_test.ts
   - id: r.localhost-port-rewrite
@@ -108,6 +159,17 @@ spec:
     codeRefs:
     - file:test/fetch-interceptor.ts
     - function:c6f81957f952317eb0e87d2454b5add3
+  - id: r.transport-selection-tests
+    level: MUST
+    text: 'A test file test/iroh_transport_test.ts must pin the transport selection:
+      sshTunnelArgs/defaultProxyCommand produce `dumbpipe connect <ticket>` for the
+      iroh transport and the websocat --binary wss:// URL for the tunnel and fedproxy-ssh
+      transports, an explicit proxy command override replaces either, and the helper
+      selection follows the transport id (ensureDumbpipe only for iroh, ensureWebsocat
+      for tunnel and fedproxy-ssh), so a target string''s shape can never decide which
+      binary or command is used.'
+    codeRefs:
+    - file:test/bidder_container_integration_test.ts
   - id: r.unit-suite-coverage
     level: SHOULD
     text: 'The suite must retain focused tests for each non-intercepted subsystem:
@@ -142,6 +204,7 @@ codeRefIndex:
 - file:test/cloud_init_snapshot_test.ts cloud_init_snapshot_test.ts@test/cloud_init_snapshot_test.ts
 - file:test/fetch-interceptor.ts fetch-interceptor.ts@test/fetch-interceptor.ts
 - file:test/firehose_watcher_test.ts firehose_watcher_test.ts@test/firehose_watcher_test.ts
+- file:test/fixtures/cloud-init/iroh.yaml iroh.yaml@test/fixtures/cloud-init/iroh.yaml
 - file:test/gateway_caller_rbac_integration_test.ts gateway_caller_rbac_integration_test.ts@test/gateway_caller_rbac_integration_test.ts
 - file:test/gateway_readme_smoke_test.ts gateway_readme_smoke_test.ts@test/gateway_readme_smoke_test.ts
 - file:test/gateway_request_vm_integration_test.ts gateway_request_vm_integration_test.ts@test/gateway_request_vm_integration_test.ts

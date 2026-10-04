@@ -197,6 +197,18 @@ spec:
       turns it off.
     codeRefs:
     - file:request-vm-ssh/mod.ts
+  - id: r.readme-documents-iroh-transport
+    level: MUST
+    text: request-vm-ssh/README.md must describe the transport the CLI actually uses.
+      Its topology diagram and How-it-works steps must show the default path as ssh
+      -> dumbpipe connect <ticket> -> guest dumbpipe listener -> sshd:22, with the
+      guest born from the cloud-init iroh module and no websocat on the host; the
+      websocat ProxyCommand -> xrpc-relay -> tunnel-subscriber path must be presented
+      as the legacy tunnel/fedproxy-ssh transport selected explicitly with --user-data-transport.
+      The stale claims that the guest transport is the xrpc tunnel-subscriber and
+      that the host websocat ProxyCommand is how SSH reaches the guest must be removed.
+    codeRefs:
+    - file:request-vm-ssh/README.md
   - id: r.serve-binding
     level: MUST
     text: The serve listener binds TCP only when --port is set, using --serve-addr
@@ -213,6 +225,7 @@ spec:
     codeRefs:
     - file:request-vm-ssh/mod.ts
 codeRefIndex:
+- file:request-vm-ssh/README.md README.md@request-vm-ssh/README.md
 - file:request-vm-ssh/cli-args-env.ts cli-args-env.ts@request-vm-ssh/cli-args-env.ts
 - file:request-vm-ssh/cli_smoke_test.ts cli_smoke_test.ts@request-vm-ssh/cli_smoke_test.ts
 - file:request-vm-ssh/mod.ts mod.ts@request-vm-ssh/mod.ts

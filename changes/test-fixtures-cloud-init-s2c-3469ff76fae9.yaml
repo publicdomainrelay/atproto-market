@@ -1,0 +1,17 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: test-fixtures-cloud-init-s2c-3469ff76fae9
+  namespace: default
+spec:
+  systemContext: test-fixtures-cloud-init
+  direction: SpecToCode
+  fromSpecHash: 3b40733c113f2e6bbc9dd7a510266f436a9a53297e7024983d6ead0a758903dd
+  toSpecHash: 3469ff76fae9b24f84d7b407fadb6ac41dbee439dd2e367996651ec35f7a7913
+  delta:
+    counts:
+      changed: 1
+    requirements:
+    - ~r.iroh-fixture
+status:
+  phase: Pending

@@ -148,12 +148,11 @@ spec:
     - file:lib/abc/requester/deno.json
   - id: r.iroh-ticket-transport-surface
     level: MUST
-    text: The iroh ticket is the flow's SSH transport target under the default transport;
-      it is published on the contract's event path by the bidder and reaches the requester
-      through the same onNetwork/registerIdentity handling that already feeds the
-      RequesterPDS irohNodeId promise, and the flow must settle its SSH wait from
-      that ticket rather than requiring a hostname-shaped address. skipSsh must skip
-      ticket resolution entirely and keepVm must not change it.
+    text: The iroh ticket is the flow's SSH transport target under the default transport.
+      It is reported by the guest itself to the requester's own per-contract endpoint
+      (never through a public record), and the flow must settle its receipt-keyed
+      SSH wait from that ticket rather than requiring a hostname-shaped address. skipSsh
+      must skip ticket resolution entirely and keepVm must not change it.
     codeRefs:
     - interface:3917ad87d46039428eaafd04a57c85ba
     - interface:5b2410a21ad68d7492443d9c2f4ed1b3
@@ -208,9 +207,12 @@ spec:
     - interface:3917ad87d46039428eaafd04a57c85ba
   - id: r.requester-pds-iroh-and-dispose
     level: MUST
-    text: RequesterPDS optionally exposes an irohNodeId promise with resolveIrohNodeId
-      to settle it (a no-op after the first call), and dispose() releases storage
-      resources such as a Deno.Kv handle.
+    text: 'RequesterPDS exposes dispose() to release storage resources such as a Deno.Kv
+      handle. It must not carry an irohNodeId promise or a resolveIrohNodeId setter:
+      a single promise on a requester that serves several contracts at once cannot
+      be keyed to the right contract, and the guest''s reported ticket reaches the
+      flow through the receipt-keyed wait instead (r.on-network-keyed-by-receipt,
+      r.iroh-ticket-transport-surface).'
     codeRefs:
     - interface:3917ad87d46039428eaafd04a57c85ba
   - id: r.requester-pds-records

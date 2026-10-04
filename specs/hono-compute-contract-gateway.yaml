@@ -104,11 +104,16 @@ spec:
     - file:hono-compute-contract-gateway/mod.ts
   - id: r.readme-block-coverage
     level: SHOULD
-    text: The README shell blocks that the smoke test must exercise are the Quick
+    text: 'The README shell blocks that the smoke test must exercise are the Quick
       Start server start plus health check, the VM key generation and requestComputeVM
       call, and the worker heredoc setup with requestComputeWorkerEphemeral and requestComputeWorkerPersistent
       calls, each expected to exit zero with the CLI started as a real subprocess
-      against local infrastructure and no external network.
+      against local infrastructure and no external network. The README must also describe
+      the SSH access the gateway actually returns: the response example must show
+      the default iroh transport (its transport field plus the ticket the guest reported)
+      and the ssh invocation that consumes it, with the websocatUrl/vmFqdn pair and
+      the websocat ProxyCommand presented only as the legacy fedproxy-ssh transport;
+      any shell block the smoke test executes must stay consistent with that.'
     codeRefs:
     - file:hono-compute-contract-gateway/GOAL.md
     - file:hono-compute-contract-gateway/README.md

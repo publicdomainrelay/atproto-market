@@ -106,8 +106,10 @@ spec:
       and a generated `SUMMARY.md` containing the requester/bidder DID table, the
       pretty-printed contract JSON, dispatcher and PLC addresses, a per-collection
       record-count table, links to the other two artifacts, the reproduce command,
-      the architecture diagram and the SSH tunnel path, stamped with a generation
-      timestamp.'
+      the architecture diagram and the SSH transport path the run actually used (the
+      guest''s dumbpipe ticket under the default iroh transport, or the relay tunnel
+      when the legacy transport was selected -- never an unconditional websocat tunnel
+      description), stamped with a generation timestamp.'
     codeRefs:
     - file:compute-contract-full-flow/run_full_flow.ts
 codeRefIndex:

@@ -81,7 +81,16 @@ spec:
       `receiptOk`, `sshReady`, `sshExitCode`, `websocatUrl` (uri), `vmFqdn`, `winnerDid`,
       `winnerBidUri`, `winnerBidCid`, `winnerBidConfig` (lex map), `rfpUri`, `rfpCid`,
       an array of `bidSummary` refs, and `error`. Declared error names are InvalidRequest,
-      AuthRequired, NoBidders and ProvisioningFailed.'
+      AuthRequired, NoBidders and ProvisioningFailed. The output must also describe
+      the transport that actually ran, matching lib/common/compute-contract-gateway-common/types.ts
+      and lib/compute-contract-gateway-xrpc/mod.ts: an optional `transport` string
+      (the cloud-init transport id, "iroh" by default) and an optional `ticket` string
+      (the iroh dumbpipe ticket the guest reported), with `websocatUrl` and `vmFqdn`
+      documented as populated only under the legacy fedproxy-ssh transport. The stale
+      `websocatUrl`-and-`vmFqdn` description that promises SSH access under every
+      transport must be replaced in both the source lexicon lexicons/com/publicdomainrelay/temp/gateway/requestComputeVM.json
+      and the generated lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeVM.defs.ts
+      ($output plus the $Output type), which must stay in sync.'
     codeRefs:
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeVM.defs.ts
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeVM.ts

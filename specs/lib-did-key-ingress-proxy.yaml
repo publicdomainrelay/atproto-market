@@ -14,10 +14,11 @@ spec:
     It exists so that a local or in-process service (bidder, PDS agent, gateway target)
     can declare a small set of options and get back an IngressRef it can advertise,
     with the WebSocket firehose path either proxied to a local TCP target or served
-    directly in-process. It no longer carries the guest SSH transport: the guest''s
-    SSH is the dumbpipe/iroh transport, and this package keeps only its XRPC ingress
+    directly in-process. It is no longer the default guest SSH transport: the default
+    guest SSH is the dumbpipe/iroh transport, and this package keeps its XRPC ingress
     role (submitBid, submitEvent, associateConfirm and the requester/bidder market
-    plane).'
+    plane) plus the legacy tunnel/fedproxy-ssh relay tunnel, which its callers may
+    still select.'
   requirements:
   - id: r.close-idempotent-before-serve
     level: MUST
@@ -84,6 +85,16 @@ spec:
     - file:lib/did-key-ingress-proxy/mod.ts
     - function:ab0d43e74646836bd86d4b393d2cafa0
     - interface:da388f002919a2fd08b59e8f65646870
+  - id: r.out-of-scope-xrpc-and-secrets-plane
+    level: MUST
+    text: 'The iroh transport change must leave the market plane this package carries
+      in place. Explicitly out of scope, and not to be deleted or re-plumbed by it:
+      the requester''s XRPC ingress and the bidder''s market ingress (submitBid, submitEvent,
+      associateConfirm, record reads and writes), and the guest-capability secrets
+      path (the requester''s secrets server reached by the guest over this same ingress
+      with a workload-identity token). Only the guest SSH transport moves to iroh/dumbpipe.'
+    codeRefs:
+    - file:lib/did-key-ingress-proxy/mod.ts
   - id: r.service-auth-token
     level: MUST
     text: getServiceAuthToken(lxm) must derive the audience from ingressProxyHost
@@ -112,14 +123,17 @@ spec:
     - interface:da388f002919a2fd08b59e8f65646870
   - id: r.xrpc-ingress-not-ssh
     level: MUST
-    text: createIngress must keep serving the XRPC ingress plane unchanged -- the
-      requester PDS's submitBid, submitEvent and associateConfirm endpoints and the
-      bidder's market ingress -- because those carry the market protocol; it must
-      not be used or extended as the guest SSH transport. Guest SSH is now the iroh/dumbpipe
-      transport, so the tunnel-subscriber path previously used to reach the guest's
-      sshd (the relay WebSocket tunnel and the websocat ProxyCommand that dialed it)
-      is no longer part of this package's consumers, and nothing here should depend
-      on it.
+    text: 'createIngress must keep serving the XRPC ingress plane unchanged -- the
+      requester PDS''s submitBid, submitEvent and associateConfirm endpoints, the
+      market record paths, and the bidder''s market ingress -- because those carry
+      the market protocol and atproto service endpoints must be https. The default
+      guest SSH transport is now iroh/dumbpipe, which does not use this package; the
+      legacy tunnel and fedproxy-ssh transports still reach the guest''s sshd through
+      the relay WebSocket tunnel and the websocat ProxyCommand that dials it, so that
+      path remains a supported consumer of this package and must not be removed. Out
+      of scope for the transport change: removing this package or its XRPC plane,
+      changing the secrets-capability delivery path, and adding any guest transport
+      that is not a registered cloud-init UserDataModule.'
     codeRefs:
     - file:lib/did-key-ingress-proxy/mod.ts
     - function:ab0d43e74646836bd86d4b393d2cafa0

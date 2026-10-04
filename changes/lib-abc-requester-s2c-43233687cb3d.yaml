@@ -1,0 +1,18 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-abc-requester-s2c-43233687cb3d
+  namespace: default
+spec:
+  systemContext: lib-abc-requester
+  direction: SpecToCode
+  fromSpecHash: 248034efec447dc8c334cb69818e2e79bedbecfabc8f205207789ad0fbf37c0d
+  toSpecHash: 43233687cb3d5dc4123453e01a4885a8db4b90dd46161f3f9e0afc2db9a5f1d9
+  delta:
+    counts:
+      changed: 2
+    requirements:
+    - ~r.iroh-ticket-transport-surface
+    - ~r.requester-pds-iroh-and-dispose
+status:
+  phase: Pending

@@ -1,0 +1,17 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: compute-contract-full-flow-s2c-a1f11383d1c6
+  namespace: default
+spec:
+  systemContext: compute-contract-full-flow
+  direction: SpecToCode
+  fromSpecHash: 404d17fb7477a1206427fc799f26c27e5eb185c7b1bdc92f7f4329ec40940f9d
+  toSpecHash: a1f11383d1c6122de263ff13ad3a6ba43707afc0c24deadcebc50b953f70015b
+  delta:
+    counts:
+      changed: 1
+    requirements:
+    - ~r.write-three-artifacts
+status:
+  phase: Pending

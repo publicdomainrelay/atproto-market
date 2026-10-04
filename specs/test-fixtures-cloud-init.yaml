@@ -38,17 +38,20 @@ spec:
     - file:test/fixtures/cloud-init/fedproxy-web-wootty.yaml
   - id: r.iroh-fixture
     level: MUST
-    text: 'A new fixture test/fixtures/cloud-init/iroh.yaml must be the byte-exact
-      composer output of buildUserData({ctx: CTX, modules: [''iroh'']}) with the shared
-      CTX, so it starts with the ''#cloud-config'' header and pins: /root/.ssh/authorized_keys
+    text: 'The fixture test/fixtures/cloud-init/iroh.yaml must be the byte-exact composer
+      output of buildUserData({ctx: CTX, modules: [''iroh'']}) with the shared CTX,
+      so it starts with the ''#cloud-config'' header and pins: /root/.ssh/authorized_keys
       built from ctx.sshAuthorizedKey, the key-only sshd drop-in (PermitRootLogin
       prohibit-password, PasswordAuthentication no, no ListenAddress), the dumbpipe
-      install step using the dumbpipe release archive, the dumbpipe-listen systemd
-      unit running listen-tcp --host 127.0.0.1:22, and the runcmd that writes the
-      captured ticket to /root/secrets/iroh-node-id. This fixture must be generated
-      from the composer output (never hand-written), and the existing tunnel.yaml,
-      tunnel-secrets.yaml, fedproxy-ssh.yaml and fedproxy-web-wootty.yaml fixtures
-      must remain unchanged and green.'
+      install step extracting the `./dumbpipe` member of the pinned release archive,
+      the dumbpipe-listen systemd unit running listen-tcp --host 127.0.0.1:22 with
+      EnvironmentFile=-/root/secrets/iroh.env, an ExecStartPre that truncates the
+      log and creates the IROH_SECRET environment file once, and an ExecStartPost
+      that extracts the ticket into /root/secrets/iroh-node-id and reports it to the
+      ctx.irohReportUrl endpoint with the ctx.irohReportToken bearer token. This fixture
+      must be generated from the composer output (never hand-written), and the existing
+      tunnel.yaml, tunnel-secrets.yaml, fedproxy-ssh.yaml and fedproxy-web-wootty.yaml
+      fixtures must remain unchanged and green.'
     codeRefs:
     - file:test/fixtures/cloud-init/iroh.yaml
   - id: r.snapshot-files-are-composer-output

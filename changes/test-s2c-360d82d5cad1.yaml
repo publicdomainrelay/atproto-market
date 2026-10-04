@@ -1,0 +1,22 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: test-s2c-360d82d5cad1
+  namespace: default
+spec:
+  systemContext: test
+  direction: SpecToCode
+  fromSpecHash: a0e5fed34441618c1a835d237386893cd7094eb719030ba9287ece8437500f33
+  toSpecHash: 360d82d5cad11c35e4c85b8646321f1de77a2567ed0280215955f07e5dc8e7cf
+  delta:
+    counts:
+      added: 4
+      changed: 1
+    requirements:
+    - +r.container-harness-relay-resolves-did-keys
+    - +r.dumbpipe-real-archive-extraction
+    - +r.iroh-private-ticket-report-tested
+    - +r.transport-selection-tests
+    - ~r.iroh-ticket-extraction-tested
+status:
+  phase: Pending
