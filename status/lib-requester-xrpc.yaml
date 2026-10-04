@@ -1,19 +1,12 @@
 conditions:
-- message: 'undeclared: ensureDumbpipe; unresolved: r.contract-flow: function:df478a6e7b5f0870c41a1822b1442ea5,
-    r.keypair-generation: function:9b364db7648609d2fe412033f27b13de, r.oauth-requester:
-    function:64cfc2d9d837801a774327163a75249d, r.oauth-requester: function:95447d450ff2f97655147e5dd97a5f89,
-    r.oauth-requester: function:f6c7b7f574083e9a9c42bbd6a843c416, r.oauth-requester:
-    interface:183e44891c1f0a54e056e43ec047be13, r.oauth-requester: interface:50f477ac838492f2bd615735976c685e,
-    r.session-execution: function:24cd5e86c9d21bc8fab0490f83ce6950, r.session-execution:
-    function:fbac4e60f3f0951146764aaa7623d831, r.session-readiness: function:ef9dc35948925beeecf54c12a5fd9ee1,
-    r.ssh-session-provider: function:504104de944999687ef7f977cf1a877e, r.ssh-tunnel-helpers:
-    function:962522e8fb20541868ff3b3934e3b3e5, r.ssh-tunnel-helpers: function:cc3275d83d779e08c41a10fded40e3d6'
-  reason: InterfacesMissing
-  status: "False"
-  type: CodeSynced
-- message: observed facts changed since the spec was last synced
-  reason: FingerprintChanged
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
   status: "True"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
   type: Drifted
 - message: the spec passes the validator
   reason: ValidatorPassed
@@ -266,6 +259,6 @@ observed:
   treeFiles:
   - lib/requester-xrpc/deno.json
 observedCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
-realizedSpecHash: fc3eb42383f954edc6a0e81c5449d4d43b676db997f0663e7c0120da500d5024
-syncedCommit: b296a7ee7c1aae256a81c378b419bf16b3a3aca6
-syncedFingerprint: 7ba7d483f13e78eb1ab14bafc9de59776ec2b909e58a5c6cf014c66325e9d1ae
+realizedSpecHash: 8ffed522ec4d01267be17f6fefcc6ff6c1d84799ebde78f20199a3a4b677010b
+syncedCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
+syncedFingerprint: ece173d70b90f5e0f4842a3114f7172d2b332210372fc41e6e6e40593befb953

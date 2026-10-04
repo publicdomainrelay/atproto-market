@@ -116,5 +116,19 @@ spec:
   systemContext: lib-requester-xrpc
   toCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
 status:
-  message: the agent is summarizing lib-requester-xrpc
-  phase: Running
+  agentLog: 'lib/requester-xrpc is the requester-side module of atproto-market: it
+    discovers compute-offering bidders by querying one or more atproto relays'' com.atproto.sync.listReposByCollection
+    index, verifies that a specific bidder DID is actually visible through the capable
+    relays, auto-discovers the requester''s own relay list from its repo, and then
+    calls the winning bidder''s XRPC endpoint with service auth. It also stands up
+    the requester''s identity: createRequesterPDS returns a RequesterPDSImpl (Hono
+    app plus signer, secp256k1 keypair and repo API) that writes and signs records,
+    and an OAuth variant installs an agent-backed session onto that PDS. The transport
+    half generates an SSH keypair, builds ssh argument lists, provides a session provider,
+    and runs a program over the tunnel; the default guest transport is now iroh, where
+    the ssh ProxyCommand is a dumbpipe connection to the ticket the contract publishes,
+    ensureDumbpipe downloads the dumbpipe binary when it is missing, and the legacy
+    websocat-over-relay path (tunnelWsUrl plus ensureWebsocat) survives only for the
+    fedproxy-ssh transport.'
+  message: wrote 19 requirement(s) and 26 interface(s) for lib-requester-xrpc
+  phase: Succeeded

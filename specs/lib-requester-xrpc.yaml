@@ -3,17 +3,31 @@ codeRefIndex:
 - file:lib/requester-xrpc/deno.json deno.json@lib/requester-xrpc/deno.json
 - file:lib/requester-xrpc/mod.ts mod.ts@lib/requester-xrpc/mod.ts
 - function:0bad0cf5b6751fd238881270b5c9c907 verifyRelayVisibility@lib/requester-xrpc/mod.ts:170
+- function:168014603ee29fdc3e33868cceca773f createOAuthRequester@lib/requester-xrpc/mod.ts:2088
 - function:38c66a944431c997d72ac28acfa2b8b3 createRequesterPDS@lib/requester-xrpc/mod.ts:288
+- function:42545a80b62102147da3337965cc8dbf ensureWebsocat@lib/requester-xrpc/mod.ts:821
+- function:42db31525829263a5772d28b8955d218 tunnelWsUrl@lib/requester-xrpc/mod.ts:699
+- function:45bd69796946f8a0c17d1d2ae41f0ed0 runSession@lib/requester-xrpc/mod.ts:795
+- function:4e3747d1be1fa190832df67bcf2339c1 createSshSessionProvider@lib/requester-xrpc/mod.ts:732
+- function:502aea4d73f314fbada7bdeab7d5caa7 pollReady@lib/requester-xrpc/mod.ts:756
+- function:5dc1e52cca303d506c394148228348e6 runComputeContract@lib/requester-xrpc/mod.ts:953
 - function:648c5a9b93c008d11e933bd9cc3d0499 createRepoRecord@lib/requester-xrpc/mod.ts:581
+- function:6fd5064a3cf8710797225f0e1c92ed40 getSession@lib/requester-xrpc/mod.ts:2122
 - function:742fa0bee0972eced0864f0199608e68 discoverBiddersFromRelays@lib/requester-xrpc/mod.ts:131
 - function:75123cd6c2ecd9939caeaeff2ac9f403 resolveBidderEndpoint@lib/requester-xrpc/mod.ts:606
 - function:90e261d66d34a637786e137d0c260cd8 autoDiscoverRelayUrls@lib/requester-xrpc/mod.ts:245
+- function:9a664640527d9f503b7475a5528d0b31 sshTunnelArgs@lib/requester-xrpc/mod.ts:717
 - function:9a74e04d247f63426fdb4ddc23b98a81 discoverBiddersFromRelay@lib/requester-xrpc/mod.ts:102
 - function:ae343b3d98725ad4c6c44cc7d268c9a2 createSignedRepoRecord@lib/requester-xrpc/mod.ts:591
+- function:d3eb3303e0c926332a27235602c7003e generateKeypair@lib/requester-xrpc/mod.ts:738
 - function:d85e8ad86a56d4300135fb091e4bfe65 callBidder@lib/requester-xrpc/mod.ts:636
+- function:eda58f5247bca1e7df37abfa70aa54a1 ensureDumbpipe@lib/requester-xrpc/mod.ts:878
+- function:f520f09208cdcaf8c0ef8eb1e6b3621e applyOAuthAgentToRequesterPDS@lib/requester-xrpc/mod.ts:2029
+- interface:3d2c8ff0b1f5240419f60d8a8ae71ddd CreateOAuthRequesterOpts@lib/requester-xrpc/mod.ts:1998
 - interface:4ae0e758bc6af355e90d5d253a84727f ContractState@lib/requester-xrpc/mod.ts:373
 - interface:66b06e1611350a7f4fb4602342352a5f RequesterPDSImpl@lib/requester-xrpc/mod.ts:91
 - interface:9abcf87c406c455d60dfaf993419e8b9 RelayVisibilityResult@lib/requester-xrpc/mod.ts:150
+- interface:b9a6655a7e162aa1dfd86220525c31f1 OAuthRequesterHandle@lib/requester-xrpc/mod.ts:1991
 kind: SystemContext
 metadata:
   name: lib-requester-xrpc
@@ -26,13 +40,14 @@ spec:
     requester identity/repo, and then drive an SSH-tunnelled session against the winning
     bidder. It holds both the discovery/verification half (relay queries, relay visibility,
     endpoint resolution, bidder calls) and the transport half (keypair generation,
-    ssh args, session provider, websocat, readiness polling, program execution), because
-    the contract flow needs them in one place to run end to end. The default guest
-    transport is now iroh: the guest''s dumbpipe listener is reached through a dumbpipe
-    connection built from the iroh ticket the bidder publishes, and the legacy websocat-over-relay
-    ProxyCommand remains only for the fedproxy-ssh transport. The OAuth handle and
-    agent-application helpers exist so the same flow works when the requester authenticates
-    through an OAuth session rather than a locally held key.'
+    ssh args, session provider, dumbpipe/websocat bootstrap, readiness polling, program
+    execution), because the contract flow needs them in one place to run end to end.
+    The default guest transport is iroh: the guest''s dumbpipe listener is reached
+    through a dumbpipe connection built from the iroh ticket the bidder publishes,
+    and the legacy websocat-over-relay ProxyCommand remains only for the fedproxy-ssh
+    transport. The OAuth handle and agent-application helpers exist so the same flow
+    works when the requester authenticates through an OAuth session rather than a
+    locally held key.'
   interfaces:
   - file: lib/requester-xrpc/mod.ts
     kind: interface
@@ -97,7 +112,7 @@ spec:
     kind: function
     name: createSshSessionProvider
     signature: 'function createSshSessionProvider(logger?: StructuredLoggerInterface,
-      opts?: { proxyCommandFn?: (fqdn: string) => string }): SshSessionProvider'
+      opts?: { proxyCommandFn?: (target: string) => string }): SshSessionProvider'
   - file: lib/requester-xrpc/mod.ts
     kind: function
     name: discoverBiddersFromRelay
@@ -108,6 +123,10 @@ spec:
     name: discoverBiddersFromRelays
     signature: 'function discoverBiddersFromRelays(opts: { relayUrls: string[]; collection:
       string; log?: LoggerInterface; timeoutMs?: number }): Promise<string[]>'
+  - file: lib/requester-xrpc/mod.ts
+    kind: function
+    name: ensureDumbpipe
+    signature: 'function ensureDumbpipe(logger?: StructuredLoggerInterface): Promise<void>'
   - file: lib/requester-xrpc/mod.ts
     kind: function
     name: ensureWebsocat
@@ -124,7 +143,7 @@ spec:
   - file: lib/requester-xrpc/mod.ts
     kind: function
     name: pollReady
-    signature: 'function pollReady(privateKeyPath: string, fqdn: string, timeoutMs:
+    signature: 'function pollReady(privateKeyPath: string, target: string, timeoutMs:
       number): Promise<boolean>'
   - file: lib/requester-xrpc/mod.ts
     kind: function
@@ -142,12 +161,12 @@ spec:
   - file: lib/requester-xrpc/mod.ts
     kind: function
     name: runSession
-    signature: 'function runSession(privateKeyPath: string, fqdn: string, program:
+    signature: 'function runSession(privateKeyPath: string, target: string, program:
       string): Promise<number>'
   - file: lib/requester-xrpc/mod.ts
     kind: function
     name: sshTunnelArgs
-    signature: 'function sshTunnelArgs(privateKeyPath: string, fqdn: string, proxyCmdOverride?:
+    signature: 'function sshTunnelArgs(privateKeyPath: string, target: string, proxyCmdOverride?:
       string): string[]'
   - file: lib/requester-xrpc/mod.ts
     kind: function
@@ -172,7 +191,7 @@ spec:
       given nsid with the lxm and audience DID in the body, returning the HTTP status,
       an ok flag, and the parsed response body.
   - codeRefs:
-    - function:df478a6e7b5f0870c41a1822b1442ea5
+    - function:5dc1e52cca303d506c394148228348e6
     - interface:4ae0e758bc6af355e90d5d253a84727f
     id: r.contract-flow
     level: MUST
@@ -184,6 +203,7 @@ spec:
       cross-party firehose discovery, and it returns a ContractFlowResult.
   - codeRefs:
     - file:lib/requester-xrpc/mod.ts
+    - function:eda58f5247bca1e7df37abfa70aa54a1
     id: r.dumbpipe-bootstrap
     level: MUST
     text: 'ensureDumbpipe(logger?) must make a `dumbpipe` binary available the way
@@ -194,7 +214,9 @@ spec:
       to PATH, logging downloading/downloaded/found/unsupported events and never throwing
       on a failed download.'
   - codeRefs:
-    - file:lib/requester-xrpc/mod.ts
+    - function:45bd69796946f8a0c17d1d2ae41f0ed0
+    - function:502aea4d73f314fbada7bdeab7d5caa7
+    - function:9a664640527d9f503b7475a5528d0b31
     id: r.dumbpipe-ssh-proxycommand
     level: MUST
     text: 'Under the iroh transport the SSH ProxyCommand must be derived from the
@@ -204,10 +226,11 @@ spec:
       to that loopback port is equally valid. Both pollReady and runSession must use
       that ProxyCommand, and ssh must still authenticate as root with the requester''s
       own generated key and the same StrictHostKeyChecking=no / UserKnownHostsFile=/dev/null
-      / LogLevel=ERROR hardening as before. An explicit sshProxyCommandFn must still
-      fully override the default.'
+      / LogLevel=ERROR hardening as before. An explicit proxy command override must
+      still fully replace the default.'
   - codeRefs:
     - file:lib/requester-xrpc/mod.ts
+    - function:5dc1e52cca303d506c394148228348e6
     id: r.iroh-default-transport
     level: MUST
     text: 'The default guest transport for the contract flow must be the iroh cloud-init
@@ -217,9 +240,11 @@ spec:
       open a dumbpipe connection to the ticket the contract published rather than
       dial a relay FQDN. skipSsh, keepVm, hold, the sshAuthorizedKeys/appended-key
       behavior, and the fedproxy-ssh transport (selected explicitly and still using
-      the websocat ProxyCommand via sshProxyCommandFn) must keep working unchanged.'
+      the websocat ProxyCommand via the proxy command override) must keep working
+      unchanged.'
   - codeRefs:
     - file:lib/requester-xrpc/mod.ts
+    - function:5dc1e52cca303d506c394148228348e6
     id: r.iroh-ticket-onnetwork
     level: MUST
     text: 'The requester must resolve its SSH transport target from the iroh ticket
@@ -230,10 +255,9 @@ spec:
       so both the firehose registerIdentity path and the direct onNetwork path agree.
       Receipt-keyed resolver registration (setOnNetworkResolved/clearOnNetworkResolved)
       and the stale-contract guards must stay, and the legacy FQDN path must still
-      work when an sshProxyCommandFn override or the fedproxy-ssh transport is in
-      use.'
+      work when a proxy command override or the fedproxy-ssh transport is in use.'
   - codeRefs:
-    - function:9b364db7648609d2fe412033f27b13de
+    - function:d3eb3303e0c926332a27235602c7003e
     id: r.keypair-generation
     level: MUST
     text: generateKeypair produces an SSH keypair for the named VM and returns the
@@ -248,11 +272,11 @@ spec:
       is non-blocking; an empty relayUrls list short-circuits to an empty array without
       issuing requests.
   - codeRefs:
-    - function:64cfc2d9d837801a774327163a75249d
-    - function:95447d450ff2f97655147e5dd97a5f89
-    - function:f6c7b7f574083e9a9c42bbd6a843c416
-    - interface:183e44891c1f0a54e056e43ec047be13
-    - interface:50f477ac838492f2bd615735976c685e
+    - function:168014603ee29fdc3e33868cceca773f
+    - function:6fd5064a3cf8710797225f0e1c92ed40
+    - function:f520f09208cdcaf8c0ef8eb1e6b3621e
+    - interface:3d2c8ff0b1f5240419f60d8a8ae71ddd
+    - interface:b9a6655a7e162aa1dfd86220525c31f1
     id: r.oauth-requester
     level: SHOULD
     text: createOAuthRequester returns an OAuthRequesterHandle built from CreateOAuthRequesterOpts,
@@ -315,8 +339,9 @@ spec:
       keypair, and the repo API the rest of the flow uses to write records and mint
       service auth.
   - codeRefs:
-    - function:24cd5e86c9d21bc8fab0490f83ce6950
-    - function:fbac4e60f3f0951146764aaa7623d831
+    - function:42545a80b62102147da3337965cc8dbf
+    - function:45bd69796946f8a0c17d1d2ae41f0ed0
+    - function:eda58f5247bca1e7df37abfa70aa54a1
     id: r.session-execution
     level: MUST
     text: runSession executes the supplied program over the ssh tunnel identified
@@ -325,22 +350,22 @@ spec:
       binary is available -- ensureDumbpipe under the default iroh transport, with
       ensureWebsocat retained only for the legacy websocat/fedproxy ProxyCommand.
   - codeRefs:
-    - function:ef9dc35948925beeecf54c12a5fd9ee1
+    - function:502aea4d73f314fbada7bdeab7d5caa7
     id: r.session-readiness
     level: MUST
-    text: pollReady waits for a bidder at the given fqdn to become reachable over
-      its tunnel using the specified private key, giving up after timeoutMs and returning
-      whether readiness was achieved rather than throwing.
+    text: pollReady waits for a bidder at the given transport target to become reachable
+      over its tunnel using the specified private key, giving up after timeoutMs and
+      returning whether readiness was achieved rather than throwing.
   - codeRefs:
-    - function:504104de944999687ef7f977cf1a877e
+    - function:4e3747d1be1fa190832df67bcf2339c1
     id: r.ssh-session-provider
     level: MUST
     text: createSshSessionProvider returns an SshSessionProvider for the session flow,
       accepting an optional logger and an optional proxyCommandFn so the caller can
       override how the proxy command is derived from a transport target.
   - codeRefs:
-    - function:962522e8fb20541868ff3b3934e3b3e5
-    - function:cc3275d83d779e08c41a10fded40e3d6
+    - function:42db31525829263a5772d28b8955d218
+    - function:9a664640527d9f503b7475a5528d0b31
     id: r.ssh-tunnel-helpers
     level: MUST
     text: tunnelWsUrl maps a bidder fqdn to the websocket URL the requester dials
