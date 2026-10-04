@@ -10,5 +10,20 @@ spec:
   systemContext: lib-did-plc-generated-core
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-did-plc-generated-core
-  phase: Running
+  agentLog: 'This context is the generated runtime core of the did:plc client under
+    lib/did-plc/generated/core, emitted by @hey-api/openapi-ts and consumed by the
+    hand-written client and types layer one directory up. Eight TypeScript modules
+    split the transport concerns: auth.gen.ts turns an Auth descriptor plus a token
+    or token callback into an Authorization value; bodySerializer.gen.ts converts
+    request bodies to JSON, FormData or URLSearchParams; params.gen.ts flattens positional
+    client arguments into path/query/header/cookie params from a FieldsConfig; pathSerializer.gen.ts
+    serializes primitives, arrays and objects into URL path segments with the OpenAPI
+    style/explode matrix; queryKeySerializer.gen.ts reduces arbitrary values to JSON-safe
+    query-key values; serverSentEvents.gen.ts provides a retrying SSE reader with
+    lifecycle callbacks; types.gen.ts defines the HttpMethod, Client, Config and ClientMeta
+    shapes; and utils.gen.ts assembles final URLs from base URL, path params and query
+    via defaultPathSerializer, getUrl and getValidRequestBody. Nothing here is bespoke
+    product logic; the files exist so the generated did:plc client has a stable, framework-agnostic
+    fetch core, and they are regenerated rather than edited by hand.'
+  message: wrote 14 requirement(s) and 42 interface(s) for lib-did-plc-generated-core
+  phase: Succeeded

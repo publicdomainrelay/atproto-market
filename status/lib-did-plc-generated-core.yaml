@@ -1,15 +1,8 @@
 conditions:
-- message: 'undeclared: ArraySeparatorStyle, ArrayStyle, Auth, AuthToken, BodySerializer,
-    Client, ClientMeta, Config, Field, Fields, FieldsConfig, HttpMethod, JsonValue,
-    ObjectStyle, OmitNever, PathSerializer, QuerySerializer, QuerySerializerOptions,
-    SerializerOptions, ServerSentEventsOptions, ServerSentEventsOptions.onRequest,
-    ServerSentEventsOptions.onSseError, ServerSentEventsOptions.onSseEvent, ServerSentEventsOptions.sseSleepFn,
-    ServerSentEventsResult, StreamEvent, bodySerializer, buildClientParams, createSseClient,
-    defaultPathSerializer, getAuthToken, getUrl, getValidRequestBody, queryKeyJsonReplacer,
-    separatorArrayExplode, separatorArrayNoExplode, separatorObjectExplode, serializeArrayParam,
-    serializeObjectParam, serializePrimitiveParam, serializeQueryKeyValue, stringifyToJsonValue'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -321,5 +314,5 @@ observed:
         bodySerializer?: BodySerializer | null;
         serializedBody?: unknown;
       }): unknown
-realizedSpecHash: 26c43ce3ebdd1dc5a91d84593462c53131a71bafc96e8b0387a1265445bc4c2e
+realizedSpecHash: 84b30c35873dd4850e9704247265732b32b716efd835c799335712363a00083b
 syncedFingerprint: 7db345857e8b6877445aac371f185792cee3e360aba0ddeb898383ca876d5a35
