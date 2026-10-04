@@ -21,4 +21,5 @@ observed:
   - hono-plc/config.json
 observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
 realizedSpecHash: ea8a80e81d8b84551fef1b1e7f4604d0e31035c7764602d8236e61cb6bc1709a
+syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: ee7236b279d65d80cc9607a473172a3ad482dfec27eaa89a6f372e16ab81aa24

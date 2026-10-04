@@ -1,7 +1,8 @@
 conditions:
-- message: 'unresolved requirement code refs: r.iroh-fixture: file:test/fixtures/cloud-init/iroh.yaml'
-  reason: CodeRefsUnresolved
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -15,9 +16,11 @@ observed:
   files:
   - test/fixtures/cloud-init/fedproxy-ssh.yaml
   - test/fixtures/cloud-init/fedproxy-web-wootty.yaml
+  - test/fixtures/cloud-init/iroh.yaml
   - test/fixtures/cloud-init/tunnel-secrets.yaml
   - test/fixtures/cloud-init/tunnel.yaml
-  fingerprint: 90bc41d2a298b40ce81144b1c4ff8b1a982e9c0995bc3a4aeef15cb19f165ba3
-observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-realizedSpecHash: 435acf45538c81c2a23f5d8e7a0be73e6b16b5d36f1fe75d6cd5500b9bc6b98a
-syncedFingerprint: 90bc41d2a298b40ce81144b1c4ff8b1a982e9c0995bc3a4aeef15cb19f165ba3
+  fingerprint: 904c929b810a40ac47a18e298001c868b04af0c2e0f6351f12eb10609a868f04
+observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
+realizedSpecHash: 3b40733c113f2e6bbc9dd7a510266f436a9a53297e7024983d6ead0a758903dd
+syncedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
+syncedFingerprint: 904c929b810a40ac47a18e298001c868b04af0c2e0f6351f12eb10609a868f04

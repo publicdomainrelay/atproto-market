@@ -26,4 +26,5 @@ observed:
   - lib/abc/compute-contract-gateway/deno.json
 observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
 realizedSpecHash: 881a850c00cd0e7748bbed71aa91f9f3d0b54a4515dd2d53f956cccb02094f52
+syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 3ace54d94a28605fd535e1685d355c9b5b2f7456a18aee9347b6e44991572b24

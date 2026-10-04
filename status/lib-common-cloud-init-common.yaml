@@ -111,4 +111,5 @@ observed:
   - lib/common/cloud-init-common/deno.json
 observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
 realizedSpecHash: 687f83492a8ecceaa75df21cd29ca42634632a6c69e2d144fd6c3a42af43a002
+syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: b3b5c693040c31034ae3a0bb86e5dca1a0d83e474a0f2e995ef5b2ec1a6c4dd8

@@ -56,4 +56,5 @@ observed:
   - lib/abc/market-bidder/deno.json
 observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
 realizedSpecHash: d1c02ada175a0654fd40cf9653d84cf56335b2643418c1df556236c67c5f97c5
+syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 7b57f4f6f9691308c1770235363a8cfb91aed6336f5c81d5b5552ca7041fb45f

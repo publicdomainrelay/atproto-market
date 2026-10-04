@@ -13046,6 +13046,7 @@ system_contexts:
 - code:
   - test/fixtures/cloud-init/fedproxy-ssh.yaml
   - test/fixtures/cloud-init/fedproxy-web-wootty.yaml
+  - test/fixtures/cloud-init/iroh.yaml
   - test/fixtures/cloud-init/tunnel-secrets.yaml
   - test/fixtures/cloud-init/tunnel.yaml
   codeRefIndex:

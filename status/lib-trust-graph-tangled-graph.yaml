@@ -37,4 +37,5 @@ observed:
   - lib/trust-graph-tangled-graph/deno.json
 observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
 realizedSpecHash: ed4946b11477698cd5eb3bcb503bc8c7691049e0c5372bd82cb3fcbf3a000888
+syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 6bbaa70d0390cb36fd3ffb5aba6c3e84e9eac42b2e8218e46a400f022d7358b8

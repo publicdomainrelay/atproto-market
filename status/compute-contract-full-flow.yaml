@@ -22,4 +22,5 @@ observed:
   - compute-contract-full-flow/full-flow.log
 observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
 realizedSpecHash: 404d17fb7477a1206427fc799f26c27e5eb185c7b1bdc92f7f4329ec40940f9d
+syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: ef71721badee95829280be26787af6ff04b37a16da6de725063016a2695d9f65

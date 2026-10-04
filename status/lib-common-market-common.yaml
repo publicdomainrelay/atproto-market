@@ -92,4 +92,5 @@ observed:
   - lib/common/market-common/deno.json
 observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
 realizedSpecHash: 29a2ab5c1ecc810b1718e861ef9ac025eb5af3804d47b6f5b4dc2a72ac0ceaea
+syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 45b9b8260b4d7a8e89d8374490a616ec2b976315211f46bd754cafb73a751879

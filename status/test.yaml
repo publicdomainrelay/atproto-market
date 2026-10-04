@@ -52,4 +52,5 @@ observed:
       }): () => void
 observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
 realizedSpecHash: b594777f9fa1526db2d27fc4cf3dcdc1a47e25c8e342ff7e8281226a5db74cf1
+syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: b60d00c50463bcfe2c6d0b22772899983c9c7c43ffe44fc48b9561bc57ac1426

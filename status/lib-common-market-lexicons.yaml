@@ -23,4 +23,5 @@ observed:
   - lib/common/market-lexicons/deno.json
 observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
 realizedSpecHash: a5a80175244774a44d30d36092dc66c46a581da59793de0bc660f654e81145b3
+syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: fa7c4f8269cea48b0d1e42cf82b1234e3b5ca2d053a8361b61f054daccaf8cdf
