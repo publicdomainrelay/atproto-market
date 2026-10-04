@@ -24,10 +24,10 @@ spec:
       records the uri and appends the bid, so all() returns the arrival-ordered list
       of distinct bids and addAll is a repeated add over an array.
     codeRefs:
-    - class:b0511bdf9205af51070904ceb3cebe46
-    - method:1b90a2bdcee27c1bcd4ebf1f441f2df6
-    - method:3a8fc16e97f5c00ee9afe0af3a6cf4ec
-    - method:b7337014e6d88bef850d60a5bc2eb6b7
+    - class:20ae68b35c9ef5d3df6de1653355cce6
+    - method:349483acaffab77b5e87a7e23eaec47e
+    - method:7b1fb0756508326e3f7716cfa00a1c04
+    - method:d1e03d1b6ca16af4f49bb518bc48d47f
   - id: r.bid-collector-drain
     level: MUST
     text: drain waits for every in-flight early-path policy check to settle, looping
@@ -35,8 +35,8 @@ spec:
       stops waiting out the bid window still observes all policy checks complete before
       it proceeds.
     codeRefs:
-    - class:b0511bdf9205af51070904ceb3cebe46
-    - method:d99d03b741c7fe79db2a1d2d5830cec3
+    - class:20ae68b35c9ef5d3df6de1653355cce6
+    - method:6857c5a01c5dbedc10cd28cc4c536df0
   - id: r.bid-collector-early-winner
     level: MUST
     text: 'When firstFree is set, add starts the early-exit path only for a bid whose
@@ -46,10 +46,10 @@ spec:
       promise with that bid; a rejected gate is swallowed and leaves the window open.
       isFree is the NSID comparison the early path gates on.'
     codeRefs:
-    - class:b0511bdf9205af51070904ceb3cebe46
-    - interface:3ca1df3473768560238d9bf874a7007d
-    - method:16f9f058b4ad22665924e3c9caad330a
-    - method:1b90a2bdcee27c1bcd4ebf1f441f2df6
+    - class:20ae68b35c9ef5d3df6de1653355cce6
+    - interface:921ec9daf3b0c78a0097ba04522bdb1d
+    - method:349483acaffab77b5e87a7e23eaec47e
+    - method:f1d39cacc20517c679b4d0469ca17bb5
   - id: r.bid-collector-early-winner-once
     level: MUST
     text: earlyWinner is created in the constructor and settles at most once per collector;
@@ -57,23 +57,23 @@ spec:
       a second free bid arriving while the first policy check is in flight can never
       produce a second resolution or callback.
     codeRefs:
-    - class:b0511bdf9205af51070904ceb3cebe46
-    - method:6c9c2a66e9549e7c40c1877f02054f45
+    - class:20ae68b35c9ef5d3df6de1653355cce6
+    - method:813c25c5519d8b95fb5e156324657fea
   - id: r.bid-collector-options
     level: MUST
     text: BidCollector is constructed from options that supply the NSID marking a
       bid free, the firstFree toggle and the async allow gate; only onEarlyWinner
       is optional, so the gate and the free-bid NSID must be provided by every caller.
     codeRefs:
-    - interface:3ca1df3473768560238d9bf874a7007d
-    - method:6c9c2a66e9549e7c40c1877f02054f45
+    - interface:921ec9daf3b0c78a0097ba04522bdb1d
+    - method:813c25c5519d8b95fb5e156324657fea
   - id: r.bid-cost
     level: MUST
     text: bidCost reads record.payload.cost and coerces it with Number, yielding Infinity
       when the payload or cost is absent or not numeric, so an unpriced bid never
       wins on price.
     codeRefs:
-    - function:7d2178c8391b536975f479eb6f18b574
+    - function:eae3475ff9c55dcff59876ffd59e7180
   - id: r.bid-payload-nsid
     level: MUST
     text: 'bidPayloadNsid reads the bid NSID from record.payload: it returns the payload''s
@@ -82,7 +82,7 @@ spec:
       position of an at:// URI), and returns the empty string when there is no payload
       or no such segment.'
     codeRefs:
-    - function:357285344d5e1ed273ccb6b4a83e6f58
+    - function:33b5c2e816403f09b3f485318b2e469b
     - interface:f25a32e8c06ef59f558fa95805408414
   - id: r.collected-bid-shape
     level: MUST
@@ -98,7 +98,7 @@ spec:
       or SSH phases: pause is synchronous and resume returns a promise the caller
       awaits.'
     codeRefs:
-    - interface:22b6dbdf25ff617b21276922dddd9172
+    - interface:8bb045d75b5d86a7e1e366e90b136d9d
   - id: r.contract-flow-defaults
     level: SHOULD
     text: 'The option bag documents its own defaults so implementations agree: fedingressHost
@@ -138,7 +138,7 @@ spec:
       and an error string; every field other than event is optional, so partial results
       can be returned for a failed run.
     codeRefs:
-    - interface:13cf3c528eda36cb6841b2dd983b53be
+    - interface:c21d6029ac9cadc0e131735b095dd761
   - id: r.deno-json
     level: SHOULD
     text: The package ships a deno.json alongside mod.ts declaring the module's imports,
@@ -155,7 +155,7 @@ spec:
       must skip ticket resolution entirely and keepVm must not change it.
     codeRefs:
     - interface:3917ad87d46039428eaafd04a57c85ba
-    - interface:5b2410a21ad68d7492443d9c2f4ed1b3
+    - interface:c47103c61c7abe6bc385e3a78f2b2c00
   - id: r.on-network-keyed-by-receipt
     level: MUST
     text: onNetwork interest is registered through setOnNetworkResolved and cleared
@@ -230,8 +230,8 @@ spec:
       earliest of equal-cost bids because the reduce only replaces the incumbent on
       a strict less-than; it returns undefined for an empty bid list.
     codeRefs:
-    - function:7d2178c8391b536975f479eb6f18b574
-    - function:7f9e9285bf0541c78508fac23abb0f6a
+    - function:3bd4a06a1bf12e51f13791c8f4260f0a
+    - function:eae3475ff9c55dcff59876ffd59e7180
   - id: r.ssh-session-provider
     level: MUST
     text: 'SshSessionProvider is the whole SSH surface the flow may assume: generateKeypair
@@ -241,7 +241,7 @@ spec:
       ticket under the default iroh transport and a relay FQDN only under the legacy
       transport, so no provider method may assume the target is a hostname.'
     codeRefs:
-    - interface:5b2410a21ad68d7492443d9c2f4ed1b3
+    - interface:c47103c61c7abe6bc385e3a78f2b2c00
   interfaces:
   - name: BidCollector
     kind: class
@@ -317,23 +317,23 @@ spec:
     signature: 'function selectWinner(bids: CollectedBid[]): CollectedBid | undefined'
     file: lib/abc/requester/mod.ts
 codeRefIndex:
-- class:b0511bdf9205af51070904ceb3cebe46 BidCollector@lib/abc/requester/mod.ts:276
+- class:20ae68b35c9ef5d3df6de1653355cce6 BidCollector@lib/abc/requester/mod.ts:270
 - file:lib/abc/requester/deno.json deno.json@lib/abc/requester/deno.json
 - file:lib/abc/requester/mod.ts mod.ts@lib/abc/requester/mod.ts
-- function:357285344d5e1ed273ccb6b4a83e6f58 bidPayloadNsid@lib/abc/requester/mod.ts:241
-- function:7d2178c8391b536975f479eb6f18b574 bidCost@lib/abc/requester/mod.ts:248
-- function:7f9e9285bf0541c78508fac23abb0f6a selectWinner@lib/abc/requester/mod.ts:253
-- interface:13cf3c528eda36cb6841b2dd983b53be ContractFlowResult@lib/abc/requester/mod.ts:211
-- interface:22b6dbdf25ff617b21276922dddd9172 ConsoleBuffer@lib/abc/requester/mod.ts:236
+- function:33b5c2e816403f09b3f485318b2e469b bidPayloadNsid@lib/abc/requester/mod.ts:235
+- function:3bd4a06a1bf12e51f13791c8f4260f0a selectWinner@lib/abc/requester/mod.ts:247
+- function:eae3475ff9c55dcff59876ffd59e7180 bidCost@lib/abc/requester/mod.ts:242
 - interface:3917ad87d46039428eaafd04a57c85ba RequesterPDS@lib/abc/requester/mod.ts:141
-- interface:3ca1df3473768560238d9bf874a7007d BidCollectorOptions@lib/abc/requester/mod.ts:258
-- interface:5b2410a21ad68d7492443d9c2f4ed1b3 SshSessionProvider@lib/abc/requester/mod.ts:205
 - interface:741a0c20adbb6bc0d938265b22ce885f PDSOptions@lib/abc/requester/mod.ts:130
 - interface:7fb903e1181ae51a3d69c0a40484e610 ContractFlowOptions@lib/abc/requester/mod.ts:15
+- interface:8bb045d75b5d86a7e1e366e90b136d9d ConsoleBuffer@lib/abc/requester/mod.ts:230
+- interface:921ec9daf3b0c78a0097ba04522bdb1d BidCollectorOptions@lib/abc/requester/mod.ts:252
+- interface:c21d6029ac9cadc0e131735b095dd761 ContractFlowResult@lib/abc/requester/mod.ts:205
+- interface:c47103c61c7abe6bc385e3a78f2b2c00 SshSessionProvider@lib/abc/requester/mod.ts:199
 - interface:f25a32e8c06ef59f558fa95805408414 CollectedBid@lib/abc/requester/mod.ts:8
-- method:16f9f058b4ad22665924e3c9caad330a BidCollector.isFree@lib/abc/requester/mod.ts:290
-- method:1b90a2bdcee27c1bcd4ebf1f441f2df6 BidCollector.add@lib/abc/requester/mod.ts:294
-- method:3a8fc16e97f5c00ee9afe0af3a6cf4ec BidCollector.addAll@lib/abc/requester/mod.ts:313
-- method:6c9c2a66e9549e7c40c1877f02054f45 BidCollector.constructor@lib/abc/requester/mod.ts:284
-- method:b7337014e6d88bef850d60a5bc2eb6b7 BidCollector.all@lib/abc/requester/mod.ts:317
-- method:d99d03b741c7fe79db2a1d2d5830cec3 BidCollector.drain@lib/abc/requester/mod.ts:322
+- method:349483acaffab77b5e87a7e23eaec47e BidCollector.add@lib/abc/requester/mod.ts:288
+- method:6857c5a01c5dbedc10cd28cc4c536df0 BidCollector.drain@lib/abc/requester/mod.ts:316
+- method:7b1fb0756508326e3f7716cfa00a1c04 BidCollector.addAll@lib/abc/requester/mod.ts:307
+- method:813c25c5519d8b95fb5e156324657fea BidCollector.constructor@lib/abc/requester/mod.ts:278
+- method:d1e03d1b6ca16af4f49bb518bc48d47f BidCollector.all@lib/abc/requester/mod.ts:311
+- method:f1d39cacc20517c679b4d0469ca17bb5 BidCollector.isFree@lib/abc/requester/mod.ts:284

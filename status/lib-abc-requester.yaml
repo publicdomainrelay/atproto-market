@@ -1,5 +1,7 @@
-syncedFingerprint: 8bbf7722ad641a1c6848f442eb829b36f11eff2d77fba6f279c4e3601b1d28a4
-realizedSpecHash: 248034efec447dc8c334cb69818e2e79bedbecfabc8f205207789ad0fbf37c0d
+observedCommit: 1e1cd3c58d5d52ccc1910f033eb41dc978dfdbc2
+syncedCommit: 1e1cd3c58d5d52ccc1910f033eb41dc978dfdbc2
+syncedFingerprint: adcb039a8b616784dd1f5a0e32e8286bb53996b3cb6c302d654a54c889f4ea0d
+realizedSpecHash: 88106bae584645f65b3867fa0e6541b0dc7597a82c5a27c3280f3a8341c47feb
 conditions:
 - type: CodeSynced
   status: "True"
@@ -43,80 +45,80 @@ observed:
   - name: SshSessionProvider
     kind: interface
     file: lib/abc/requester/mod.ts
-    line: 205
-    codegraphId: interface:5b2410a21ad68d7492443d9c2f4ed1b3
+    line: 199
+    codegraphId: interface:c47103c61c7abe6bc385e3a78f2b2c00
   - name: ContractFlowResult
     kind: interface
     file: lib/abc/requester/mod.ts
-    line: 211
-    codegraphId: interface:13cf3c528eda36cb6841b2dd983b53be
+    line: 205
+    codegraphId: interface:c21d6029ac9cadc0e131735b095dd761
   - name: ConsoleBuffer
     kind: interface
     file: lib/abc/requester/mod.ts
-    line: 236
-    codegraphId: interface:22b6dbdf25ff617b21276922dddd9172
+    line: 230
+    codegraphId: interface:8bb045d75b5d86a7e1e366e90b136d9d
   - name: bidPayloadNsid
     kind: function
     signature: '(bid: CollectedBid): string'
     file: lib/abc/requester/mod.ts
-    line: 241
-    codegraphId: function:357285344d5e1ed273ccb6b4a83e6f58
+    line: 235
+    codegraphId: function:33b5c2e816403f09b3f485318b2e469b
   - name: bidCost
     kind: function
     signature: '(bid: CollectedBid): number'
     file: lib/abc/requester/mod.ts
-    line: 248
-    codegraphId: function:7d2178c8391b536975f479eb6f18b574
+    line: 242
+    codegraphId: function:eae3475ff9c55dcff59876ffd59e7180
   - name: selectWinner
     kind: function
     signature: '(bids: CollectedBid[]): CollectedBid | undefined'
     file: lib/abc/requester/mod.ts
-    line: 253
-    codegraphId: function:7f9e9285bf0541c78508fac23abb0f6a
+    line: 247
+    codegraphId: function:3bd4a06a1bf12e51f13791c8f4260f0a
   - name: BidCollectorOptions
     kind: interface
     file: lib/abc/requester/mod.ts
-    line: 258
-    codegraphId: interface:3ca1df3473768560238d9bf874a7007d
+    line: 252
+    codegraphId: interface:921ec9daf3b0c78a0097ba04522bdb1d
   - name: BidCollector
     kind: class
     file: lib/abc/requester/mod.ts
-    line: 276
-    codegraphId: class:b0511bdf9205af51070904ceb3cebe46
+    line: 270
+    codegraphId: class:20ae68b35c9ef5d3df6de1653355cce6
   - name: BidCollector.constructor
     kind: method
     signature: '(readonly opts: BidCollectorOptions)'
     file: lib/abc/requester/mod.ts
-    line: 284
-    codegraphId: method:6c9c2a66e9549e7c40c1877f02054f45
+    line: 278
+    codegraphId: method:813c25c5519d8b95fb5e156324657fea
   - name: BidCollector.isFree
     kind: method
     signature: '(bid: CollectedBid): boolean'
     file: lib/abc/requester/mod.ts
-    line: 290
-    codegraphId: method:16f9f058b4ad22665924e3c9caad330a
+    line: 284
+    codegraphId: method:f1d39cacc20517c679b4d0469ca17bb5
   - name: BidCollector.add
     kind: method
     signature: '(bid: CollectedBid): void'
     file: lib/abc/requester/mod.ts
-    line: 294
-    codegraphId: method:1b90a2bdcee27c1bcd4ebf1f441f2df6
+    line: 288
+    codegraphId: method:349483acaffab77b5e87a7e23eaec47e
   - name: BidCollector.addAll
     kind: method
     signature: '(bids: CollectedBid[]): void'
     file: lib/abc/requester/mod.ts
-    line: 313
-    codegraphId: method:3a8fc16e97f5c00ee9afe0af3a6cf4ec
+    line: 307
+    codegraphId: method:7b1fb0756508326e3f7716cfa00a1c04
   - name: BidCollector.all
     kind: method
     signature: '(): CollectedBid[]'
     file: lib/abc/requester/mod.ts
-    line: 317
-    codegraphId: method:b7337014e6d88bef850d60a5bc2eb6b7
+    line: 311
+    codegraphId: method:d1e03d1b6ca16af4f49bb518bc48d47f
   - name: BidCollector.drain
     kind: method
     signature: '(): Promise<void>'
     file: lib/abc/requester/mod.ts
-    line: 322
-    codegraphId: method:d99d03b741c7fe79db2a1d2d5830cec3
-  fingerprint: 8bbf7722ad641a1c6848f442eb829b36f11eff2d77fba6f279c4e3601b1d28a4
+    line: 316
+    codegraphId: method:6857c5a01c5dbedc10cd28cc4c536df0
+  fingerprint: adcb039a8b616784dd1f5a0e32e8286bb53996b3cb6c302d654a54c889f4ea0d

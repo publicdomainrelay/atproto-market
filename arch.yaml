@@ -433,26 +433,26 @@ system_contexts:
   - id: r.ssh-session-provider
     level: MUST
   codeRefIndex:
-  - class:b0511bdf9205af51070904ceb3cebe46 BidCollector@lib/abc/requester/mod.ts:276
+  - class:20ae68b35c9ef5d3df6de1653355cce6 BidCollector@lib/abc/requester/mod.ts:270
   - file:lib/abc/requester/deno.json deno.json@lib/abc/requester/deno.json
   - file:lib/abc/requester/mod.ts mod.ts@lib/abc/requester/mod.ts
-  - function:357285344d5e1ed273ccb6b4a83e6f58 bidPayloadNsid@lib/abc/requester/mod.ts:241
-  - function:7d2178c8391b536975f479eb6f18b574 bidCost@lib/abc/requester/mod.ts:248
-  - function:7f9e9285bf0541c78508fac23abb0f6a selectWinner@lib/abc/requester/mod.ts:253
-  - interface:13cf3c528eda36cb6841b2dd983b53be ContractFlowResult@lib/abc/requester/mod.ts:211
-  - interface:22b6dbdf25ff617b21276922dddd9172 ConsoleBuffer@lib/abc/requester/mod.ts:236
+  - function:33b5c2e816403f09b3f485318b2e469b bidPayloadNsid@lib/abc/requester/mod.ts:235
+  - function:3bd4a06a1bf12e51f13791c8f4260f0a selectWinner@lib/abc/requester/mod.ts:247
+  - function:eae3475ff9c55dcff59876ffd59e7180 bidCost@lib/abc/requester/mod.ts:242
   - interface:3917ad87d46039428eaafd04a57c85ba RequesterPDS@lib/abc/requester/mod.ts:141
-  - interface:3ca1df3473768560238d9bf874a7007d BidCollectorOptions@lib/abc/requester/mod.ts:258
-  - interface:5b2410a21ad68d7492443d9c2f4ed1b3 SshSessionProvider@lib/abc/requester/mod.ts:205
   - interface:741a0c20adbb6bc0d938265b22ce885f PDSOptions@lib/abc/requester/mod.ts:130
   - interface:7fb903e1181ae51a3d69c0a40484e610 ContractFlowOptions@lib/abc/requester/mod.ts:15
+  - interface:8bb045d75b5d86a7e1e366e90b136d9d ConsoleBuffer@lib/abc/requester/mod.ts:230
+  - interface:921ec9daf3b0c78a0097ba04522bdb1d BidCollectorOptions@lib/abc/requester/mod.ts:252
+  - interface:c21d6029ac9cadc0e131735b095dd761 ContractFlowResult@lib/abc/requester/mod.ts:205
+  - interface:c47103c61c7abe6bc385e3a78f2b2c00 SshSessionProvider@lib/abc/requester/mod.ts:199
   - interface:f25a32e8c06ef59f558fa95805408414 CollectedBid@lib/abc/requester/mod.ts:8
-  - method:16f9f058b4ad22665924e3c9caad330a BidCollector.isFree@lib/abc/requester/mod.ts:290
-  - method:1b90a2bdcee27c1bcd4ebf1f441f2df6 BidCollector.add@lib/abc/requester/mod.ts:294
-  - method:3a8fc16e97f5c00ee9afe0af3a6cf4ec BidCollector.addAll@lib/abc/requester/mod.ts:313
-  - method:6c9c2a66e9549e7c40c1877f02054f45 BidCollector.constructor@lib/abc/requester/mod.ts:284
-  - method:b7337014e6d88bef850d60a5bc2eb6b7 BidCollector.all@lib/abc/requester/mod.ts:317
-  - method:d99d03b741c7fe79db2a1d2d5830cec3 BidCollector.drain@lib/abc/requester/mod.ts:322
+  - method:349483acaffab77b5e87a7e23eaec47e BidCollector.add@lib/abc/requester/mod.ts:288
+  - method:6857c5a01c5dbedc10cd28cc4c536df0 BidCollector.drain@lib/abc/requester/mod.ts:316
+  - method:7b1fb0756508326e3f7716cfa00a1c04 BidCollector.addAll@lib/abc/requester/mod.ts:307
+  - method:813c25c5519d8b95fb5e156324657fea BidCollector.constructor@lib/abc/requester/mod.ts:278
+  - method:d1e03d1b6ca16af4f49bb518bc48d47f BidCollector.all@lib/abc/requester/mod.ts:311
+  - method:f1d39cacc20517c679b4d0469ca17bb5 BidCollector.isFree@lib/abc/requester/mod.ts:284
 - id: sc.lib-abc-trust-graph
   name: lib-abc-trust-graph
   spec: specs/lib-abc-trust-graph.yaml
@@ -792,17 +792,17 @@ system_contexts:
     level: MUST
   codeRefIndex:
   - file:lib/common/cloud-init-common/mod.ts mod.ts@lib/common/cloud-init-common/mod.ts
-  - function:4b5291e8f10c0cf8f4ac044370b5d20e acceptBundleModule@lib/common/cloud-init-common/mod.ts:220
-  - function:a68626e26bed80b6d685682d2680efdb registerUserDataModule@lib/common/cloud-init-common/mod.ts:113
-  - function:a852acc6663f06c9724c3272a33b42a4 listUserDataModules@lib/common/cloud-init-common/mod.ts:127
-  - function:b171eb2dbd8264151491ce36f02925d2 buildUserData@lib/common/cloud-init-common/mod.ts:200
-  - function:b757a298771ae8dcbe1086c37860fb1e getUserDataModules@lib/common/cloud-init-common/mod.ts:118
-  - function:c42fe19fa18470a330f72a65da020d2d flattenLabel@lib/common/cloud-init-common/mod.ts:102
+  - function:1e95bb6ea8915b9f5ba83dc886796445 getUserDataModules@lib/common/cloud-init-common/mod.ts:128
+  - function:5b4243197b6fc01e7613665b045a419a listUserDataModules@lib/common/cloud-init-common/mod.ts:137
+  - function:881cbcdcc63c1b71db29810965464c11 registerUserDataModule@lib/common/cloud-init-common/mod.ts:123
+  - function:91109927e406bbb83931911c21d9e32a flattenLabel@lib/common/cloud-init-common/mod.ts:112
+  - function:abdc82dd14921cdce8ae29819e706996 buildUserData@lib/common/cloud-init-common/mod.ts:210
+  - function:e30d33d17e4979ea0cda5962c97432fb acceptBundleModule@lib/common/cloud-init-common/mod.ts:230
   - interface:0bccaee64ad56c10f80842c828570d30 CloudInitContext@lib/common/cloud-init-common/mod.ts:16
-  - interface:a1ea99f0f39ad710f4f5c37a44b76b5a TunnelCloudInitContext@lib/common/cloud-init-common/mod.ts:62
-  - interface:a70dcded359cb8e179e375b8adc0876c UserDataPatch@lib/common/cloud-init-common/mod.ts:86
-  - interface:ce3efe5cd2d89f183f1c90bd06992a98 WriteFileEntry@lib/common/cloud-init-common/mod.ts:77
-  - type_alias:41d76c33929582b594b1d002d3176708 UserDataModule@lib/common/cloud-init-common/mod.ts:99
+  - interface:10a15e4341c76e7c8c9d8396df484bb7 TunnelCloudInitContext@lib/common/cloud-init-common/mod.ts:72
+  - interface:1e1823b52b02c0660cba8385871c05e9 WriteFileEntry@lib/common/cloud-init-common/mod.ts:87
+  - interface:33d4c92b2cd53743595391dae5ced5f5 UserDataPatch@lib/common/cloud-init-common/mod.ts:96
+  - type_alias:6e54dc375f73d3c3e7308fae90f1d786 UserDataModule@lib/common/cloud-init-common/mod.ts:109
 - id: sc.lib-common-compute-contract-gateway-common
   name: lib-common-compute-contract-gateway-common
   spec: specs/lib-common-compute-contract-gateway-common.yaml

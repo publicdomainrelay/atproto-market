@@ -26,7 +26,7 @@ spec:
       prepends a runcmd that creates the parent directory with mode 0700 owned by
       root.
     codeRefs:
-    - function:4b5291e8f10c0cf8f4ac044370b5d20e
+    - function:e30d33d17e4979ea0cda5962c97432fb
   - id: r.builtin-modules
     level: MUST
     text: Importing the module must register the built-ins tunnel, fedproxy-ssh, fedproxy-web,
@@ -37,7 +37,7 @@ spec:
       environment line when ctx.jsrUrl is set.
     codeRefs:
     - file:lib/common/cloud-init-common/mod.ts
-    - type_alias:41d76c33929582b594b1d002d3176708
+    - type_alias:6e54dc375f73d3c3e7308fae90f1d786
   - id: r.cloud-config-header
     level: MUST
     text: buildUserData must return a string starting with the literal `#cloud-config`
@@ -45,7 +45,7 @@ spec:
       owns the header, so modules must not emit it themselves.
     codeRefs:
     - file:lib/common/cloud-init-common/mod.ts
-    - function:b171eb2dbd8264151491ce36f02925d2
+    - function:abdc82dd14921cdce8ae29819e706996
   - id: r.context-fields
     level: MUST
     text: CloudInitContext must carry the guest-provisioning inputs, with vmName required
@@ -68,14 +68,14 @@ spec:
     codeRefs:
     - function:40149c728f060be41b2c8ee8a826902c
     - function:46c9fd0cecf9645ba56294190be1600c
-    - interface:a1ea99f0f39ad710f4f5c37a44b76b5a
+    - interface:10a15e4341c76e7c8c9d8396df484bb7
   - id: r.flatten-label
     level: MUST
     text: flattenLabel must replace every `.` and `:` in a label with `-`, staying
       byte-for-byte in sync with the atprp-ssh-relay Go implementation of the same
       name.
     codeRefs:
-    - function:c42fe19fa18470a330f72a65da020d2d
+    - function:91109927e406bbb83931911c21d9e32a
   - id: r.host-aliases
     level: SHOULD
     text: The tunnel module should keep only hostAliases entries matching `<host>
@@ -201,7 +201,7 @@ spec:
       it is absent or unparseable.
     codeRefs:
     - function:46c9fd0cecf9645ba56294190be1600c
-    - function:b171eb2dbd8264151491ce36f02925d2
+    - function:abdc82dd14921cdce8ae29819e706996
   - id: r.module-registry
     level: MUST
     text: 'User-data modules must be held in a process-wide registry keyed by string
@@ -210,9 +210,9 @@ spec:
       module: <id>` for an id that is not registered; listUserDataModules returns
       the registered ids.'
     codeRefs:
-    - function:a68626e26bed80b6d685682d2680efdb
-    - function:a852acc6663f06c9724c3272a33b42a4
-    - function:b757a298771ae8dcbe1086c37860fb1e
+    - function:1e95bb6ea8915b9f5ba83dc886796445
+    - function:5b4243197b6fc01e7613665b045a419a
+    - function:881cbcdcc63c1b71db29810965464c11
   - id: r.patch-merge-semantics
     level: MUST
     text: Applying a UserDataPatch must deep-merge apt keys, union packages and bootcmd
@@ -222,8 +222,8 @@ spec:
       commands stay ahead of provisioning commands.
     codeRefs:
     - file:lib/common/cloud-init-common/mod.ts
-    - interface:a70dcded359cb8e179e375b8adc0876c
-    - interface:ce3efe5cd2d89f183f1c90bd06992a98
+    - interface:1e1823b52b02c0660cba8385871c05e9
+    - interface:33d4c92b2cd53743595391dae5ced5f5
   interfaces:
   - name: CloudInitContext
     kind: interface
@@ -287,14 +287,14 @@ spec:
     file: lib/common/cloud-init-common/mod.ts
 codeRefIndex:
 - file:lib/common/cloud-init-common/mod.ts mod.ts@lib/common/cloud-init-common/mod.ts
-- function:4b5291e8f10c0cf8f4ac044370b5d20e acceptBundleModule@lib/common/cloud-init-common/mod.ts:220
-- function:a68626e26bed80b6d685682d2680efdb registerUserDataModule@lib/common/cloud-init-common/mod.ts:113
-- function:a852acc6663f06c9724c3272a33b42a4 listUserDataModules@lib/common/cloud-init-common/mod.ts:127
-- function:b171eb2dbd8264151491ce36f02925d2 buildUserData@lib/common/cloud-init-common/mod.ts:200
-- function:b757a298771ae8dcbe1086c37860fb1e getUserDataModules@lib/common/cloud-init-common/mod.ts:118
-- function:c42fe19fa18470a330f72a65da020d2d flattenLabel@lib/common/cloud-init-common/mod.ts:102
+- function:1e95bb6ea8915b9f5ba83dc886796445 getUserDataModules@lib/common/cloud-init-common/mod.ts:128
+- function:5b4243197b6fc01e7613665b045a419a listUserDataModules@lib/common/cloud-init-common/mod.ts:137
+- function:881cbcdcc63c1b71db29810965464c11 registerUserDataModule@lib/common/cloud-init-common/mod.ts:123
+- function:91109927e406bbb83931911c21d9e32a flattenLabel@lib/common/cloud-init-common/mod.ts:112
+- function:abdc82dd14921cdce8ae29819e706996 buildUserData@lib/common/cloud-init-common/mod.ts:210
+- function:e30d33d17e4979ea0cda5962c97432fb acceptBundleModule@lib/common/cloud-init-common/mod.ts:230
 - interface:0bccaee64ad56c10f80842c828570d30 CloudInitContext@lib/common/cloud-init-common/mod.ts:16
-- interface:a1ea99f0f39ad710f4f5c37a44b76b5a TunnelCloudInitContext@lib/common/cloud-init-common/mod.ts:62
-- interface:a70dcded359cb8e179e375b8adc0876c UserDataPatch@lib/common/cloud-init-common/mod.ts:86
-- interface:ce3efe5cd2d89f183f1c90bd06992a98 WriteFileEntry@lib/common/cloud-init-common/mod.ts:77
-- type_alias:41d76c33929582b594b1d002d3176708 UserDataModule@lib/common/cloud-init-common/mod.ts:99
+- interface:10a15e4341c76e7c8c9d8396df484bb7 TunnelCloudInitContext@lib/common/cloud-init-common/mod.ts:72
+- interface:1e1823b52b02c0660cba8385871c05e9 WriteFileEntry@lib/common/cloud-init-common/mod.ts:87
+- interface:33d4c92b2cd53743595391dae5ced5f5 UserDataPatch@lib/common/cloud-init-common/mod.ts:96
+- type_alias:6e54dc375f73d3c3e7308fae90f1d786 UserDataModule@lib/common/cloud-init-common/mod.ts:109
