@@ -15,5 +15,92 @@ metadata:
 spec:
   dependsOn:
   - sc.atproto-market
+  intent: 'Both receipt lexicons exist so a bidder''s grant or payment can be verified
+    by the requester before the resource is provisioned: the receipt is returned by
+    AT-URI plus CID and used as the payload of the higher-level com.publicdomainrelay.temp.market.accept.
+    The two records are deliberately identical in shape so the free path (no payment,
+    proof of grant) and the paid path (x402, proof of payment) differ only in NSID
+    and semantics, keeping the accept-side verification code uniform. The cid field
+    carries a badge.blue remote attestation computed over the referenced accepts record,
+    with the receipt''s own metadata and the requester''s repo DID folded in as $sig
+    via DAG-CBOR + SHA-256 + CIDv1, which binds the receipt to one repository and
+    makes re-binding it to a copy of the accepts record elsewhere fail verification
+    -- badge.blue''s replay-attack prevention applied to market receipts. The signatures
+    field must carry the bidder''s inline signature attached at creation, so neither
+    the grant nor the payment proof is repudiable.'
   repository: atproto-market
+  requirements:
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/free.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/x402.defs.ts
+    id: r.bidder-signature-nonrepudiable
+    level: MUST
+    text: The signatures field must carry the bidder's inline signature attached at
+      creation time, so the grant (free) or the payment proof (x402) is non-repudiable
+      and the requester can verify before provisioning.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/free.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/x402.defs.ts
+    id: r.cid-remote-attestation
+    level: MUST
+    text: The cid field must hold a badge.blue attestation CID computed over the referenced
+      accepts record with signatures stripped, folding this receipt's metadata (cid
+      and signatures stripped, repository set to the requester's repo DID) in as $sig
+      via DAG-CBOR + SHA-256 + CIDv1, so re-binding the grant or payment proof to
+      a copy of the accepts record in another repository fails verification.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/free.defs.ts
+    id: r.free-receipt-lexicon
+    level: MUST
+    text: 'free.defs.ts declares the NSID ''com.publicdomainrelay.temp.market.receipts.free''
+      and a Main record type keyed by tid whose l.object schema has exactly three
+      fields: accept as a strongRef to atproto/repo/strongRef, cid as a cid-format
+      string, and signatures as a ref to network/attested/signature Signatures; the
+      module exports main plus the derived $type, $isTypeOf, $build, $assert, $check,
+      $cast, $ifMatches, $matches, $parse, $safeParse, $validate and $safeValidate
+      helpers.'
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/free.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/free.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/x402.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/x402.ts
+    id: r.generated-do-not-edit
+    level: MUST
+    text: 'All four files stay generator-owned: the header comment marks them as generated
+      by "@atproto/lex" and forbids editing, so changes to the receipt schema must
+      be made in the source lexicon and regenerated rather than patched in place.'
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/free.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/x402.ts
+    id: r.index-module-reexport
+    level: SHOULD
+    text: Each index module re-exports every symbol of its defs file and re-exports
+      main as the module default, so consumers can import the record type and its
+      validators from either the lexicon path or the defs path.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/free.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/x402.defs.ts
+    id: r.receipt-as-accept-payload
+    level: SHOULD
+    text: A receipt is returned to the requester by AT-URI plus CID and used as the
+      payload of the higher-level com.publicdomainrelay.temp.market.accept, which
+      is the point at which the bidder verifies the grant or the payment before provisioning
+      the resource.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/free.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/x402.defs.ts
+    id: r.receipt-binds-accept
+    level: MUST
+    text: The accept field of each receipt must be a strong reference to the settled
+      record of the matching flavour -- accepts.free for a free receipt, accepts.x402
+      for an x402 receipt -- so a receipt cannot be attached to a settlement other
+      than the one it was minted for.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/x402.defs.ts
+    id: r.x402-receipt-lexicon
+    level: MUST
+    text: x402.defs.ts mirrors the free receipt under the NSID 'com.publicdomainrelay.temp.market.receipts.x402'
+      with the same tid-keyed Main type and the same three-field schema (accept strongRef,
+      cid string, signatures ref), so the paid receipt is shape-identical to the free
+      one and differs only in NSID and meaning.
   upstream: self
