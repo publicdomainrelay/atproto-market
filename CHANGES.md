@@ -1185,7 +1185,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-common-cloud-init-common-c2s-d20070c3bfb0-89b584d8b58c-a3 | CodeToSpec | Failed |  | 0 | - |
 | lib-common-cloud-init-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-common-cloud-init-common-s2c-066cde23d162 | SpecToCode | Succeeded | 857b94a2 | 0 | - |
-| lib-common-cloud-init-common-s2c-4291659ed875 | SpecToCode | Running |  | 0 | - |
+| lib-common-cloud-init-common-s2c-4291659ed875 | SpecToCode | Succeeded | 4f1174f5 | 0 | - |
 | lib-common-compute-contract-gateway-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-common-fedproxy-rbac-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-common-market-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
@@ -1251,7 +1251,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-operator-discovery-badge-blue-keys-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-requester-xrpc-c2s-b296a7ee7c1a-b9c1b7749635 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-requester-xrpc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-requester-xrpc-s2c-275aea2136d3 | SpecToCode | Pending |  | 0 | - |
+| lib-requester-xrpc-s2c-275aea2136d3 | SpecToCode | Running |  | 0 | - |
 | lib-requester-xrpc-s2c-fc3eb42383f9 | SpecToCode | Succeeded | b296a7ee | 0 | - |
 | lib-secrets-oidc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-trust-graph-bsky-mutuals-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
@@ -1263,4 +1263,4 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | test-fixtures-cloud-init-c2s-d20070c3bfb0-d20070c3bfb0-a3 | CodeToSpec | Succeeded |  | 0 | - |
 | test-fixtures-cloud-init-s2c-5bdeb2bf7f6b | SpecToCode | Succeeded | 89b584d8 | 0 | - |
 | test-s2c-02610595978a | SpecToCode | Succeeded | b9c1b774 | 0 | - |
-| test-s2c-a0e5fed34441 | SpecToCode | Running |  | 0 | - |
+| test-s2c-a0e5fed34441 | SpecToCode | Succeeded | 4f1174f5 | 0 | - |

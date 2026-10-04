@@ -57,5 +57,51 @@ spec:
   systemContext: test
   toSpecHash: a0e5fed34441618c1a835d237386893cd7094eb719030ba9287ece8437500f33
 status:
-  message: the agent is realizing test in a batch of 2 led by lib-common-cloud-init-common
-  phase: Running
+  agentLog: "...nized_model] {\"model\":\"deepseek-v4-flash\",\"query_source\":\"sdk\"}\n\e[0m\e[38;5;245mrunning
+    19 tests from ./test/cloud_init_snapshot_test.ts\e[0m\ncomposer snapshots match
+    fixtures ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(19ms)\e[0m\nsecrets module composes
+    with the transport ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(1ms)\e[0m\nsecrets
+    module discovers provider paths at runtime, not build time ... \e[0m\e[32mok\e[0m
+    \e[0m\e[38;5;245m(476µs)\e[0m\nsecrets module echoes the provider-assigned subject
+    ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(415µs)\e[0m\nsecrets module fails loud
+    ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(406µs)\e[0m\nsecrets module writes secrets
+    0600 under a 0700 parent ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(332µs)\e[0m\nsecrets
+    module carries no secret values ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(325µs)\e[0m\nbug
+    fixes baked into fedproxy-ssh ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(799µs)\e[0m\ntunnel
+    has no ListenAddress (direct-TCP probe) ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(425µs)\e[0m\niroh
+    dumbpipe listener replaces the tunnel subscriber ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(558µs)\e[0m\niroh
+    ticket extraction matches the connect-tcp line dumbpipe prints ... \e[0m\e[32mok\e[0m
+    \e[0m\e[38;5;245m(1ms)\e[0m\nevery module that configures an sshd installs openssh-server
+    ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(2ms)\e[0m\nwootty combo carries token
+    handoff + hardening ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(379µs)\e[0m\ndeprecated
+    wrappers equal composer outputs ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(1ms)\e[0m\nmerge
+    semantics: base + module append, dedupe, override ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(6ms)\e[0m\nruncmdPrepend
+    ordering + acceptBundleModule ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(559µs)\e[0m\nunparseable
+    / empty base -> fresh build ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(3ms)\e[0m\ninjectJsrUrl
+    adds JSR_URL env to tunnel unit ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(311µs)\e[0m\nregistry:
+    built-ins present, unknown id throws ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(397µs)\e[0m\n\n\e[0m\e[32mok\e[0m
+    | 19 passed | 0 failed \e[0m\e[38;5;245m(57ms)\e[0m"
+  branch: spec/lib-common-cloud-init-common/4291659e
+  commit: 4f1174f584309d08e68d7a1b42a7c61665b1d732
+  filesTouched:
+  - lib/common/cloud-init-common/mod.ts
+  - test/cloud_init_snapshot_test.ts
+  - test/fixtures/cloud-init/fedproxy-ssh.yaml
+  - test/fixtures/cloud-init/iroh.yaml
+  - test/fixtures/cloud-init/tunnel-secrets.yaml
+  - test/fixtures/cloud-init/tunnel.yaml
+  message: 'realized test in a batch of 2 led by lib-common-cloud-init-common on spec/lib-common-cloud-init-common/4291659e:
+    6 file(s) touched, verify exit 0'
+  phase: Succeeded
+  progress:
+  - at: "2026-10-04T22:24:54Z"
+    files:
+    - lib/common/cloud-init-common/mod.ts
+    - test/cloud_init_snapshot_test.ts
+    - test/fixtures/cloud-init/fedproxy-ssh.yaml
+    - test/fixtures/cloud-init/iroh.yaml
+    - test/fixtures/cloud-init/tunnel-secrets.yaml
+    - test/fixtures/cloud-init/tunnel.yaml
+    note: batch of 2 led by lib-common-cloud-init-common, commit 4f1174f5
+    tool: realize
+    turn: 1

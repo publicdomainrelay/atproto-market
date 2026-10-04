@@ -26,4 +26,5 @@ spec:
   systemContext: lib-requester-xrpc
   toSpecHash: 275aea2136d3f217d797136f848e8b8d58e1c52c1258f4e22d59b5ddc10feead
 status:
-  phase: Pending
+  message: the agent is realizing lib-requester-xrpc
+  phase: Running
