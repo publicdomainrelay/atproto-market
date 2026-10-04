@@ -30,8 +30,8 @@ spec:
       given nsid with the lxm and audience DID in the body, returning the HTTP status,
       an ok flag, and the parsed response body.
     codeRefs:
-    - function:9d0c13755d5ff8f03602375056c9c6c3
-    - function:ca5512b1850651446ba10067b408bf2e
+    - function:e74f5a09a1becd90d26cbda903c89f8f
+    - function:f1d87a6602f2314eae99f4b756e03d69
   - id: r.contract-flow
     level: MUST
     text: runComputeContract drives the whole requester-side flow against a RequesterPDS,
@@ -41,8 +41,8 @@ spec:
       returning the job's uri and cid, and an ATProto event-streams client used for
       cross-party firehose discovery, and it returns a ContractFlowResult.
     codeRefs:
-    - function:04d27f9568ed8102cba9faf3289286bf
-    - interface:7976e76ab81c77e90e7aa4201ff10c1d
+    - function:41696176f7bed6e38d01de37865284bb
+    - interface:73fc6527835ff9fd0374c64f5fd92560
   - id: r.dumbpipe-bootstrap
     level: MUST
     text: 'ensureDumbpipe(logger?) must make a `dumbpipe` binary available the way
@@ -60,7 +60,7 @@ spec:
       the test context).'
     codeRefs:
     - file:lib/requester-xrpc/mod.ts
-    - function:e5cbaf8edf9559cc75cdd46ffb76bf95
+    - function:60489ade28c54a30e0b402c84f516db0
   - id: r.dumbpipe-ssh-proxycommand
     level: MUST
     text: 'Under the iroh transport the SSH ProxyCommand must be derived from the
@@ -73,9 +73,9 @@ spec:
       / LogLevel=ERROR hardening as before. An explicit proxy command override must
       still fully replace the default.'
     codeRefs:
-    - function:784207610f82de1a689784e9deaf47e6
-    - function:92a8839f14ca40e1a2ba046f349d57b2
-    - function:9bf1f659af305ad4bb6e03b09e1aa7fe
+    - function:8df50c647ad47ed966cd0113857e0a62
+    - function:c6dc2ce50c9ba3f3e49a087dd4a0d95e
+    - function:d95798a777303eff7760923ec8d9ca1f
   - id: r.iroh-default-transport
     level: MUST
     text: 'The default guest transport for the contract flow must be the iroh cloud-init
@@ -89,7 +89,7 @@ spec:
       unchanged.'
     codeRefs:
     - file:lib/requester-xrpc/mod.ts
-    - function:04d27f9568ed8102cba9faf3289286bf
+    - function:41696176f7bed6e38d01de37865284bb
   - id: r.iroh-report-endpoint
     level: MUST
     text: 'Under the default iroh transport, when SSH will run, the contract must
@@ -141,14 +141,14 @@ spec:
       transport target from the onNetwork/submitEvent event path.'
     codeRefs:
     - file:lib/requester-xrpc/mod.ts
-    - function:04d27f9568ed8102cba9faf3289286bf
+    - function:41696176f7bed6e38d01de37865284bb
   - id: r.keypair-generation
     level: MUST
     text: generateKeypair produces an SSH keypair for the named VM and returns the
       public key alongside the path to the written private key, which the tunnel helpers
       then consume.
     codeRefs:
-    - function:c0acf6b42c1d903a69ea183c1c2bcbd5
+    - function:222cc19853bbcc5c8364dd0045fe404d
   - id: r.multi-relay-union
     level: MUST
     text: discoverBiddersFromRelays queries every URL in relayUrls in parallel and
@@ -156,7 +156,7 @@ spec:
       is non-blocking; an empty relayUrls list short-circuits to an empty array without
       issuing requests.
     codeRefs:
-    - function:f0041abee4623b6562227c380bcc0688
+    - function:37ffe4ae6cccd66c0aa2247b229cb195
   - id: r.oauth-requester
     level: SHOULD
     text: createOAuthRequester returns an OAuthRequesterHandle built from CreateOAuthRequesterOpts,
@@ -164,11 +164,11 @@ spec:
       the PDS uses the agent's session user DID and can mint service-auth tokens for
       an audience, and getSession exposes the current session for that handle.
     codeRefs:
-    - function:1d588c78426adb66e36d6f6c9bc27725
-    - function:347b5c9a9248125a1552ad56b3dab154
-    - function:a84b4248b2a1b4d058f0f82fb1177946
-    - interface:1a4c39f163763de8ecaaec1559a031ee
-    - interface:8b15050751370a6014f008aea65b779c
+    - function:0e6067488e94711e9ab880e2e4476b4d
+    - function:b34ec33c3d5c37092b2e048b882f896d
+    - function:f6cb813eef861e20e07c2ebc5d94b8d3
+    - interface:67624ec68624af49092967677f8abb64
+    - interface:6a732b7aa8df6d42f4065089513f2d9a
   - id: r.package-manifest
     level: MAY
     text: The module is published as a Deno package described by lib/requester-xrpc/deno.json,
@@ -200,7 +200,7 @@ spec:
       DID, a missing PDS endpoint, or any thrown error yields an empty array with
       a warning log.
     codeRefs:
-    - function:23df2468906ae13b777112492d90b05b
+    - function:8f23f9232fd7b3e10a7daa80876608f1
   - id: r.relay-bidder-discovery
     level: MUST
     text: discoverBiddersFromRelay queries a single relay's com.atproto.sync.listReposByCollection
@@ -210,7 +210,7 @@ spec:
       request via AbortSignal.timeout.
     codeRefs:
     - file:lib/requester-xrpc/mod.ts
-    - function:0905a8668f646e545d2eee135b98e164
+    - function:94d31c50f3b90d6ac685ccd44787d93b
   - id: r.relay-visibility
     level: MUST
     text: verifyRelayVisibility first probes each relay for listReposByCollection
@@ -220,16 +220,16 @@ spec:
       bidderDid appears in the collection, polling at pollIntervalMs up to pollTimeoutMs
       with defaults of 2000 ms and 15000 ms.
     codeRefs:
-    - function:3ee0b1bf380922d6d7077efbdaa4bfd7
-    - interface:b0fc591071d1c61b6e0c5a85ff0d4f55
+    - function:645a118ca65dade01b563150f79c4f1c
+    - interface:f1991979bdf7c564cd4194b92705e667
   - id: r.repo-record-writes
     level: MUST
     text: createRepoRecord writes a record into the requester's repo under a collection
       and returns its uri and cid; createSignedRepoRecord does the same but signs
       the record with the supplied keypair, using the issuer when one is given.
     codeRefs:
-    - function:21f56da2b9cdd75bc9ac81b308e61df1
-    - function:93238be8f35c6ceb0813ef4aad574d5a
+    - function:9b6bbb6a6c04557c9958f333549aa578
+    - function:9f76009c32bcb68687c9120eaf170b92
   - id: r.requester-pds-shape
     level: MUST
     text: createRequesterPDS builds a RequesterPDSImpl from the given PDSOptions,
@@ -237,7 +237,7 @@ spec:
       keypair, and the repo API the rest of the flow uses to write records and mint
       service auth.
     codeRefs:
-    - function:92de6dd67bbcc1e2f20d810f371b2b6b
+    - function:6678506da0a57fea32e638410e9241db
     - interface:66b06e1611350a7f4fb4602342352a5f
   - id: r.session-execution
     level: MUST
@@ -247,23 +247,23 @@ spec:
       binary is available -- ensureDumbpipe under the default iroh transport, with
       ensureWebsocat retained only for the legacy websocat/fedproxy ProxyCommand.
     codeRefs:
-    - function:9bf1f659af305ad4bb6e03b09e1aa7fe
-    - function:a3fc9a3b85143dbaa434e269dd75cf0e
-    - function:e5cbaf8edf9559cc75cdd46ffb76bf95
+    - function:60489ade28c54a30e0b402c84f516db0
+    - function:cc5a0cab25cd04eece1168807d82450d
+    - function:d95798a777303eff7760923ec8d9ca1f
   - id: r.session-readiness
     level: MUST
     text: pollReady waits for a bidder at the given transport target to become reachable
       over its tunnel using the specified private key, giving up after timeoutMs and
       returning whether readiness was achieved rather than throwing.
     codeRefs:
-    - function:92a8839f14ca40e1a2ba046f349d57b2
+    - function:8df50c647ad47ed966cd0113857e0a62
   - id: r.ssh-session-provider
     level: MUST
     text: createSshSessionProvider returns an SshSessionProvider for the session flow,
       accepting an optional logger and an optional proxyCommandFn so the caller can
       override how the proxy command is derived from a transport target.
     codeRefs:
-    - function:d7ee9b90b3b5b576e4b8f500fe4f8cde
+    - function:96ce7aa0d3bd68d597d4470b259710ac
   - id: r.ssh-tunnel-helpers
     level: MUST
     text: tunnelWsUrl maps a bidder fqdn to the websocket URL the requester dials
@@ -273,8 +273,8 @@ spec:
       iroh transport the default ProxyCommand is built from the dumbpipe ticket instead
       of tunnelWsUrl.
     codeRefs:
-    - function:784207610f82de1a689784e9deaf47e6
-    - function:fe91374b53af51d927a4ed9843f4fb8e
+    - function:ba9049210dbb24c46595af3bff1e77c7
+    - function:c6dc2ce50c9ba3f3e49a087dd4a0d95e
   interfaces:
   - name: ContractState
     kind: interface
@@ -408,29 +408,29 @@ spec:
 codeRefIndex:
 - file:lib/requester-xrpc/deno.json deno.json@lib/requester-xrpc/deno.json
 - file:lib/requester-xrpc/mod.ts mod.ts@lib/requester-xrpc/mod.ts
-- function:04d27f9568ed8102cba9faf3289286bf runComputeContract@lib/requester-xrpc/mod.ts:1090
-- function:0905a8668f646e545d2eee135b98e164 discoverBiddersFromRelay@lib/requester-xrpc/mod.ts:227
-- function:1d588c78426adb66e36d6f6c9bc27725 getSession@lib/requester-xrpc/mod.ts:2290
-- function:21f56da2b9cdd75bc9ac81b308e61df1 createSignedRepoRecord@lib/requester-xrpc/mod.ts:716
-- function:23df2468906ae13b777112492d90b05b autoDiscoverRelayUrls@lib/requester-xrpc/mod.ts:370
-- function:347b5c9a9248125a1552ad56b3dab154 applyOAuthAgentToRequesterPDS@lib/requester-xrpc/mod.ts:2197
-- function:3ee0b1bf380922d6d7077efbdaa4bfd7 verifyRelayVisibility@lib/requester-xrpc/mod.ts:295
-- function:784207610f82de1a689784e9deaf47e6 sshTunnelArgs@lib/requester-xrpc/mod.ts:850
-- function:92a8839f14ca40e1a2ba046f349d57b2 pollReady@lib/requester-xrpc/mod.ts:890
-- function:92de6dd67bbcc1e2f20d810f371b2b6b createRequesterPDS@lib/requester-xrpc/mod.ts:413
-- function:93238be8f35c6ceb0813ef4aad574d5a createRepoRecord@lib/requester-xrpc/mod.ts:706
-- function:9bf1f659af305ad4bb6e03b09e1aa7fe runSession@lib/requester-xrpc/mod.ts:929
-- function:9d0c13755d5ff8f03602375056c9c6c3 callBidder@lib/requester-xrpc/mod.ts:761
-- function:a3fc9a3b85143dbaa434e269dd75cf0e ensureWebsocat@lib/requester-xrpc/mod.ts:955
-- function:a84b4248b2a1b4d058f0f82fb1177946 createOAuthRequester@lib/requester-xrpc/mod.ts:2256
-- function:c0acf6b42c1d903a69ea183c1c2bcbd5 generateKeypair@lib/requester-xrpc/mod.ts:872
-- function:ca5512b1850651446ba10067b408bf2e resolveBidderEndpoint@lib/requester-xrpc/mod.ts:731
-- function:d7ee9b90b3b5b576e4b8f500fe4f8cde createSshSessionProvider@lib/requester-xrpc/mod.ts:866
-- function:e5cbaf8edf9559cc75cdd46ffb76bf95 ensureDumbpipe@lib/requester-xrpc/mod.ts:1012
-- function:f0041abee4623b6562227c380bcc0688 discoverBiddersFromRelays@lib/requester-xrpc/mod.ts:256
-- function:fe91374b53af51d927a4ed9843f4fb8e tunnelWsUrl@lib/requester-xrpc/mod.ts:824
-- interface:1a4c39f163763de8ecaaec1559a031ee OAuthRequesterHandle@lib/requester-xrpc/mod.ts:2159
+- function:0e6067488e94711e9ab880e2e4476b4d getSession@lib/requester-xrpc/mod.ts:2267
+- function:222cc19853bbcc5c8364dd0045fe404d generateKeypair@lib/requester-xrpc/mod.ts:843
+- function:37ffe4ae6cccd66c0aa2247b229cb195 discoverBiddersFromRelays@lib/requester-xrpc/mod.ts:222
+- function:41696176f7bed6e38d01de37865284bb runComputeContract@lib/requester-xrpc/mod.ts:1061
+- function:60489ade28c54a30e0b402c84f516db0 ensureDumbpipe@lib/requester-xrpc/mod.ts:983
+- function:645a118ca65dade01b563150f79c4f1c verifyRelayVisibility@lib/requester-xrpc/mod.ts:261
+- function:6678506da0a57fea32e638410e9241db createRequesterPDS@lib/requester-xrpc/mod.ts:379
+- function:8df50c647ad47ed966cd0113857e0a62 pollReady@lib/requester-xrpc/mod.ts:861
+- function:8f23f9232fd7b3e10a7daa80876608f1 autoDiscoverRelayUrls@lib/requester-xrpc/mod.ts:336
+- function:94d31c50f3b90d6ac685ccd44787d93b discoverBiddersFromRelay@lib/requester-xrpc/mod.ts:193
+- function:96ce7aa0d3bd68d597d4470b259710ac createSshSessionProvider@lib/requester-xrpc/mod.ts:837
+- function:9b6bbb6a6c04557c9958f333549aa578 createSignedRepoRecord@lib/requester-xrpc/mod.ts:687
+- function:9f76009c32bcb68687c9120eaf170b92 createRepoRecord@lib/requester-xrpc/mod.ts:677
+- function:b34ec33c3d5c37092b2e048b882f896d createOAuthRequester@lib/requester-xrpc/mod.ts:2233
+- function:ba9049210dbb24c46595af3bff1e77c7 tunnelWsUrl@lib/requester-xrpc/mod.ts:795
+- function:c6dc2ce50c9ba3f3e49a087dd4a0d95e sshTunnelArgs@lib/requester-xrpc/mod.ts:821
+- function:cc5a0cab25cd04eece1168807d82450d ensureWebsocat@lib/requester-xrpc/mod.ts:926
+- function:d95798a777303eff7760923ec8d9ca1f runSession@lib/requester-xrpc/mod.ts:900
+- function:e74f5a09a1becd90d26cbda903c89f8f resolveBidderEndpoint@lib/requester-xrpc/mod.ts:702
+- function:f1d87a6602f2314eae99f4b756e03d69 callBidder@lib/requester-xrpc/mod.ts:732
+- function:f6cb813eef861e20e07c2ebc5d94b8d3 applyOAuthAgentToRequesterPDS@lib/requester-xrpc/mod.ts:2174
 - interface:66b06e1611350a7f4fb4602342352a5f RequesterPDSImpl@lib/requester-xrpc/mod.ts:91
-- interface:7976e76ab81c77e90e7aa4201ff10c1d ContractState@lib/requester-xrpc/mod.ts:498
-- interface:8b15050751370a6014f008aea65b779c CreateOAuthRequesterOpts@lib/requester-xrpc/mod.ts:2166
-- interface:b0fc591071d1c61b6e0c5a85ff0d4f55 RelayVisibilityResult@lib/requester-xrpc/mod.ts:275
+- interface:67624ec68624af49092967677f8abb64 CreateOAuthRequesterOpts@lib/requester-xrpc/mod.ts:2143
+- interface:6a732b7aa8df6d42f4065089513f2d9a OAuthRequesterHandle@lib/requester-xrpc/mod.ts:2136
+- interface:73fc6527835ff9fd0374c64f5fd92560 ContractState@lib/requester-xrpc/mod.ts:464
+- interface:f1991979bdf7c564cd4194b92705e667 RelayVisibilityResult@lib/requester-xrpc/mod.ts:241
