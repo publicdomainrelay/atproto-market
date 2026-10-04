@@ -1,7 +1,7 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
 kind: SpecChange
 metadata:
-  name: lib-common-cloud-init-common-c2s-d20070c3bfb0-89b584d8b58c-a2
+  name: lib-common-cloud-init-common-c2s-d20070c3bfb0-89b584d8b58c-a3
   namespace: default
 spec:
   delta:
@@ -75,6 +75,22 @@ status:
   message: the agent is summarizing lib-common-cloud-init-common
   phase: Running
 superseded:
+- message: |-
+    ..."file": "lib/common/cloud-init-common/mod.ts"},
+        {"name": "UserDataModule", "kind": "type_alias", "signature": "type UserDataModule = (ctx: Partial<CloudInitContext>) => UserDataPatch", "file": "lib/common/cloud-init-common/mod.ts"},
+        {"name": "flattenLabel", "kind": "function", "signature": "function flattenLabel(s: string): string", "file": "lib/common/cloud-init-common/mod.ts"},
+        {"name": "registerUserDataModule", "kind": "function", "signature": "function registerUserDataModule(id: string, m: UserDataModule): void", "file": "lib/common/cloud-init-common/mod.ts"},
+        {"name": "getUserDataModules", "kind": "function", "signature": "function getUserDataModules(ids: Array<string | UserDataModule>): UserDataModule[]", "file": "lib/common/cloud-init-common/mod.ts"},
+        {"name": "listUserDataModules", "kind": "function", "signature": "function listUserDataModules(): string[]", "file": "lib/common/cloud-init-common/mod.ts"},
+        {"name": "buildUserData", "kind": "function", "signature": "function buildUserData(opts: { ctx?: Partial<CloudInitContext>; base?: string | null; modules: Array<string | UserDataModule>; overrides?: Partial<UserDataPatch> }): string", "file": "lib/common/cloud-init-common/mod.ts"},
+        {"name": "acceptBundleModule", "kind": "function", "signature": "function acceptBundleModule(acceptPathVm: string, bundle: Record<string, unknown>): UserDataModule", "file": "lib/common/cloud-init-common/mod.ts"},
+        {"name": "buildDefaultUserData", "kind": "function", "signature": "function buildDefaultUserData(ctx: CloudInitContext): string", "file": "lib/common/cloud-init-common/mod.ts"},
+        {"name": "buildTunnelUserData", "kind": "function", "signature": "function buildTunnelUserData(ctx: TunnelCloudInitContext): string", "file": "lib/common/cloud-init-common/mod.ts"},
+        {"name": "injectJsrUrl", "kind": "function", "signature": "function injectJsrUrl(userData: string, jsrUrl: string): string", "file": "lib/common/cloud-init-common/mod.ts"}
+      ]
+    }
+  name: lib-common-cloud-init-common-c2s-d20070c3bfb0-89b584d8b58c-a2
+  phase: Failed
 - message: |-
     ...",
           "kind": "function",
