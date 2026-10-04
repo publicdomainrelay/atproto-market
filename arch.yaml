@@ -2841,6 +2841,12 @@ system_contexts:
     level: MUST
   codeRefIndex:
   - file:lib/market-bidder-worker/mod.ts mod.ts@lib/market-bidder-worker/mod.ts
+  - function:0270e1f8fb0d9ba7755ac84195824cd5 createComputeProviderDenoWorker@lib/market-bidder-worker/mod.ts:305
+  - function:35fb7d4b902e6ad5a4f68cf585a580df createWorkerBidderCallbacks@lib/market-bidder-worker/mod.ts:74
+  - function:a5248f76fd7c17fa0d03949153f13023 createWorkerProviderHooks@lib/market-bidder-worker/mod.ts:335
+  - interface:61e8bfc9bbbe2ef113ac6821edec06fc WorkerProvider@lib/market-bidder-worker/mod.ts:297
+  - interface:6588bb229d1d3f4b0851680b4a33303c WorkerBidderDeps@lib/market-bidder-worker/mod.ts:39
+  - interface:7505aec1e654513bf40d42b074c9622b CreateComputeProviderDenoWorkerOpts@lib/market-bidder-worker/mod.ts:292
 - id: sc.lib-market-settlement-free
   name: lib-market-settlement-free
   spec: specs/lib-market-settlement-free.yaml
@@ -2869,9 +2875,16 @@ system_contexts:
   - id: r.verify-free-grant
     level: MUST
   codeRefIndex:
+  - class:3827f797a6bd2d1108d56d2774b6518d FreeGrantError@lib/market-settlement-free/server.ts:23
   - file:lib/market-settlement-free/client.ts client.ts@lib/market-settlement-free/client.ts
   - file:lib/market-settlement-free/mod.ts mod.ts@lib/market-settlement-free/mod.ts
   - file:lib/market-settlement-free/server.ts server.ts@lib/market-settlement-free/server.ts
+  - function:528e95e009f7f506a933ba541e0c4ed9 verifyFreeGrant@lib/market-settlement-free/server.ts:66
+  - function:c1a42b12e47d538ba4f2c4033a018daf parseGrantPath@lib/market-settlement-free/server.ts:30
+  - function:ca138dba99fe7843a691d23448a3af85 settleFreeGrant@lib/market-settlement-free/client.ts:24
+  - function:f40dd626ac80197332f89582a7964061 mintGrantForAccepts@lib/market-settlement-free/server.ts:38
+  - interface:cdef64f67aa14f86753db2d82253c04c SettleFreeOptions@lib/market-settlement-free/client.ts:13
+  - method:d2ca5a3b04fbbe08479f73baafeef096 FreeGrantError.constructor@lib/market-settlement-free/server.ts:24
 - id: sc.lib-market-settlement-x402
   name: lib-market-settlement-x402
   spec: specs/lib-market-settlement-x402.yaml
@@ -2896,10 +2909,17 @@ system_contexts:
   - id: r.verify-payment-checks-type-author-and-binding
     level: MUST
   codeRefIndex:
+  - class:d9cae8acb5befdb69053a678528cf3a0 X402PaymentError@lib/market-settlement-x402/server.ts:23
   - file:lib/market-settlement-x402/client.ts client.ts@lib/market-settlement-x402/client.ts
   - file:lib/market-settlement-x402/deno.json deno.json@lib/market-settlement-x402/deno.json
   - file:lib/market-settlement-x402/mod.ts mod.ts@lib/market-settlement-x402/mod.ts
   - file:lib/market-settlement-x402/server.ts server.ts@lib/market-settlement-x402/server.ts
+  - function:400c91a8c6a70894daf46da876572ee6 settleX402Payment@lib/market-settlement-x402/client.ts:25
+  - function:72d054e2b58c2f3913d7a9482387f0b2 mintReceiptForAccepts@lib/market-settlement-x402/server.ts:38
+  - function:b47d0322129cbcac24381eeb837e0eb5 verifyX402Payment@lib/market-settlement-x402/server.ts:66
+  - function:bf43ae046d865cd951a7121f188a1ba0 parseReceiptPath@lib/market-settlement-x402/server.ts:30
+  - interface:79bc0568c0c3d466282e33574ce3067e SettleX402Options@lib/market-settlement-x402/client.ts:13
+  - method:164471847987d5ac0028bee41736e5ab X402PaymentError.constructor@lib/market-settlement-x402/server.ts:24
 - id: sc.lib-operator-discovery-badge-blue-keys
   name: lib-operator-discovery-badge-blue-keys
   spec: specs/lib-operator-discovery-badge-blue-keys.yaml
@@ -2923,6 +2943,9 @@ system_contexts:
     level: MUST
   codeRefIndex:
   - file:lib/operator-discovery-badge-blue-keys/mod.ts mod.ts@lib/operator-discovery-badge-blue-keys/mod.ts
+  - function:dc1f27a14a62ce61d3668e393e355f72 createBadgeBlueKeysOperatorDiscovery@lib/operator-discovery-badge-blue-keys/mod.ts:15
+  - interface:2f571f7e3c998ccd8befe1bbae9ccb85 BadgeBlueKeysOperatorDiscoveryOpts@lib/operator-discovery-badge-blue-keys/mod.ts:9
+  - interface:b712ea6968624576e21a143e7622a253 ListedRecord@lib/operator-discovery-badge-blue-keys/mod.ts:4
 - id: sc.lib-requester-xrpc
   name: lib-requester-xrpc
   spec: specs/lib-requester-xrpc.yaml
@@ -2973,6 +2996,32 @@ system_contexts:
   codeRefIndex:
   - file:lib/requester-xrpc/deno.json deno.json@lib/requester-xrpc/deno.json
   - file:lib/requester-xrpc/mod.ts mod.ts@lib/requester-xrpc/mod.ts
+  - function:0bad0cf5b6751fd238881270b5c9c907 verifyRelayVisibility@lib/requester-xrpc/mod.ts:170
+  - function:168014603ee29fdc3e33868cceca773f createOAuthRequester@lib/requester-xrpc/mod.ts:2088
+  - function:38c66a944431c997d72ac28acfa2b8b3 createRequesterPDS@lib/requester-xrpc/mod.ts:288
+  - function:42545a80b62102147da3337965cc8dbf ensureWebsocat@lib/requester-xrpc/mod.ts:821
+  - function:42db31525829263a5772d28b8955d218 tunnelWsUrl@lib/requester-xrpc/mod.ts:699
+  - function:45bd69796946f8a0c17d1d2ae41f0ed0 runSession@lib/requester-xrpc/mod.ts:795
+  - function:4e3747d1be1fa190832df67bcf2339c1 createSshSessionProvider@lib/requester-xrpc/mod.ts:732
+  - function:502aea4d73f314fbada7bdeab7d5caa7 pollReady@lib/requester-xrpc/mod.ts:756
+  - function:5dc1e52cca303d506c394148228348e6 runComputeContract@lib/requester-xrpc/mod.ts:953
+  - function:648c5a9b93c008d11e933bd9cc3d0499 createRepoRecord@lib/requester-xrpc/mod.ts:581
+  - function:6fd5064a3cf8710797225f0e1c92ed40 getSession@lib/requester-xrpc/mod.ts:2122
+  - function:742fa0bee0972eced0864f0199608e68 discoverBiddersFromRelays@lib/requester-xrpc/mod.ts:131
+  - function:75123cd6c2ecd9939caeaeff2ac9f403 resolveBidderEndpoint@lib/requester-xrpc/mod.ts:606
+  - function:90e261d66d34a637786e137d0c260cd8 autoDiscoverRelayUrls@lib/requester-xrpc/mod.ts:245
+  - function:9a664640527d9f503b7475a5528d0b31 sshTunnelArgs@lib/requester-xrpc/mod.ts:717
+  - function:9a74e04d247f63426fdb4ddc23b98a81 discoverBiddersFromRelay@lib/requester-xrpc/mod.ts:102
+  - function:ae343b3d98725ad4c6c44cc7d268c9a2 createSignedRepoRecord@lib/requester-xrpc/mod.ts:591
+  - function:d3eb3303e0c926332a27235602c7003e generateKeypair@lib/requester-xrpc/mod.ts:738
+  - function:d85e8ad86a56d4300135fb091e4bfe65 callBidder@lib/requester-xrpc/mod.ts:636
+  - function:eda58f5247bca1e7df37abfa70aa54a1 ensureDumbpipe@lib/requester-xrpc/mod.ts:878
+  - function:f520f09208cdcaf8c0ef8eb1e6b3621e applyOAuthAgentToRequesterPDS@lib/requester-xrpc/mod.ts:2029
+  - interface:3d2c8ff0b1f5240419f60d8a8ae71ddd CreateOAuthRequesterOpts@lib/requester-xrpc/mod.ts:1998
+  - interface:4ae0e758bc6af355e90d5d253a84727f ContractState@lib/requester-xrpc/mod.ts:373
+  - interface:66b06e1611350a7f4fb4602342352a5f RequesterPDSImpl@lib/requester-xrpc/mod.ts:91
+  - interface:9abcf87c406c455d60dfaf993419e8b9 RelayVisibilityResult@lib/requester-xrpc/mod.ts:150
+  - interface:b9a6655a7e162aa1dfd86220525c31f1 OAuthRequesterHandle@lib/requester-xrpc/mod.ts:1991
 - id: sc.lib-secrets-oidc
   name: lib-secrets-oidc
   spec: specs/lib-secrets-oidc.yaml

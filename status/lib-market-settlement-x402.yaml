@@ -1,26 +1,80 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: 3dfea414cf72ae476d8b1a12059db92550e1cecdff85df709b21948550da4fbb
+realizedSpecHash: 70ea6aae37be78e4efa96d4d09907f70edbb6a7d5fc854ad3f8d32dfa74957d9
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'missing: SettleX402Options, X402PaymentError, X402PaymentError.constructor,
-    mintReceiptForAccepts, parseReceiptPath, settleX402Payment, verifyX402Payment;
-    unresolved: r.mint-receipt-validates-and-binds-accepts: class:d9cae8acb5befdb69053a678528cf3a0,
-    r.mint-receipt-validates-and-binds-accepts: function:72d054e2b58c2f3913d7a9482387f0b2,
-    r.package-entrypoint-reexports-both-halves: file:lib/market-settlement-x402/client.ts,
-    r.package-entrypoint-reexports-both-halves: file:lib/market-settlement-x402/deno.json,
-    r.package-entrypoint-reexports-both-halves: file:lib/market-settlement-x402/mod.ts,
-    r.package-entrypoint-reexports-both-halves: file:lib/market-settlement-x402/server.ts,
-    r.parse-receipt-path-extracts-accepts-ref: function:bf43ae046d865cd951a7121f188a1ba0,
-    r.payment-error-carries-http-status: method:164471847987d5ac0028bee41736e5ab,
-    r.settle-options-shape: function:400c91a8c6a70894daf46da876572ee6, r.settle-options-shape:
-    interface:79bc0568c0c3d466282e33574ce3067e, r.verify-payment-checks-type-author-and-binding:
-    function:b47d0322129cbcac24381eeb837e0eb5'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
-  reason: NotSyncedYet
-  message: no synced fingerprint has been recorded yet
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed
   message: the spec passes the validator
-observed: {}
+observed:
+  files:
+  - lib/market-settlement-x402/client.ts
+  - lib/market-settlement-x402/mod.ts
+  - lib/market-settlement-x402/server.ts
+  treeFiles:
+  - lib/market-settlement-x402/deno.json
+  interfaces:
+  - name: SettleX402Options
+    kind: interface
+    file: lib/market-settlement-x402/client.ts
+    line: 13
+    codegraphId: interface:79bc0568c0c3d466282e33574ce3067e
+  - name: settleX402Payment
+    kind: function
+    signature: '(opts: SettleX402Options): Promise<StrongRef>'
+    file: lib/market-settlement-x402/client.ts
+    line: 25
+    codegraphId: function:400c91a8c6a70894daf46da876572ee6
+  - name: X402PaymentError
+    kind: class
+    file: lib/market-settlement-x402/server.ts
+    line: 23
+    codegraphId: class:d9cae8acb5befdb69053a678528cf3a0
+  - name: X402PaymentError.constructor
+    kind: method
+    signature: '(public readonly status: number, message: string)'
+    file: lib/market-settlement-x402/server.ts
+    line: 24
+    codegraphId: method:164471847987d5ac0028bee41736e5ab
+  - name: parseReceiptPath
+    kind: function
+    signature: '(path: string, prefix = ""): { acceptsUri: string; acceptsCid: string
+      }'
+    file: lib/market-settlement-x402/server.ts
+    line: 30
+    codegraphId: function:bf43ae046d865cd951a7121f188a1ba0
+  - name: mintReceiptForAccepts
+    kind: function
+    signature: |-
+      (opts: {
+        agent: Agent;
+        resolve: RecordResolver;
+        acceptsUri: string;
+        acceptsCid: string;
+        signer: RecordSigner;
+      }): Promise<StrongRef>
+    file: lib/market-settlement-x402/server.ts
+    line: 38
+    codegraphId: function:72d054e2b58c2f3913d7a9482387f0b2
+  - name: verifyX402Payment
+    kind: function
+    signature: |-
+      (opts: {
+        payment: StrongRef | undefined;
+        resolve: RecordResolver;
+        bidderDid: string;
+      }): Promise<Resolved<ReceiptsX402>>
+    file: lib/market-settlement-x402/server.ts
+    line: 66
+    codegraphId: function:b47d0322129cbcac24381eeb837e0eb5
+  fingerprint: 3dfea414cf72ae476d8b1a12059db92550e1cecdff85df709b21948550da4fbb

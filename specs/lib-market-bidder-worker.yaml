@@ -187,3 +187,9 @@ spec:
     file: lib/market-bidder-worker/mod.ts
 codeRefIndex:
 - file:lib/market-bidder-worker/mod.ts mod.ts@lib/market-bidder-worker/mod.ts
+- function:0270e1f8fb0d9ba7755ac84195824cd5 createComputeProviderDenoWorker@lib/market-bidder-worker/mod.ts:305
+- function:35fb7d4b902e6ad5a4f68cf585a580df createWorkerBidderCallbacks@lib/market-bidder-worker/mod.ts:74
+- function:a5248f76fd7c17fa0d03949153f13023 createWorkerProviderHooks@lib/market-bidder-worker/mod.ts:335
+- interface:61e8bfc9bbbe2ef113ac6821edec06fc WorkerProvider@lib/market-bidder-worker/mod.ts:297
+- interface:6588bb229d1d3f4b0851680b4a33303c WorkerBidderDeps@lib/market-bidder-worker/mod.ts:39
+- interface:7505aec1e654513bf40d42b074c9622b CreateComputeProviderDenoWorkerOpts@lib/market-bidder-worker/mod.ts:292
