@@ -11,8 +11,9 @@ spec:
     summarize: true
   source: {}
   verify:
-  - deno
-  - test
+  - bash
+  - -lc
+  - deno check && deno test -A test/cloud_init_snapshot_test.ts
 status:
   contexts:
     failed: 0
