@@ -17,5 +17,90 @@ metadata:
 spec:
   dependsOn:
   - sc.atproto-market
+  intent: 'The context exists so that the generated `com.publicdomainrelay.temp` lexicon
+    namespaces have a single describable surface: a caller that wants the market,
+    gateway, compute, agent, auth, requester or tangled lexicons imports the corresponding
+    top-level barrel, and a caller that wants the badge/blue key record imports `badgeBlueKeys`.
+    It documents which namespace maps to which submodules, the record shape and field
+    formats that `@atproto/lex` enforces at runtime, and the fact that these files
+    are generator output rather than hand-maintained source. No business logic lives
+    here; the requirements below fix the export structure and the record contract
+    so regeneration and imports stay predictable.'
   repository: atproto-market
+  requirements:
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.defs.ts
+    id: r.badge-blue-keys-purpose
+    level: SHOULD
+    text: The record exists to make key-to-DID lookup possible for vouch-graph traversal
+      and for service authorization, so the `keyId` to `challenge` DID binding must
+      stay the record's identity and not be repurposed as an arbitrary payload field.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.defs.ts
+    id: r.badge-blue-keys-record-shape
+    level: MUST
+    text: The `com.publicdomainrelay.temp.badgeBlueKeys` record must require `keyId`
+      (a device key identifier such as `soft-<uuid>` or a `did:key`), `challenge`
+      encoded as a `did`-format string holding the DID the key is bound to, and `createdAt`
+      encoded as a `datetime` string; `name` (a human-readable label such as a hostname)
+      and `service` (the service scope for the association) must be optional and absent
+      when unset.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/auth.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/requester.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/tangled.ts
+    id: r.barrel-namespace-reexports
+    level: MUST
+    text: 'Each top-level namespace barrel re-exports its subdirectory modules as
+      named namespace objects whose name is the submodule file stem: `agent.ts` exposes
+      `class` (quoted because it is a reserved word) and `skill`; `auth.ts` exposes
+      `allowlist`; `compute.ts` exposes `config`, `vm` and `events`; `gateway.ts`
+      exposes `requestComputeWorkerPersistent`, `requestComputeWorkerEphemeral`, `requestComputeVM`,
+      `subscribeComputeEvents` and `deleteCompute`; `requester.ts` exposes `associateConfirm`;
+      `tangled.ts` exposes `spindle`.'
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.ts
+    id: r.defs-barrel-default-export
+    level: MUST
+    text: A record module is split into a `<name>.defs.ts` holding the definition
+      and a `<name>.ts` that both re-exports everything from the `.defs` file with
+      `export *` and re-exports its `main` binding as the module default, so `import
+      badgeBlueKeys from './badgeBlueKeys.ts'` yields the record validator.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.defs.ts
+    id: r.defs-validator-bindings
+    level: MUST
+    text: A `.defs.ts` file must export `$nsid` with its fully qualified NSID plus
+      the bound validation helpers `$type`, `$isTypeOf`, `$build`, `$assert`, `$check`,
+      `$cast`, `$ifMatches`, `$matches`, `$parse`, `$safeParse`, `$validate` and `$safeValidate`,
+      each bound to the `main` record so callers can build, check, cast and parse
+      against the schema without re-deriving it.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/auth.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/requester.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/tangled.ts
+    id: r.generated-not-hand-edited
+    level: MUST
+    text: Every file in this tree is emitted by `@atproto/lex` and carries the generated-file
+      banner; it must be regenerated from the source lexicons rather than edited by
+      hand, since hand edits are overwritten on the next generation run.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market.ts
+    id: r.market-namespace-surface
+    level: MUST
+    text: '`market.ts` is the broadest barrel and must re-export exactly the twenty-one
+      market submodules as namespaces: `listBidders`, `receipts`, `registerBidder`,
+      `bidderAssociation`, `bids`, `rfp`, `submitBid`, `event`, `policies`, `accept`,
+      `badgeBlueKey`, `accepts`, `submitAccept`, `submitEvent`, `bid`, `bidderDiscovery`,
+      `submitRfp`, `offering`, `relays`, `receipt` and `bidderRegistration`.'
   upstream: self

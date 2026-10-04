@@ -10,5 +10,34 @@ spec:
   systemContext: lib-common-market-lexicons-com-publicdomainrelay-temp-agent
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-common-market-lexicons-com-publicdomainrelay-temp-agent
-  phase: Running
+  agentLog: 'This context holds the generated @atproto/lex lexicon bindings for two
+    publicdomainrelay.temp.agent record types. class.defs.ts declares the record com.publicdomainrelay.temp.agent.class:
+    a required name, description, an array of strongRefs to com.publicdomainrelay.temp.agent.skill
+    records, an optional parent strongRef to another agent.class, an optional spawnsSubAgent
+    boolean, and a required datetime createdAt, keyed by ''tid''. skill.defs.ts declares
+    com.publicdomainrelay.temp.agent.skill with required name, description, content
+    and createdAt, optional examples as strongRefs, and an optional property_references
+    array of the inline typed object skill#propertyReference, which carries a required
+    dotted path string and an optional strongRef. Each defs file exports the $nsid
+    constant, a typed Main alias, the runtime record validator `main`, and the bound
+    helpers $type, $isTypeOf, $build, $assert, $check, $cast, $ifMatches, $matches,
+    $parse, $safeParse, $validate and $safeValidate. The sibling class.ts and skill.ts
+    are one-line barrel files that re-export everything from the corresponding defs
+    module and re-export `main` as the module default.'
+  message: wrote 11 requirement(s) and 0 interface(s) for lib-common-market-lexicons-com-publicdomainrelay-temp-agent;
+    interface $nsid is not in the observed facts; dropped; interface Main is not in
+    the observed facts; dropped; interface main is not in the observed facts; dropped;
+    interface $isTypeOf is not in the observed facts; dropped; interface $build is
+    not in the observed facts; dropped; interface $assert is not in the observed facts;
+    dropped; interface $check is not in the observed facts; dropped; interface $cast
+    is not in the observed facts; dropped; interface $ifMatches is not in the observed
+    facts; dropped; interface $matches is not in the observed facts; dropped; interface
+    $parse is not in the observed facts; dropped; interface $safeParse is not in the
+    observed facts; dropped; interface $validate is not in the observed facts; dropped;
+    interface $safeValidate is not in the observed facts; dropped; interface $nsid
+    is not in the observed facts; dropped; interface Main is not in the observed facts;
+    dropped; interface main is not in the observed facts; dropped; interface PropertyReference
+    is not in the observed facts; dropped; interface propertyReference is not in the
+    observed facts; dropped; interface default is not in the observed facts; dropped;
+    interface default is not in the observed facts; dropped
+  phase: Succeeded

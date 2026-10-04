@@ -4493,7 +4493,92 @@ system_contexts:
   depends_on:
   - sc.atproto-market
   id: sc.lib-common-market-lexicons-com-publicdomainrelay-temp
+  intent: 'The context exists so that the generated `com.publicdomainrelay.temp` lexicon
+    namespaces have a single describable surface: a caller that wants the market,
+    gateway, compute, agent, auth, requester or tangled lexicons imports the corresponding
+    top-level barrel, and a caller that wants the badge/blue key record imports `badgeBlueKeys`.
+    It documents which namespace maps to which submodules, the record shape and field
+    formats that `@atproto/lex` enforces at runtime, and the fact that these files
+    are generator output rather than hand-maintained source. No business logic lives
+    here; the requirements below fix the export structure and the record contract
+    so regeneration and imports stay predictable.'
   name: lib-common-market-lexicons-com-publicdomainrelay-temp
+  requirements:
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.defs.ts
+    id: r.badge-blue-keys-purpose
+    level: SHOULD
+    text: The record exists to make key-to-DID lookup possible for vouch-graph traversal
+      and for service authorization, so the `keyId` to `challenge` DID binding must
+      stay the record's identity and not be repurposed as an arbitrary payload field.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.defs.ts
+    id: r.badge-blue-keys-record-shape
+    level: MUST
+    text: The `com.publicdomainrelay.temp.badgeBlueKeys` record must require `keyId`
+      (a device key identifier such as `soft-<uuid>` or a `did:key`), `challenge`
+      encoded as a `did`-format string holding the DID the key is bound to, and `createdAt`
+      encoded as a `datetime` string; `name` (a human-readable label such as a hostname)
+      and `service` (the service scope for the association) must be optional and absent
+      when unset.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/auth.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/requester.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/tangled.ts
+    id: r.barrel-namespace-reexports
+    level: MUST
+    text: 'Each top-level namespace barrel re-exports its subdirectory modules as
+      named namespace objects whose name is the submodule file stem: `agent.ts` exposes
+      `class` (quoted because it is a reserved word) and `skill`; `auth.ts` exposes
+      `allowlist`; `compute.ts` exposes `config`, `vm` and `events`; `gateway.ts`
+      exposes `requestComputeWorkerPersistent`, `requestComputeWorkerEphemeral`, `requestComputeVM`,
+      `subscribeComputeEvents` and `deleteCompute`; `requester.ts` exposes `associateConfirm`;
+      `tangled.ts` exposes `spindle`.'
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.ts
+    id: r.defs-barrel-default-export
+    level: MUST
+    text: A record module is split into a `<name>.defs.ts` holding the definition
+      and a `<name>.ts` that both re-exports everything from the `.defs` file with
+      `export *` and re-exports its `main` binding as the module default, so `import
+      badgeBlueKeys from './badgeBlueKeys.ts'` yields the record validator.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.defs.ts
+    id: r.defs-validator-bindings
+    level: MUST
+    text: A `.defs.ts` file must export `$nsid` with its fully qualified NSID plus
+      the bound validation helpers `$type`, `$isTypeOf`, `$build`, `$assert`, `$check`,
+      `$cast`, `$ifMatches`, `$matches`, `$parse`, `$safeParse`, `$validate` and `$safeValidate`,
+      each bound to the `main` record so callers can build, check, cast and parse
+      against the schema without re-deriving it.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/auth.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/requester.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/tangled.ts
+    id: r.generated-not-hand-edited
+    level: MUST
+    text: Every file in this tree is emitted by `@atproto/lex` and carries the generated-file
+      banner; it must be regenerated from the source lexicons rather than edited by
+      hand, since hand edits are overwritten on the next generation run.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market.ts
+    id: r.market-namespace-surface
+    level: MUST
+    text: '`market.ts` is the broadest barrel and must re-export exactly the twenty-one
+      market submodules as namespaces: `listBidders`, `receipts`, `registerBidder`,
+      `bidderAssociation`, `bids`, `rfp`, `submitBid`, `event`, `policies`, `accept`,
+      `badgeBlueKey`, `accepts`, `submitAccept`, `submitEvent`, `bid`, `bidderDiscovery`,
+      `submitRfp`, `offering`, `relays`, `receipt` and `bidderRegistration`.'
   upstream: self
 - code:
   - lib/common/market-lexicons/com/publicdomainrelay/temp/agent/class.defs.ts
@@ -4510,7 +4595,105 @@ system_contexts:
   depends_on:
   - sc.atproto-market
   id: sc.lib-common-market-lexicons-com-publicdomainrelay-temp-agent
+  intent: This context exists so callers can read and write the agent-class and agent-skill
+    records of the publicdomainrelay.temp namespace through a typed, validated interface
+    rather than hand-rolled JSON. The class record is a template that names a skill
+    bundle and an optional parent class so an agent can be instantiated from it seeded
+    with those skills, and the skill record carries the capability text plus example
+    records and path-annotated property references that resolve values out of those
+    examples. Both files are machine-generated by "@atproto/lex" and are not meant
+    to be edited by hand; the thin class.ts and skill.ts barrels give importers a
+    stable module path whose default export is the record validator.
   name: lib-common-market-lexicons-com-publicdomainrelay-temp-agent
+  requirements:
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/class.defs.ts
+    id: r.class-nsid-and-key
+    level: MUST
+    text: The class lexicon binds $nsid to 'com.publicdomainrelay.temp.agent.class'
+      and registers the record validator `main` with record key type 'tid', so class
+      records are addressed by TID.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/class.defs.ts
+    id: r.class-optional-fields
+    level: MAY
+    text: A class record may carry a parent strongRef, meaning instantiating agents
+      inherit the parent class's skills alongside this class's own, and a spawnsSubAgent
+      boolean marking the class as intended to be spawned as a sub-agent from a parent
+      flow rather than as a top-level runtime; both are optional and omitted values
+      validate.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/class.defs.ts
+    id: r.class-required-fields
+    level: MUST
+    text: A class record requires a string name, a string description, a skills array,
+      and a datetime-format createdAt; creation fails validation when any of those
+      is absent or of the wrong type.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/class.defs.ts
+    id: r.class-skill-references
+    level: MUST
+    text: Every element of a class record's skills array, and its optional parent,
+      is validated as a strongRef to an atproto repo record (RepoStrongRef.Main),
+      so a class composes skill records by reference rather than by value.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/class.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/class.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/skill.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/skill.ts
+    id: r.generated-not-edited
+    level: MUST
+    text: All four files carry the header 'THIS FILE WAS GENERATED BY "@atproto/lex".
+      DO NOT EDIT.', marking them as generated output that must be regenerated from
+      the lexicon schema rather than patched by hand.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/class.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/skill.ts
+    id: r.module-barrels
+    level: MUST
+    text: class.ts re-exports everything from class.defs.ts and re-exports `main`
+      as the module default, and skill.ts does the same for skill.defs.ts, so each
+      lexicon can be imported by its short module path and default-imported as its
+      record validator.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/skill.defs.ts
+    id: r.property-reference
+    level: MUST
+    text: The skill lexicon defines the inline typed object 'com.publicdomainrelay.temp.agent.skill#propertyReference'
+      with a required dotted path string, e.g. '.examples[].value.payload.value.user_data',
+      and an optional strongRef; a skill's optional property_references array is an
+      array of those objects, and each entry either carries the literal value at that
+      path or a strongRef that resolves recursively to it.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/skill.defs.ts
+    id: r.skill-examples
+    level: MAY
+    text: A skill record may carry an examples array whose entries are each validated
+      as a strongRef to a repo record (RepoStrongRef.Main), letting a skill point
+      at records that demonstrate it.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/skill.defs.ts
+    id: r.skill-nsid-and-key
+    level: MUST
+    text: The skill lexicon binds $nsid to 'com.publicdomainrelay.temp.agent.skill'
+      and registers the record validator `main` with record key type 'tid'.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/skill.defs.ts
+    id: r.skill-required-fields
+    level: MUST
+    text: A skill record requires a string name, a string description, a string content
+      holding the skill itself, and a string createdAt; validation rejects a record
+      missing any of them.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/class.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/skill.defs.ts
+    id: r.validator-exports
+    level: MUST
+    text: Each defs module exports the record validator `main` together with the bound
+      helpers $type, $isTypeOf, $build, $assert, $check, $cast, $ifMatches, $matches,
+      $parse, $safeParse, $validate and $safeValidate, plus the $nsid constant and
+      a `Main` type alias, so consumers can build, parse and validate records without
+      touching the underlying schema object.
   upstream: self
 - code:
   - lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist.ts
