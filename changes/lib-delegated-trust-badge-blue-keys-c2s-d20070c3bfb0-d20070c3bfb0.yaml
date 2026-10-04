@@ -10,5 +10,20 @@ spec:
   systemContext: lib-delegated-trust-badge-blue-keys
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-delegated-trust-badge-blue-keys
-  phase: Running
+  agentLog: 'lib/delegated-trust-badge-blue-keys is a small Deno module (mod.ts plus
+    a deno.json) that adapts the badge-blued-keys record collection into the DelegatedTrustResolver
+    interface used by the trust graph. It exports a ListedRecord shape for records
+    returned by a caller-supplied listing function, a DelegatedTrustBadgeBlueKeysOpts
+    options bag carrying a VouchResolver, a listOwnRecords(collection, opts) function
+    and an optional logger, and the factory createBadgeBlueKeysDelegatedTrustResolver,
+    which returns an object with a single getDelegatedTrustedDids(selfDid) method.
+    That method starts from the DIDs the vouch resolver vouches for the subject, lists
+    the subject''s own badgeBlueKeys records, treats records whose service is requester_associate
+    or bidder_associate as operator associations in either the canonical {challenge:
+    operator, keyId: self} shape or the legacy inverted {challenge: self, keyId: operator}
+    shape, and unions in the vouches of every candidate operator it discovers, degrading
+    to a partial or empty result rather than throwing when the resolver or the listing
+    fails.'
+  message: wrote 9 requirement(s) and 3 interface(s) for lib-delegated-trust-badge-blue-keys;
+    interface getDelegatedTrustedDids is not in the observed facts; dropped
+  phase: Succeeded

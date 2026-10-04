@@ -676,6 +676,33 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.worker-ephemeral-bidders` (MUST): "requestComputeWorkerEphemeral must pass the caller's extraBidderDids, defaulting to an empty array, while requestComputeWorkerPersistent must pass an empty extraBidderDids array; both must scope the contract to WORKER_MANIFEST_NSID through appliesToNsid."
 - added `r.worker-response` (MUST): "Both worker request methods must return only the error with RFP uri and cid on failure, and otherwise the receipt uri, cid and ok flag together with the winner DID and the RFP uri and cid."
 
+### lib-delegated-trust-badge-blue-keys
+
+- intent: "" -> "This context exists so that delegated trust is transitive through an association record rather than through a direct vouch: an operator that vouches for a DID should also be trusted by that DID's associated parties. It hides the two record shapes and the failure modes behind the DelegatedTrustResolver contract so market-bidder and requester-xrpc can wire it in without knowing the badgeBlueKeys layout."
+- added `r-degrade-on-listing-failure` (MUST): "A failure while listing or scanning badgeBlueKeys records must be caught, reported through the logger at warn level with selfDid and the stringified error, and must leave the self-vouch set returned rather than failing the call."
+- added `r-optional-logger` (MUST): "The log callback is optional: when opts.log is absent the resolver must use a no-op logger, and when present it must be called with a level, a message and a metadata object carrying fields such as challenge, service, keyId, selfDid, opVouchCount or error."
+- added `r-two-association-shapes` (MUST): "A record must be read as an association when keyId equals selfDid and challenge is a did: string (canonical, challenge names the operator), and also when challenge equals selfDid and keyId is a did: string (legacy inverted, keyId names the operator); both shapes contribute their operator DID to the candidate set."
+- added `r-union-operator-vouches` (MUST): "For every candidate operator the resolver must call vouchResolver.getVouchedDids(operator) and union the result into the returned set, so that a wrong candidate with no vouches adds nothing and the correct operator adds the vouches that matter."
+- added `r-vouch-resolver-injected` (MUST): "The module must not construct its own trust source: the vouchResolver and listOwnRecords capabilities arrive through DelegatedTrustBadgeBlueKeysOpts, keeping the module free of transport or repository dependencies."
+- added `r.factory-returns-resolver` (MUST): "createBadgeBlueKeysDelegatedTrustResolver must accept a DelegatedTrustBadgeBlueKeysOpts and return a DelegatedTrustResolver whose only method is getDelegatedTrustedDids(selfDid), which resolves to a Set of DID strings."
+- added `r.filter-association-services` (MUST): "Records whose service field is neither requester_associate nor bidder_associate must be skipped and must not contribute any candidate operator."
+- added `r.list-badge-blue-keys` (MUST): "The resolver must read the subject's own records through listOwnRecords for the badgeBlueKeys collection with a limit of 200, consuming each record's uri and value fields as described by ListedRecord."
+- added `r.seed-with-own-vouches` (MUST): "getDelegatedTrustedDids must seed the returned set with the DIDs vouchResolver.getVouchedDids(selfDid) yields, and must substitute an empty set instead of propagating an error when that call rejects."
+
+### lib-did-key-ingress-proxy
+
+- intent: "" -> "This context is the ingress side of the relay: it lets an application that already has a fetch handler be reached at a public did:web host through the xrpc-relay ingress proxy without the app managing transport, TLS, or service-auth itself. It exists so that a local or in-process service (bidder, PDS agent, gateway target) can declare a small set of options and get back an IngressRef it can advertise, with the WebSocket firehose path either proxied to a local TCP target or served directly in-process."
+- added `r.close-idempotent-before-serve` (MUST): "close() must forward to the stored subscriber when one exists and be a no-op when onServe has not yet registered a subscriber, so callers can tear down a relay that never served."
+- added `r.create-ingress-factory` (MUST): "createIngress(opts) must build and return an IngressRef from CreateIngressOpts, destructuring logger, ingressProxyHost, signer and keypair, and holding the active subscriber in a closure so that a single relay object serves both registration and shutdown."
+- added `r.direct-subscription-handler` (SHOULD): "When directSubscriptionHandler is provided, inbound relay subscriptions for non-tunnel NSIDs must be dispatched to it with subscriptionId, nsid, params, an onEvent callback and an onData callback instead of opening a loopback WebSocket to localWsTarget; its returned function, when any, is the unsubscribe/cleanup handle and an in-process firehose source needs no TCP listener."
+- added `r.ingress-ref-projection` (MUST): "The relay's ingressRef starts as the empty string and is set to the subscriber handle's ingressRef after registration; the ingressUrl getter must return the empty string while ingressRef is empty and otherwise "https://" plus ingressRef with the leading "did:web:" prefix stripped, and the ingressHost getter must strip that same prefix when present and return ingressRef unchanged otherwise."
+- added `r.label-default` (MUST): "The subscriber label must default to the literal string "bidder" when opts.label is absent, and use opts.label verbatim when present; that label is passed to createSubscriber."
+- added `r.lazy-ws-target` (SHOULD): "localWsTarget must be consulted lazily at subscription time rather than at createIngress time, because the local serve's TCP port is only assigned once it is listening; its returned hostname and port are the loopback target for forwarded inbound relay WebSocket subscriptions such as com.atproto.sync.subscribeRepos."
+- added `r.on-serve-registration` (MUST): "onServe(fetch) must wrap the supplied fetch in createSubscriberFactory to obtain handleRequest, log "xrpc-relay connecting" with ingressProxyHost, call createSubscriber with label, keypair, a getServiceAuthToken closure, ingressProxyHost, the optional tls, handleRequest, and the optional localWsTarget and directSubscriptionHandler, then store the returned handle and log "xrpc-relay registered" with subdomain and ingressRef."
+- added `r.service-auth-token` (MUST): "getServiceAuthToken(lxm) must derive the audience from ingressProxyHost via hostnameToDid and return the service-auth JWT produced by signServiceAuth using the injected signer with that audience and the requested lexicon NSID, so each inbound subscription can be authenticated per-method."
+- added `r.signing-identities` (MUST): "CreateIngressOpts must carry two distinct signing identities: signer, whose did() and sign(bytes) are used only to mint service-auth tokens for the proxy audience, and keypair, whose did() and sign(data) identify the subscriber registration, so the service-auth identity and the relay subscriber identity stay separable."
+- added `r.tls-flag` (SHOULD): "When opts.tls is set, the dispatcher serves TLS, so the subscriber must use https/wss addressing even for localhost or hosts carrying a port; the flag is forwarded unchanged to createSubscriber."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance |
@@ -732,5 +759,5 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-common-market-lexicons-network-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-common-secrets-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-compute-contract-gateway-xrpc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-delegated-trust-badge-blue-keys-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
-| lib-did-key-ingress-proxy-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-delegated-trust-badge-blue-keys-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
+| lib-did-key-ingress-proxy-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |

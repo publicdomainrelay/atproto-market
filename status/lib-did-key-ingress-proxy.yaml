@@ -1,7 +1,8 @@
 conditions:
-- message: 'undeclared: CreateIngressOpts, createIngress, getServiceAuthToken'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -35,5 +36,5 @@ observed:
     signature: '(lxm: string): Promise<string>'
   treeFiles:
   - lib/did-key-ingress-proxy/deno.json
-realizedSpecHash: 7c9d548411b8e26efacda6635deb23cacd15101ad1f347de6a851a6efb73fcbd
+realizedSpecHash: 5c4c8d1c3337f53173b33b5a984c4289e8ad41ffc164b7fbf9cc466e644f6a05
 syncedFingerprint: e28e67f6737f8c55bb366814adcf8bd94e1c9319f609707b7d811b74b5ef067c

@@ -10,5 +10,20 @@ spec:
   systemContext: lib-did-key-ingress-proxy
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-did-key-ingress-proxy
-  phase: Running
+  agentLog: lib/did-key-ingress-proxy exposes a single factory, createIngress, that
+    wires a local app's fetch handler into the xrpc-relay ingress proxy as a DID-key
+    subscriber. Its options interface CreateIngressOpts carries the structured logger,
+    the ingress proxy host, two signing identities (a service-auth signer and a subscriber
+    keypair), an optional subscriber label defaulting to "bidder", a TLS switch for
+    when the dispatcher serves TLS (self-signed via DENO_CERT), a lazily-resolved
+    localWsTarget for forwarding inbound relay WebSocket subscriptions to a local
+    TCP listener, and an optional directSubscriptionHandler that handles non-tunnel
+    NSID subscriptions in-process without a loopback socket. createIngress returns
+    an IngressRef whose ingressUrl and ingressHost getters derive from the did:web
+    ingressRef assigned after onServe registers with the proxy; onServe builds the
+    subscriber factory over the supplied fetch, mints service-auth tokens, opens the
+    subscriber, stores the handle for close(), and logs connecting/registered events.
+    getServiceAuthToken converts the ingress proxy host to a DID audience and signs
+    a service-auth JWT for the requested NSID.
+  message: wrote 10 requirement(s) and 3 interface(s) for lib-did-key-ingress-proxy
+  phase: Succeeded
