@@ -22,7 +22,7 @@ observed:
   - hono-compute-contract-gateway/cli-args-env.json
   - hono-compute-contract-gateway/config.json
   - hono-compute-contract-gateway/deno.json
-observedCommit: 4f1174f584309d08e68d7a1b42a7c61665b1d732
+observedCommit: b807bd49b14ab808f967efc8bd2d2a76bceacb7a
 realizedSpecHash: 378650749657ef8d43d2a62a7514b111592887cf2c247fe806621d019705e127
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 14a1ed105a3c3442e17143adbc8d6e54f2d0b3e2f67b33108d43a6ff96e46ba3

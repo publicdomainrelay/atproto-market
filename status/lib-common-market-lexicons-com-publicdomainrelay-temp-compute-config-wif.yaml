@@ -17,7 +17,7 @@ observed:
   - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config/wif/simple.defs.ts
   - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config/wif/simple.ts
   fingerprint: 4850b2b6050ce97e4ccddfe32a12b619eb794ec815d2b6f5c181c25037601e4c
-observedCommit: 4f1174f584309d08e68d7a1b42a7c61665b1d732
+observedCommit: b807bd49b14ab808f967efc8bd2d2a76bceacb7a
 realizedSpecHash: 363e93322f2d09079430c399ecae5d4e4078f16a21b0b067a3a59488a17676ad
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 4850b2b6050ce97e4ccddfe32a12b619eb794ec815d2b6f5c181c25037601e4c
