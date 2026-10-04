@@ -3235,6 +3235,7 @@ system_contexts:
   - file:test/offering_refresh_test.ts offering_refresh_test.ts@test/offering_refresh_test.ts
   - file:test/registry_discovery_test.ts registry_discovery_test.ts@test/registry_discovery_test.ts
   - file:test/secrets_capability_test.ts secrets_capability_test.ts@test/secrets_capability_test.ts
+  - function:c6f81957f952317eb0e87d2454b5add3 installFetchInterceptor@test/fetch-interceptor.ts:7
 - id: sc.test-fixtures-cloud-init
   name: test-fixtures-cloud-init
   spec: specs/test-fixtures-cloud-init.yaml

@@ -17,4 +17,6 @@ spec:
 status:
   headCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
   indexedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+  observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+  syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
   phase: Indexing
