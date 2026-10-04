@@ -1,8 +1,8 @@
 conditions:
-- message: 'undeclared: CreateComputeProviderDenoWorkerOpts, WorkerBidderDeps, WorkerProvider,
-    createComputeProviderDenoWorker, createWorkerBidderCallbacks, createWorkerProviderHooks'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -63,5 +63,5 @@ observed:
       }): MarketBidderProviderRef
   treeFiles:
   - lib/market-bidder-worker/deno.json
-realizedSpecHash: 3557c12ccfe04c774f96ad9d26b288dd21c46fa166f6c9a9675741510b2ddb51
+realizedSpecHash: 0ebaa75d516a299dd52b0e2d48e7b5f23ef36d9ca288630a54140c2f1ff33f74
 syncedFingerprint: 3b647450ab559d1f441945e474e994bf24717f8f3832f05b8b18b6802c843f9e

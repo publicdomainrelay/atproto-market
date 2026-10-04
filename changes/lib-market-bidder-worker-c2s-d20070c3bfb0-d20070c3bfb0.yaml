@@ -10,5 +10,19 @@ spec:
   systemContext: lib-market-bidder-worker
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-market-bidder-worker
-  phase: Running
+  agentLog: 'lib/market-bidder-worker is the bidder side of the compute-worker market.
+    It exposes createWorkerBidderCallbacks, which takes a WorkerBidderDeps bundle
+    and returns the RFP and accept callbacks a market bidder runs when a worker manifest
+    is offered to it: each attached RFP policy strongRef is evaluated by an injected
+    policy evaluator (first deny short-circuits, empty policies mean open to all),
+    an optional WorkerPermissionPolicyHandler checks the resolved manifest''s lock/json/bundle/permissions,
+    a free bid record is written and signed, the bid is submitted to the requester''s
+    submitBid service, and an accept resolves the RFP and worker manifest, registers
+    the manifest, starts a worker instance through the runner, mints an attestation-bound
+    receipt, and records the contract in an activeContracts map with accepted/provisioned
+    change events. createWorkerProviderHooks wraps a WorkerProvider into a MarketBidderProviderRef
+    keyed on serviceId pdr_temp_market and the workerManifest NSID, and createComputeProviderDenoWorker
+    builds such a provider from a logger and an ATProto client. Worker contracts currently
+    have no termination path because no worker.delete lexicon exists.'
+  message: wrote 13 requirement(s) and 6 interface(s) for lib-market-bidder-worker
+  phase: Succeeded
