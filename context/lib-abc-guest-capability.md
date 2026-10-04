@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so that a capability running inside a guest VM has one shared, provider-agnostic interface for the compute contract: it contributes cloud-init before the RFP is sent, is handed its authorization once a bid wins, loses it when the VM is deleted, and is disposed at the end. The derived GrantVars and the subject-key helper exist to keep the guest's presented token subject byte-identical to the subject the issuer's prove handler assembles from the provider's droplet tags, and to keep the audience baked into cloud-init (the requester's own relay DID) distinct from the subject DID (which under OAuth is the user's PDS DID, not the requester's relay DID).
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

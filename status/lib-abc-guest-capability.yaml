@@ -1,8 +1,8 @@
 conditions:
-- message: 'undeclared: CapabilityPrepared, DeriveGrantVarsInput, GrantVars, GuestCapability,
-    PrepareContext, WifSimpleConfig, deriveGrantVars, isWifSimpleConfig, subjectKeyOf'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -67,5 +67,5 @@ observed:
     signature: '(v: unknown): v is WifSimpleConfig'
   treeFiles:
   - lib/abc/guest-capability/deno.json
-realizedSpecHash: 27d8503e4f7d1fb86094c3fbde4492acdf7732e20199586e2d215b602d71d25b
+realizedSpecHash: 90075edc5a35858f16eb60521c61d97c01e611392aef924a686c12cb5026fe12
 syncedFingerprint: da59922f5887beb5930682b6acaad0c3a3204dd9cafb48151ba50fe2b48b00e8

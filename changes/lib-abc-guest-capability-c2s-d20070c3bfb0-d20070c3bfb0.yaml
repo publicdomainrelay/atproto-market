@@ -10,5 +10,23 @@ spec:
   systemContext: lib-abc-guest-capability
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-abc-guest-capability
-  phase: Running
+  agentLog: 'lib/abc/guest-capability is a Deno/JSR ABC-layer module (exported as
+    @publicdomainrelay/guest-capability-abc via lib/abc/guest-capability/deno.json,
+    single export ./mod.ts) that defines the contracts a guest-side capability implements
+    on a compute VM, plus the pure helpers that turn a winning bid''s WIF config into
+    the authorization variables a guest needs. It declares WifSimpleConfig (the resolved
+    com.publicdomainrelay.temp.compute.config.wif.simple record), GrantVars (requesterDid,
+    role, actx, issuerUri, subject, expectedAud), PrepareContext (vmName, requesterDid,
+    ingressProxyHost, signer with did()/sign(), optional tls, log), CapabilityPrepared
+    (an optional partial CloudInitContext), GuestCapability (id, optional prepare/userDataModule/onContract/onRevoke/dispose
+    hooks spanning the RFP-to-teardown lifecycle) and DeriveGrantVarsInput. Three
+    exported functions carry the logic: subjectKeyOf extracts the tail of a DID so
+    the rendered subject matches the provider''s tag-derived oidc-sub, deriveGrantVars
+    renders the subject from the configured template and computes expectedAud, and
+    isWifSimpleConfig is a runtime type guard over the two required string fields.'
+  message: wrote 10 requirement(s) and 9 interface(s) for lib-abc-guest-capability;
+    interface GuestCapability.prepare is not in the observed facts; dropped; interface
+    GuestCapability.onContract is not in the observed facts; dropped; interface GuestCapability.onRevoke
+    is not in the observed facts; dropped; interface GuestCapability.dispose is not
+    in the observed facts; dropped
+  phase: Succeeded

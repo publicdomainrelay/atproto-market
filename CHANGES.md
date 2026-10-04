@@ -102,6 +102,20 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.gateway-lifecycle` (MUST): "ComputeContractGateway must expose an async beginServe that brings the gateway into a serving state and an async dispose that releases it, so a caller can start and stop a gateway deterministically around its use rather than relying on implicit startup."
 - added `r.provisioning-calls` (MUST): "ComputeContractGateway must expose requestComputeVM, requestComputeWorkerEphemeral and requestComputeWorkerPersistent, each accepting a CallerIdentity plus a VM or worker input record and resolving to a GatewayComputeResponse, so VM and worker provisioning differ only by the call made and the input shape passed."
 
+### lib-abc-guest-capability
+
+- intent: "" -> "This context exists so that a capability running inside a guest VM has one shared, provider-agnostic interface for the compute contract: it contributes cloud-init before the RFP is sent, is handed its authorization once a bid wins, loses it when the VM is deleted, and is disposed at the end. The derived GrantVars and the subject-key helper exist to keep the guest's presented token subject byte-identical to the subject the issuer's prove handler assembles from the provider's droplet tags, and to keep the audience baked into cloud-init (the requester's own relay DID) distinct from the subject DID (which under OAuth is the user's PDS DID, not the requester's relay DID)."
+- added `r.capability-lifecycle` (MUST): "GuestCapability defines a guest-side concern spanning the compute contract with a required readonly id string and readonly optional userDataModule (string or UserDataModule), plus the optional hooks: prepare before the RFP is sent, onContract when a bid wins (given GrantVars), onRevoke when the VM delete event is sent, and dispose to release resources at the end; each async hook may return a void or a promise."
+- added `r.capability-prepared` (MUST): "CapabilityPrepared is the result of prepare, carrying an optional partial CloudInitContext that the capability contributes to cloud-init (typically paired with its userDataModule)."
+- added `r.derive-grant-vars` (MUST): "deriveGrantVars maps a DeriveGrantVarsInput to GrantVars: requesterDid is the audienceDid, role and actx/issuerUri are copied from the WIF config, expectedAud is the string api://ATProto?actx=<audienceDid>, and subject is rendered from the config's subject template (defaulting to actx:{actx}:plc:{did-plc-key}:role:{role}) with actx, didPlcKey=subjectKeyOf(subjectDid) and role."
+- added `r.grant-vars-shape` (MUST): "GrantVars carries everything a capability needs to authorize the guest derived from the winning bid: requesterDid, role, actx, issuerUri, subject and expectedAud, all strings."
+- added `r.layer-dependencies` (MUST): "The package publishes a single ./mod.ts export under the name @publicdomainrelay/guest-capability-abc and depends only on the JSR packages @publicdomainrelay/cloud-init-common (for CloudInitContext and UserDataModule) and @publicdomainrelay/fedproxy-rbac-common (for renderSubject)."
+- added `r.prepare-context-shape` (MUST): "PrepareContext supplies a capability's prepare hook with vmName, requesterDid, ingressProxyHost, a signer exposing did() and sign(bytes): Promise<Uint8Array>, an optional tls flag, and a log(event, extra?) callback for emitting structured events."
+- added `r.subject-key-tail` (MUST): "subjectKeyOf returns the last colon-separated segment of a DID (falling back to the whole input when split yields nothing), matching how the provider tags the droplet oidc-sub:plc:<tail> so the guest-rendered subject equals the subject the issuer assembles from those tags."
+- added `r.subject-vs-audience-did` (MUST): "DeriveGrantVarsInput keeps subjectDid and audienceDid as separate inputs and documents why: the subject DID is the DID that authored and submitted the market records (under OAuth the user's PDS DID, which is not the requester's local relay DID), while the audience DID is baked into cloud-init before a bid exists and so can only be the requester's own relay DID."
+- added `r.wif-guard` (MUST): "isWifSimpleConfig is a runtime type guard that rejects any non-object or null value and returns true only when both issuer_uri and actx are strings, so a bid's WIF config can be narrowed from unknown before use."
+- added `r.wif-simple-config-shape` (MUST): "WifSimpleConfig models the resolved com.publicdomainrelay.temp.compute.config.wif.simple record from the winning bid: issuer_uri and actx are required strings, while subject and the to_issue/accept_path/actx_path/token_path/url_path/url_route fields are optional strings."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance |
@@ -113,5 +127,5 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | hono-market-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | hono-plc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-abc-compute-contract-gateway-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-abc-guest-capability-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-abc-guest-capability-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-abc-market-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
