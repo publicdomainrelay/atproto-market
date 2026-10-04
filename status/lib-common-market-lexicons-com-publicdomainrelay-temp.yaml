@@ -1,1 +1,28 @@
-observed: {}
+conditions:
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/agent.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/auth.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/requester.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/tangled.ts
+  fingerprint: 26538b0336f61695aba5186d04750d680c2a4c1568ba8dad14b75c94692b6507
+realizedSpecHash: 1214ccadce0702c41a5f497aef5d8cd5d8ea00d7930f68c7a110819af328ccda
+syncedFingerprint: 26538b0336f61695aba5186d04750d680c2a4c1568ba8dad14b75c94692b6507

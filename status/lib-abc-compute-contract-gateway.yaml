@@ -23,7 +23,5 @@ observed:
     name: ComputeContractGateway
   treeFiles:
   - lib/abc/compute-contract-gateway/deno.json
-observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 realizedSpecHash: e69c49e3b106f7e787823b96c0c3b0ac0e301d8c16aaf55f24d1400cf57f72b5
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 3ace54d94a28605fd535e1685d355c9b5b2f7456a18aee9347b6e44991572b24

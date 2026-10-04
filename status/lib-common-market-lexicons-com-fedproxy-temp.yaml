@@ -16,7 +16,5 @@ observed:
   files:
   - lib/common/market-lexicons/com/fedproxy/temp/xrpc.ts
   fingerprint: e38774350ff4e287142c3a1a72edcd13c33914700bb3c36f74e0f966316390fe
-observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 realizedSpecHash: 58373fbbda7521ea06ea039c1d0bf071368a5a764f2ba8ee7b2ebf53ab2eb87f
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: e38774350ff4e287142c3a1a72edcd13c33914700bb3c36f74e0f966316390fe

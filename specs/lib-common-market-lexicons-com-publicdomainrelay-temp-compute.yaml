@@ -1,0 +1,15 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config.ts config.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events.ts events.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.defs.ts vm.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.ts vm.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.ts
+kind: SystemContext
+metadata:
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-compute
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

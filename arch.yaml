@@ -326,7 +326,17 @@ system_contexts:
   id: sc.lib-common-market-lexicons-com-publicdomainrelay
   name: lib-common-market-lexicons-com-publicdomainrelay
   upstream: self
-- codeRefIndex:
+- code:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/agent.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/auth.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/market.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/requester.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/tangled.ts
+  codeRefIndex:
   - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent.ts agent.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/agent.ts
   - file:lib/common/market-lexicons/com/publicdomainrelay/temp/auth.ts auth.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/auth.ts
   - file:lib/common/market-lexicons/com/publicdomainrelay/temp/badgeBlueKeys.defs.ts
@@ -341,4 +351,59 @@ system_contexts:
   - sc.atproto-market
   id: sc.lib-common-market-lexicons-com-publicdomainrelay-temp
   name: lib-common-market-lexicons-com-publicdomainrelay-temp
+  upstream: self
+- code:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/agent/class.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/agent/class.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/agent/skill.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/agent/skill.ts
+  codeRefIndex:
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/class.defs.ts
+    class.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/agent/class.defs.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/class.ts class.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/agent/class.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/skill.defs.ts
+    skill.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/agent/skill.defs.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/skill.ts skill.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/agent/skill.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-lexicons-com-publicdomainrelay-temp-agent
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-agent
+  upstream: self
+- code:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist.ts
+  codeRefIndex:
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist.ts allowlist.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-lexicons-com-publicdomainrelay-temp-auth
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-auth
+  upstream: self
+- code:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist/rbacDid.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist/rbacDid.ts
+  codeRefIndex:
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist/rbacDid.defs.ts
+    rbacDid.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist/rbacDid.defs.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist/rbacDid.ts
+    rbacDid.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist/rbacDid.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-lexicons-com-publicdomainrelay-temp-auth-allowlist
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-auth-allowlist
+  upstream: self
+- code:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.ts
+  codeRefIndex:
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config.ts config.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events.ts events.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.defs.ts
+    vm.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.defs.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.ts vm.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-lexicons-com-publicdomainrelay-temp-compute
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-compute
   upstream: self

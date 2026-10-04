@@ -1,0 +1,15 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist/rbacDid.defs.ts
+  rbacDid.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist/rbacDid.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist/rbacDid.ts
+  rbacDid.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist/rbacDid.ts
+kind: SystemContext
+metadata:
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-auth-allowlist
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

@@ -1,0 +1,15 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/class.defs.ts class.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/agent/class.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/class.ts class.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/agent/class.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/skill.defs.ts skill.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/agent/skill.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/skill.ts skill.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/agent/skill.ts
+kind: SystemContext
+metadata:
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-agent
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

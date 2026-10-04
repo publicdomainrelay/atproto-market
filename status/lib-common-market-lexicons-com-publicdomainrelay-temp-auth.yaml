@@ -14,10 +14,7 @@ conditions:
   type: SpecValid
 observed:
   files:
-  - hono-plc/mod.ts
-  fingerprint: ee7236b279d65d80cc9607a473172a3ad482dfec27eaa89a6f372e16ab81aa24
-  treeFiles:
-  - hono-plc/cli-args-env.json
-  - hono-plc/config.json
-realizedSpecHash: 637f2ccd18a23cb0973e396436289cb5c06062b49ccf1cd6a83b01dc9882a10c
-syncedFingerprint: ee7236b279d65d80cc9607a473172a3ad482dfec27eaa89a6f372e16ab81aa24
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist.ts
+  fingerprint: 226a4ea7b2522926841b4e1305bd9ddcc203211428db1e3651096a25823927f7
+realizedSpecHash: 48f855c8783befbc8f60d5b83fc72d432532ea2683933b2bc9af85aaa712a6ff
+syncedFingerprint: 226a4ea7b2522926841b4e1305bd9ddcc203211428db1e3651096a25823927f7

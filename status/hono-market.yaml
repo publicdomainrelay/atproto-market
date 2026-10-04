@@ -18,7 +18,5 @@ observed:
   fingerprint: 902b76f1af18104351565e32a27bcde3ff0879267928ec6adfbb2c4351e903ee
   treeFiles:
   - hono-market/deno.json
-observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 realizedSpecHash: 6696794cc7f099344e074c3139c027dec8650357f9b7aa0e38d5e1549de46ead
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 902b76f1af18104351565e32a27bcde3ff0879267928ec6adfbb2c4351e903ee
