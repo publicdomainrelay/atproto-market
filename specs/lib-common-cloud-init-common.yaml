@@ -173,18 +173,31 @@ spec:
       so the compute-provider harness can still TCP-probe port 22 directly.
   - codeRefs:
     - file:lib/common/cloud-init-common/mod.ts
+    id: r.iroh-module-installs-sshd
+    level: MUST
+    text: The iroh module configures and starts an sshd (its own /etc/ssh/sshd_config.d/10-iroh.conf
+      and a runcmd `systemctl enable --now ssh || systemctl enable --now sshd`), so
+      it must install the openssh-server package it configures, exactly as the tunnel
+      and fedproxy-ssh modules do. A module that enables or configures sshd without
+      installing it leaves the guest with no sshd at all and the transport dead.
+  - codeRefs:
+    - file:lib/common/cloud-init-common/mod.ts
     id: r.iroh-ticket-file
     level: MUST
     text: 'The iroh module must capture the ticket that dumbpipe prints for the listener
       and write it, alone and unmodified, to /root/secrets/iroh-node-id owned root:root
       mode 0600, because that exact path is the cross-repo contract: the compute provider''s
       getNodeId(providerId) hook reads it (the local provider runs `cat /root/secrets/iroh-node-id`)
-      and returns its content as the guest''s iroh endpoint id. dumbpipe writes its
-      control output, including the ticket as the argument of the `dumbpipe connect
-      <ticket>` line, to the listener''s output stream (stdout and stderr in current
-      releases), so the module must capture the listener''s combined output, extract
-      the ticket token, persist it to that file, and leave the listener running afterwards
-      so the ticket stays valid.'
+      and returns its content as the guest''s iroh endpoint id. dumbpipe prints its
+      control output on stderr; for `listen-tcp` the pinned v0.39.0 release prints
+      `Forwarding incoming requests to ''127.0.0.1:22''.`, `To connect, use e.g.:`
+      and then `dumbpipe connect-tcp <ticket>` (a verbose run adds an `or:` line with
+      a short ticket). The module must capture the listener''s combined output and
+      extract the ticket token from the `dumbpipe connect-tcp <ticket>` line -- matching
+      the subcommand dumbpipe actually printed, not a bare `dumbpipe connect` prefix
+      -- then persist it to that file and leave the listener running so the ticket
+      stays valid. A ticket is a long base32 iroh endpoint id with no dot, colon or
+      slash, so the extraction must not depend on the surrounding prose.'
   - codeRefs:
     - file:lib/common/cloud-init-common/mod.ts
     id: r.iroh-transport-module
