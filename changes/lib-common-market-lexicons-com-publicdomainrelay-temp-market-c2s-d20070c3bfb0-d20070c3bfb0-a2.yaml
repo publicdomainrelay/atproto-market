@@ -10,8 +10,24 @@ spec:
   systemContext: lib-common-market-lexicons-com-publicdomainrelay-temp-market
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-common-market-lexicons-com-publicdomainrelay-temp-market
-  phase: Running
+  agentLog: This context is the generated Lexicon binding set for the `com.publicdomainrelay.temp.market`
+    NSID family, living under `lib/common/market-lexicons/com/publicdomainrelay/temp/market/`.
+    Every module is emitted by `@atproto/lex` and carries a `THIS FILE WAS GENERATED
+    BY "@atproto/lex". DO NOT EDIT.` header. Each lexicon has a `<name>.defs.ts` file
+    that declares `$nsid`, the schema value (`l.record`, `l.query` or `l.procedure`)
+    named `main`, the inferred `$Params`/`$Input`/`$Output` type aliases, and `$lxm`,
+    plus a thin `<name>.ts` wrapper that re-exports the defs module and re-exports
+    `main` as the default export. There are eleven `record` lexicons (accept, badgeBlueKey,
+    bid, bidderAssociation, bidderDiscovery, bidderRegistration, event, offering,
+    receipt, relays, rfp), one `query` (listBidders) and five `procedure` lexicons
+    (registerBidder, submitAccept, submitBid, submitEvent, submitRfp). Four namespace
+    aggregator modules (accepts, bids, policies, receipts) re-export variants (free/x402,
+    or service/denoWorker/builtin) from subdirectories, and records reference those
+    variants through `RepoStrongRef` payload fields. Records also embed `badge.blue`
+    attestation signatures via the shared `network.attested.signature` lexicon and
+    strong references via `atproto/repo/strongRef`.
+  message: wrote 12 requirement(s) and 5 interface(s) for lib-common-market-lexicons-com-publicdomainrelay-temp-market
+  phase: Succeeded
 superseded:
 - message: |-
     ...      "kind": "type_alias",

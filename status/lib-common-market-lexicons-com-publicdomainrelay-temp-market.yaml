@@ -1,7 +1,8 @@
 conditions:
-- message: 'undeclared: $Input, $InputBody, $Output, $OutputBody, $Params'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -78,5 +79,5 @@ observed:
     kind: type_alias
     line: 23
     name: $InputBody
-realizedSpecHash: af6eaf2e308f44273b451288a1981117f4024f54d6862a4fdcf2afa6b7a2e490
+realizedSpecHash: 34bd9fe957dfce42718dde488a89493c51181a6d1a0d67f5c719c572ec947270
 syncedFingerprint: fb0b7f1681bef17253bb56eb75d3c8c62aadf1b8de2582fc9e99e38080b3202a
