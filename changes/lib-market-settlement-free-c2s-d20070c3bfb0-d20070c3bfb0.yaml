@@ -10,5 +10,20 @@ spec:
   systemContext: lib-market-settlement-free
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-market-settlement-free
-  phase: Running
+  agentLog: lib-market-settlement-free is the free (no-payment) settlement path of
+    the atproto-market exchange. It is split into a client half (lib/market-settlement-free/client.ts)
+    that a bidder runs to settle a grant, and a server half (lib/market-settlement-free/server.ts)
+    that a market operator runs to mint and verify grants. The client takes an Agent,
+    the bid strongRef, the bid payload strongRef and the operator's base URL, writes
+    an accepts.free record into the bidder's own repo, and then GETs a grant URL built
+    from the record's uri and cid; the endpoint answers with the uri/cid of the resulting
+    receipts.free record, which the client returns as a strongRef. The server side
+    supplies parseGrantPath to pull the accepts uri and cid out of the request path,
+    mintGrantForAccepts to resolve the accepts record, verify the bid payload and
+    sign the receipts.free record, verifyFreeGrant to re-resolve a payment reference
+    against a resolver for a given bidder DID, and FreeGrantError to carry an HTTP
+    status back to the transport. lib/market-settlement-free/mod.ts is the package's
+    export surface. The package depends on the atproto-market common and atproto layers
+    for strongRefs, record creation, egress guarding and logging.
+  message: wrote 10 requirement(s) and 7 interface(s) for lib-market-settlement-free
+  phase: Succeeded

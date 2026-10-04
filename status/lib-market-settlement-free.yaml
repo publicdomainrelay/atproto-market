@@ -1,8 +1,8 @@
 conditions:
-- message: 'undeclared: FreeGrantError, FreeGrantError.constructor, SettleFreeOptions,
-    mintGrantForAccepts, parseGrantPath, settleFreeGrant, verifyFreeGrant'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -74,5 +74,5 @@ observed:
       }): Promise<Resolved<ReceiptsFree>>
   treeFiles:
   - lib/market-settlement-free/deno.json
-realizedSpecHash: a0a4216255d36fa4d4b467e5a594b12845ce4a27f6eea66a19c91ae9ef6ae699
+realizedSpecHash: 7a3ffdf845f5308ba37c74a0308705549b251a1accd1e411338321a1f09bc8af
 syncedFingerprint: 93429871b8e52d2f65cd9070b16c6ff7efdcd2180cdc532b611086b801cc528e

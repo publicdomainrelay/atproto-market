@@ -992,6 +992,20 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.submit-bid-dispatch` (SHOULD): "When the RFP carries a submitBid URL, onRfp should push the signed bid to it via callService using the SUBMIT_BID_NSID and SUBMIT_BID_LXM with body {uri, cid, record}. A failure from that call must be logged at error level and swallowed, so the bid is still reported as created."
 - added `r.worker-permission-check` (MUST): "When a permissionPolicyHandler is supplied and the RFP carries a payload ref, onRfp must resolve that payload, read its lock, json, bundle and permissions fields (defaulting absent strings to empty), and run permissionPolicyHandler.evaluate on them. A deny returns body {ok:false, error:"worker permissions denied", violations}; a thrown error during resolve or evaluation returns body {ok:false, error:"worker permission check failed"}; both are logged as warnings rather than propagating."
 
+### lib-market-settlement-free
+
+- intent: "" -> "This context exists so that the atproto-market can settle a bid without money: an operator advertises a free grant endpoint, a bidder writes an accepts.free record and calls that endpoint, and both sides agree on the resulting receipts.free strongRef. Splitting client and server into one package keeps the wire contract (the accepts.free record shape, the /<uri>/<cid> grant path, the receipts.free response body) in a single place, and keeps the bidder from having to know how the operator mints or signs the receipt. FreeGrantError exists so the server half can attach an HTTP status to a rejection and let the transport layer decide how to render it, instead of throwing bare Errors."
+- added `r.client-injection-defaults` (MUST): "SettleFreeOptions must let a caller override the fetch implementation, the timeout and the logger; when they are absent settleFreeGrant falls back to the global fetch, a thirty-second timeout, and a no-op logger, and it always returns the endpoint's uri and cid as a strongRef."
+- added `r.egress-guard-before-fetch` (MUST): "settleFreeGrant must run the base url through the safe-egress assertion, passing along the optional egress options, before any record is written or any request is issued, so a blocked scheme, cloud-metadata host or private host aborts the settlement instead of being dialed."
+- added `r.free-grant-error-status` (MUST): "FreeGrantError must extend Error, set its name to "FreeGrantError", and expose the HTTP status as a public readonly field so the transport can map a rejection to a response code."
+- added `r.grant-request-and-errors` (MUST): "settleFreeGrant must issue a GET to the grant URL under an abort signal bounded by the timeout, throw an error naming the status and the response body text when the response is not ok, and throw when the response body lacks either a uri or a cid rather than returning a partial reference."
+- added `r.grant-url-shape` (MUST): "settleFreeGrant must build the grant URL by stripping any trailing slashes from the configured base url and appending the accepts.free uri and accepts.free cid as two further path segments, so the operator sees a single path that carries both halves of the strongRef."
+- added `r.mint-grant` (MUST): "mintGrantForAccepts must take the operator's agent, a record resolver, the accepts uri and cid, and a record signer, and return the strongRef of the receipts.free record it mints for that accepts, raising a FreeGrantError when the accepts, the bid or the payload does not resolve as required."
+- added `r.package-export-surface` (SHOULD): "lib/market-settlement-free/mod.ts is the package's single export surface, re-exporting the client and server halves so a consumer imports the settlement helpers from one path rather than reaching into the individual files."
+- added `r.parse-grant-path` (MUST): "parseGrantPath must turn a request path into the accepts uri and cid pair the client encoded, honouring an optional path prefix that is stripped before the two segments are read, and must reject a path that does not carry exactly that pair."
+- added `r.settle-creates-accepts-first` (MUST): "settleFreeGrant must write an accepts.free record into the caller's own repo before contacting the grant endpoint, stamping it with the bid strongRef, the bid payload strongRef and a createdAt of the current time, and must use the uri and cid of that new record to address the grant."
+- added `r.verify-free-grant` (MUST): "verifyFreeGrant must accept an optional payment strongRef, a resolver and a bidder DID, resolve the payment back to a receipts.free record and confirm it belongs to that bidder, and must treat an absent payment as a free settlement rather than an error; it returns the resolved receipts.free record."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance |
@@ -1069,5 +1083,6 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-market-bidder-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-market-bidder-compute-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-market-bidder-worker-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-market-settlement-free-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-market-settlement-free-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-market-settlement-x402-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-operator-discovery-badge-blue-keys-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |

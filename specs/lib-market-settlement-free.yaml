@@ -1,8 +1,15 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
 codeRefIndex:
+- class:3827f797a6bd2d1108d56d2774b6518d FreeGrantError@lib/market-settlement-free/server.ts:23
 - file:lib/market-settlement-free/client.ts client.ts@lib/market-settlement-free/client.ts
 - file:lib/market-settlement-free/mod.ts mod.ts@lib/market-settlement-free/mod.ts
 - file:lib/market-settlement-free/server.ts server.ts@lib/market-settlement-free/server.ts
+- function:528e95e009f7f506a933ba541e0c4ed9 verifyFreeGrant@lib/market-settlement-free/server.ts:66
+- function:c1a42b12e47d538ba4f2c4033a018daf parseGrantPath@lib/market-settlement-free/server.ts:30
+- function:ca138dba99fe7843a691d23448a3af85 settleFreeGrant@lib/market-settlement-free/client.ts:24
+- function:f40dd626ac80197332f89582a7964061 mintGrantForAccepts@lib/market-settlement-free/server.ts:38
+- interface:cdef64f67aa14f86753db2d82253c04c SettleFreeOptions@lib/market-settlement-free/client.ts:13
+- method:d2ca5a3b04fbbe08479f73baafeef096 FreeGrantError.constructor@lib/market-settlement-free/server.ts:24
 kind: SystemContext
 metadata:
   name: lib-market-settlement-free
@@ -10,5 +17,134 @@ metadata:
 spec:
   dependsOn:
   - sc.atproto-market
+  intent: 'This context exists so that the atproto-market can settle a bid without
+    money: an operator advertises a free grant endpoint, a bidder writes an accepts.free
+    record and calls that endpoint, and both sides agree on the resulting receipts.free
+    strongRef. Splitting client and server into one package keeps the wire contract
+    (the accepts.free record shape, the /<uri>/<cid> grant path, the receipts.free
+    response body) in a single place, and keeps the bidder from having to know how
+    the operator mints or signs the receipt. FreeGrantError exists so the server half
+    can attach an HTTP status to a rejection and let the transport layer decide how
+    to render it, instead of throwing bare Errors.'
+  interfaces:
+  - file: lib/market-settlement-free/server.ts
+    kind: class
+    name: FreeGrantError
+    signature: class FreeGrantError extends Error
+  - file: lib/market-settlement-free/server.ts
+    kind: method
+    name: FreeGrantError.constructor
+    signature: 'constructor(public readonly status: number, message: string)'
+  - file: lib/market-settlement-free/client.ts
+    kind: interface
+    name: SettleFreeOptions
+    signature: 'interface SettleFreeOptions { agent: Agent; bid: StrongRef; bidPayload:
+      StrongRef; url: string; egress?: EgressOptions; fetch?: typeof fetch; timeoutMs?:
+      number; log?: Logger }'
+  - file: lib/market-settlement-free/server.ts
+    kind: function
+    name: mintGrantForAccepts
+    signature: 'mintGrantForAccepts(opts: { agent: Agent; resolve: RecordResolver;
+      acceptsUri: string; acceptsCid: string; signer: RecordSigner }): Promise<StrongRef>'
+  - file: lib/market-settlement-free/server.ts
+    kind: function
+    name: parseGrantPath
+    signature: 'parseGrantPath(path: string, prefix = ""): { acceptsUri: string; acceptsCid:
+      string }'
+  - file: lib/market-settlement-free/client.ts
+    kind: function
+    name: settleFreeGrant
+    signature: 'settleFreeGrant(opts: SettleFreeOptions): Promise<StrongRef>'
+  - file: lib/market-settlement-free/server.ts
+    kind: function
+    name: verifyFreeGrant
+    signature: 'verifyFreeGrant(opts: { payment: StrongRef | undefined; resolve: RecordResolver;
+      bidderDid: string }): Promise<Resolved<ReceiptsFree>>'
   repository: atproto-market
+  requirements:
+  - codeRefs:
+    - function:ca138dba99fe7843a691d23448a3af85
+    - interface:cdef64f67aa14f86753db2d82253c04c
+    id: r.client-injection-defaults
+    level: MUST
+    text: SettleFreeOptions must let a caller override the fetch implementation, the
+      timeout and the logger; when they are absent settleFreeGrant falls back to the
+      global fetch, a thirty-second timeout, and a no-op logger, and it always returns
+      the endpoint's uri and cid as a strongRef.
+  - codeRefs:
+    - function:ca138dba99fe7843a691d23448a3af85
+    id: r.egress-guard-before-fetch
+    level: MUST
+    text: settleFreeGrant must run the base url through the safe-egress assertion,
+      passing along the optional egress options, before any record is written or any
+      request is issued, so a blocked scheme, cloud-metadata host or private host
+      aborts the settlement instead of being dialed.
+  - codeRefs:
+    - class:3827f797a6bd2d1108d56d2774b6518d
+    - method:d2ca5a3b04fbbe08479f73baafeef096
+    id: r.free-grant-error-status
+    level: MUST
+    text: FreeGrantError must extend Error, set its name to "FreeGrantError", and
+      expose the HTTP status as a public readonly field so the transport can map a
+      rejection to a response code.
+  - codeRefs:
+    - function:ca138dba99fe7843a691d23448a3af85
+    id: r.grant-request-and-errors
+    level: MUST
+    text: settleFreeGrant must issue a GET to the grant URL under an abort signal
+      bounded by the timeout, throw an error naming the status and the response body
+      text when the response is not ok, and throw when the response body lacks either
+      a uri or a cid rather than returning a partial reference.
+  - codeRefs:
+    - function:ca138dba99fe7843a691d23448a3af85
+    id: r.grant-url-shape
+    level: MUST
+    text: settleFreeGrant must build the grant URL by stripping any trailing slashes
+      from the configured base url and appending the accepts.free uri and accepts.free
+      cid as two further path segments, so the operator sees a single path that carries
+      both halves of the strongRef.
+  - codeRefs:
+    - class:3827f797a6bd2d1108d56d2774b6518d
+    - function:f40dd626ac80197332f89582a7964061
+    id: r.mint-grant
+    level: MUST
+    text: mintGrantForAccepts must take the operator's agent, a record resolver, the
+      accepts uri and cid, and a record signer, and return the strongRef of the receipts.free
+      record it mints for that accepts, raising a FreeGrantError when the accepts,
+      the bid or the payload does not resolve as required.
+  - codeRefs:
+    - file:lib/market-settlement-free/mod.ts
+    - file:lib/market-settlement-free/server.ts
+    id: r.package-export-surface
+    level: SHOULD
+    text: lib/market-settlement-free/mod.ts is the package's single export surface,
+      re-exporting the client and server halves so a consumer imports the settlement
+      helpers from one path rather than reaching into the individual files.
+  - codeRefs:
+    - function:c1a42b12e47d538ba4f2c4033a018daf
+    id: r.parse-grant-path
+    level: MUST
+    text: parseGrantPath must turn a request path into the accepts uri and cid pair
+      the client encoded, honouring an optional path prefix that is stripped before
+      the two segments are read, and must reject a path that does not carry exactly
+      that pair.
+  - codeRefs:
+    - file:lib/market-settlement-free/client.ts
+    - function:ca138dba99fe7843a691d23448a3af85
+    - interface:cdef64f67aa14f86753db2d82253c04c
+    id: r.settle-creates-accepts-first
+    level: MUST
+    text: settleFreeGrant must write an accepts.free record into the caller's own
+      repo before contacting the grant endpoint, stamping it with the bid strongRef,
+      the bid payload strongRef and a createdAt of the current time, and must use
+      the uri and cid of that new record to address the grant.
+  - codeRefs:
+    - class:3827f797a6bd2d1108d56d2774b6518d
+    - function:528e95e009f7f506a933ba541e0c4ed9
+    id: r.verify-free-grant
+    level: MUST
+    text: verifyFreeGrant must accept an optional payment strongRef, a resolver and
+      a bidder DID, resolve the payment back to a receipts.free record and confirm
+      it belongs to that bidder, and must treat an absent payment as a free settlement
+      rather than an error; it returns the resolved receipts.free record.
   upstream: self
