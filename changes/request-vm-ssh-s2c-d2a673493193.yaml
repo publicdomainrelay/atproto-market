@@ -1,0 +1,142 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: request-vm-ssh-s2c-d2a673493193
+  namespace: default
+spec:
+  delta:
+    intent:
+      from: 'This context exists so the requester CLI''s external contract is pinned
+        down: which flags and environment variables configure it and what each defaults
+        to, how the three identity/OAuth modes differ, how association is proven or
+        skipped, what is passed into `runComputeContract`, and how shutdown, hold
+        mode and the `--help` smoke test behave. It is the operator-facing shell around
+        the requester library, so that library can change without silently breaking
+        the command people actually run.'
+      to: 'This context exists so the requester CLI''s external contract is pinned
+        down: which flags and environment variables configure it and what each defaults
+        to, how the three identity/OAuth modes differ, how association is proven or
+        skipped, what is passed into `runComputeContract`, and how shutdown, hold
+        mode and the `--help` smoke test behave. It is the operator-facing shell around
+        the requester library, so that library can change without silently breaking
+        the command people actually run. The default guest transport is the iroh module,
+        so the CLI must ensure the dumbpipe helper is present and drive SSH through
+        the published ticket.'
+    requirements:
+    - fields:
+      - text
+      from:
+        codeRefs:
+        - file:request-vm-ssh/mod.ts
+        id: r.capabilities
+        level: MUST
+        text: When --secrets names a JSON bundle, the file is parsed and a secrets
+          guest capability is registered (the ephemeral server is reachable only through
+          the ingress proxy and releases values after the VM exchanges its workload
+          identity token); --user-data names a base cloud-init file that is read and
+          patched with the default tunnel provisioning before the RFP, and --user-data-transport
+          selects the transport module.
+      id: r.capabilities
+      op: changed
+      to:
+        codeRefs:
+        - file:request-vm-ssh/mod.ts
+        id: r.capabilities
+        level: MUST
+        text: When --secrets names a JSON bundle, the file is parsed and a secrets
+          guest capability is registered (the ephemeral server is reachable only through
+          the ingress proxy and releases values after the VM exchanges its workload
+          identity token); --user-data names a base cloud-init file that is read and
+          patched with the default iroh transport provisioning before the RFP, and
+          --user-data-transport selects the transport module.
+    - fields:
+      - text
+      from:
+        codeRefs:
+        - file:request-vm-ssh/cli-args-env.ts
+        - file:request-vm-ssh/mod.ts
+        id: r.cli-configuration-surface
+        level: MUST
+        text: 'Configuration is declared declaratively in cli-args-env.ts as an option
+          map, not read via Deno.env.get in the entrypoint: `--port` (PORT, no default;
+          when absent only the ingress relay serves), `--private-key-hex` (REPO_PRIVATE_KEY_HEX),
+          `--private-key-hex-path` (REPO_PRIVATE_KEY_HEX_PATH, default a requester-private-key
+          file under the user cache dir, overridden by --private-key-hex), `--plc-directory-url`
+          (PLC_DIRECTORY_URL, default https://plc.directory), `--atproto-oauth` (boolean),
+          `--atproto-oauth-qr` (boolean), `--atproto-handle` (ATP_HANDLE), `--oauth-client-id`
+          (OAUTH_CLIENT_ID, default http://localhost), `--oauth-redirect-uri` (OAUTH_REDIRECT_URI,
+          default http://127.0.0.1:0/callback), `--oauth-session-path` (OAUTH_SESSION_PATH,
+          default requester-oauth-session.json under the cache dir), `--ingress-proxy-host`
+          (INGRESS_PROXY_HOST, default xrpc.fedproxy.com), `--no-ingress-proxy` (boolean),
+          `--fedproxy-host` (FEDPROXY_HOST, default fedproxy.com), `--label` (REQUESTER_LABEL,
+          default request-vm-ssh), `--vm-name` (VM_NAME), `--exec` (EXEC_PROGRAM,
+          default bash), `--vm-ready-timeout-sec` (VM_READY_TIMEOUT_SEC, default 300),
+          `--keep-vm` (KEEP_VM), `--hold` (HOLD), `--ssh-authorized-key` (SSH_AUTHORIZED_KEY,
+          repeatable or comma-separated), `--skip-ssh` (SKIP_SSH), `--bidder-dids`
+          (BIDDER_DIDS), `--deny-bidder-dids` (DENY_BIDDER_DIDS), `--relay-url` (RELAY_URL),
+          `--firehose-mode` (FIREHOSE_MODE, default off), `--firehose-url` (FIREHOSE_URL,
+          repeatable or comma-separated), `--serve-addr` (SERVE_ADDR), `--serve-unix`
+          (SERVE_UNIX), `--guest-host-aliases` (GUEST_HOST_ALIASES), `--user-data`
+          (USER_DATA), `--user-data-transport` (USER_DATA_TRANSPORT), `--secrets`
+          (SECRETS_FILE), `--policy`, `--policy-args`, `--policy-engine` (POLICY_ENGINE),
+          `--only-remote-policy-exec`, `--allow-untrusted-policy-exec`, `--pds-state-path`
+          (PDS_STATE_PATH, default requester-pds under the cache dir), `--oauth-session-file`
+          (OAUTH_SESSION_FILE), `--oauth-session-client-id` (OAUTH_SESSION_CLIENT_ID),
+          `--skip-qr` (boolean), `--skip-rbac` (SKIP_RBAC, default off i.e. RBAC enabled).'
+      id: r.cli-configuration-surface
+      op: changed
+      to:
+        codeRefs:
+        - file:request-vm-ssh/cli-args-env.ts
+        - file:request-vm-ssh/mod.ts
+        id: r.cli-configuration-surface
+        level: MUST
+        text: 'Configuration is declared declaratively in cli-args-env.ts as an option
+          map, not read via Deno.env.get in the entrypoint: `--port` (PORT, no default;
+          when absent only the ingress relay serves), `--private-key-hex` (REPO_PRIVATE_KEY_HEX),
+          `--private-key-hex-path` (REPO_PRIVATE_KEY_HEX_PATH, default a requester-private-key
+          file under the user cache dir, overridden by --private-key-hex), `--plc-directory-url`
+          (PLC_DIRECTORY_URL, default https://plc.directory), `--atproto-oauth` (boolean),
+          `--atproto-oauth-qr` (boolean), `--atproto-handle` (ATP_HANDLE), `--oauth-client-id`
+          (OAUTH_CLIENT_ID, default http://localhost), `--oauth-redirect-uri` (OAUTH_REDIRECT_URI,
+          default http://127.0.0.1:0/callback), `--oauth-session-path` (OAUTH_SESSION_PATH,
+          default requester-oauth-session.json under the cache dir), `--ingress-proxy-host`
+          (INGRESS_PROXY_HOST, default xrpc.fedproxy.com), `--no-ingress-proxy` (boolean),
+          `--fedproxy-host` (FEDPROXY_HOST, default fedproxy.com), `--label` (REQUESTER_LABEL,
+          default request-vm-ssh), `--vm-name` (VM_NAME), `--exec` (EXEC_PROGRAM,
+          default bash), `--vm-ready-timeout-sec` (VM_READY_TIMEOUT_SEC, default 300),
+          `--keep-vm` (KEEP_VM), `--hold` (HOLD), `--ssh-authorized-key` (SSH_AUTHORIZED_KEY,
+          repeatable or comma-separated), `--skip-ssh` (SKIP_SSH), `--bidder-dids`
+          (BIDDER_DIDS), `--deny-bidder-dids` (DENY_BIDDER_DIDS), `--relay-url` (RELAY_URL),
+          `--firehose-mode` (FIREHOSE_MODE, default off), `--firehose-url` (FIREHOSE_URL,
+          repeatable or comma-separated), `--serve-addr` (SERVE_ADDR), `--serve-unix`
+          (SERVE_UNIX), `--guest-host-aliases` (GUEST_HOST_ALIASES), `--user-data`
+          (USER_DATA), `--user-data-transport` (USER_DATA_TRANSPORT, default iroh),
+          `--secrets` (SECRETS_FILE), `--policy`, `--policy-args`, `--policy-engine`
+          (POLICY_ENGINE), `--only-remote-policy-exec`, `--allow-untrusted-policy-exec`,
+          `--pds-state-path` (PDS_STATE_PATH, default requester-pds under the cache
+          dir), `--oauth-session-file` (OAUTH_SESSION_FILE), `--oauth-session-client-id`
+          (OAUTH_SESSION_CLIENT_ID), `--skip-qr` (boolean), `--skip-rbac` (SKIP_RBAC,
+          default off i.e. RBAC enabled).'
+    - id: r.iroh-default-transport
+      op: added
+      to:
+        codeRefs:
+        - file:request-vm-ssh/mod.ts
+        id: r.iroh-default-transport
+        level: MUST
+        text: The CLI must default --user-data-transport to the iroh module so a run
+          with no transport flag provisions the guest with the dumbpipe listener,
+          must ensure the dumbpipe binary is available (via the requester library's
+          ensureDumbpipe) whenever SSH will run, and must not pass a hard-coded websocat
+          ProxyCommand; the legacy websocat/fedproxy-ssh path must remain reachable
+          only by explicitly selecting that transport. --skip-ssh must still skip
+          all SSH and ticket handling, --keep-vm must still leave the VM running,
+          and an explicitly unknown --user-data-transport id must still fail with
+          the cloud-init module registry's unknown user-data module error.
+  direction: SpecToCode
+  fromSpecHash: 659aba6de94a30e9cc62dded8eb81be2005ed3463427df1f921e9908e2a4d66b
+  systemContext: request-vm-ssh
+  toSpecHash: d2a673493193432744b0aa2f785835f404b2d638ceacbf01738f3bc0ce05276b
+status:
+  phase: Pending

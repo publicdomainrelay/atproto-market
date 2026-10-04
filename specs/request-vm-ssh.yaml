@@ -16,7 +16,8 @@ spec:
     what is passed into `runComputeContract`, and how shutdown, hold mode and the
     `--help` smoke test behave. It is the operator-facing shell around the requester
     library, so that library can change without silently breaking the command people
-    actually run.'
+    actually run. The default guest transport is the iroh module, so the CLI must
+    ensure the dumbpipe helper is present and drive SSH through the published ticket.'
   repository: atproto-market
   requirements:
   - codeRefs:
@@ -44,8 +45,8 @@ spec:
       capability is registered (the ephemeral server is reachable only through the
       ingress proxy and releases values after the VM exchanges its workload identity
       token); --user-data names a base cloud-init file that is read and patched with
-      the default tunnel provisioning before the RFP, and --user-data-transport selects
-      the transport module.
+      the default iroh transport provisioning before the RFP, and --user-data-transport
+      selects the transport module.
   - codeRefs:
     - file:request-vm-ssh/cli-args-env.ts
     - file:request-vm-ssh/mod.ts
@@ -71,11 +72,12 @@ spec:
       (FIREHOSE_MODE, default off), `--firehose-url` (FIREHOSE_URL, repeatable or
       comma-separated), `--serve-addr` (SERVE_ADDR), `--serve-unix` (SERVE_UNIX),
       `--guest-host-aliases` (GUEST_HOST_ALIASES), `--user-data` (USER_DATA), `--user-data-transport`
-      (USER_DATA_TRANSPORT), `--secrets` (SECRETS_FILE), `--policy`, `--policy-args`,
-      `--policy-engine` (POLICY_ENGINE), `--only-remote-policy-exec`, `--allow-untrusted-policy-exec`,
-      `--pds-state-path` (PDS_STATE_PATH, default requester-pds under the cache dir),
-      `--oauth-session-file` (OAUTH_SESSION_FILE), `--oauth-session-client-id` (OAUTH_SESSION_CLIENT_ID),
-      `--skip-qr` (boolean), `--skip-rbac` (SKIP_RBAC, default off i.e. RBAC enabled).'
+      (USER_DATA_TRANSPORT, default iroh), `--secrets` (SECRETS_FILE), `--policy`,
+      `--policy-args`, `--policy-engine` (POLICY_ENGINE), `--only-remote-policy-exec`,
+      `--allow-untrusted-policy-exec`, `--pds-state-path` (PDS_STATE_PATH, default
+      requester-pds under the cache dir), `--oauth-session-file` (OAUTH_SESSION_FILE),
+      `--oauth-session-client-id` (OAUTH_SESSION_CLIENT_ID), `--skip-qr` (boolean),
+      `--skip-rbac` (SKIP_RBAC, default off i.e. RBAC enabled).'
   - codeRefs:
     - file:request-vm-ssh/cli_smoke_test.ts
     id: r.cli-smoke-test
@@ -133,6 +135,19 @@ spec:
       transferred session, then builds a local PDS whose `oauthAgent`/`oauthSession`
       are the signed-in user so market records are authored by that user via applyOAuthAgentToRequesterPDS;
       and the default branch builds a plain local PDS.'
+  - codeRefs:
+    - file:request-vm-ssh/mod.ts
+    id: r.iroh-default-transport
+    level: MUST
+    text: The CLI must default --user-data-transport to the iroh module so a run with
+      no transport flag provisions the guest with the dumbpipe listener, must ensure
+      the dumbpipe binary is available (via the requester library's ensureDumbpipe)
+      whenever SSH will run, and must not pass a hard-coded websocat ProxyCommand;
+      the legacy websocat/fedproxy-ssh path must remain reachable only by explicitly
+      selecting that transport. --skip-ssh must still skip all SSH and ticket handling,
+      --keep-vm must still leave the VM running, and an explicitly unknown --user-data-transport
+      id must still fail with the cloud-init module registry's unknown user-data module
+      error.
   - codeRefs:
     - file:request-vm-ssh/mod.ts
     id: r.local-dev-fetch-patch
