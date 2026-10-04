@@ -109,7 +109,7 @@ observed:
     signature: '(userData: string, jsrUrl: string): string'
   treeFiles:
   - lib/common/cloud-init-common/deno.json
-observedCommit: 857b94a22ea058825611b4f155cdc639e3c0139d
+observedCommit: b296a7ee7c1aae256a81c378b419bf16b3a3aca6
 realizedSpecHash: 066cde23d1625274f4ecc509619e3058bbb411a14cc9b42f2cad58c57a80d608
 syncedCommit: 857b94a22ea058825611b4f155cdc639e3c0139d
 syncedFingerprint: 9ec59512cab38134c7582a3463393e1435f3ea48697504f5423edd73a3c9aeaa

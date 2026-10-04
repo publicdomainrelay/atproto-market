@@ -17,7 +17,7 @@ observed:
   - lib/common/market-lexicons/com/atproto/repo/strongRef.defs.ts
   - lib/common/market-lexicons/com/atproto/repo/strongRef.ts
   fingerprint: 53b9a56b2115e608498b5861187a6bbfc20439da4c37012bcb8e6aaa9d5141e8
-observedCommit: 857b94a22ea058825611b4f155cdc639e3c0139d
+observedCommit: b296a7ee7c1aae256a81c378b419bf16b3a3aca6
 realizedSpecHash: 4c4bda02ee6707299d4f71e473a728e99305c7158cebe47c00eadf6d6b086cb6
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 53b9a56b2115e608498b5861187a6bbfc20439da4c37012bcb8e6aaa9d5141e8
