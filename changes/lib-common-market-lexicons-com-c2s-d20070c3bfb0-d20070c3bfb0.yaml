@@ -10,5 +10,17 @@ spec:
   systemContext: lib-common-market-lexicons-com
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-common-market-lexicons-com
-  phase: Running
+  agentLog: 'This context is the `com.*` authority layer of the shared market lexicon
+    package under `lib/common/market-lexicons/`. It contains three generated barrel
+    files, one per second-level NSID authority: `com/atproto.ts` re-exports the `repo`
+    lexicon namespace, `com/fedproxy.ts` re-exports `temp`, `rbac` and `sshPublicKey`,
+    and `com/publicdomainrelay.ts` re-exports `temp`. Each file is a thin re-export
+    module emitted by the `@atproto/lex` code generator with a `DO NOT EDIT` header,
+    and each namespace binding points at a sibling subdirectory that holds the actual
+    generated record and query type modules for that authority.'
+  message: wrote 6 requirement(s) and 0 interface(s) for lib-common-market-lexicons-com;
+    interface repo is not in the observed facts; dropped; interface temp is not in
+    the observed facts; dropped; interface rbac is not in the observed facts; dropped;
+    interface sshPublicKey is not in the observed facts; dropped; interface temp is
+    not in the observed facts; dropped
+  phase: Succeeded

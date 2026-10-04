@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+The context exists so that lexicon types for the `com.atproto`, `com.fedproxy` and `com.publicdomainrelay` authorities are importable from a single stable module path per authority, mirroring the NSID hierarchy onto the filesystem. Rather than importing deep generated paths, callers import the authority barrel and reach the sub-lexicon through the named namespace export (for example the `repo` namespace off the `com/atproto.ts` barrel). It is a pure re-export surface: no runtime logic, no hand-written types, and no state.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

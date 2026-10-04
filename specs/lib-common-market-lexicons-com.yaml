@@ -10,5 +10,64 @@ metadata:
 spec:
   dependsOn:
   - sc.atproto-market
+  intent: 'The context exists so that lexicon types for the `com.atproto`, `com.fedproxy`
+    and `com.publicdomainrelay` authorities are importable from a single stable module
+    path per authority, mirroring the NSID hierarchy onto the filesystem. Rather than
+    importing deep generated paths, callers import the authority barrel and reach
+    the sub-lexicon through the named namespace export (for example the `repo` namespace
+    off the `com/atproto.ts` barrel). It is a pure re-export surface: no runtime logic,
+    no hand-written types, and no state.'
   repository: atproto-market
+  requirements:
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/atproto.ts
+    - file:lib/common/market-lexicons/com/fedproxy.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay.ts
+    id: r.barrel-per-nsid-authority
+    level: SHOULD
+    text: One barrel file exists per second-level NSID authority and the directory
+      layout mirrors the NSID path, so the sub-lexicon namespace name equals the third
+      NSID segment and the binding target equals `./<authority>/<segment>.ts`; a new
+      authority or sub-lexicon is added by regenerating the barrel rather than by
+      adding ad-hoc exports.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/atproto.ts
+    id: r.com-atproto-exports-repo
+    level: MUST
+    text: The `com.atproto` authority barrel re-exports the `repo` sub-lexicon as
+      a namespace binding named `repo`, sourced from the sibling `./atproto/repo.ts`
+      module, so callers reach the `com.atproto.repo.*` types through that single
+      named export.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/fedproxy.ts
+    id: r.com-fedproxy-exports-three-namespaces
+    level: MUST
+    text: The `com.fedproxy` authority barrel re-exports three sub-lexicons as namespaces
+      named `temp`, `rbac` and `sshPublicKey`, each sourced from the matching `./fedproxy/<name>.ts`
+      module.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay.ts
+    id: r.com-publicdomainrelay-exports-temp
+    level: MUST
+    text: The `com.publicdomainrelay` authority barrel re-exports the `temp` sub-lexicon
+      as a namespace named `temp`, sourced from `./publicdomainrelay/temp.ts`.
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/atproto.ts
+    - file:lib/common/market-lexicons/com/fedproxy.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay.ts
+    id: r.generated-files-not-hand-edited
+    level: MUST
+    text: 'Each of the three authority barrels carries the `THIS FILE WAS GENERATED
+      BY "@atproto/lex". DO NOT EDIT.` header and is treated as generator output:
+      changes are made by re-running the lexicon code generator over the source lexicons,
+      never by editing the barrel by hand.'
+  - codeRefs:
+    - file:lib/common/market-lexicons/com/atproto.ts
+    - file:lib/common/market-lexicons/com/fedproxy.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay.ts
+    id: r.re-export-only-no-runtime-logic
+    level: SHOULD
+    text: The barrels contain only `export * as <name> from '<path>'` re-export statements,
+      carrying no runtime code, validation, or default export, so importing a barrel
+      pulls in nothing beyond the referenced sub-lexicon modules.
   upstream: self
