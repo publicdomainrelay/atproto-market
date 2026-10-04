@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists to pin down the contract boundary of the requester: the types and pure helpers every requester transport, CLI and test agrees on, so that bid collection, winner selection and the option surface can change implementation without changing the modules that consume them. It is deliberately dependency-light and side-effect-free, which lets the flow implementation in lib/requester-xrpc/mod.ts and the tests under test/ be exercised against fakes; the only behavior it owns is deterministic bid bookkeeping.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 
