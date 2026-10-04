@@ -10,5 +10,19 @@ spec:
   systemContext: lib-abc-market
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-abc-market
-  phase: Running
+  agentLog: 'lib/abc/market is the transport-agnostic ABC interface layer for an AT
+    Protocol market: it declares the shapes a market service (RFP issuer, bidder,
+    or event listener) must supply and the value types that flow through them, with
+    no runtime dependency on Hono, a PDS, or a specific wire protocol. resolve.ts
+    turns at:// URIs and record refs into typed values and defines the RecordResolver
+    the host must implement to fetch them; contract.ts names the record graph (bid,
+    rfp, payloads, accept, receipt, event) and its error type; callbacks.ts defines
+    the context objects and callback signatures for submitRfp, submitBid, submitAccept,
+    and market events, keyed by service id and payload NSID; settlement.ts describes
+    an x402-or-free payment mode with a receipt URL and bid-payload creation step;
+    attestation.ts gives the keypair shape handed to the attestation layer. mod.ts
+    is a barrel that re-exports all five modules so callers import from one entry.'
+  message: wrote 16 requirement(s) and 31 interface(s) for lib-abc-market; interface
+    Settlement.receiptUrl is not in the observed facts; dropped; interface Settlement.createBidPayload
+    is not in the observed facts; dropped
+  phase: Succeeded

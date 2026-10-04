@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so that market logic can be written and tested once against interfaces, and then bound to whatever transport or credential backend a deployment uses. A market implementation depends on this package instead of on a concrete server, which lets pushes over an XRPC endpoint and self-discovered firehose records share the same handlers, and lets settlement be either an x402 paid flow or a free one behind the same Settlement interface. Everything here is types, small pure helpers, and error classes; the host supplies the resolver, logger, signer, and agent.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

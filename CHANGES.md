@@ -116,6 +116,26 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.wif-guard` (MUST): "isWifSimpleConfig is a runtime type guard that rejects any non-object or null value and returns true only when both issuer_uri and actx are strings, so a bid's WIF config can be narrowed from unknown before use."
 - added `r.wif-simple-config-shape` (MUST): "WifSimpleConfig models the resolved com.publicdomainrelay.temp.compute.config.wif.simple record from the winning bid: issuer_uri and actx are required strings, while subject and the to_issue/accept_path/actx_path/token_path/url_path/url_route fields are optional strings."
 
+### lib-abc-market
+
+- intent: "" -> "This context exists so that market logic can be written and tested once against interfaces, and then bound to whatever transport or credential backend a deployment uses. A market implementation depends on this package instead of on a concrete server, which lets pushes over an XRPC endpoint and self-discovered firehose records share the same handlers, and lets settlement be either an x402 paid flow or a free one behind the same Settlement interface. Everything here is types, small pure helpers, and error classes; the host supplies the resolver, logger, signer, and agent."
+- added `r.at-uri-parsing` (MUST): "parseAtUri strips the at:// prefix and splits the remainder on slashes into repo, collection and rkey; atUriAuthority returns just the authority segment; nsidFromUri returns the collection segment, which callers treat as the record's NSID."
+- added `r.attestation-keypair` (MUST): "AttestationKeypair hands the attestation layer a did:key public-key reference from its did method together with the private key material, so callers can sign and verify without this package depending on the attestation implementation."
+- added `r.bid-and-accept-callbacks` (MUST): "SubmitBidCallback and SubmitAcceptCallback receive contexts built from the record as sent inline in the request (uri, cid, record or resolved accept, issuer DID, resolver, logger, and the mandatory inbound request) and return the same HandlerResult shape as the RFP callback."
+- added `r.contract-graph-error` (MUST): "ContractGraphError extends Error and carries a status field that defaults to 400 when the thrower does not name one, so a malformed contract graph surfaces as a client error unless a caller says otherwise."
+- added `r.contract-graph-shape` (MUST): "ContractGraph names the records that make up a market contract: bid, rfp and rfpPayload are required strong refs, while bidPayload, bidConfig, accept, receipt and event are optional because they only exist once the corresponding step has happened."
+- added `r.event-callbacks` (MUST): "EventCallback receives an EventDispatchContext with the event's uri, cid, resolved record, payload NSID and issuer DID, plus the service id the token's aud matched when one did, and EventCallbacks indexes handlers by service id and payload NSID the same way RFP callbacks are indexed."
+- added `r.handler-result-shape` (MUST): "HandlerResult is either void or an object with an optional status and optional body, so a callback can decline to shape the response and let the host supply a default."
+- added `r.receipt-url-join` (MUST): "receiptUrlFor joins a base url and a path with exactly one slash, stripping trailing slashes from the base, and falls back to the origin of the request url when no base url is configured."
+- added `r.record-resolver-contract` (MUST): "A host supplies a RecordResolver whose resolve method takes a RecordRef of uri plus cid and returns a Promise of Resolved<T>, so every callback context can fetch and type records without knowing the transport."
+- added `r.record-version-error` (MUST): "RecordVersionError is thrown for an unrecognized record version and its message reads exactly `unknown record version <version>` with the offending version interpolated."
+- added `r.ref-identity` (MUST): "refKey renders a RecordRef as a single string of the form uri#cid for use as a map key, and refsEqual reports two refs equal only when both uri and cid match, so cid changes are never mistaken for the same record version."
+- added `r.resolved-helpers` (MUST): "stripResolved returns the wrapped record with the _uri and _cid bookkeeping fields removed, and resolvedRef returns a com.atproto.repo.strongRef built from those fields, letting a Resolved value be converted back to a record or to a ref without re-reading the source."
+- added `r.settlement-interface` (MUST): "Settlement exposes its mode as either x402 or free, the NSID of the bid payload it produces, a receiptUrl derived from the request url, and createBidPayload which writes the payload at the given receipt url and timestamp and returns its strong ref; SettlementCtx supplies the agent, resolver, signer, logger and base url the implementation needs without this layer knowing the concrete backend."
+- added `r.single-entry-export` (MUST): "mod.ts re-exports resolve, settlement, contract, callbacks and attestation so a consumer imports the whole interface layer from the package entry point rather than reaching into individual modules."
+- added `r.submit-rfp-callback` (MUST): "SubmitRfpCallback receives a SubmitRfpContext carrying the RFP's uri, cid, resolved record, payload NSID and issuer DID plus the resolver and logger, and may return a HandlerResult of status and body or nothing; RfpCallbacks indexes those handlers by service id and then by payload NSID so one server can host several RFP types."
+- added `r.submit-rfp-request-optional` (MUST): "The inbound request on SubmitRfpContext is optional, because an RFP discovered by pulling the firehose has no originating HTTP request while one pushed over submitRfp does; handlers that need url or headers must tolerate its absence."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance |
@@ -129,4 +149,4 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-abc-compute-contract-gateway-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-abc-guest-capability-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-abc-market-bidder-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
-| lib-abc-market-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-abc-market-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |

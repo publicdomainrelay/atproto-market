@@ -1,13 +1,8 @@
 conditions:
-- message: 'undeclared: AtUriParts, AttestationKeypair, ContractGraph, ContractGraphError,
-    ContractGraphError.constructor, EventCallback, EventCallbacks, EventDispatchContext,
-    HandlerResult, RecordRef, RecordResolver, RecordVersionError, RecordVersionError.constructor,
-    RfpCallbacks, Settlement, SettlementCtx, SettlementMode, SubmitAcceptCallback,
-    SubmitAcceptContext, SubmitBidCallback, SubmitBidContext, SubmitRfpCallback, SubmitRfpContext,
-    atUriAuthority, nsidFromUri, parseAtUri, receiptUrlFor, refKey, refsEqual, resolvedRef,
-    stripResolved'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -194,5 +189,5 @@ observed:
     signature: '(baseUrl: string, reqUrl: string, path: string): string'
   treeFiles:
   - lib/abc/market/deno.json
-realizedSpecHash: 99b5de7e070020f5acd16adb782dbf31ecc324740995120b670f2d61026846d4
+realizedSpecHash: 5a1ebcec262cbe9708d38feef05f54dcef8e9ff1e19fcd70f42b1cfbf52cf3db
 syncedFingerprint: 5bd58b97bfb1cec3dfaaf335833717f321206a4b2980ea6d766d321fdc710614
