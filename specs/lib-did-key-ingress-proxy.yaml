@@ -17,7 +17,10 @@ spec:
     It exists so that a local or in-process service (bidder, PDS agent, gateway target)
     can declare a small set of options and get back an IngressRef it can advertise,
     with the WebSocket firehose path either proxied to a local TCP target or served
-    directly in-process.'
+    directly in-process. It no longer carries the guest SSH transport: the guest''s
+    SSH is the dumbpipe/iroh transport, and this package keeps only its XRPC ingress
+    role (submitBid, submitEvent, associateConfirm and the requester/bidder market
+    plane).'
   interfaces:
   - file: lib/did-key-ingress-proxy/mod.ts
     kind: interface
@@ -130,4 +133,17 @@ spec:
     text: When opts.tls is set, the dispatcher serves TLS, so the subscriber must
       use https/wss addressing even for localhost or hosts carrying a port; the flag
       is forwarded unchanged to createSubscriber.
+  - codeRefs:
+    - file:lib/did-key-ingress-proxy/mod.ts
+    - function:ab0d43e74646836bd86d4b393d2cafa0
+    id: r.xrpc-ingress-not-ssh
+    level: MUST
+    text: createIngress must keep serving the XRPC ingress plane unchanged -- the
+      requester PDS's submitBid, submitEvent and associateConfirm endpoints and the
+      bidder's market ingress -- because those carry the market protocol; it must
+      not be used or extended as the guest SSH transport. Guest SSH is now the iroh/dumbpipe
+      transport, so the tunnel-subscriber path previously used to reach the guest's
+      sshd (the relay WebSocket tunnel and the websocat ProxyCommand that dialed it)
+      is no longer part of this package's consumers, and nothing here should depend
+      on it.
   upstream: self

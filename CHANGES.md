@@ -696,7 +696,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 
 ### lib-did-key-ingress-proxy
 
-- intent: "" -> "This context is the ingress side of the relay: it lets an application that already has a fetch handler be reached at a public did:web host through the xrpc-relay ingress proxy without the app managing transport, TLS, or service-auth itself. It exists so that a local or in-process service (bidder, PDS agent, gateway target) can declare a small set of options and get back an IngressRef it can advertise, with the WebSocket firehose path either proxied to a local TCP target or served directly in-process."
+- intent: "" -> "This context is the ingress side of the relay: it lets an application that already has a fetch handler be reached at a public did:web host through the xrpc-relay ingress proxy without the app managing transport, TLS, or service-auth itself. It exists so that a local or in-process service (bidder, PDS agent, gateway target) can declare a small set of options and get back an IngressRef it can advertise, with the WebSocket firehose path either proxied to a local TCP target or served directly in-process. It no longer carries the guest SSH transport: the guest's SSH is the dumbpipe/iroh transport, and this package keeps only its XRPC ingress role (submitBid, submitEvent, associateConfirm and the requester/bidder market plane)."
 - added `r.close-idempotent-before-serve` (MUST): "close() must forward to the stored subscriber when one exists and be a no-op when onServe has not yet registered a subscriber, so callers can tear down a relay that never served."
 - added `r.create-ingress-factory` (MUST): "createIngress(opts) must build and return an IngressRef from CreateIngressOpts, destructuring logger, ingressProxyHost, signer and keypair, and holding the active subscriber in a closure so that a single relay object serves both registration and shutdown."
 - added `r.direct-subscription-handler` (SHOULD): "When directSubscriptionHandler is provided, inbound relay subscriptions for non-tunnel NSIDs must be dispatched to it with subscriptionId, nsid, params, an onEvent callback and an onData callback instead of opening a loopback WebSocket to localWsTarget; its returned function, when any, is the unsubscribe/cleanup handle and an in-process firehose source needs no TCP listener."
@@ -707,6 +707,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.service-auth-token` (MUST): "getServiceAuthToken(lxm) must derive the audience from ingressProxyHost via hostnameToDid and return the service-auth JWT produced by signServiceAuth using the injected signer with that audience and the requested lexicon NSID, so each inbound subscription can be authenticated per-method."
 - added `r.signing-identities` (MUST): "CreateIngressOpts must carry two distinct signing identities: signer, whose did() and sign(bytes) are used only to mint service-auth tokens for the proxy audience, and keypair, whose did() and sign(data) identify the subscriber registration, so the service-auth identity and the relay subscriber identity stay separable."
 - added `r.tls-flag` (SHOULD): "When opts.tls is set, the dispatcher serves TLS, so the subscriber must use https/wss addressing even for localhost or hosts carrying a port; the flag is forwarded unchanged to createSubscriber."
+- added `r.xrpc-ingress-not-ssh` (MUST): "createIngress must keep serving the XRPC ingress plane unchanged -- the requester PDS's submitBid, submitEvent and associateConfirm endpoints and the bidder's market ingress -- because those carry the market protocol; it must not be used or extended as the guest SSH transport. Guest SSH is now the iroh/dumbpipe transport, so the tunnel-subscriber path previously used to reach the guest's sshd (the relay WebSocket tunnel and the websocat ProxyCommand that dialed it) is no longer part of this package's consumers, and nothing here should depend on it."
 
 ### lib-did-plc
 
@@ -1215,6 +1216,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-compute-contract-gateway-xrpc-s2c-956120f96e75 | SpecToCode | Pending |  | 0 | - |
 | lib-delegated-trust-badge-blue-keys-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-did-key-ingress-proxy-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
+| lib-did-key-ingress-proxy-s2c-5c6086004314 | SpecToCode | Pending |  | 0 | - |
 | lib-did-plc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-did-plc-generated-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-did-plc-generated-client-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
