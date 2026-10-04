@@ -1,0 +1,94 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-abc-requester-s2c-c367b58eb280
+  namespace: default
+spec:
+  delta:
+    intent:
+      from: 'This context exists to pin down the contract boundary of the requester:
+        the types and pure helpers every requester transport, CLI and test agrees
+        on, so that bid collection, winner selection and the option surface can change
+        implementation without changing the modules that consume them. It is deliberately
+        dependency-light and side-effect-free, which lets the flow implementation
+        in lib/requester-xrpc/mod.ts and the tests under test/ be exercised against
+        fakes; the only behavior it owns is deterministic bid bookkeeping.'
+      to: 'This context exists to pin down the contract boundary of the requester:
+        the types and pure helpers every requester transport, CLI and test agrees
+        on, so that bid collection, winner selection and the option surface can change
+        implementation without changing the modules that consume them. It is deliberately
+        dependency-light and side-effect-free, which lets the flow implementation
+        in lib/requester-xrpc/mod.ts and the tests under test/ be exercised against
+        fakes; the only behavior it owns is deterministic bid bookkeeping. The SSH
+        transport surface is now transport-neutral: the flow''s target is an iroh
+        ticket by default and a relay FQDN only for the legacy transport.'
+    requirements:
+    - fields:
+      - text
+      from:
+        codeRefs:
+        - interface:7fb903e1181ae51a3d69c0a40484e610
+        id: r.contract-flow-defaults
+        level: SHOULD
+        text: 'The option bag documents its own defaults so implementations agree:
+          fedingressHost defaults to fedproxy.com and the guest transport module defaults
+          to "tunnel", while sshProxyCommandFn, when supplied, overrides the per-FQDN
+          ProxyCommand that is otherwise websocat --binary wss://<fqdn>.'
+      id: r.contract-flow-defaults
+      op: changed
+      to:
+        codeRefs:
+        - interface:7fb903e1181ae51a3d69c0a40484e610
+        id: r.contract-flow-defaults
+        level: SHOULD
+        text: 'The option bag documents its own defaults so implementations agree:
+          fedingressHost defaults to fedproxy.com and the guest transport module defaults
+          to "iroh", while sshProxyCommandFn, when supplied, overrides the per-target
+          ProxyCommand that is otherwise built from the dumbpipe ticket under the
+          iroh transport (the legacy websocat --binary wss://<fqdn> command remains
+          the default only for the fedproxy-ssh transport).'
+    - id: r.iroh-ticket-transport-surface
+      op: added
+      to:
+        codeRefs:
+        - interface:6e1c7583bbdd18e7a9136c0da721214c
+        id: r.iroh-ticket-transport-surface
+        level: MUST
+        text: The iroh ticket is the flow's SSH transport target under the default
+          transport; it is published on the contract's event path by the bidder and
+          reaches the requester through the same onNetwork/registerIdentity handling
+          that already feeds the RequesterPDS irohNodeId promise, and runComputeContract
+          must settle its SSH wait from that ticket rather than requiring a hostname-shaped
+          address. skipSsh must skip ticket resolution entirely and keepVm must not
+          change it.
+    - fields:
+      - text
+      from:
+        codeRefs:
+        - interface:780ccb6e208a6173bf860193cc9dc0b2
+        id: r.ssh-session-provider
+        level: MUST
+        text: 'SshSessionProvider is the whole SSH surface the flow may assume: generateKeypair
+          returns a public key and a private key path for a VM name, pollReady reports
+          whether the guest FQDN becomes reachable within a timeout, and runSession
+          runs a program on the guest and returns its exit code.'
+      id: r.ssh-session-provider
+      op: changed
+      to:
+        codeRefs:
+        - interface:780ccb6e208a6173bf860193cc9dc0b2
+        id: r.ssh-session-provider
+        level: MUST
+        text: 'SshSessionProvider is the whole SSH surface the flow may assume: generateKeypair
+          returns a public key and a private key path for a VM name, pollReady reports
+          whether the guest transport target becomes reachable within a timeout, and
+          runSession runs a program on the guest and returns its exit code. The target
+          is the iroh ticket under the default iroh transport and a relay FQDN only
+          under the legacy transport, so no provider method may assume the target
+          is a hostname.'
+  direction: SpecToCode
+  fromSpecHash: 7f1e9e07bf19d4b0079546f71cc680651fde0e79bef99794f7287bef4e3fae74
+  systemContext: lib-abc-requester
+  toSpecHash: c367b58eb280c20a539b4e8c6eaad13552975de046c216a0e53d238df6ee0c71
+status:
+  phase: Pending
