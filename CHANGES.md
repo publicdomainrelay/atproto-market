@@ -269,6 +269,21 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.single-module-package` (MAY): "The package ships as a single-entry Deno module, with every type and the factory exported from lib/cocore-api/mod.ts and its manifest alongside at lib/cocore-api/deno.json."
 - added `r.transport-post-json` (MUST): "The internal call helper issues an HTTP POST to <base>/xrpc/<nsid> with content-type application/json and an authorization header of Bearer <token>, attaching a JSON-stringified body only when a body argument was supplied, and parses the response as JSON."
 
+### lib-common-cloud-init-common
+
+- intent: "" -> "This context exists so every consumer (requester, compute-contract gateway, guest-capability) composes guest cloud-init from one place instead of hand-writing YAML per transport: transports are registered as named modules, and callers select and layer them. The context is consumed by the requester-XRPC, compute-contract-gateway-XRPC, abc/requester and abc/guest-capability packages, so its merge semantics, precedence and module ids are a cross-package contract."
+- added `r.accept-bundle` (MUST): "acceptBundleModule must return a module that writes the provider accept bundle as JSON at the given guest path with owner root:root and mode 0600, and prepends a runcmd that creates the parent directory with mode 0700 owned by root."
+- added `r.builtin-modules` (MUST): "Importing the module must register the built-ins tunnel, fedproxy-ssh, fedproxy-web, wootty and secrets under those exact ids, and the tunnel module must write an authorized_keys from ctx.sshAuthorizedKey, a key-only sshd drop-in, and a tunnel-subscriber systemd unit that dials ctx.ingressProxyHost with aud ctx.audHost, bridging to 127.0.0.1 at ctx.targetPort defaulting to 22 and only emitting a JSR_URL environment line when ctx.jsrUrl is set."
+- added `r.cloud-config-header` (MUST): "buildUserData must return a string starting with the literal `#cloud-config` header followed by the YAML serialization of the merged object; the composer owns the header, so modules must not emit it themselves."
+- added `r.context-fields` (MUST): "CloudInitContext must carry the guest-provisioning inputs, with vmName required and didPlc, didPlcKey, relayHost, xrpcRelaySubdomain, sshAuthorizedKey, ingressProxyHost, audHost, jsrUrl, targetPort, hostAliases, sshHandle, listenPort, woottyDistUrl, secretsUrl, secretsRoute, secretsAud and secretsAcceptPath optional, so a module reading a field it does not need can be composed from a partial context."
+- added `r.deprecated-wrappers` (MUST): "buildDefaultUserData(ctx) must remain as a deprecated wrapper equivalent to buildUserData with the fedproxy-ssh module, and buildTunnelUserData(ctx) as the deprecated wrapper equivalent to buildUserData with the tunnel module, both accepting only the fields of their narrower context type."
+- added `r.flatten-label` (MUST): "flattenLabel must replace every `.` and `:` in a label with `-`, staying byte-for-byte in sync with the atprp-ssh-relay Go implementation of the same name."
+- added `r.host-aliases` (SHOULD): "The tunnel module should keep only hostAliases entries matching `<host> <name>` and add each as an idempotent /etc/hosts bootcmd that appends the line only when it is not already present."
+- added `r.inject-jsr-url` (MUST): "injectJsrUrl must inject an `Environment="JSR_URL=<url>"` line immediately before the ExecStart of the tunnel-subscriber deno run command inside an already-rendered cloud-init YAML string, leaving the string unchanged when no such command is present."
+- added `r.merge-precedence` (MUST): "buildUserData must apply values in the precedence order base < modules (in the array order given) < overrides, with a caller-supplied base parsed after stripping a leading `#cloud-config` line and silently treated as empty when it is absent or unparseable."
+- added `r.module-registry` (MUST): "User-data modules must be held in a process-wide registry keyed by string id, with registerUserDataModule inserting or replacing an entry and getUserDataModules resolving a mixed array of ids and function values while throwing `unknown user-data module: <id>` for an id that is not registered; listUserDataModules returns the registered ids."
+- added `r.patch-merge-semantics` (MUST): "Applying a UserDataPatch must deep-merge apt keys, union packages and bootcmd with duplicates removed, replace-in-place users and write_files entries that repeat an existing name or path (later entry wins, first position kept), and rebuild runcmd as runcmdPrepend then the existing runcmd then runcmd, so prepended commands stay ahead of provisioning commands."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance |
@@ -289,5 +304,5 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-atproto-helpers-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-atproto-oauth-helpers-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-cocore-api-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-common-cloud-init-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-common-cloud-init-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-common-compute-contract-gateway-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |

@@ -1,6 +1,20 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
 codeRefIndex:
 - file:lib/common/cloud-init-common/mod.ts mod.ts@lib/common/cloud-init-common/mod.ts
+- function:40149c728f060be41b2c8ee8a826902c buildTunnelUserData@lib/common/cloud-init-common/mod.ts:882
+- function:4466755423490bdd6cd4a58e579cc002 injectJsrUrl@lib/common/cloud-init-common/mod.ts:887
+- function:46c9fd0cecf9645ba56294190be1600c buildDefaultUserData@lib/common/cloud-init-common/mod.ts:874
+- function:4b5291e8f10c0cf8f4ac044370b5d20e acceptBundleModule@lib/common/cloud-init-common/mod.ts:220
+- function:a68626e26bed80b6d685682d2680efdb registerUserDataModule@lib/common/cloud-init-common/mod.ts:113
+- function:a852acc6663f06c9724c3272a33b42a4 listUserDataModules@lib/common/cloud-init-common/mod.ts:127
+- function:b171eb2dbd8264151491ce36f02925d2 buildUserData@lib/common/cloud-init-common/mod.ts:200
+- function:b757a298771ae8dcbe1086c37860fb1e getUserDataModules@lib/common/cloud-init-common/mod.ts:118
+- function:c42fe19fa18470a330f72a65da020d2d flattenLabel@lib/common/cloud-init-common/mod.ts:102
+- interface:0bccaee64ad56c10f80842c828570d30 CloudInitContext@lib/common/cloud-init-common/mod.ts:16
+- interface:a1ea99f0f39ad710f4f5c37a44b76b5a TunnelCloudInitContext@lib/common/cloud-init-common/mod.ts:62
+- interface:a70dcded359cb8e179e375b8adc0876c UserDataPatch@lib/common/cloud-init-common/mod.ts:86
+- interface:ce3efe5cd2d89f183f1c90bd06992a98 WriteFileEntry@lib/common/cloud-init-common/mod.ts:77
+- type_alias:41d76c33929582b594b1d002d3176708 UserDataModule@lib/common/cloud-init-common/mod.ts:99
 kind: SystemContext
 metadata:
   name: lib-common-cloud-init-common
@@ -8,5 +22,173 @@ metadata:
 spec:
   dependsOn:
   - sc.atproto-market
+  intent: 'This context exists so every consumer (requester, compute-contract gateway,
+    guest-capability) composes guest cloud-init from one place instead of hand-writing
+    YAML per transport: transports are registered as named modules, and callers select
+    and layer them. The context is consumed by the requester-XRPC, compute-contract-gateway-XRPC,
+    abc/requester and abc/guest-capability packages, so its merge semantics, precedence
+    and module ids are a cross-package contract.'
+  interfaces:
+  - file: lib/common/cloud-init-common/mod.ts
+    kind: interface
+    name: CloudInitContext
+    signature: interface CloudInitContext
+  - file: lib/common/cloud-init-common/mod.ts
+    kind: interface
+    name: TunnelCloudInitContext
+    signature: interface TunnelCloudInitContext
+  - file: lib/common/cloud-init-common/mod.ts
+    kind: type_alias
+    name: UserDataModule
+    signature: 'type UserDataModule = (ctx: Partial<CloudInitContext>) => UserDataPatch'
+  - file: lib/common/cloud-init-common/mod.ts
+    kind: interface
+    name: UserDataPatch
+    signature: interface UserDataPatch
+  - file: lib/common/cloud-init-common/mod.ts
+    kind: interface
+    name: WriteFileEntry
+    signature: interface WriteFileEntry
+  - file: lib/common/cloud-init-common/mod.ts
+    kind: function
+    name: acceptBundleModule
+    signature: 'function acceptBundleModule(acceptPathVm: string, bundle: Record<string,
+      unknown>): UserDataModule'
+  - file: lib/common/cloud-init-common/mod.ts
+    kind: function
+    name: buildDefaultUserData
+    signature: 'function buildDefaultUserData(ctx: CloudInitContext): string'
+  - file: lib/common/cloud-init-common/mod.ts
+    kind: function
+    name: buildTunnelUserData
+    signature: 'function buildTunnelUserData(ctx: TunnelCloudInitContext): string'
+  - file: lib/common/cloud-init-common/mod.ts
+    kind: function
+    name: buildUserData
+    signature: 'function buildUserData(opts: { ctx?: Partial<CloudInitContext>; base?:
+      string | null; modules: Array<string | UserDataModule>; overrides?: Partial<UserDataPatch>
+      }): string'
+  - file: lib/common/cloud-init-common/mod.ts
+    kind: function
+    name: flattenLabel
+    signature: 'function flattenLabel(s: string): string'
+  - file: lib/common/cloud-init-common/mod.ts
+    kind: function
+    name: getUserDataModules
+    signature: 'function getUserDataModules(ids: Array<string | UserDataModule>):
+      UserDataModule[]'
+  - file: lib/common/cloud-init-common/mod.ts
+    kind: function
+    name: injectJsrUrl
+    signature: 'function injectJsrUrl(userData: string, jsrUrl: string): string'
+  - file: lib/common/cloud-init-common/mod.ts
+    kind: function
+    name: listUserDataModules
+    signature: 'function listUserDataModules(): string[]'
+  - file: lib/common/cloud-init-common/mod.ts
+    kind: function
+    name: registerUserDataModule
+    signature: 'function registerUserDataModule(id: string, m: UserDataModule): void'
   repository: atproto-market
+  requirements:
+  - codeRefs:
+    - function:4b5291e8f10c0cf8f4ac044370b5d20e
+    id: r.accept-bundle
+    level: MUST
+    text: acceptBundleModule must return a module that writes the provider accept
+      bundle as JSON at the given guest path with owner root:root and mode 0600, and
+      prepends a runcmd that creates the parent directory with mode 0700 owned by
+      root.
+  - codeRefs:
+    - file:lib/common/cloud-init-common/mod.ts
+    - type_alias:41d76c33929582b594b1d002d3176708
+    id: r.builtin-modules
+    level: MUST
+    text: Importing the module must register the built-ins tunnel, fedproxy-ssh, fedproxy-web,
+      wootty and secrets under those exact ids, and the tunnel module must write an
+      authorized_keys from ctx.sshAuthorizedKey, a key-only sshd drop-in, and a tunnel-subscriber
+      systemd unit that dials ctx.ingressProxyHost with aud ctx.audHost, bridging
+      to 127.0.0.1 at ctx.targetPort defaulting to 22 and only emitting a JSR_URL
+      environment line when ctx.jsrUrl is set.
+  - codeRefs:
+    - file:lib/common/cloud-init-common/mod.ts
+    - function:b171eb2dbd8264151491ce36f02925d2
+    id: r.cloud-config-header
+    level: MUST
+    text: buildUserData must return a string starting with the literal `#cloud-config`
+      header followed by the YAML serialization of the merged object; the composer
+      owns the header, so modules must not emit it themselves.
+  - codeRefs:
+    - interface:0bccaee64ad56c10f80842c828570d30
+    id: r.context-fields
+    level: MUST
+    text: CloudInitContext must carry the guest-provisioning inputs, with vmName required
+      and didPlc, didPlcKey, relayHost, xrpcRelaySubdomain, sshAuthorizedKey, ingressProxyHost,
+      audHost, jsrUrl, targetPort, hostAliases, sshHandle, listenPort, woottyDistUrl,
+      secretsUrl, secretsRoute, secretsAud and secretsAcceptPath optional, so a module
+      reading a field it does not need can be composed from a partial context.
+  - codeRefs:
+    - function:40149c728f060be41b2c8ee8a826902c
+    - function:46c9fd0cecf9645ba56294190be1600c
+    - interface:a1ea99f0f39ad710f4f5c37a44b76b5a
+    id: r.deprecated-wrappers
+    level: MUST
+    text: buildDefaultUserData(ctx) must remain as a deprecated wrapper equivalent
+      to buildUserData with the fedproxy-ssh module, and buildTunnelUserData(ctx)
+      as the deprecated wrapper equivalent to buildUserData with the tunnel module,
+      both accepting only the fields of their narrower context type.
+  - codeRefs:
+    - function:c42fe19fa18470a330f72a65da020d2d
+    id: r.flatten-label
+    level: MUST
+    text: flattenLabel must replace every `.` and `:` in a label with `-`, staying
+      byte-for-byte in sync with the atprp-ssh-relay Go implementation of the same
+      name.
+  - codeRefs:
+    - file:lib/common/cloud-init-common/mod.ts
+    - function:40149c728f060be41b2c8ee8a826902c
+    id: r.host-aliases
+    level: SHOULD
+    text: The tunnel module should keep only hostAliases entries matching `<host>
+      <name>` and add each as an idempotent /etc/hosts bootcmd that appends the line
+      only when it is not already present.
+  - codeRefs:
+    - function:4466755423490bdd6cd4a58e579cc002
+    id: r.inject-jsr-url
+    level: MUST
+    text: injectJsrUrl must inject an `Environment="JSR_URL=<url>"` line immediately
+      before the ExecStart of the tunnel-subscriber deno run command inside an already-rendered
+      cloud-init YAML string, leaving the string unchanged when no such command is
+      present.
+  - codeRefs:
+    - function:46c9fd0cecf9645ba56294190be1600c
+    - function:b171eb2dbd8264151491ce36f02925d2
+    id: r.merge-precedence
+    level: MUST
+    text: buildUserData must apply values in the precedence order base < modules (in
+      the array order given) < overrides, with a caller-supplied base parsed after
+      stripping a leading `#cloud-config` line and silently treated as empty when
+      it is absent or unparseable.
+  - codeRefs:
+    - function:a68626e26bed80b6d685682d2680efdb
+    - function:a852acc6663f06c9724c3272a33b42a4
+    - function:b757a298771ae8dcbe1086c37860fb1e
+    id: r.module-registry
+    level: MUST
+    text: 'User-data modules must be held in a process-wide registry keyed by string
+      id, with registerUserDataModule inserting or replacing an entry and getUserDataModules
+      resolving a mixed array of ids and function values while throwing `unknown user-data
+      module: <id>` for an id that is not registered; listUserDataModules returns
+      the registered ids.'
+  - codeRefs:
+    - file:lib/common/cloud-init-common/mod.ts
+    - interface:a70dcded359cb8e179e375b8adc0876c
+    - interface:ce3efe5cd2d89f183f1c90bd06992a98
+    id: r.patch-merge-semantics
+    level: MUST
+    text: Applying a UserDataPatch must deep-merge apt keys, union packages and bootcmd
+      with duplicates removed, replace-in-place users and write_files entries that
+      repeat an existing name or path (later entry wins, first position kept), and
+      rebuild runcmd as runcmdPrepend then the existing runcmd then runcmd, so prepended
+      commands stay ahead of provisioning commands.
   upstream: self

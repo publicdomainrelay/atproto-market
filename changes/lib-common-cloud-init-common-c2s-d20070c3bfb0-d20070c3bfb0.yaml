@@ -10,5 +10,17 @@ spec:
   systemContext: lib-common-cloud-init-common
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-common-cloud-init-common
-  phase: Running
+  agentLog: lib/common/cloud-init-common/mod.ts is the shared cloud-init composer
+    for the atproto-market monorepo. It defines the CloudInitContext bag of guest-provisioning
+    values (VM name, DID, relay host and subdomain, SSH key, tunnel ingress/aud hosts,
+    JSR URL, target and listen ports, host aliases, wootty dist URL and the secrets-server
+    coordinates), a back-compat TunnelCloudInitContext subset, and the UserDataPatch
+    / WriteFileEntry shapes that describe a cloud-config fragment. A module registry
+    maps string ids to UserDataModule functions (ctx -> UserDataPatch); buildUserData
+    parses an optional caller-supplied base cloud-config, applies the requested modules
+    in order, applies optional overrides, and emits a single string beginning with
+    the `#cloud-config` header. Five built-in modules are registered at import time
+    - tunnel, fedproxy-ssh, fedproxy-web, wootty and secrets - and deprecated wrappers
+    buildDefaultUserData and buildTunnelUserData keep older callers compiling.
+  message: wrote 11 requirement(s) and 14 interface(s) for lib-common-cloud-init-common
+  phase: Succeeded

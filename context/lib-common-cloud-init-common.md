@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so every consumer (requester, compute-contract gateway, guest-capability) composes guest cloud-init from one place instead of hand-writing YAML per transport: transports are registered as named modules, and callers select and layer them. The context is consumed by the requester-XRPC, compute-contract-gateway-XRPC, abc/requester and abc/guest-capability packages, so its merge semantics, precedence and module ids are a cross-package contract.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

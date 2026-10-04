@@ -1,10 +1,8 @@
 conditions:
-- message: 'undeclared: CloudInitContext, TunnelCloudInitContext, UserDataModule,
-    UserDataPatch, WriteFileEntry, acceptBundleModule, buildDefaultUserData, buildTunnelUserData,
-    buildUserData, flattenLabel, getUserDataModules, injectJsrUrl, listUserDataModules,
-    registerUserDataModule'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -110,5 +108,5 @@ observed:
     signature: '(userData: string, jsrUrl: string): string'
   treeFiles:
   - lib/common/cloud-init-common/deno.json
-realizedSpecHash: 6f155e473c134784791978bfa5d71ea09de7158c339d11c3b8d0c74c810b4a92
+realizedSpecHash: 687f83492a8ecceaa75df21cd29ca42634632a6c69e2d144fd6c3a42af43a002
 syncedFingerprint: b3b5c693040c31034ae3a0bb86e5dca1a0d83e474a0f2e995ef5b2ec1a6c4dd8
