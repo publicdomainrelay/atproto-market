@@ -111,3 +111,6 @@ codeRefIndex:
 - file:lib/common/market-lexicons/network/attested/signature.ts signature.ts@lib/common/market-lexicons/network/attested/signature.ts
 - file:lib/common/market-lexicons/network/attested/verify.defs.ts verify.defs.ts@lib/common/market-lexicons/network/attested/verify.defs.ts
 - file:lib/common/market-lexicons/network/attested/verify.ts verify.ts@lib/common/market-lexicons/network/attested/verify.ts
+- type_alias:7489e38d4a935439d87ec3ac5bb7049d $Output@lib/common/market-lexicons/network/attested/verify.defs.ts:28
+- type_alias:88f850da0d5e8b8c370e4ed509f86f74 $OutputBody@lib/common/market-lexicons/network/attested/verify.defs.ts:29
+- type_alias:a83e3643c5b8a37f2e91a7431503554c $Params@lib/common/market-lexicons/network/attested/verify.defs.ts:16

@@ -1,22 +1,43 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: b8694d9fffd8f78760ffe2f389e12d43b4c0c8569b93d8a0abfd80ccab3bfb1f
+realizedSpecHash: 942ea8a59f9bf3db7099e62ebcfeb7acc95693809f23e1d3e19342629be53c96
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'missing: $Output, $OutputBody, $Params; unresolved: r.generated-not-edited:
-    file:lib/common/market-lexicons/network/attested/proof.defs.ts, r.generated-not-edited:
-    file:lib/common/market-lexicons/network/attested/signature.defs.ts, r.generated-not-edited:
-    file:lib/common/market-lexicons/network/attested/verify.defs.ts, r.module-reexport:
-    file:lib/common/market-lexicons/network/attested/proof.ts, r.module-reexport:
-    file:lib/common/market-lexicons/network/attested/signature.ts, r.module-reexport:
-    file:lib/common/market-lexicons/network/attested/verify.ts, r.verify-query-shape:
-    type_alias:7489e38d4a935439d87ec3ac5bb7049d, r.verify-query-shape: type_alias:88f850da0d5e8b8c370e4ed509f86f74,
-    r.verify-query-shape: type_alias:a83e3643c5b8a37f2e91a7431503554c'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
-  reason: NotSyncedYet
-  message: no synced fingerprint has been recorded yet
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed
   message: the spec passes the validator
-observed: {}
+observed:
+  files:
+  - lib/common/market-lexicons/network/attested/proof.defs.ts
+  - lib/common/market-lexicons/network/attested/proof.ts
+  - lib/common/market-lexicons/network/attested/signature.defs.ts
+  - lib/common/market-lexicons/network/attested/signature.ts
+  - lib/common/market-lexicons/network/attested/verify.defs.ts
+  - lib/common/market-lexicons/network/attested/verify.ts
+  interfaces:
+  - name: $Params
+    kind: type_alias
+    file: lib/common/market-lexicons/network/attested/verify.defs.ts
+    line: 16
+    codegraphId: type_alias:a83e3643c5b8a37f2e91a7431503554c
+  - name: $Output
+    kind: type_alias
+    file: lib/common/market-lexicons/network/attested/verify.defs.ts
+    line: 28
+    codegraphId: type_alias:7489e38d4a935439d87ec3ac5bb7049d
+  - name: $OutputBody
+    kind: type_alias
+    file: lib/common/market-lexicons/network/attested/verify.defs.ts
+    line: 29
+    codegraphId: type_alias:88f850da0d5e8b8c370e4ed509f86f74
+  fingerprint: b8694d9fffd8f78760ffe2f389e12d43b4c0c8569b93d8a0abfd80ccab3bfb1f

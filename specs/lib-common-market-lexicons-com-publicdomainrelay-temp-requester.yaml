@@ -112,3 +112,8 @@ codeRefIndex:
   associateConfirm.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.defs.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.ts
   associateConfirm.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.ts
+- type_alias:32f59c1292407af850d8f6ada5d5959c $Params@lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.defs.ts:13
+- type_alias:4dbf76aa5eeb2f760aaaf03852a93725 $Input@lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.defs.ts:17
+- type_alias:6f696a9a6d16f191e192c7a8a2082268 $InputBody@lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.defs.ts:18
+- type_alias:9084d44b6d89c358d343bab398e2af81 $Output@lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.defs.ts:25
+- type_alias:cc503c95f2423ace5dd97fd68005cd2d $OutputBody@lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.defs.ts:26

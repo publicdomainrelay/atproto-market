@@ -1694,6 +1694,11 @@ system_contexts:
     associateConfirm.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.defs.ts
   - file:lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.ts
     associateConfirm.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.ts
+  - type_alias:32f59c1292407af850d8f6ada5d5959c $Params@lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.defs.ts:13
+  - type_alias:4dbf76aa5eeb2f760aaaf03852a93725 $Input@lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.defs.ts:17
+  - type_alias:6f696a9a6d16f191e192c7a8a2082268 $InputBody@lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.defs.ts:18
+  - type_alias:9084d44b6d89c358d343bab398e2af81 $Output@lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.defs.ts:25
+  - type_alias:cc503c95f2423ace5dd97fd68005cd2d $OutputBody@lib/common/market-lexicons/com/publicdomainrelay/temp/requester/associateConfirm.defs.ts:26
 - id: sc.lib-common-market-lexicons-com-publicdomainrelay-temp-tangled
   name: lib-common-market-lexicons-com-publicdomainrelay-temp-tangled
   spec: specs/lib-common-market-lexicons-com-publicdomainrelay-temp-tangled.yaml
@@ -1740,6 +1745,11 @@ system_contexts:
     trigger.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.defs.ts
   - file:lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.ts
     trigger.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.ts
+  - type_alias:2384d850334f4824332256cd26c0e1e0 $Input@lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.defs.ts:25
+  - type_alias:35f9b05be484c9db3e66293938e0c7fc $Output@lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.defs.ts:38
+  - type_alias:5b2e55e12944df104929ddb029ab7366 $OutputBody@lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.defs.ts:39
+  - type_alias:635b87d49390c20cc0c03a3b2717fce8 $Params@lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.defs.ts:13
+  - type_alias:7b015485c5d41aa955d7da0515ea7cbc $InputBody@lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.defs.ts:26
 - id: sc.lib-common-market-lexicons-network
   name: lib-common-market-lexicons-network
   spec: specs/lib-common-market-lexicons-network.yaml
@@ -1789,6 +1799,9 @@ system_contexts:
   - file:lib/common/market-lexicons/network/attested/signature.ts signature.ts@lib/common/market-lexicons/network/attested/signature.ts
   - file:lib/common/market-lexicons/network/attested/verify.defs.ts verify.defs.ts@lib/common/market-lexicons/network/attested/verify.defs.ts
   - file:lib/common/market-lexicons/network/attested/verify.ts verify.ts@lib/common/market-lexicons/network/attested/verify.ts
+  - type_alias:7489e38d4a935439d87ec3ac5bb7049d $Output@lib/common/market-lexicons/network/attested/verify.defs.ts:28
+  - type_alias:88f850da0d5e8b8c370e4ed509f86f74 $OutputBody@lib/common/market-lexicons/network/attested/verify.defs.ts:29
+  - type_alias:a83e3643c5b8a37f2e91a7431503554c $Params@lib/common/market-lexicons/network/attested/verify.defs.ts:16
 - id: sc.lib-common-secrets-common
   name: lib-common-secrets-common
   spec: specs/lib-common-secrets-common.yaml

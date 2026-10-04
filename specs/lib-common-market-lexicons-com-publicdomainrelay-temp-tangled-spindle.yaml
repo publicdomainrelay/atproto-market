@@ -127,3 +127,8 @@ codeRefIndex:
   trigger.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.defs.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.ts
   trigger.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.ts
+- type_alias:2384d850334f4824332256cd26c0e1e0 $Input@lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.defs.ts:25
+- type_alias:35f9b05be484c9db3e66293938e0c7fc $Output@lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.defs.ts:38
+- type_alias:5b2e55e12944df104929ddb029ab7366 $OutputBody@lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.defs.ts:39
+- type_alias:635b87d49390c20cc0c03a3b2717fce8 $Params@lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.defs.ts:13
+- type_alias:7b015485c5d41aa955d7da0515ea7cbc $InputBody@lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.defs.ts:26
