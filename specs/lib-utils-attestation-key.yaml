@@ -64,3 +64,4 @@ spec:
     file: lib/utils-attestation-key/mod.ts
 codeRefIndex:
 - file:lib/utils-attestation-key/mod.ts mod.ts@lib/utils-attestation-key/mod.ts
+- function:31d6822de041bbe285c919680dd5898d loadOrCreateAttestationKeyHex@lib/utils-attestation-key/mod.ts:22

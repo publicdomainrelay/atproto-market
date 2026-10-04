@@ -3052,6 +3052,12 @@ system_contexts:
   codeRefIndex:
   - file:lib/secrets-oidc/deno.json deno.json@lib/secrets-oidc/deno.json
   - file:lib/secrets-oidc/mod.ts mod.ts@lib/secrets-oidc/mod.ts
+  - function:5f4aad08662e2d2094582832d7b08310 createSecretsAuthorizer@lib/secrets-oidc/mod.ts:34
+  - function:d7d076f635e975de9b23dac9be2ef9e7 getJwks@lib/secrets-oidc/mod.ts:48
+  - interface:05b597fb30f58132a5be06a41f6fba0d SecretsAuthorizer@lib/secrets-oidc/mod.ts:16
+  - interface:bf1e05cf2e07ed74d51e51e2e63afc40 SecretsGrant@lib/secrets-oidc/mod.ts:6
+  - interface:d3e1a8191afeaac9625fd120d563275c AuthorizedRequest@lib/secrets-oidc/mod.ts:12
+  - interface:dc48a990f6ac35504ef07082ebff16e1 CreateSecretsAuthorizerOpts@lib/secrets-oidc/mod.ts:23
 - id: sc.lib-trust-graph-bsky-mutuals
   name: lib-trust-graph-bsky-mutuals
   spec: specs/lib-trust-graph-bsky-mutuals.yaml
@@ -3080,6 +3086,8 @@ system_contexts:
   codeRefIndex:
   - file:lib/trust-graph-bsky-mutuals/deno.json deno.json@lib/trust-graph-bsky-mutuals/deno.json
   - file:lib/trust-graph-bsky-mutuals/mod.ts mod.ts@lib/trust-graph-bsky-mutuals/mod.ts
+  - function:34fc226f1ebe43b6ca206f58c9e43a2f createBskyMutualsVouchResolver@lib/trust-graph-bsky-mutuals/mod.ts:8
+  - interface:db90b579bdaef85c0398478a8d9c2578 BskyMutualsVouchResolverOpts@lib/trust-graph-bsky-mutuals/mod.ts:3
 - id: sc.lib-trust-graph-tangled-graph
   name: lib-trust-graph-tangled-graph
   spec: specs/lib-trust-graph-tangled-graph.yaml
@@ -3110,6 +3118,9 @@ system_contexts:
   codeRefIndex:
   - file:lib/trust-graph-tangled-graph/deno.json deno.json@lib/trust-graph-tangled-graph/deno.json
   - file:lib/trust-graph-tangled-graph/mod.ts mod.ts@lib/trust-graph-tangled-graph/mod.ts
+  - function:c548791fdd9c126249e41e29c7d44c44 createTangledGraphVouchResolver@lib/trust-graph-tangled-graph/mod.ts:14
+  - interface:96c0ea570aaadab563b357e40f8b2254 TangledGraphVouchResolverOpts@lib/trust-graph-tangled-graph/mod.ts:9
+  - interface:f3b2726e5ba78287474a3382ccf87cc2 ListedRecord@lib/trust-graph-tangled-graph/mod.ts:4
 - id: sc.lib-utils-attestation-key
   name: lib-utils-attestation-key
   spec: specs/lib-utils-attestation-key.yaml
@@ -3129,6 +3140,7 @@ system_contexts:
     level: SHOULD
   codeRefIndex:
   - file:lib/utils-attestation-key/mod.ts mod.ts@lib/utils-attestation-key/mod.ts
+  - function:31d6822de041bbe285c919680dd5898d loadOrCreateAttestationKeyHex@lib/utils-attestation-key/mod.ts:22
 - id: sc.request-vm-ssh
   name: request-vm-ssh
   spec: specs/request-vm-ssh.yaml

@@ -1,18 +1,41 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: 6bbaa70d0390cb36fd3ffb5aba6c3e84e9eac42b2e8218e46a400f022d7358b8
+realizedSpecHash: ed4946b11477698cd5eb3bcb503bc8c7691049e0c5372bd82cb3fcbf3a000888
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'missing: ListedRecord, TangledGraphVouchResolverOpts, createTangledGraphVouchResolver;
-    unresolved: r.export-listed-record: file:lib/trust-graph-tangled-graph/mod.ts,
-    r.export-listed-record: interface:f3b2726e5ba78287474a3382ccf87cc2, r.fail-closed-on-lookup-error:
-    function:c548791fdd9c126249e41e29c7d44c44, r.opts-list-records-callback: interface:96c0ea570aaadab563b357e40f8b2254,
-    r.single-mod-entrypoint: file:lib/trust-graph-tangled-graph/deno.json'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
-  reason: NotSyncedYet
-  message: no synced fingerprint has been recorded yet
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed
   message: the spec passes the validator
-observed: {}
+observed:
+  files:
+  - lib/trust-graph-tangled-graph/mod.ts
+  treeFiles:
+  - lib/trust-graph-tangled-graph/deno.json
+  interfaces:
+  - name: ListedRecord
+    kind: interface
+    file: lib/trust-graph-tangled-graph/mod.ts
+    line: 4
+    codegraphId: interface:f3b2726e5ba78287474a3382ccf87cc2
+  - name: TangledGraphVouchResolverOpts
+    kind: interface
+    file: lib/trust-graph-tangled-graph/mod.ts
+    line: 9
+    codegraphId: interface:96c0ea570aaadab563b357e40f8b2254
+  - name: createTangledGraphVouchResolver
+    kind: function
+    signature: '(opts: TangledGraphVouchResolverOpts): VouchResolver'
+    file: lib/trust-graph-tangled-graph/mod.ts
+    line: 14
+    codegraphId: function:c548791fdd9c126249e41e29c7d44c44
+  fingerprint: 6bbaa70d0390cb36fd3ffb5aba6c3e84e9eac42b2e8218e46a400f022d7358b8

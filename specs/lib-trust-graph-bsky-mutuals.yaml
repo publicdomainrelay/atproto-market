@@ -107,3 +107,5 @@ spec:
 codeRefIndex:
 - file:lib/trust-graph-bsky-mutuals/deno.json deno.json@lib/trust-graph-bsky-mutuals/deno.json
 - file:lib/trust-graph-bsky-mutuals/mod.ts mod.ts@lib/trust-graph-bsky-mutuals/mod.ts
+- function:34fc226f1ebe43b6ca206f58c9e43a2f createBskyMutualsVouchResolver@lib/trust-graph-bsky-mutuals/mod.ts:8
+- interface:db90b579bdaef85c0398478a8d9c2578 BskyMutualsVouchResolverOpts@lib/trust-graph-bsky-mutuals/mod.ts:3

@@ -9,5 +9,6 @@ _The resolved code references are regenerated on every run. Cite the ids above r
 <!-- SPECD_MANAGED_BEGIN -->
 ## Resolved code references
 
-_None yet._
+- `file:lib/utils-attestation-key/mod.ts` file mod.ts (lib/utils-attestation-key/mod.ts)
+- `function:31d6822de041bbe285c919680dd5898d` function loadOrCreateAttestationKeyHex (lib/utils-attestation-key/mod.ts)
 <!-- SPECD_MANAGED_END -->
