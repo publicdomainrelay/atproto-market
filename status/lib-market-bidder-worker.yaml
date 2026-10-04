@@ -1,69 +1,20 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: InterfacesMissing
+  message: 'missing: CreateComputeProviderDenoWorkerOpts, WorkerBidderDeps, WorkerProvider,
+    createComputeProviderDenoWorker, createWorkerBidderCallbacks, createWorkerProviderHooks;
+    unresolved: r.accept-provisioning: function:35fb7d4b902e6ad5a4f68cf585a580df,
+    r.accept-provisioning: interface:6588bb229d1d3f4b0851680b4a33303c, r.no-termination-path:
+    file:lib/market-bidder-worker/mod.ts, r.provider-construction: function:0270e1f8fb0d9ba7755ac84195824cd5,
+    r.provider-construction: interface:7505aec1e654513bf40d42b074c9622b, r.provider-ref-registration:
+    function:a5248f76fd7c17fa0d03949153f13023, r.provider-ref-registration: interface:61e8bfc9bbbe2ef113ac6821edec06fc'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/market-bidder-worker/mod.ts
-  fingerprint: 3b647450ab559d1f441945e474e994bf24717f8f3832f05b8b18b6802c843f9e
-  interfaces:
-  - codegraphId: interface:6588bb229d1d3f4b0851680b4a33303c
-    file: lib/market-bidder-worker/mod.ts
-    kind: interface
-    line: 39
-    name: WorkerBidderDeps
-  - codegraphId: function:35fb7d4b902e6ad5a4f68cf585a580df
-    file: lib/market-bidder-worker/mod.ts
-    kind: function
-    line: 74
-    name: createWorkerBidderCallbacks
-    signature: |-
-      (deps: WorkerBidderDeps): {
-        rfp: Record<string, Record<string, SubmitRfpCallback>>;
-        accept: SubmitAcceptCallback;
-      }
-  - codegraphId: interface:7505aec1e654513bf40d42b074c9622b
-    file: lib/market-bidder-worker/mod.ts
-    kind: interface
-    line: 292
-    name: CreateComputeProviderDenoWorkerOpts
-  - codegraphId: interface:61e8bfc9bbbe2ef113ac6821edec06fc
-    file: lib/market-bidder-worker/mod.ts
-    kind: interface
-    line: 297
-    name: WorkerProvider
-  - codegraphId: function:0270e1f8fb0d9ba7755ac84195824cd5
-    file: lib/market-bidder-worker/mod.ts
-    kind: function
-    line: 305
-    name: createComputeProviderDenoWorker
-    signature: |-
-      (
-        opts: CreateComputeProviderDenoWorkerOpts,
-      ): Promise<WorkerProvider>
-  - codegraphId: function:a5248f76fd7c17fa0d03949153f13023
-    file: lib/market-bidder-worker/mod.ts
-    kind: function
-    line: 335
-    name: createWorkerProviderHooks
-    signature: |-
-      (opts: {
-        provider: WorkerProvider;
-        permissionPolicyHandler?: PermissionPolicyHandler;
-      }): MarketBidderProviderRef
-  treeFiles:
-  - lib/market-bidder-worker/deno.json
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: 0ebaa75d516a299dd52b0e2d48e7b5f23ef36d9ca288630a54140c2f1ff33f74
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 3b647450ab559d1f441945e474e994bf24717f8f3832f05b8b18b6802c843f9e
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

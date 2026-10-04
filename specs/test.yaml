@@ -1,4 +1,136 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SystemContext
+metadata:
+  name: test
+  namespace: default
+spec:
+  repository: atproto-market
+  upstream: self
+  dependsOn:
+  - sc.atproto-market
+  intent: 'This context exists to hold the repository''s verification surface: executable
+    tests that pin down the behaviour of the bidder, gateway, and supporting subsystems
+    against locally stood-up infrastructure instead of public network services. Its
+    central mechanism is the shared fetch interceptor in test/fetch-interceptor.ts,
+    which exists so that code under test that hardcodes public endpoints (plc.directory
+    for identity resolution, https://*.localhost for per-service relays) can be driven
+    against ephemeral local servers on arbitrary ports, and so that tests exercising
+    TLS can trust a throwaway self-signed CA without touching the real certificate
+    store. Keeping these tests in one context makes the assumptions they share — the
+    host rewrite rules, the CA trust escape hatch, and the teardown contract — describable
+    in one place, so a change to the interceptor''s rewriting behaviour is visibly
+    a change to every integration suite at once.'
+  requirements:
+  - id: r.ca-cert-https-mode
+    level: SHOULD
+    text: When a caCertPem is supplied, localhost rewrites must keep the https scheme
+      and be issued through a Deno HttpClient configured with that PEM as a trusted
+      CA certificate, so TLS-terminating local services are reachable without disabling
+      verification; when no PEM is supplied the rewrite must downgrade to plain http
+      and issue the request on the default client.
+    codeRefs:
+    - file:test/fetch-interceptor.ts
+    - function:c6f81957f952317eb0e87d2454b5add3
+  - id: r.cloud-init-iroh-snapshot
+    level: MUST
+    text: 'test/cloud_init_snapshot_test.ts must render the new iroh transport and
+      assert it byte-for-byte against test/fixtures/cloud-init/iroh.yaml, and must
+      assert listUserDataModules() includes "iroh"; the existing tunnel, tunnel-secrets,
+      fedproxy-ssh and fedproxy-web-wootty snapshot assertions and the secrets-module
+      semantic assertions must remain in the same file and stay green. The file''s
+      module-completeness rule -- a module that writes an sshd drop-in or enables
+      ssh must install openssh-server -- must cover the iroh module as well as tunnel
+      and fedproxy-ssh, so a module that configures an sshd it never installs fails
+      the suite. This test is the verification gate: it must pass under `deno test
+      -A test/cloud_init_snapshot_test.ts`, and the whole workspace must still pass
+      `deno check`.'
+    codeRefs:
+    - file:test/cloud_init_snapshot_test.ts
+  - id: r.integration-suites-install-interceptor
+    level: MUST
+    text: The bidder container, bidder cross-platform, gateway caller RBAC, gateway
+      README smoke, gateway request VM, gateway SSH, gateway worker, and OAuth session
+      transfer suites must all install the shared fetch interceptor, so these end-to-end
+      tests exercise services through the local rewrite rules rather than the public
+      network.
+    codeRefs:
+    - file:test/bidder_container_integration_test.ts
+    - file:test/bidder_cross_platform_integration_test.ts
+    - file:test/fetch-interceptor.ts
+    - file:test/gateway_caller_rbac_integration_test.ts
+    - file:test/gateway_readme_smoke_test.ts
+    - file:test/gateway_request_vm_integration_test.ts
+    - file:test/gateway_ssh_integration_test.ts
+    - file:test/gateway_worker_integration_test.ts
+    - file:test/oauth_session_transfer_test.ts
+  - id: r.iroh-ticket-extraction-tested
+    level: MUST
+    text: 'test/cloud_init_snapshot_test.ts must assert the iroh module''s ticket
+      extraction against the line the pinned dumbpipe release actually prints: the
+      rendered cloud-config must extract the ticket from a `dumbpipe connect-tcp <ticket>`
+      line (the subcommand `listen-tcp` prints) and must not depend on a bare `dumbpipe
+      connect ` prefix, so a guest that logs the real listener output still writes
+      /root/secrets/iroh-node-id.'
+    codeRefs:
+    - file:test/cloud_init_snapshot_test.ts
+  - id: r.localhost-port-rewrite
+    level: MUST
+    text: installFetchInterceptor must detect https URLs whose host is exactly localhost,
+      ends with .localhost, or contains .localhost:, and rewrite them to reach the
+      local dispatcher; when the host carries no explicit port the configured dispPort
+      is appended, and the original path and query are preserved.
+    codeRefs:
+    - file:test/fetch-interceptor.ts
+    - function:c6f81957f952317eb0e87d2454b5add3
+  - id: r.passthrough-unmatched
+    level: MUST
+    text: Requests that match neither the plc.directory prefix nor a localhost host
+      must be forwarded unchanged to the original realFetch, so an installed interceptor
+      does not silently alter traffic to any other origin.
+    codeRefs:
+    - file:test/fetch-interceptor.ts
+    - function:c6f81957f952317eb0e87d2454b5add3
+  - id: r.plc-directory-rewrite
+    level: MUST
+    text: installFetchInterceptor must rewrite any request whose URL begins with https://plc.directory/
+      onto the caller-supplied plcDirectoryUrl, preserving the remainder of the original
+      path after the https://plc.directory prefix, so tests resolve DIDs against a
+      local fake PLC rather than the public directory.
+    codeRefs:
+    - file:test/fetch-interceptor.ts
+    - function:c6f81957f952317eb0e87d2454b5add3
+  - id: r.teardown-restores-fetch
+    level: MUST
+    text: installFetchInterceptor must return a disposable closure that reassigns
+      globalThis.fetch back to the original realFetch and closes the Deno HttpClient
+      it created, so a test that installs the interceptor leaves no patched global
+      or leaked connection pool behind for later tests in the same process.
+    codeRefs:
+    - file:test/fetch-interceptor.ts
+    - function:c6f81957f952317eb0e87d2454b5add3
+  - id: r.unit-suite-coverage
+    level: SHOULD
+    text: 'The suite must retain focused tests for each non-intercepted subsystem:
+      badge blue key binding, bid collection, the bidder policy restricted to only-me,
+      the production bidder, bidder SSH relay, cloud-init snapshot rendering, firehose
+      watching, offering refresh, registry discovery, and secrets capability.'
+    codeRefs:
+    - file:test/badge_blue_keys_binding_test.ts
+    - file:test/bid_collector_test.ts
+    - file:test/bidder_policy_only_me_integration_test.ts
+    - file:test/bidder_prod_integration_test.ts
+    - file:test/bidder_ssh_relay_test.ts
+    - file:test/cloud_init_snapshot_test.ts
+    - file:test/firehose_watcher_test.ts
+    - file:test/offering_refresh_test.ts
+    - file:test/registry_discovery_test.ts
+    - file:test/secrets_capability_test.ts
+  interfaces:
+  - name: installFetchInterceptor
+    kind: function
+    signature: 'installFetchInterceptor(opts: { realFetch: typeof globalThis.fetch;
+      plcDirectoryUrl: string; dispPort: number; caCertPem?: string }): () => void'
+    file: test/fetch-interceptor.ts
 codeRefIndex:
 - file:test/badge_blue_keys_binding_test.ts badge_blue_keys_binding_test.ts@test/badge_blue_keys_binding_test.ts
 - file:test/bid_collector_test.ts bid_collector_test.ts@test/bid_collector_test.ts
@@ -19,136 +151,3 @@ codeRefIndex:
 - file:test/offering_refresh_test.ts offering_refresh_test.ts@test/offering_refresh_test.ts
 - file:test/registry_discovery_test.ts registry_discovery_test.ts@test/registry_discovery_test.ts
 - file:test/secrets_capability_test.ts secrets_capability_test.ts@test/secrets_capability_test.ts
-- function:c6f81957f952317eb0e87d2454b5add3 installFetchInterceptor@test/fetch-interceptor.ts:7
-kind: SystemContext
-metadata:
-  name: test
-  namespace: default
-spec:
-  dependsOn:
-  - sc.atproto-market
-  intent: 'This context exists to hold the repository''s verification surface: executable
-    tests that pin down the behaviour of the bidder, gateway, and supporting subsystems
-    against locally stood-up infrastructure instead of public network services. Its
-    central mechanism is the shared fetch interceptor in test/fetch-interceptor.ts,
-    which exists so that code under test that hardcodes public endpoints (plc.directory
-    for identity resolution, https://*.localhost for per-service relays) can be driven
-    against ephemeral local servers on arbitrary ports, and so that tests exercising
-    TLS can trust a throwaway self-signed CA without touching the real certificate
-    store. Keeping these tests in one context makes the assumptions they share — the
-    host rewrite rules, the CA trust escape hatch, and the teardown contract — describable
-    in one place, so a change to the interceptor''s rewriting behaviour is visibly
-    a change to every integration suite at once.'
-  interfaces:
-  - file: test/fetch-interceptor.ts
-    kind: function
-    name: installFetchInterceptor
-    signature: 'installFetchInterceptor(opts: { realFetch: typeof globalThis.fetch;
-      plcDirectoryUrl: string; dispPort: number; caCertPem?: string }): () => void'
-  repository: atproto-market
-  requirements:
-  - codeRefs:
-    - file:test/fetch-interceptor.ts
-    - function:c6f81957f952317eb0e87d2454b5add3
-    id: r.ca-cert-https-mode
-    level: SHOULD
-    text: When a caCertPem is supplied, localhost rewrites must keep the https scheme
-      and be issued through a Deno HttpClient configured with that PEM as a trusted
-      CA certificate, so TLS-terminating local services are reachable without disabling
-      verification; when no PEM is supplied the rewrite must downgrade to plain http
-      and issue the request on the default client.
-  - codeRefs:
-    - file:test/cloud_init_snapshot_test.ts
-    id: r.cloud-init-iroh-snapshot
-    level: MUST
-    text: 'test/cloud_init_snapshot_test.ts must render the new iroh transport and
-      assert it byte-for-byte against test/fixtures/cloud-init/iroh.yaml, and must
-      assert listUserDataModules() includes "iroh"; the existing tunnel, tunnel-secrets,
-      fedproxy-ssh and fedproxy-web-wootty snapshot assertions and the secrets-module
-      semantic assertions must remain in the same file and stay green. The file''s
-      module-completeness rule -- a module that writes an sshd drop-in or enables
-      ssh must install openssh-server -- must cover the iroh module as well as tunnel
-      and fedproxy-ssh, so a module that configures an sshd it never installs fails
-      the suite. This test is the verification gate: it must pass under `deno test
-      -A test/cloud_init_snapshot_test.ts`, and the whole workspace must still pass
-      `deno check`.'
-  - codeRefs:
-    - file:test/bidder_container_integration_test.ts
-    - file:test/bidder_cross_platform_integration_test.ts
-    - file:test/fetch-interceptor.ts
-    - file:test/gateway_caller_rbac_integration_test.ts
-    - file:test/gateway_readme_smoke_test.ts
-    - file:test/gateway_request_vm_integration_test.ts
-    - file:test/gateway_ssh_integration_test.ts
-    - file:test/gateway_worker_integration_test.ts
-    - file:test/oauth_session_transfer_test.ts
-    id: r.integration-suites-install-interceptor
-    level: MUST
-    text: The bidder container, bidder cross-platform, gateway caller RBAC, gateway
-      README smoke, gateway request VM, gateway SSH, gateway worker, and OAuth session
-      transfer suites must all install the shared fetch interceptor, so these end-to-end
-      tests exercise services through the local rewrite rules rather than the public
-      network.
-  - codeRefs:
-    - file:test/cloud_init_snapshot_test.ts
-    id: r.iroh-ticket-extraction-tested
-    level: MUST
-    text: 'test/cloud_init_snapshot_test.ts must assert the iroh module''s ticket
-      extraction against the line the pinned dumbpipe release actually prints: the
-      rendered cloud-config must extract the ticket from a `dumbpipe connect-tcp <ticket>`
-      line (the subcommand `listen-tcp` prints) and must not depend on a bare `dumbpipe
-      connect ` prefix, so a guest that logs the real listener output still writes
-      /root/secrets/iroh-node-id.'
-  - codeRefs:
-    - file:test/fetch-interceptor.ts
-    - function:c6f81957f952317eb0e87d2454b5add3
-    id: r.localhost-port-rewrite
-    level: MUST
-    text: installFetchInterceptor must detect https URLs whose host is exactly localhost,
-      ends with .localhost, or contains .localhost:, and rewrite them to reach the
-      local dispatcher; when the host carries no explicit port the configured dispPort
-      is appended, and the original path and query are preserved.
-  - codeRefs:
-    - file:test/fetch-interceptor.ts
-    - function:c6f81957f952317eb0e87d2454b5add3
-    id: r.passthrough-unmatched
-    level: MUST
-    text: Requests that match neither the plc.directory prefix nor a localhost host
-      must be forwarded unchanged to the original realFetch, so an installed interceptor
-      does not silently alter traffic to any other origin.
-  - codeRefs:
-    - file:test/fetch-interceptor.ts
-    - function:c6f81957f952317eb0e87d2454b5add3
-    id: r.plc-directory-rewrite
-    level: MUST
-    text: installFetchInterceptor must rewrite any request whose URL begins with https://plc.directory/
-      onto the caller-supplied plcDirectoryUrl, preserving the remainder of the original
-      path after the https://plc.directory prefix, so tests resolve DIDs against a
-      local fake PLC rather than the public directory.
-  - codeRefs:
-    - file:test/fetch-interceptor.ts
-    - function:c6f81957f952317eb0e87d2454b5add3
-    id: r.teardown-restores-fetch
-    level: MUST
-    text: installFetchInterceptor must return a disposable closure that reassigns
-      globalThis.fetch back to the original realFetch and closes the Deno HttpClient
-      it created, so a test that installs the interceptor leaves no patched global
-      or leaked connection pool behind for later tests in the same process.
-  - codeRefs:
-    - file:test/badge_blue_keys_binding_test.ts
-    - file:test/bid_collector_test.ts
-    - file:test/bidder_policy_only_me_integration_test.ts
-    - file:test/bidder_prod_integration_test.ts
-    - file:test/bidder_ssh_relay_test.ts
-    - file:test/cloud_init_snapshot_test.ts
-    - file:test/firehose_watcher_test.ts
-    - file:test/offering_refresh_test.ts
-    - file:test/registry_discovery_test.ts
-    - file:test/secrets_capability_test.ts
-    id: r.unit-suite-coverage
-    level: SHOULD
-    text: 'The suite must retain focused tests for each non-intercepted subsystem:
-      badge blue key binding, bid collection, the bidder policy restricted to only-me,
-      the production bidder, bidder SSH relay, cloud-init snapshot rendering, firehose
-      watching, offering refresh, registry discovery, and secrets capability.'
-  upstream: self

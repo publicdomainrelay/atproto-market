@@ -1,25 +1,25 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: ee7236b279d65d80cc9607a473172a3ad482dfec27eaa89a6f372e16ab81aa24
+realizedSpecHash: ea8a80e81d8b84551fef1b1e7f4604d0e31035c7764602d8236e61cb6bc1709a
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
+- type: CodeSynced
+  status: "True"
   reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+- type: Drifted
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
+- type: SpecValid
   status: "True"
-  type: SpecValid
+  reason: ValidatorPassed
+  message: the spec passes the validator
 observed:
   files:
   - hono-plc/mod.ts
-  fingerprint: ee7236b279d65d80cc9607a473172a3ad482dfec27eaa89a6f372e16ab81aa24
   treeFiles:
   - hono-plc/cli-args-env.json
   - hono-plc/config.json
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: ea8a80e81d8b84551fef1b1e7f4604d0e31035c7764602d8236e61cb6bc1709a
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: ee7236b279d65d80cc9607a473172a3ad482dfec27eaa89a6f372e16ab81aa24
+  fingerprint: ee7236b279d65d80cc9607a473172a3ad482dfec27eaa89a6f372e16ab81aa24

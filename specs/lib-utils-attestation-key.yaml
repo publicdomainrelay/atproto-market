@@ -1,12 +1,11 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
-codeRefIndex:
-- file:lib/utils-attestation-key/mod.ts mod.ts@lib/utils-attestation-key/mod.ts
-- function:31d6822de041bbe285c919680dd5898d loadOrCreateAttestationKeyHex@lib/utils-attestation-key/mod.ts:22
 kind: SystemContext
 metadata:
   name: lib-utils-attestation-key
   namespace: default
 spec:
+  repository: atproto-market
+  upstream: self
   dependsOn:
   - sc.atproto-market
   intent: 'This context exists so that processes needing to sign AT Protocol attestations
@@ -16,52 +15,52 @@ spec:
     private JWK, guarding against clobbering an unrelated or misconfigured key store,
     and it returns the raw hex scalar so callers can feed it into the attestation
     layer without re-parsing the JWK.'
-  interfaces:
-  - file: lib/utils-attestation-key/mod.ts
-    kind: function
-    name: loadOrCreateAttestationKeyHex
-    signature: '(jwkPath: string | URL): Promise<string>'
-  repository: atproto-market
   requirements:
-  - codeRefs:
-    - file:lib/utils-attestation-key/mod.ts
-    - function:31d6822de041bbe285c919680dd5898d
-    id: r.generate-and-persist-key
+  - id: r.generate-and-persist-key
     level: MUST
     text: When no file exists, draw 32 random bytes with crypto.getRandomValues, write
       a JWK with kty "EC", crv "secp256k1", use "sig", alg "ES256K" and base64url-encoded
       d to jwkPath as JSON with two-space indentation plus a trailing newline, and
       return the same scalar as lowercase hex.
-  - codeRefs:
+    codeRefs:
     - file:lib/utils-attestation-key/mod.ts
     - function:31d6822de041bbe285c919680dd5898d
-    id: r.load-existing-jwk
+  - id: r.load-existing-jwk
     level: MUST
     text: When the file at jwkPath exists, read and JSON-parse it, and return bytesToHex(base64UrlDecode(jwk.d))
       so the caller receives the private scalar as lowercase hex rather than the JWK
       itself.
-  - codeRefs:
+    codeRefs:
     - file:lib/utils-attestation-key/mod.ts
     - function:31d6822de041bbe285c919680dd5898d
-    id: r.only-notfound-triggers-creation
+  - id: r.only-notfound-triggers-creation
     level: MUST
     text: A Deno.errors.NotFound on the read is the only failure that falls through
       to key creation; every other read error is rethrown unchanged so permission
       and I/O problems surface instead of silently generating a new key.
-  - codeRefs:
+    codeRefs:
     - file:lib/utils-attestation-key/mod.ts
     - function:31d6822de041bbe285c919680dd5898d
-    id: r.refuse-non-secp256k1-jwk
+  - id: r.refuse-non-secp256k1-jwk
     level: MUST
     text: A pre-existing file whose parsed contents do not have kty === "EC", crv
       === "secp256k1" and a string d must cause a thrown error naming the path and
       stating it is not a secp256k1 private JWK; the file must not be overwritten.
-  - codeRefs:
+    codeRefs:
     - file:lib/utils-attestation-key/mod.ts
     - function:31d6822de041bbe285c919680dd5898d
-    id: r.restrict-key-file-mode
+  - id: r.restrict-key-file-mode
     level: SHOULD
     text: After writing a newly generated JWK the file mode is set to 0600, and a
       chmod failure is swallowed so platforms without chmod support still complete
       key creation.
-  upstream: self
+    codeRefs:
+    - file:lib/utils-attestation-key/mod.ts
+    - function:31d6822de041bbe285c919680dd5898d
+  interfaces:
+  - name: loadOrCreateAttestationKeyHex
+    kind: function
+    signature: '(jwkPath: string | URL): Promise<string>'
+    file: lib/utils-attestation-key/mod.ts
+codeRefIndex:
+- file:lib/utils-attestation-key/mod.ts mod.ts@lib/utils-attestation-key/mod.ts

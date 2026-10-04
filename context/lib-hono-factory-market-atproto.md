@@ -9,8 +9,5 @@ _The resolved code references are regenerated on every run. Cite the ids above r
 <!-- SPECD_MANAGED_BEGIN -->
 ## Resolved code references
 
-- `file:lib/hono-factory-market-atproto/mod.ts` file mod.ts (lib/hono-factory-market-atproto/mod.ts)
-- `function:800a02055445c67608223d52523a4f52` function createMarketFactory (lib/hono-factory-market-atproto/mod.ts)
-- `interface:8e5a087b65382c18eeeb71bed01f210a` interface MarketFactoryHandlers (lib/hono-factory-market-atproto/mod.ts)
-- `type_alias:7760b83d04c47b7681b47b9d97351064` type_alias MarketEnv (lib/hono-factory-market-atproto/mod.ts)
+_None yet._
 <!-- SPECD_MANAGED_END -->

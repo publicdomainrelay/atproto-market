@@ -1,14 +1,11 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
-codeRefIndex:
-- file:compute-contract-full-flow/SUMMARY.md SUMMARY.md@compute-contract-full-flow/SUMMARY.md
-- file:compute-contract-full-flow/atproto-records.json atproto-records.json@compute-contract-full-flow/atproto-records.json
-- file:compute-contract-full-flow/full-flow.log full-flow.log@compute-contract-full-flow/full-flow.log
-- file:compute-contract-full-flow/run_full_flow.ts run_full_flow.ts@compute-contract-full-flow/run_full_flow.ts
 kind: SystemContext
 metadata:
   name: compute-contract-full-flow
   namespace: default
 spec:
+  repository: atproto-market
+  upstream: self
   dependsOn:
   - sc.atproto-market
   intent: 'This context exists as an end-to-end integration harness: it is the executable
@@ -19,18 +16,15 @@ spec:
     from the polyrepo root) and to leave behind machine-readable evidence (`atproto-records.json`,
     `full-flow.log`) plus a human-readable `SUMMARY.md`, which is why those tracked
     outputs sit in the same directory.'
-  repository: atproto-market
   requirements:
-  - codeRefs:
-    - file:compute-contract-full-flow/run_full_flow.ts
-    id: r.cleanup-reverse-order
+  - id: r.cleanup-reverse-order
     level: MUST
     text: Registered cleanups run in reverse registration order, each wrapped in a
       `try/catch` so one failure cannot stop the rest, followed by a 200 ms settle
       delay before the flow logs completion.
-  - codeRefs:
+    codeRefs:
     - file:compute-contract-full-flow/run_full_flow.ts
-    id: r.collect-records-both-repos
+  - id: r.collect-records-both-repos
     level: MUST
     text: After the contract returns, `collectRecords` paginates `listRecords` (limit
       100 with cursors) for both the requester and bidder repos across the fixed collections
@@ -39,16 +33,16 @@ spec:
       tagging each record with source label, DID, collection, uri, cid and value;
       a failure on one collection is logged as `collect error (...)` and does not
       abort the run.
-  - codeRefs:
+    codeRefs:
     - file:compute-contract-full-flow/run_full_flow.ts
-    id: r.entrypoint-runs-standalone
+  - id: r.entrypoint-runs-standalone
     level: MUST
     text: 'The module is a directly runnable Deno script (shebang `deno run --allow-all`)
       that performs the whole flow inside `main()` and exits non-zero via `Deno.exit(1)`
       after logging `FATAL: <err>` if any uncaught error escapes.'
-  - codeRefs:
+    codeRefs:
     - file:compute-contract-full-flow/run_full_flow.ts
-    id: r.fake-plc-did-documents
+  - id: r.fake-plc-did-documents
     level: MUST
     text: '`createFakePlc` provides an in-memory DID directory: `POST /*` stores the
       posted operation keyed by the URL-decoded path DID, and `GET /*` returns 404
@@ -56,9 +50,9 @@ spec:
       two W3C contexts, the stored `alsoKnownAs`, each `verificationMethods` entry
       as a `Multikey` whose `publicKeyMultibase` strips a leading `did:key:`, and
       each `services` entry as an `#<name>` service with its type and endpoint.'
-  - codeRefs:
+    codeRefs:
     - file:compute-contract-full-flow/run_full_flow.ts
-    id: r.fetch-interceptor-local-routing
+  - id: r.fetch-interceptor-local-routing
     level: MUST
     text: '`installFetchInterceptor` replaces `globalThis.fetch` so requests to `https://plc.directory/`
       are rewritten to the supplied local PLC base URL, and requests whose host is
@@ -66,16 +60,16 @@ spec:
       plain `http://` on the dispatcher port (defaulting the port when the host carries
       none); it returns a restore function that puts the original fetch back, and
       that restore is registered as a cleanup.'
-  - codeRefs:
+    codeRefs:
     - file:compute-contract-full-flow/run_full_flow.ts
-    id: r.no-cli-configuration
+  - id: r.no-cli-configuration
     level: SHOULD
     text: 'The script exposes no CLI flags or environment variables: every knob (hostnames,
       ports, policy, timeouts, collection list, output paths) is fixed in source,
       so running it requires no arguments beyond `--allow-all`.'
-  - codeRefs:
+    codeRefs:
     - file:compute-contract-full-flow/run_full_flow.ts
-    id: r.participants-on-ephemeral-ports
+  - id: r.participants-on-ephemeral-ports
     level: MUST
     text: 'The flow starts every participant in-process on loopback: the dispatcher
       and fake PLC on port 0 (their real ports read back through `onListen` resolvers),
@@ -83,28 +77,28 @@ spec:
       with a local compute provider wrapped by `createComputeProviderHooks`, and a
       requester PDS via `createRequesterPDS` labelled `requester`; each server''s
       abort/shutdown closure is pushed onto `cleanups`.'
-  - codeRefs:
+    codeRefs:
     - file:compute-contract-full-flow/run_full_flow.ts
-    id: r.run-contract-fixed-policy
+  - id: r.run-contract-fixed-policy
     level: MUST
     text: '`runComputeContract` is invoked on the requester with the `only-me` policy
       and `bidWindowSec: 15`, `skipSsh: false`, `keepVm: true`, `vmReadyTimeoutSec:
       60`, `execProgram: "hostname"`, an SSH session provider from `createSshSessionProvider(logger)`,
       the bidder DID in `extraBidderDids`, and `did:plc:centraldefaultbidder000000`
       in `denyBidderDids`; the returned contract object is serialized into the log.'
-  - codeRefs:
-    - file:compute-contract-full-flow/SUMMARY.md
-    - file:compute-contract-full-flow/atproto-records.json
-    - file:compute-contract-full-flow/full-flow.log
+    codeRefs:
     - file:compute-contract-full-flow/run_full_flow.ts
-    id: r.tracked-outputs-committed
+  - id: r.tracked-outputs-committed
     level: MAY
     text: The generated `SUMMARY.md`, `atproto-records.json` and `full-flow.log` are
       tracked alongside the script as the recorded evidence of the run described in
       the summary's Participants, Result and record-count sections.
-  - codeRefs:
+    codeRefs:
+    - file:compute-contract-full-flow/SUMMARY.md
+    - file:compute-contract-full-flow/atproto-records.json
+    - file:compute-contract-full-flow/full-flow.log
     - file:compute-contract-full-flow/run_full_flow.ts
-    id: r.write-three-artifacts
+  - id: r.write-three-artifacts
     level: MUST
     text: 'The run writes exactly three files derived from the script''s own directory
       (`new URL(".", import.meta.url).pathname`): `full-flow.log` with the timestamped
@@ -114,4 +108,10 @@ spec:
       record-count table, links to the other two artifacts, the reproduce command,
       the architecture diagram and the SSH tunnel path, stamped with a generation
       timestamp.'
-  upstream: self
+    codeRefs:
+    - file:compute-contract-full-flow/run_full_flow.ts
+codeRefIndex:
+- file:compute-contract-full-flow/SUMMARY.md SUMMARY.md@compute-contract-full-flow/SUMMARY.md
+- file:compute-contract-full-flow/atproto-records.json atproto-records.json@compute-contract-full-flow/atproto-records.json
+- file:compute-contract-full-flow/full-flow.log full-flow.log@compute-contract-full-flow/full-flow.log
+- file:compute-contract-full-flow/run_full_flow.ts run_full_flow.ts@compute-contract-full-flow/run_full_flow.ts

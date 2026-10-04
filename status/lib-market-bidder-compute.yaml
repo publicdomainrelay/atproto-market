@@ -1,50 +1,18 @@
 conditions:
-- message: 'unresolved requirement code refs: r.accept-bidconfig-required: function:5ec21894bcf015b3164a07db128adf72,
-    r.provider-ref-callback-delegation: function:aed470efa09431ae131407c08a4b3c37'
-  reason: CodeRefsUnresolved
+- type: CodeSynced
   status: "False"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+  reason: InterfacesMissing
+  message: 'missing: VmBidderDeps, createComputeProviderHooks, createVmBidderCallbacks;
+    unresolved: r.accept-bidconfig-required: file:lib/market-bidder-compute/mod.ts,
+    r.accept-bidconfig-required: function:5ec21894bcf015b3164a07db128adf72, r.callback-factory-shape:
+    interface:462aac25716496197891c11616e37b58, r.provider-ref-callback-delegation:
+    function:aed470efa09431ae131407c08a4b3c37'
+- type: Drifted
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/market-bidder-compute/mod.ts
-  fingerprint: f4e4d75e911a5af1734903ea9bd806d79511c0494f3f53ff913f6a8a8f9eb6db
-  interfaces:
-  - codegraphId: interface:462aac25716496197891c11616e37b58
-    file: lib/market-bidder-compute/mod.ts
-    kind: interface
-    line: 44
-    name: VmBidderDeps
-  - codegraphId: function:0791308e00a93c24057bb04e10198f52
-    file: lib/market-bidder-compute/mod.ts
-    kind: function
-    line: 117
-    name: createVmBidderCallbacks
-    signature: |-
-      (deps: VmBidderDeps): {
-        rfp: Record<string, Record<string, SubmitRfpCallback>>;
-        accept: SubmitAcceptCallback;
-        event: Record<string, Record<string, (ctx: EventDispatchContext) => Promise<{ status?: number; body?: unknown } | void>>>;
-      }
-  - codegraphId: function:ef1bc6ab24fd35061cac77784db90302
-    file: lib/market-bidder-compute/mod.ts
-    kind: function
-    line: 492
-    name: createComputeProviderHooks
-    signature: |-
-      (opts: {
-        provider: ComputeProvider;
-      }): MarketBidderProviderRef
-  treeFiles:
-  - lib/market-bidder-compute/deno.json
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: e583cca0ffebd750bcc8b7e87dc7dfb3ad0b34d6dfd595b6be0c34b56930220e
-syncedCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
-syncedFingerprint: f4e4d75e911a5af1734903ea9bd806d79511c0494f3f53ff913f6a8a8f9eb6db
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

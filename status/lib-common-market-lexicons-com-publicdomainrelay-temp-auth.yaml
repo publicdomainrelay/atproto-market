@@ -1,22 +1,14 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: CodeRefsUnresolved
+  message: 'unresolved requirement code refs: r.generated-do-not-edit: file:lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist.ts'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist.ts
-  fingerprint: 226a4ea7b2522926841b4e1305bd9ddcc203211428db1e3651096a25823927f7
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: dc4626b3f9892ba3ea362c365b2bf3b228b6e13765186eb41329b8392c5fc5fe
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 226a4ea7b2522926841b4e1305bd9ddcc203211428db1e3651096a25823927f7
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

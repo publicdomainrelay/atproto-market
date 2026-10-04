@@ -1,23 +1,11 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
-codeRefIndex:
-- file:lib/common/compute-contract-gateway-common/deno.json deno.json@lib/common/compute-contract-gateway-common/deno.json
-- file:lib/common/compute-contract-gateway-common/mod.ts mod.ts@lib/common/compute-contract-gateway-common/mod.ts
-- file:lib/common/compute-contract-gateway-common/nsids.ts nsids.ts@lib/common/compute-contract-gateway-common/nsids.ts
-- file:lib/common/compute-contract-gateway-common/types.ts types.ts@lib/common/compute-contract-gateway-common/types.ts
-- interface:41ae11030dc803c5fa163f76b3aaeeb0 GatewayPolicySpec@lib/common/compute-contract-gateway-common/types.ts:36
-- interface:54d56e2397fdff2c37bd648570123818 CallerIdentity@lib/common/compute-contract-gateway-common/types.ts:1
-- interface:79ac11ae8e1a5e878c56818d0ea8f713 GatewayBidEntry@lib/common/compute-contract-gateway-common/types.ts:24
-- interface:869e37e6b7707634513f48f2312f0215 GatewayEventEntry@lib/common/compute-contract-gateway-common/types.ts:31
-- interface:869f60653fa984f384ebda98b750465b GatewayTokens@lib/common/compute-contract-gateway-common/types.ts:66
-- interface:a92d50db702dea8d4a773cdf785d7086 GatewayComputeResponse@lib/common/compute-contract-gateway-common/types.ts:73
-- interface:bb907138ab8576908b425812a1323e8a GatewayContractState@lib/common/compute-contract-gateway-common/types.ts:5
-- interface:cba9e8e50afd227d1e11556b44027a17 ComputeRequestWorkerInput@lib/common/compute-contract-gateway-common/types.ts:55
-- interface:e9438a48f8507c2cb4704a23772cbcfd ComputeRequestVMInput@lib/common/compute-contract-gateway-common/types.ts:42
 kind: SystemContext
 metadata:
   name: lib-common-compute-contract-gateway-common
   namespace: default
 spec:
+  repository: atproto-market
+  upstream: self
   dependsOn:
   - sc.atproto-market
   intent: 'It exists so that the gateway''s ABC interface layer and its XRPC transport
@@ -27,95 +15,35 @@ spec:
     layer and the transport can depend on it. Keeping the NSID strings and the contract
     state/bid/response types here means a change to the wire contract is made once
     and both sides see it.'
-  interfaces:
-  - file: lib/common/compute-contract-gateway-common/types.ts
-    kind: interface
-    name: CallerIdentity
-    signature: 'interface CallerIdentity { did: string }'
-  - file: lib/common/compute-contract-gateway-common/types.ts
-    kind: interface
-    name: ComputeRequestVMInput
-    signature: 'interface ComputeRequestVMInput { computeVm: Record<string, unknown>;
-      sshPublicKey: string; vmReadyTimeoutSec?: number; execProgram?: string; skipSsh?:
-      boolean; keepVm?: boolean; policy?: GatewayPolicySpec; policyEngine?: string;
-      extraBidderDids?: string[]; tokens?: GatewayTokens }'
-  - file: lib/common/compute-contract-gateway-common/types.ts
-    kind: interface
-    name: ComputeRequestWorkerInput
-    signature: 'interface ComputeRequestWorkerInput { source: string; denoJson: string;
-      denoLock?: string; persistent?: boolean; policy?: GatewayPolicySpec; policyEngine?:
-      string; extraBidderDids?: string[]; tokens?: GatewayTokens }'
-  - file: lib/common/compute-contract-gateway-common/types.ts
-    kind: interface
-    name: GatewayBidEntry
-    signature: 'interface GatewayBidEntry { bidderDid: string; bidUri: string; bidCid:
-      string; cost: number }'
-  - file: lib/common/compute-contract-gateway-common/types.ts
-    kind: interface
-    name: GatewayComputeResponse
-    signature: 'interface GatewayComputeResponse { receiptUri?: string; receiptCid?:
-      string; receiptOk?: boolean; sshReady?: boolean; sshExitCode?: number; websocatUrl?:
-      string; vmFqdn?: string; winnerDid?: string; winnerBidUri?: string; winnerBidCid?:
-      string; winnerBidConfig?: Record<string, unknown>; rfpUri?: string; rfpCid?:
-      string; bids?: GatewayBidEntry[]; error?: string }'
-  - file: lib/common/compute-contract-gateway-common/types.ts
-    kind: interface
-    name: GatewayContractState
-    signature: 'interface GatewayContractState { callerDid: string; rfpUri: string;
-      rfpCid: string; winnerDid?: string; winnerBidUri?: string; winnerBidCid?: string;
-      winnerBidConfig?: Record<string, unknown>; acceptUri?: string; acceptCid?: string;
-      receiptUri?: string; receiptCid?: string; receiptOk?: boolean; bids: GatewayBidEntry[];
-      events: GatewayEventEntry[]; status: "bidding" | "winner_selected" | "accepted"
-      | "receipt_verified" | "terminated" }'
-  - file: lib/common/compute-contract-gateway-common/types.ts
-    kind: interface
-    name: GatewayEventEntry
-    signature: 'interface GatewayEventEntry { type: string; timestamp: string }'
-  - file: lib/common/compute-contract-gateway-common/types.ts
-    kind: interface
-    name: GatewayPolicySpec
-    signature: 'interface GatewayPolicySpec { name: string; description?: string;
-      args?: Record<string, unknown> }'
-  - file: lib/common/compute-contract-gateway-common/types.ts
-    kind: interface
-    name: GatewayTokens
-    signature: 'interface GatewayTokens { submitRfp: string; submitAccept: string;
-      createRecord: string; submitEvent?: string }'
-  repository: atproto-market
   requirements:
-  - codeRefs:
-    - file:lib/common/compute-contract-gateway-common/types.ts
-    - interface:79ac11ae8e1a5e878c56818d0ea8f713
-    id: r.bid-entry
+  - id: r.bid-entry
     level: MUST
     text: GatewayBidEntry records one bid in the contract's ledger as the bidder's
       did, the bid record's uri and cid, and a numeric cost, so bids from different
       bidders can be compared on a single numeric field.
-  - codeRefs:
+    codeRefs:
     - file:lib/common/compute-contract-gateway-common/types.ts
-    - interface:54d56e2397fdff2c37bd648570123818
-    id: r.caller-identity
+    - interface:79ac11ae8e1a5e878c56818d0ea8f713
+  - id: r.caller-identity
     level: MUST
     text: CallerIdentity identifies the party invoking the gateway by a single required
       did string, so a transport can hand the gateway a caller identity without carrying
       credentials or handles.
-  - codeRefs:
+    codeRefs:
     - file:lib/common/compute-contract-gateway-common/types.ts
-    - interface:79ac11ae8e1a5e878c56818d0ea8f713
-    - interface:a92d50db702dea8d4a773cdf785d7086
-    id: r.compute-response
+    - interface:54d56e2397fdff2c37bd648570123818
+  - id: r.compute-response
     level: MUST
     text: 'GatewayComputeResponse is the all-optional result shape returned to a caller:
       receipt fields (receiptUri, receiptCid, receiptOk), VM fields (sshReady, sshExitCode,
       websocatUrl, vmFqdn), winner fields (winnerDid, winnerBidUri, winnerBidCid,
       winnerBidConfig), RFP fields (rfpUri, rfpCid), an optional bids ledger of GatewayBidEntry,
       and an optional error string, so success detail and failure both fit one shape.'
-  - codeRefs:
+    codeRefs:
     - file:lib/common/compute-contract-gateway-common/types.ts
     - interface:79ac11ae8e1a5e878c56818d0ea8f713
-    - interface:869e37e6b7707634513f48f2312f0215
-    - interface:bb907138ab8576908b425812a1323e8a
-    id: r.contract-state
+    - interface:a92d50db702dea8d4a773cdf785d7086
+  - id: r.contract-state
     level: MUST
     text: 'GatewayContractState tracks a single RFP end to end: it requires the callerDid
       plus the rfpUri/rfpCid that opened the contract, optional winnerDid / winnerBidUri
@@ -123,88 +51,151 @@ spec:
       optional receiptUri/receiptCid/receiptOk once a receipt is verified, the required
       bids and events ledgers, and a required status restricted to the five literals
       bidding, winner_selected, accepted, receipt_verified and terminated.'
-  - codeRefs:
-    - file:lib/common/compute-contract-gateway-common/nsids.ts
-    id: r.default-service-id
+    codeRefs:
+    - file:lib/common/compute-contract-gateway-common/types.ts
+    - interface:79ac11ae8e1a5e878c56818d0ea8f713
+    - interface:869e37e6b7707634513f48f2312f0215
+    - interface:bb907138ab8576908b425812a1323e8a
+  - id: r.default-service-id
     level: MUST
     text: nsids.ts exports DEFAULT_GATEWAY_SERVICE_ID as the string compute_contract_gateway,
       naming the did:web service fragment callers target when no other service id
       is given.
-  - codeRefs:
-    - file:lib/common/compute-contract-gateway-common/types.ts
-    - interface:869e37e6b7707634513f48f2312f0215
-    id: r.event-entry
+    codeRefs:
+    - file:lib/common/compute-contract-gateway-common/nsids.ts
+  - id: r.event-entry
     level: MUST
     text: GatewayEventEntry records one entry in the contract's event log as an unconstrained
       type string plus a timestamp string, keeping the event vocabulary open to the
       gateway rather than enumerated in the shared type.
-  - codeRefs:
-    - file:lib/common/compute-contract-gateway-common/nsids.ts
-    id: r.lxm-aliases
+    codeRefs:
+    - file:lib/common/compute-contract-gateway-common/types.ts
+    - interface:869e37e6b7707634513f48f2312f0215
+  - id: r.lxm-aliases
     level: SHOULD
     text: 'Each NSID is paired with a *_LXM constant that is assigned the NSID constant
       itself, so the LXM spelling and the NSID string can never drift apart: REQUEST_COMPUTE_VM_LXM,
       REQUEST_COMPUTE_WORKER_EPHEMERAL_LXM, REQUEST_COMPUTE_WORKER_PERSISTENT_LXM,
       DELETE_COMPUTE_LXM and SUBSCRIBE_COMPUTE_EVENTS_LXM.'
-  - codeRefs:
-    - file:lib/common/compute-contract-gateway-common/mod.ts
-    id: r.mod-reexports
+    codeRefs:
+    - file:lib/common/compute-contract-gateway-common/nsids.ts
+  - id: r.mod-reexports
     level: MUST
     text: The package entrypoint mod.ts re-exports nsids.ts and types.ts wholesale,
       so a consumer that imports the package root gets every NSID constant and every
       gateway interface without importing individual modules.
-  - codeRefs:
-    - file:lib/common/compute-contract-gateway-common/deno.json
+    codeRefs:
     - file:lib/common/compute-contract-gateway-common/mod.ts
-    id: r.no-dependencies
+  - id: r.no-dependencies
     level: MUST
     text: The package declares no imports in its deno.json and its modules import
       nothing, so it stays the dependency-free bottom of the gateway's layering and
       can be consumed by both the ABC interface layer and the XRPC transport.
-  - codeRefs:
-    - file:lib/common/compute-contract-gateway-common/nsids.ts
-    id: r.nsid-constants
+    codeRefs:
+    - file:lib/common/compute-contract-gateway-common/deno.json
+    - file:lib/common/compute-contract-gateway-common/mod.ts
+  - id: r.nsid-constants
     level: MUST
     text: 'nsids.ts defines the five gateway XRPC method identifiers as string constants
       under the com.publicdomainrelay.temp.gateway authority: REQUEST_COMPUTE_VM_NSID
       (requestComputeVM), REQUEST_COMPUTE_WORKER_EPHEMERAL_NSID (requestComputeWorkerEphemeral),
       REQUEST_COMPUTE_WORKER_PERSISTENT_NSID (requestComputeWorkerPersistent), DELETE_COMPUTE_NSID
       (deleteCompute) and SUBSCRIBE_COMPUTE_EVENTS_NSID (subscribeComputeEvents).'
-  - codeRefs:
-    - file:lib/common/compute-contract-gateway-common/types.ts
-    - interface:41ae11030dc803c5fa163f76b3aaeeb0
-    id: r.policy-spec
+    codeRefs:
+    - file:lib/common/compute-contract-gateway-common/nsids.ts
+  - id: r.policy-spec
     level: MUST
     text: GatewayPolicySpec names a policy by a required name, with an optional description
       and an optional free-form args record, so a requester can attach a policy to
       a compute request without the common package knowing any policy engine's argument
       shapes.
-  - codeRefs:
+    codeRefs:
     - file:lib/common/compute-contract-gateway-common/types.ts
-    - interface:869f60653fa984f384ebda98b750465b
-    id: r.tokens
+    - interface:41ae11030dc803c5fa163f76b3aaeeb0
+  - id: r.tokens
     level: MUST
     text: 'GatewayTokens bundles the capability tokens a compute request needs: submitRfp,
       submitAccept and createRecord are required, while submitEvent is optional, so
       a caller can drive a contract to acceptance without event submission while still
       being required to hold the RFP, accept and record-creation capabilities.'
-  - codeRefs:
+    codeRefs:
     - file:lib/common/compute-contract-gateway-common/types.ts
-    - interface:e9438a48f8507c2cb4704a23772cbcfd
-    id: r.vm-request-input
+    - interface:869f60653fa984f384ebda98b750465b
+  - id: r.vm-request-input
     level: MUST
     text: 'ComputeRequestVMInput carries a VM request: the required computeVm record
       and sshPublicKey, optional vmReadyTimeoutSec, execProgram, skipSsh and keepVm
       knobs, and the shared optional policy, policyEngine, extraBidderDids and tokens
       fields, so VM provisioning parameters travel in one payload alongside the bidder
       and policy configuration.'
-  - codeRefs:
+    codeRefs:
     - file:lib/common/compute-contract-gateway-common/types.ts
-    - interface:cba9e8e50afd227d1e11556b44027a17
-    id: r.worker-request-input
+    - interface:e9438a48f8507c2cb4704a23772cbcfd
+  - id: r.worker-request-input
     level: MUST
     text: 'ComputeRequestWorkerInput carries a worker request: the required source
       and denoJson strings, an optional denoLock, an optional persistent flag that
       distinguishes the persistent worker path from the ephemeral one, and the same
       optional policy, policyEngine, extraBidderDids and tokens fields as the VM request.'
-  upstream: self
+    codeRefs:
+    - file:lib/common/compute-contract-gateway-common/types.ts
+    - interface:cba9e8e50afd227d1e11556b44027a17
+  interfaces:
+  - name: CallerIdentity
+    kind: interface
+    signature: 'interface CallerIdentity { did: string }'
+    file: lib/common/compute-contract-gateway-common/types.ts
+  - name: ComputeRequestVMInput
+    kind: interface
+    signature: 'interface ComputeRequestVMInput { computeVm: Record<string, unknown>;
+      sshPublicKey: string; vmReadyTimeoutSec?: number; execProgram?: string; skipSsh?:
+      boolean; keepVm?: boolean; policy?: GatewayPolicySpec; policyEngine?: string;
+      extraBidderDids?: string[]; tokens?: GatewayTokens }'
+    file: lib/common/compute-contract-gateway-common/types.ts
+  - name: ComputeRequestWorkerInput
+    kind: interface
+    signature: 'interface ComputeRequestWorkerInput { source: string; denoJson: string;
+      denoLock?: string; persistent?: boolean; policy?: GatewayPolicySpec; policyEngine?:
+      string; extraBidderDids?: string[]; tokens?: GatewayTokens }'
+    file: lib/common/compute-contract-gateway-common/types.ts
+  - name: GatewayBidEntry
+    kind: interface
+    signature: 'interface GatewayBidEntry { bidderDid: string; bidUri: string; bidCid:
+      string; cost: number }'
+    file: lib/common/compute-contract-gateway-common/types.ts
+  - name: GatewayComputeResponse
+    kind: interface
+    signature: 'interface GatewayComputeResponse { receiptUri?: string; receiptCid?:
+      string; receiptOk?: boolean; sshReady?: boolean; sshExitCode?: number; websocatUrl?:
+      string; vmFqdn?: string; winnerDid?: string; winnerBidUri?: string; winnerBidCid?:
+      string; winnerBidConfig?: Record<string, unknown>; rfpUri?: string; rfpCid?:
+      string; bids?: GatewayBidEntry[]; error?: string }'
+    file: lib/common/compute-contract-gateway-common/types.ts
+  - name: GatewayContractState
+    kind: interface
+    signature: 'interface GatewayContractState { callerDid: string; rfpUri: string;
+      rfpCid: string; winnerDid?: string; winnerBidUri?: string; winnerBidCid?: string;
+      winnerBidConfig?: Record<string, unknown>; acceptUri?: string; acceptCid?: string;
+      receiptUri?: string; receiptCid?: string; receiptOk?: boolean; bids: GatewayBidEntry[];
+      events: GatewayEventEntry[]; status: "bidding" | "winner_selected" | "accepted"
+      | "receipt_verified" | "terminated" }'
+    file: lib/common/compute-contract-gateway-common/types.ts
+  - name: GatewayEventEntry
+    kind: interface
+    signature: 'interface GatewayEventEntry { type: string; timestamp: string }'
+    file: lib/common/compute-contract-gateway-common/types.ts
+  - name: GatewayPolicySpec
+    kind: interface
+    signature: 'interface GatewayPolicySpec { name: string; description?: string;
+      args?: Record<string, unknown> }'
+    file: lib/common/compute-contract-gateway-common/types.ts
+  - name: GatewayTokens
+    kind: interface
+    signature: 'interface GatewayTokens { submitRfp: string; submitAccept: string;
+      createRecord: string; submitEvent?: string }'
+    file: lib/common/compute-contract-gateway-common/types.ts
+codeRefIndex:
+- file:lib/common/compute-contract-gateway-common/deno.json deno.json@lib/common/compute-contract-gateway-common/deno.json
+- file:lib/common/compute-contract-gateway-common/mod.ts mod.ts@lib/common/compute-contract-gateway-common/mod.ts
+- file:lib/common/compute-contract-gateway-common/nsids.ts nsids.ts@lib/common/compute-contract-gateway-common/nsids.ts
+- file:lib/common/compute-contract-gateway-common/types.ts types.ts@lib/common/compute-contract-gateway-common/types.ts

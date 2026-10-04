@@ -1,156 +1,32 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: InterfacesMissing
+  message: 'missing: Client, ClientOptions, Config, CreateClientConfig, Middleware,
+    Options, RequestOptions, RequestResult, ResolvedRequestOptions, ResponseStyle,
+    TDataShape, buildUrl, createClient, createConfig, createInterceptors, createQuerySerializer,
+    getParseAs, mergeConfigs, mergeHeaders, setAuthParams; unresolved: r.auth-params:
+    file:lib/did-plc/generated/client/utils.gen.ts, r.auth-params: function:e9636fa71df0faaef499d2a5fb4b33cf,
+    r.config-defaults: function:0131a84b31ad85543599f7fcdc257d17, r.config-defaults:
+    interface:38443be81142d5646b8f37c2d0673a74, r.config-merge-order: function:045b120064539e4384e726f1ad3a6cfd,
+    r.config-merge-order: function:5cc56f8414c5363a5723ab1d53a49283, r.create-client-factory:
+    file:lib/did-plc/generated/client/client.gen.ts, r.create-client-factory: function:188d765b509d3931cfcc5bbfffb2b7dc,
+    r.generated-code-provenance: file:lib/did-plc/generated/client/types.gen.ts, r.interceptors:
+    function:bf0bf50aa3da564c87154fb48989d79a, r.interceptors: interface:6a08e48cdf00ed57e85e84d03157d051,
+    r.response-parsing: function:8458ee58b9d6ddeb478f0901d8d49b7a, r.response-style:
+    type_alias:2af15840ea8a34874a90d03c8c53bfca, r.response-style: type_alias:952c875d05b76621416e955f7ac584c0,
+    r.sse-methods: type_alias:aff9789136e33dc58e0e596ab4913239, r.type-surface: file:lib/did-plc/generated/client/index.ts,
+    r.type-surface: interface:060e771651286dc59512e47760351c52, r.type-surface: interface:52b8825cf135e083d7d54d23395fc970,
+    r.type-surface: interface:9323c2d655bd8f9655c74438a7d51be9, r.type-surface: interface:c1fcf386d064ae2466c6e8d0fd2ac083,
+    r.type-surface: type_alias:6ae6701371118f7f03da4ff85978bdf7, r.type-surface: type_alias:c165bd43ffb67fcfa6433020cbe99e52,
+    r.url-and-query-serialization: function:8b30a2691d351681cfd7042ce1e15408, r.url-and-query-serialization:
+    function:a8e4eb7e716e14eb46c35d17b48cf48b'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/did-plc/generated/client/client.gen.ts
-  - lib/did-plc/generated/client/index.ts
-  - lib/did-plc/generated/client/types.gen.ts
-  - lib/did-plc/generated/client/utils.gen.ts
-  fingerprint: 139ca181cf4f4709194afd06757cccf0fb514019c4a7518e77944479978181c5
-  interfaces:
-  - codegraphId: function:188d765b509d3931cfcc5bbfffb2b7dc
-    file: lib/did-plc/generated/client/client.gen.ts
-    kind: function
-    line: 22
-    name: createClient
-    signature: '(config: Config = {}): Client'
-  - codegraphId: type_alias:952c875d05b76621416e955f7ac584c0
-    file: lib/did-plc/generated/client/types.gen.ts
-    kind: type_alias
-    line: 11
-    name: ResponseStyle
-  - codegraphId: interface:38443be81142d5646b8f37c2d0673a74
-    file: lib/did-plc/generated/client/types.gen.ts
-    kind: interface
-    line: 13
-    name: Config
-  - codegraphId: interface:060e771651286dc59512e47760351c52
-    file: lib/did-plc/generated/client/types.gen.ts
-    kind: interface
-    line: 56
-    name: RequestOptions
-  - codegraphId: interface:52b8825cf135e083d7d54d23395fc970
-    file: lib/did-plc/generated/client/types.gen.ts
-    kind: interface
-    line: 91
-    name: ResolvedRequestOptions
-  - codegraphId: type_alias:2af15840ea8a34874a90d03c8c53bfca
-    file: lib/did-plc/generated/client/types.gen.ts
-    kind: type_alias
-    line: 100
-    name: RequestResult
-  - codegraphId: interface:c1fcf386d064ae2466c6e8d0fd2ac083
-    file: lib/did-plc/generated/client/types.gen.ts
-    kind: interface
-    line: 137
-    name: ClientOptions
-  - codegraphId: type_alias:aff9789136e33dc58e0e596ab4913239
-    file: lib/did-plc/generated/client/types.gen.ts
-    kind: type_alias
-    line: 183
-    name: Client
-  - codegraphId: type_alias:c165bd43ffb67fcfa6433020cbe99e52
-    file: lib/did-plc/generated/client/types.gen.ts
-    kind: type_alias
-    line: 195
-    name: CreateClientConfig
-  - codegraphId: interface:9323c2d655bd8f9655c74438a7d51be9
-    file: lib/did-plc/generated/client/types.gen.ts
-    kind: interface
-    line: 199
-    name: TDataShape
-  - codegraphId: type_alias:6ae6701371118f7f03da4ff85978bdf7
-    file: lib/did-plc/generated/client/types.gen.ts
-    kind: type_alias
-    line: 209
-    name: Options
-  - codegraphId: function:a8e4eb7e716e14eb46c35d17b48cf48b
-    file: lib/did-plc/generated/client/utils.gen.ts
-    kind: function
-    line: 14
-    name: createQuerySerializer
-    signature: |-
-      ({
-        parameters = {},
-        ...args
-      }: QuerySerializerOptions = {}): ((queryParams: T) => string)
-  - codegraphId: function:8458ee58b9d6ddeb478f0901d8d49b7a
-    file: lib/did-plc/generated/client/utils.gen.ts
-    kind: function
-    line: 68
-    name: getParseAs
-    signature: '(contentType: string | null): Exclude<Config[''parseAs''], ''auto''>'
-  - codegraphId: function:e9636fa71df0faaef499d2a5fb4b33cf
-    file: lib/did-plc/generated/client/utils.gen.ts
-    kind: function
-    line: 121
-    name: setAuthParams
-    signature: |-
-      (
-        options: Pick<RequestOptions, 'auth' | 'query' | 'security'> & {
-          headers: Headers;
-        },
-      ): Promise<void>
-  - codegraphId: function:8b30a2691d351681cfd7042ce1e15408
-    file: lib/did-plc/generated/client/utils.gen.ts
-    kind: function
-    line: 157
-    name: buildUrl
-    signature: (options)
-  - codegraphId: function:045b120064539e4384e726f1ad3a6cfd
-    file: lib/did-plc/generated/client/utils.gen.ts
-    kind: function
-    line: 169
-    name: mergeConfigs
-    signature: '(a: Config, b: Config): Config'
-  - codegraphId: function:5cc56f8414c5363a5723ab1d53a49283
-    file: lib/did-plc/generated/client/utils.gen.ts
-    kind: function
-    line: 186
-    name: mergeHeaders
-    signature: |-
-      (
-        ...headers: Array<Required<Config>['headers'] | undefined>
-      ): Headers
-  - codegraphId: interface:6a08e48cdf00ed57e85e84d03157d051
-    file: lib/did-plc/generated/client/utils.gen.ts
-    kind: interface
-    line: 275
-    name: Middleware
-  - codegraphId: function:bf0bf50aa3da564c87154fb48989d79a
-    file: lib/did-plc/generated/client/utils.gen.ts
-    kind: function
-    line: 281
-    name: createInterceptors
-    signature: |-
-      (): Middleware<
-        Req,
-        Res,
-        Err,
-        Options
-      >
-  - codegraphId: function:0131a84b31ad85543599f7fcdc257d17
-    file: lib/did-plc/generated/client/utils.gen.ts
-    kind: function
-    line: 308
-    name: createConfig
-    signature: |-
-      (
-        override: Config<Omit<ClientOptions, keyof T> & T> = {},
-      ): Config<Omit<ClientOptions, keyof T> & T>
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: 61f4ceb82b23ae1357afeaa16490461eb079feb141942793b4ae22062f7dca96
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 139ca181cf4f4709194afd06757cccf0fb514019c4a7518e77944479978181c5
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

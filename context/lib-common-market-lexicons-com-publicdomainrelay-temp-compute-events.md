@@ -9,5 +9,5 @@ _The resolved code references are regenerated on every run. Cite the ids above r
 <!-- SPECD_MANAGED_BEGIN -->
 ## Resolved code references
 
-- `file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm.ts` file vm.ts (lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm.ts)
+_None yet._
 <!-- SPECD_MANAGED_END -->

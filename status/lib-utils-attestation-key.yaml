@@ -1,31 +1,15 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: InterfacesMissing
+  message: 'missing: loadOrCreateAttestationKeyHex; unresolved: r.generate-and-persist-key:
+    file:lib/utils-attestation-key/mod.ts, r.generate-and-persist-key: function:31d6822de041bbe285c919680dd5898d'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/utils-attestation-key/mod.ts
-  fingerprint: c22b33cc6646e0dae8141ad778a4b1bf50bd12d1e741a6ca7a545bcd410a2352
-  interfaces:
-  - codegraphId: function:31d6822de041bbe285c919680dd5898d
-    file: lib/utils-attestation-key/mod.ts
-    kind: function
-    line: 22
-    name: loadOrCreateAttestationKeyHex
-    signature: '(jwkPath: string | URL): Promise<string>'
-  treeFiles:
-  - lib/utils-attestation-key/deno.json
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: 63fad1a7711c8b74c004ee35cb49f5ec841f8e6220f6f474e5c99f7085312952
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: c22b33cc6646e0dae8141ad778a4b1bf50bd12d1e741a6ca7a545bcd410a2352
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

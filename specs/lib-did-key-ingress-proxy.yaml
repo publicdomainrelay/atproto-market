@@ -1,14 +1,11 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
-codeRefIndex:
-- file:lib/did-key-ingress-proxy/mod.ts mod.ts@lib/did-key-ingress-proxy/mod.ts
-- function:720938c17d8a919da0fa9510c65cc8d1 getServiceAuthToken@lib/did-key-ingress-proxy/mod.ts:51
-- function:ab0d43e74646836bd86d4b393d2cafa0 createIngress@lib/did-key-ingress-proxy/mod.ts:38
-- interface:da388f002919a2fd08b59e8f65646870 CreateIngressOpts@lib/did-key-ingress-proxy/mod.ts:8
 kind: SystemContext
 metadata:
   name: lib-did-key-ingress-proxy
   namespace: default
 spec:
+  repository: atproto-market
+  upstream: self
   dependsOn:
   - sc.atproto-market
   intent: 'This context is the ingress side of the relay: it lets an application that
@@ -21,85 +18,61 @@ spec:
     SSH is the dumbpipe/iroh transport, and this package keeps only its XRPC ingress
     role (submitBid, submitEvent, associateConfirm and the requester/bidder market
     plane).'
-  interfaces:
-  - file: lib/did-key-ingress-proxy/mod.ts
-    kind: interface
-    name: CreateIngressOpts
-    signature: 'interface CreateIngressOpts { logger: StructuredLoggerInterface; ingressProxyHost:
-      string; signer: { did(): string; sign(bytes: Uint8Array): Promise<Uint8Array>
-      }; keypair: { did(): string; sign(data: Uint8Array): Promise<Uint8Array> };
-      label?: string; tls?: boolean; localWsTarget?: () => { hostname: string; port:
-      number } | undefined; directSubscriptionHandler?: (subscriptionId: string, nsid:
-      string, params: Record<string, string>, onEvent: (event: unknown) => void, onData:
-      (data: Uint8Array) => void) => (() => void) | void }'
-  - file: lib/did-key-ingress-proxy/mod.ts
-    kind: function
-    name: createIngress
-    signature: 'createIngress(opts: CreateIngressOpts): IngressRef'
-  - file: lib/did-key-ingress-proxy/mod.ts
-    kind: function
-    name: getServiceAuthToken
-    signature: 'getServiceAuthToken(lxm: string): Promise<string>'
-  repository: atproto-market
   requirements:
-  - codeRefs:
-    - function:ab0d43e74646836bd86d4b393d2cafa0
-    id: r.close-idempotent-before-serve
+  - id: r.close-idempotent-before-serve
     level: MUST
     text: close() must forward to the stored subscriber when one exists and be a no-op
       when onServe has not yet registered a subscriber, so callers can tear down a
       relay that never served.
-  - codeRefs:
-    - file:lib/did-key-ingress-proxy/mod.ts
+    codeRefs:
     - function:ab0d43e74646836bd86d4b393d2cafa0
-    - interface:da388f002919a2fd08b59e8f65646870
-    id: r.create-ingress-factory
+  - id: r.create-ingress-factory
     level: MUST
     text: createIngress(opts) must build and return an IngressRef from CreateIngressOpts,
       destructuring logger, ingressProxyHost, signer and keypair, and holding the
       active subscriber in a closure so that a single relay object serves both registration
       and shutdown.
-  - codeRefs:
+    codeRefs:
+    - file:lib/did-key-ingress-proxy/mod.ts
     - function:ab0d43e74646836bd86d4b393d2cafa0
     - interface:da388f002919a2fd08b59e8f65646870
-    id: r.direct-subscription-handler
+  - id: r.direct-subscription-handler
     level: SHOULD
     text: When directSubscriptionHandler is provided, inbound relay subscriptions
       for non-tunnel NSIDs must be dispatched to it with subscriptionId, nsid, params,
       an onEvent callback and an onData callback instead of opening a loopback WebSocket
       to localWsTarget; its returned function, when any, is the unsubscribe/cleanup
       handle and an in-process firehose source needs no TCP listener.
-  - codeRefs:
+    codeRefs:
     - function:ab0d43e74646836bd86d4b393d2cafa0
-    id: r.ingress-ref-projection
+    - interface:da388f002919a2fd08b59e8f65646870
+  - id: r.ingress-ref-projection
     level: MUST
     text: The relay's ingressRef starts as the empty string and is set to the subscriber
       handle's ingressRef after registration; the ingressUrl getter must return the
       empty string while ingressRef is empty and otherwise "https://" plus ingressRef
       with the leading "did:web:" prefix stripped, and the ingressHost getter must
       strip that same prefix when present and return ingressRef unchanged otherwise.
-  - codeRefs:
+    codeRefs:
     - function:ab0d43e74646836bd86d4b393d2cafa0
-    - interface:da388f002919a2fd08b59e8f65646870
-    id: r.label-default
+  - id: r.label-default
     level: MUST
     text: The subscriber label must default to the literal string "bidder" when opts.label
       is absent, and use opts.label verbatim when present; that label is passed to
       createSubscriber.
-  - codeRefs:
+    codeRefs:
     - function:ab0d43e74646836bd86d4b393d2cafa0
     - interface:da388f002919a2fd08b59e8f65646870
-    id: r.lazy-ws-target
+  - id: r.lazy-ws-target
     level: SHOULD
     text: localWsTarget must be consulted lazily at subscription time rather than
       at createIngress time, because the local serve's TCP port is only assigned once
       it is listening; its returned hostname and port are the loopback target for
       forwarded inbound relay WebSocket subscriptions such as com.atproto.sync.subscribeRepos.
-  - codeRefs:
-    - file:lib/did-key-ingress-proxy/mod.ts
+    codeRefs:
     - function:ab0d43e74646836bd86d4b393d2cafa0
     - interface:da388f002919a2fd08b59e8f65646870
-    id: r.on-serve-registration
+  - id: r.on-serve-registration
     level: MUST
     text: onServe(fetch) must wrap the supplied fetch in createSubscriberFactory to
       obtain handleRequest, log "xrpc-relay connecting" with ingressProxyHost, call
@@ -107,36 +80,37 @@ spec:
       the optional tls, handleRequest, and the optional localWsTarget and directSubscriptionHandler,
       then store the returned handle and log "xrpc-relay registered" with subdomain
       and ingressRef.
-  - codeRefs:
-    - function:720938c17d8a919da0fa9510c65cc8d1
+    codeRefs:
+    - file:lib/did-key-ingress-proxy/mod.ts
     - function:ab0d43e74646836bd86d4b393d2cafa0
-    id: r.service-auth-token
+    - interface:da388f002919a2fd08b59e8f65646870
+  - id: r.service-auth-token
     level: MUST
     text: getServiceAuthToken(lxm) must derive the audience from ingressProxyHost
       via hostnameToDid and return the service-auth JWT produced by signServiceAuth
       using the injected signer with that audience and the requested lexicon NSID,
       so each inbound subscription can be authenticated per-method.
-  - codeRefs:
+    codeRefs:
     - function:720938c17d8a919da0fa9510c65cc8d1
-    - interface:da388f002919a2fd08b59e8f65646870
-    id: r.signing-identities
+    - function:ab0d43e74646836bd86d4b393d2cafa0
+  - id: r.signing-identities
     level: MUST
     text: 'CreateIngressOpts must carry two distinct signing identities: signer, whose
       did() and sign(bytes) are used only to mint service-auth tokens for the proxy
       audience, and keypair, whose did() and sign(data) identify the subscriber registration,
       so the service-auth identity and the relay subscriber identity stay separable.'
-  - codeRefs:
-    - function:ab0d43e74646836bd86d4b393d2cafa0
+    codeRefs:
+    - function:720938c17d8a919da0fa9510c65cc8d1
     - interface:da388f002919a2fd08b59e8f65646870
-    id: r.tls-flag
+  - id: r.tls-flag
     level: SHOULD
     text: When opts.tls is set, the dispatcher serves TLS, so the subscriber must
       use https/wss addressing even for localhost or hosts carrying a port; the flag
       is forwarded unchanged to createSubscriber.
-  - codeRefs:
-    - file:lib/did-key-ingress-proxy/mod.ts
+    codeRefs:
     - function:ab0d43e74646836bd86d4b393d2cafa0
-    id: r.xrpc-ingress-not-ssh
+    - interface:da388f002919a2fd08b59e8f65646870
+  - id: r.xrpc-ingress-not-ssh
     level: MUST
     text: createIngress must keep serving the XRPC ingress plane unchanged -- the
       requester PDS's submitBid, submitEvent and associateConfirm endpoints and the
@@ -146,4 +120,27 @@ spec:
       sshd (the relay WebSocket tunnel and the websocat ProxyCommand that dialed it)
       is no longer part of this package's consumers, and nothing here should depend
       on it.
-  upstream: self
+    codeRefs:
+    - file:lib/did-key-ingress-proxy/mod.ts
+    - function:ab0d43e74646836bd86d4b393d2cafa0
+  interfaces:
+  - name: CreateIngressOpts
+    kind: interface
+    signature: 'interface CreateIngressOpts { logger: StructuredLoggerInterface; ingressProxyHost:
+      string; signer: { did(): string; sign(bytes: Uint8Array): Promise<Uint8Array>
+      }; keypair: { did(): string; sign(data: Uint8Array): Promise<Uint8Array> };
+      label?: string; tls?: boolean; localWsTarget?: () => { hostname: string; port:
+      number } | undefined; directSubscriptionHandler?: (subscriptionId: string, nsid:
+      string, params: Record<string, string>, onEvent: (event: unknown) => void, onData:
+      (data: Uint8Array) => void) => (() => void) | void }'
+    file: lib/did-key-ingress-proxy/mod.ts
+  - name: createIngress
+    kind: function
+    signature: 'createIngress(opts: CreateIngressOpts): IngressRef'
+    file: lib/did-key-ingress-proxy/mod.ts
+  - name: getServiceAuthToken
+    kind: function
+    signature: 'getServiceAuthToken(lxm: string): Promise<string>'
+    file: lib/did-key-ingress-proxy/mod.ts
+codeRefIndex:
+- file:lib/did-key-ingress-proxy/mod.ts mod.ts@lib/did-key-ingress-proxy/mod.ts

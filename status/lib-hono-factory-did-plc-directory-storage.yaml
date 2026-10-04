@@ -1,69 +1,22 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: InterfacesMissing
+  message: 'missing: MemoryPlcStore, MemoryPlcStore.exportLogs, MemoryPlcStore.getAuditLog,
+    MemoryPlcStore.getCurrentOps, MemoryPlcStore.getOpByCid, MemoryPlcStore.insertOp,
+    MemoryPlcStore.nullifyOps, PlcStore; unresolved: r.audit-log-retains-nullified:
+    file:lib/hono-factory-did-plc-directory/storage/plc-store.ts, r.audit-log-retains-nullified:
+    method:5effb1ba90cc09ca38b9facc67e0e5e5, r.current-ops-exclude-nullified: method:f3ed83fb406ac57043fa578dc7d44e12,
+    r.export-logs-ordering-and-paging: method:b8ee53ece42a3057f7a82bf6033b7ab5, r.insert-op-appends:
+    method:b796dec3c2dab2f5c026e954e2799299, r.memory-implements-port: class:6dc897b2ad83f3474c8cc21fa651b5f0,
+    r.memory-implements-port: interface:86a4aca923e87a6278f374fd01ce9547, r.nullify-marks-in-place:
+    method:8b706b26d2ae998889c6d053a48c7fe3, r.op-by-cid-lookup: method:b7635d15869a1ecb4b58b9cef42809a8'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/hono-factory-did-plc-directory/storage/plc-store.ts
-  fingerprint: 299d71105c1b85d17aeb7f5c881a4050341315fa634af881aa0f3b2cfe87acd1
-  interfaces:
-  - codegraphId: interface:86a4aca923e87a6278f374fd01ce9547
-    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
-    kind: interface
-    line: 3
-    name: PlcStore
-  - codegraphId: class:6dc897b2ad83f3474c8cc21fa651b5f0
-    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
-    kind: class
-    line: 17
-    name: MemoryPlcStore
-  - codegraphId: method:f3ed83fb406ac57043fa578dc7d44e12
-    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
-    kind: method
-    line: 20
-    name: MemoryPlcStore.getCurrentOps
-    signature: '(did: string): Promise<LogEntry[]>'
-  - codegraphId: method:5effb1ba90cc09ca38b9facc67e0e5e5
-    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
-    kind: method
-    line: 26
-    name: MemoryPlcStore.getAuditLog
-    signature: '(did: string): Promise<LogEntry[]>'
-  - codegraphId: method:b7635d15869a1ecb4b58b9cef42809a8
-    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
-    kind: method
-    line: 30
-    name: MemoryPlcStore.getOpByCid
-    signature: '(did: string, cid: string): Promise<LogEntry | null>'
-  - codegraphId: method:b796dec3c2dab2f5c026e954e2799299
-    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
-    kind: method
-    line: 36
-    name: MemoryPlcStore.insertOp
-    signature: '(entry: LogEntry): Promise<void>'
-  - codegraphId: method:8b706b26d2ae998889c6d053a48c7fe3
-    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
-    kind: method
-    line: 45
-    name: MemoryPlcStore.nullifyOps
-    signature: '(did: string, cids: string[]): Promise<void>'
-  - codegraphId: method:b8ee53ece42a3057f7a82bf6033b7ab5
-    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
-    kind: method
-    line: 56
-    name: MemoryPlcStore.exportLogs
-    signature: '(after?: Date, count?: number): Promise<LogEntry[]>'
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: d9dfa4eef0c024109c97f35d848bcaf0a7a24cbf77fcb5d4d368470da6823de2
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 299d71105c1b85d17aeb7f5c881a4050341315fa634af881aa0f3b2cfe87acd1
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

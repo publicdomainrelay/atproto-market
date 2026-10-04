@@ -1,25 +1,25 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: c615d9a5fb01683177aab2bc918332dd6ec5ca88dd5f90e744df41b5462d1f34
+realizedSpecHash: 00ff9b5f1be5767cf17bad90b2e70bc9fdaef431efdc61d6719b3d64258a4de1
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
+- type: CodeSynced
+  status: "True"
   reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+- type: Drifted
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
+- type: SpecValid
   status: "True"
-  type: SpecValid
+  reason: ValidatorPassed
+  message: the spec passes the validator
 observed:
-  fingerprint: c615d9a5fb01683177aab2bc918332dd6ec5ca88dd5f90e744df41b5462d1f34
   treeFiles:
   - .gitignore
   - LEXICONS.md
   - deno.json
   - deno.lock
-observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-realizedSpecHash: 00ff9b5f1be5767cf17bad90b2e70bc9fdaef431efdc61d6719b3d64258a4de1
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: c615d9a5fb01683177aab2bc918332dd6ec5ca88dd5f90e744df41b5462d1f34
+  fingerprint: c615d9a5fb01683177aab2bc918332dd6ec5ca88dd5f90e744df41b5462d1f34

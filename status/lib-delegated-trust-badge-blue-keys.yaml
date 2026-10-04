@@ -1,44 +1,17 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: InterfacesMissing
+  message: 'missing: DelegatedTrustBadgeBlueKeysOpts, ListedRecord, createBadgeBlueKeysDelegatedTrustResolver;
+    unresolved: r-degrade-on-listing-failure: function:473e9effb9d9e91445db68e031e329ea,
+    r-optional-logger: interface:05ddb65bca17c3188f02d33eda8b8481, r-vouch-resolver-injected:
+    file:lib/delegated-trust-badge-blue-keys/mod.ts, r.list-badge-blue-keys: interface:9ba074d070c57eb2e62aa0df62cb0178'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/delegated-trust-badge-blue-keys/mod.ts
-  fingerprint: b29671533054f5810c22010be833c835766105b429a3fa3c83f24b71d831e11f
-  interfaces:
-  - codegraphId: interface:9ba074d070c57eb2e62aa0df62cb0178
-    file: lib/delegated-trust-badge-blue-keys/mod.ts
-    kind: interface
-    line: 4
-    name: ListedRecord
-  - codegraphId: interface:05ddb65bca17c3188f02d33eda8b8481
-    file: lib/delegated-trust-badge-blue-keys/mod.ts
-    kind: interface
-    line: 9
-    name: DelegatedTrustBadgeBlueKeysOpts
-  - codegraphId: function:473e9effb9d9e91445db68e031e329ea
-    file: lib/delegated-trust-badge-blue-keys/mod.ts
-    kind: function
-    line: 15
-    name: createBadgeBlueKeysDelegatedTrustResolver
-    signature: |-
-      (
-        opts: DelegatedTrustBadgeBlueKeysOpts,
-      ): DelegatedTrustResolver
-  treeFiles:
-  - lib/delegated-trust-badge-blue-keys/deno.json
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: 5020fac6c500584430b78141b7010bc0696db474f045e01b82daab29c726d411
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: b29671533054f5810c22010be833c835766105b429a3fa3c83f24b71d831e11f
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

@@ -9,8 +9,5 @@ _The resolved code references are regenerated on every run. Cite the ids above r
 <!-- SPECD_MANAGED_BEGIN -->
 ## Resolved code references
 
-- `file:lib/market-bidder-compute/mod.ts` file mod.ts (lib/market-bidder-compute/mod.ts)
-- `function:0791308e00a93c24057bb04e10198f52` function createVmBidderCallbacks (lib/market-bidder-compute/mod.ts)
-- `function:ef1bc6ab24fd35061cac77784db90302` function createComputeProviderHooks (lib/market-bidder-compute/mod.ts)
-- `interface:462aac25716496197891c11616e37b58` interface VmBidderDeps (lib/market-bidder-compute/mod.ts)
+_None yet._
 <!-- SPECD_MANAGED_END -->

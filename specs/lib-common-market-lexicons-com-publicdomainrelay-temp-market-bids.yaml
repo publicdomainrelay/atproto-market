@@ -1,16 +1,11 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
-codeRefIndex:
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/free.defs.ts
-  free.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/free.defs.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/free.ts free.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/free.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.defs.ts
-  x402.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.defs.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.ts x402.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.ts
 kind: SystemContext
 metadata:
   name: lib-common-market-lexicons-com-publicdomainrelay-temp-market-bids
   namespace: default
 spec:
+  repository: atproto-market
+  upstream: self
   dependsOn:
   - sc.atproto-market
   intent: This context exists so the market can express a bidder's offer of compute
@@ -22,31 +17,27 @@ spec:
     marking these lexicons as provisional. The files are code-generated, so they exist
     to pin the wire schema and give callers typed builder/validator entry points rather
     than to hold hand-written logic.
-  repository: atproto-market
   requirements:
-  - codeRefs:
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/free.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.defs.ts
-    id: r.bid-signatures-nonrepudiable
+  - id: r.bid-signatures-nonrepudiable
     level: MUST
     text: Both bid payloads must embed badge.blue attestations over their terms through
       the shared attested signature structure, and that structure must include the
       bidder's inline signature attached at creation, so the free offer's reason and
       the x402 bid's price and payment endpoint are non-repudiable.
-  - codeRefs:
+    codeRefs:
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/free.defs.ts
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.defs.ts
-    id: r.bound-validator-helpers
+  - id: r.bound-validator-helpers
     level: MUST
     text: Each bid namespace must re-export the record builder as `main` and, bound
       to that builder, export the helper set `$isTypeOf`, `$build`, `$assert`, `$check`,
       `$cast`, `$ifMatches`, `$matches`, `$parse`, `$safeParse`, `$validate` and `$safeValidate`,
       so callers can type-check, build, and parse a bid without reaching into the
       builder themselves.
-  - codeRefs:
+    codeRefs:
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/free.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/free.ts
-    id: r.free-record-fields
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.defs.ts
+  - id: r.free-record-fields
     level: MUST
     text: The `com.publicdomainrelay.temp.market.bids.free` record must carry a human-readable
       `reason` string describing why compute is offered free (for example open-source
@@ -54,48 +45,49 @@ spec:
       structure; the record is keyed by `tid` and its object builder must declare
       exactly those two fields with `reason` as `l.string()` and `signatures` as `l.ref()`
       to `AttestedSignature.Signatures`.
-  - codeRefs:
+    codeRefs:
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/free.defs.ts
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/free.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.ts
-    id: r.generated-do-not-edit
+  - id: r.generated-do-not-edit
     level: MUST
     text: All four files must remain machine-generated artifacts of `@atproto/lex`,
       carrying the generated-by header and no hand-written logic; schema changes belong
       in the lexicon source and the files are regenerated, not edited.
-  - codeRefs:
+    codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/free.defs.ts
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/free.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.defs.ts
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.ts
-    id: r.mod-default-reexport
+  - id: r.mod-default-reexport
     level: MUST
     text: The `free.ts` and `x402.ts` modules must stay thin entry points that star-re-export
       their sibling `.defs.ts` module and re-export that module's `main` as the module
       default, so `import freeBid from '.../bids/free.ts'` resolves to the record
       builder.
-  - codeRefs:
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/free.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.defs.ts
-    id: r.nsid-constants
+    codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/free.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.ts
+  - id: r.nsid-constants
     level: MUST
     text: Each namespace module must pin its own NSID constant — `com.publicdomainrelay.temp.market.bids.free`
       and `com.publicdomainrelay.temp.market.bids.x402` — exported both as `$nsid`
       and as `$type`, and the generated record builder must be constructed with that
       same NSID string so the exported type identifier and the runtime record type
       cannot drift.
-  - codeRefs:
+    codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/free.defs.ts
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.ts
-    id: r.x402-record-fields
+  - id: r.x402-record-fields
     level: MUST
     text: 'The `com.publicdomainrelay.temp.market.bids.x402` record must declare pricing
       and payment terms: `cost` as an `l.lexMap()`, `currency` and `frequency` and
       `url` as `l.string()`, `prepay` as `l.boolean()`, and `signatures` as an `l.ref()`
       to `AttestedSignature.Signatures`; the record is keyed by `tid` and all six
       fields are declared in the record''s object builder.'
-  - codeRefs:
+    codeRefs:
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.defs.ts
-    id: r.x402-settlement-flow
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.ts
+  - id: r.x402-settlement-flow
     level: SHOULD
     text: 'The x402 bid''s `url` field must document the settlement flow it points
       at: the requester first mints a `com.publicdomainrelay.temp.market.accepts.x402`
@@ -103,4 +95,12 @@ spec:
       CID}`, and on payment the bidder mints and returns a `com.publicdomainrelay.temp.market.receipts.x402`
       proof-of-payment record that is then used as the payload of the higher-level
       `com.publicdomainrelay.temp.market.accept`.'
-  upstream: self
+    codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.defs.ts
+codeRefIndex:
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/free.defs.ts
+  free.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/free.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/free.ts free.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/free.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.defs.ts
+  x402.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.ts x402.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.ts

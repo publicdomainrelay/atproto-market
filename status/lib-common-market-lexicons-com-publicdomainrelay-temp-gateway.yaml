@@ -1,62 +1,28 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: InterfacesMissing
+  message: 'missing: $Input, $InputBody, $Message, $Output, $OutputBody, $Params;
+    unresolved: r.defs-module-shim: file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.ts,
+    r.defs-module-shim: file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeVM.ts,
+    r.defs-module-shim: file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerEphemeral.ts,
+    r.defs-module-shim: file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerPersistent.ts,
+    r.defs-module-shim: file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/subscribeComputeEvents.ts,
+    r.delete-compute-procedure: file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.defs.ts,
+    r.delete-compute-procedure: type_alias:393831b8d75c1249270e671756544ddb, r.delete-compute-procedure:
+    type_alias:8dd8c3ab1dfe28788340058f4ef2def6, r.delete-compute-procedure: type_alias:c6ef996f74e21ae1c38c7755e9923196,
+    r.delete-compute-procedure: type_alias:ea94174ed7f56e765770915c6a088775, r.delete-compute-procedure:
+    type_alias:f236e40d2419fcf685be494db9c50a84, r.generated-files-not-edited: file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/subscribeComputeEvents.defs.ts,
+    r.nsid-export: file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeVM.defs.ts,
+    r.nsid-export: file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerEphemeral.defs.ts,
+    r.nsid-export: file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerPersistent.defs.ts,
+    r.subscribe-compute-events-subscription: type_alias:6cbf471842bed7607958a9024f6c1586'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.defs.ts
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.ts
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeVM.defs.ts
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeVM.ts
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerEphemeral.defs.ts
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerEphemeral.ts
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerPersistent.defs.ts
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerPersistent.ts
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/subscribeComputeEvents.defs.ts
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/subscribeComputeEvents.ts
-  fingerprint: 85bfbc282945fca14c0c13fdaf9404ee53ea4ab63c2585960e5df7aabcf075e0
-  interfaces:
-  - codegraphId: type_alias:f236e40d2419fcf685be494db9c50a84
-    file: lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.defs.ts
-    kind: type_alias
-    line: 13
-    name: $Params
-  - codegraphId: type_alias:393831b8d75c1249270e671756544ddb
-    file: lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.defs.ts
-    kind: type_alias
-    line: 20
-    name: $Input
-  - codegraphId: type_alias:c6ef996f74e21ae1c38c7755e9923196
-    file: lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.defs.ts
-    kind: type_alias
-    line: 21
-    name: $InputBody
-  - codegraphId: type_alias:ea94174ed7f56e765770915c6a088775
-    file: lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.defs.ts
-    kind: type_alias
-    line: 28
-    name: $Output
-  - codegraphId: type_alias:8dd8c3ab1dfe28788340058f4ef2def6
-    file: lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.defs.ts
-    kind: type_alias
-    line: 29
-    name: $OutputBody
-  - codegraphId: type_alias:6cbf471842bed7607958a9024f6c1586
-    file: lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/subscribeComputeEvents.defs.ts
-    kind: type_alias
-    line: 27
-    name: $Message
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: 6ae9148b893206c0b6c1aceda20878c2f06b99b908852fae7f7701638722bc74
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 85bfbc282945fca14c0c13fdaf9404ee53ea4ab63c2585960e5df7aabcf075e0
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

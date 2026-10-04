@@ -1,55 +1,18 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: InterfacesMissing
+  message: 'missing: SshKeyRbacContext, buildSshKeyRbacRecord, didPlcKey, renderSubject;
+    unresolved: r.context-fields: function:aac738c94c8e2dfa2a0ff4c0e8d5c018, r.context-fields:
+    interface:967a594352d4c9b86213f54d84909966, r.default-subject-template: function:a98ccef775e425fa7c13add3016e54f5,
+    r.did-plc-key-strip: file:lib/common/fedproxy-rbac-common/mod.ts, r.did-plc-key-strip:
+    function:e5377f0a379eb596837b1526cd73134c'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/common/fedproxy-rbac-common/mod.ts
-  fingerprint: 77502dccc4e5fcc06e8cc141912e8762435a6fe3c000fb51b6d8e7909e501fd7
-  interfaces:
-  - codegraphId: interface:967a594352d4c9b86213f54d84909966
-    file: lib/common/fedproxy-rbac-common/mod.ts
-    kind: interface
-    line: 4
-    name: SshKeyRbacContext
-  - codegraphId: function:e5377f0a379eb596837b1526cd73134c
-    file: lib/common/fedproxy-rbac-common/mod.ts
-    kind: function
-    line: 12
-    name: didPlcKey
-    signature: '(did: string): string'
-  - codegraphId: function:a98ccef775e425fa7c13add3016e54f5
-    file: lib/common/fedproxy-rbac-common/mod.ts
-    kind: function
-    line: 16
-    name: renderSubject
-    signature: |-
-      (
-        template: string,
-        vars: { actx: string; didPlcKey: string; role: string },
-      ): string
-  - codegraphId: function:aac738c94c8e2dfa2a0ff4c0e8d5c018
-    file: lib/common/fedproxy-rbac-common/mod.ts
-    kind: function
-    line: 26
-    name: buildSshKeyRbacRecord
-    signature: |-
-      (
-        ctx: SshKeyRbacContext,
-      ): Record<string, unknown>
-  treeFiles:
-  - lib/common/fedproxy-rbac-common/deno.json
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: d91a3ce0c8011cdc148d94af95267071bfa1c295e674fc50e3ef5d4493388a4e
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 77502dccc4e5fcc06e8cc141912e8762435a6fe3c000fb51b6d8e7909e501fd7
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

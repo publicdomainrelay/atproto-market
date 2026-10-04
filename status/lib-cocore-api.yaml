@@ -1,61 +1,21 @@
 conditions:
-- message: 'undeclared: call'
+- type: CodeSynced
+  status: "False"
   reason: InterfacesMissing
+  message: 'missing: ApiKey, CocoreClient, CocoreClientOptions, CreateApiKeyResponse,
+    ListApiKeysResponse, createCocoreClient; unresolved: r.create-api-key: function:1fea095a0bee325bdb1aae5e86e8f6a3,
+    r.create-api-key: interface:1bcea98b6e61d0fa858c001c956b655d, r.create-api-key:
+    interface:6c1e6b8fec8cdfaf8c00a2c93ec26f2e, r.default-appview-url: interface:8ec256e4f14d893e88afbca014d72b53,
+    r.error-on-non-ok: function:d182b9f8d24e2ca8806313b0bcd98280, r.list-api-keys:
+    interface:09decfc0b5223bf533f41d5230769bc8, r.list-api-keys: interface:a6b944b6f1859d7bd5b304b7a2b77b3c,
+    r.single-module-package: file:lib/cocore-api/deno.json, r.single-module-package:
+    file:lib/cocore-api/mod.ts'
+- type: Drifted
   status: "False"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
-  status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/cocore-api/mod.ts
-  fingerprint: 85c3c98e84d99a541d65e2aa64667cf7370f958680a1a68a2e06f40d73abb018
-  interfaces:
-  - codegraphId: interface:a6b944b6f1859d7bd5b304b7a2b77b3c
-    file: lib/cocore-api/mod.ts
-    kind: interface
-    line: 5
-    name: ApiKey
-  - codegraphId: interface:1bcea98b6e61d0fa858c001c956b655d
-    file: lib/cocore-api/mod.ts
-    kind: interface
-    line: 12
-    name: CreateApiKeyResponse
-  - codegraphId: interface:09decfc0b5223bf533f41d5230769bc8
-    file: lib/cocore-api/mod.ts
-    kind: interface
-    line: 17
-    name: ListApiKeysResponse
-  - codegraphId: interface:8ec256e4f14d893e88afbca014d72b53
-    file: lib/cocore-api/mod.ts
-    kind: interface
-    line: 21
-    name: CocoreClientOptions
-  - codegraphId: interface:6c1e6b8fec8cdfaf8c00a2c93ec26f2e
-    file: lib/cocore-api/mod.ts
-    kind: interface
-    line: 29
-    name: CocoreClient
-  - codegraphId: function:1fea095a0bee325bdb1aae5e86e8f6a3
-    file: lib/cocore-api/mod.ts
-    kind: function
-    line: 35
-    name: createCocoreClient
-    signature: '(opts: CocoreClientOptions): CocoreClient'
-  - codegraphId: function:d182b9f8d24e2ca8806313b0bcd98280
-    file: lib/cocore-api/mod.ts
-    kind: function
-    line: 40
-    name: call
-    signature: '(nsid: string, body?: Record<string, unknown>): Promise<unknown>'
-  treeFiles:
-  - lib/cocore-api/deno.json
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: ae4185c10b33b9533636e67df5585e76edde2d5931aad20ae0f8044eef188ff2
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 85c3c98e84d99a541d65e2aa64667cf7370f958680a1a68a2e06f40d73abb018
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

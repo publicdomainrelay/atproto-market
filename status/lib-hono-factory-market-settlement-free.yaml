@@ -1,41 +1,18 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: InterfacesMissing
+  message: 'missing: FreeSettlementConfig, FreeSettlementEnv, createFreeSettlementFactory;
+    unresolved: r.config-defaults: function:7bbe9c9808ae3467009f796d9d61f7a7, r.config-defaults:
+    interface:d9c1f785121068db886f45f3e476e730, r.export-config-interface: file:lib/hono-factory-market-settlement-free/mod.ts,
+    r.export-env-type: type_alias:259f1f8ce12ab1cae693c13fa0c86028, r.package-config:
+    file:lib/hono-factory-market-settlement-free/deno.json'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/hono-factory-market-settlement-free/mod.ts
-  fingerprint: 543cbdec95c06ad40e9ce2351795f1aab6333f6bed50abaec0f32d495d83a918
-  interfaces:
-  - codegraphId: type_alias:259f1f8ce12ab1cae693c13fa0c86028
-    file: lib/hono-factory-market-settlement-free/mod.ts
-    kind: type_alias
-    line: 11
-    name: FreeSettlementEnv
-  - codegraphId: interface:d9c1f785121068db886f45f3e476e730
-    file: lib/hono-factory-market-settlement-free/mod.ts
-    kind: interface
-    line: 18
-    name: FreeSettlementConfig
-  - codegraphId: function:7bbe9c9808ae3467009f796d9d61f7a7
-    file: lib/hono-factory-market-settlement-free/mod.ts
-    kind: function
-    line: 28
-    name: createFreeSettlementFactory
-    signature: '(config: FreeSettlementConfig)'
-  treeFiles:
-  - lib/hono-factory-market-settlement-free/deno.json
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: 9fd120eda5150accb40b6b3167d926c39ca0e61a8a3e6bd7b616f42a40514216
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 543cbdec95c06ad40e9ce2351795f1aab6333f6bed50abaec0f32d495d83a918
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

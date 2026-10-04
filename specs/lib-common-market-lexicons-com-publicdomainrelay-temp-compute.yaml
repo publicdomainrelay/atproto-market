@@ -1,14 +1,11 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
-codeRefIndex:
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config.ts config.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events.ts events.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.defs.ts vm.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.defs.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.ts vm.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.ts
 kind: SystemContext
 metadata:
   name: lib-common-market-lexicons-com-publicdomainrelay-temp-compute
   namespace: default
 spec:
+  repository: atproto-market
+  upstream: self
   dependsOn:
   - sc.atproto-market
   intent: 'The package exists so the market''s requester and provider speak one wire
@@ -20,106 +17,103 @@ spec:
     from lexicons rather than authored by hand, so its purpose is to carry schema
     fidelity — field names, optionality, integer floors, datetime formats, and record
     keys — into TypeScript types and validators that the rest of the market code imports.'
-  repository: atproto-market
   requirements:
-  - codeRefs:
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config.ts
-    id: r.config-wif-namespace
+  - id: r.config-wif-namespace
     level: MUST
     text: The `config` entry re-exports the WIF subtree from `./config/wif.ts` as
       a single `wif` namespace, so consumers reach the workload-identity configuration
       records as `config.wif.*`.
-  - codeRefs:
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events.ts
-    id: r.event-delete
+    codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config.ts
+  - id: r.event-delete
     level: MUST
     text: The `delete` event record requests that the provider tear down a provisioned
       VM and requires both a `reason` string (for example 'workflow_complete' or 'policy_engine_never_came_up')
       and a `createdAt` datetime; it is sent by the requester because the provider
       treats the VM as a black box and cannot observe those conditions.
-  - codeRefs:
+    codeRefs:
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events.ts
-    id: r.event-on-network
+  - id: r.event-on-network
     level: MUST
     text: The `onNetwork` event record reports that a VM has registered its SSH key
       or fedproxy route and its policy engine answered, carrying a required `createdAt`
       datetime and an optional `address` string naming the hostname or IP the VM is
       reachable at.
-  - codeRefs:
+    codeRefs:
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events.ts
-    id: r.event-started
+  - id: r.event-started
     level: MUST
     text: The `started` event record reports that a provisioned VM has begun booting
       and carries only a required `createdAt` datetime, so a provider can signal boot
       without claiming reachability.
-  - codeRefs:
+    codeRefs:
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events.ts
-    id: r.events-vm-namespace
+  - id: r.events-vm-namespace
     level: MUST
     text: The `events` entry re-exports the VM event subtree from `./events/vm.ts`
       as a single `vm` namespace, exposing the `delete`, `started` and `onNetwork`
       event records under `events.vm.*`.
-  - codeRefs:
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config.ts
+    codeRefs:
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.ts
-    id: r.generated-not-hand-edited
+  - id: r.generated-not-hand-edited
     level: MUST
     text: Every file in the context opens with the header `THIS FILE WAS GENERATED
       BY "@atproto/lex". DO NOT EDIT.`; the sources are generator output, so schema
       changes belong in the upstream lexicons rather than in these modules.
-  - codeRefs:
+    codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events.ts
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.defs.ts
-    id: r.location-embed
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.ts
+  - id: r.location-embed
     level: SHOULD
     text: The optional `location` field refs the embedded `location` definition (`com.publicdomainrelay.temp.compute.vm#location`),
       exported as the `Location` type and the `location` typed-object validator, whose
       `country` (ISO 3166-1 alpha-3 or human-readable name) and `region` subfields
       are both optional strings.
-  - codeRefs:
+    codeRefs:
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.defs.ts
-    id: r.role-account-scoping
+  - id: r.role-account-scoping
     level: MUST
     text: '`role` is a required string naming the RBAC role the compute runs under,
       and it is documented as requester-controlled: because the requester''s did:plc
       may set it freely and roles are scoped under accounts, agents must request compute
       from their own accounts rather than a shared one.'
-  - codeRefs:
+    codeRefs:
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.defs.ts
-    id: r.validator-exports
+  - id: r.validator-exports
     level: MUST
     text: The definition file exports the record validator alongside its bound helpers
       — `$type`, `$isTypeOf`, `$build`, `$assert`, `$check`, `$cast`, `$ifMatches`,
       `$matches`, `$parse`, `$safeParse`, `$validate` and `$safeValidate` — each bound
       to `main` so callers can build and check records without re-deriving the schema.
-  - codeRefs:
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.ts
-    id: r.vm-module-surface
+    codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.defs.ts
+  - id: r.vm-module-surface
     level: MUST
     text: The `vm` module re-exports everything from `vm.defs.ts` and additionally
       re-exports the `main` record validator as the module's default export, so importing
       the module default yields the VM request record validator itself.
-  - codeRefs:
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.defs.ts
-    id: r.vm-record-shape
+    codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.ts
+  - id: r.vm-record-shape
     level: MUST
     text: The VM request record is the `com.publicdomainrelay.temp.compute.vm` record,
       keyed by `tid`, and its required fields are `cpus`, `mem`, `disk`, `network`,
       `role` and `user_data`, with an optional embedded `location`; the same schema
       is exported as the `Main` type and as the `main` record validator, with `$nsid`
       holding the NSID string.
-  - codeRefs:
+    codeRefs:
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.defs.ts
-    id: r.vm-resource-fields
+  - id: r.vm-resource-fields
     level: MUST
     text: '`cpus` is validated as an integer with a minimum of 1, while `mem`, `disk`
       and `network` are free-form strings carrying human-readable size requests such
       as ''512M'', ''4G'', ''10G'' and ''500G''; `user_data` is a string holding cloud-init
       bootstrap data.'
-  - codeRefs:
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config.ts
-    id: r.wif-simple-shape
+    codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.defs.ts
+  - id: r.wif-simple-shape
     level: MUST
     text: The WIF namespace's `simple` record (`com.publicdomainrelay.temp.compute.config.wif.simple`,
       keyed by tid) requires `accept_path`, `issuer_uri`, `to_issue`, `token_path`,
@@ -128,4 +122,10 @@ spec:
       where the OIDC issuer URI is trusted by the provider's RBAC, `to_issue` names
       the role granted for token exchange, and requested token subjects must follow
       the `subject` format.
-  upstream: self
+    codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config.ts
+codeRefIndex:
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config.ts config.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events.ts events.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.defs.ts vm.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.ts vm.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/vm.ts

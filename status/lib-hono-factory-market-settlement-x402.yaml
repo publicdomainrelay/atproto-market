@@ -1,41 +1,17 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: InterfacesMissing
+  message: 'missing: X402SettlementConfig, X402SettlementEnv, createX402SettlementFactory;
+    unresolved: r.config-optional-overrides: function:78e258a8c5323f8774599a9e9adf6dad,
+    r.config-optional-overrides: interface:689a63cbfa61ba7bfe171e76eeea36d4, r.config-required-dependencies:
+    file:lib/hono-factory-market-settlement-x402/mod.ts, r.env-variables: type_alias:aed7d5829498218c0606453c9468be76'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/hono-factory-market-settlement-x402/mod.ts
-  fingerprint: 9dce1b6a546cbb6d761e7561d54880cf8ca3a8531e086b9a1d6ff1b6c06f733d
-  interfaces:
-  - codegraphId: type_alias:aed7d5829498218c0606453c9468be76
-    file: lib/hono-factory-market-settlement-x402/mod.ts
-    kind: type_alias
-    line: 12
-    name: X402SettlementEnv
-  - codegraphId: interface:689a63cbfa61ba7bfe171e76eeea36d4
-    file: lib/hono-factory-market-settlement-x402/mod.ts
-    kind: interface
-    line: 19
-    name: X402SettlementConfig
-  - codegraphId: function:78e258a8c5323f8774599a9e9adf6dad
-    file: lib/hono-factory-market-settlement-x402/mod.ts
-    kind: function
-    line: 30
-    name: createX402SettlementFactory
-    signature: '(config: X402SettlementConfig)'
-  treeFiles:
-  - lib/hono-factory-market-settlement-x402/deno.json
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: d16febece93c5fea29468d14b51e19d0c6b3060058b2edeb631bc275313ecae9
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 9dce1b6a546cbb6d761e7561d54880cf8ca3a8531e086b9a1d6ff1b6c06f733d
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

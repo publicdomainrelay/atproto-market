@@ -1,39 +1,17 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: InterfacesMissing
+  message: 'missing: RequesterFactoryOptions, createRequesterFactory; unresolved:
+    r.async-factory: function:4adb00e3e75b63bbad98d6f295adf81c, r.audience-dids-include-self:
+    file:lib/hono-factory-requester-xrpc/mod.ts, r.export-factory-options: interface:24e3920dde2766781bd325714476a696,
+    r.package-metadata: file:lib/hono-factory-requester-xrpc/deno.json'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/hono-factory-requester-xrpc/mod.ts
-  fingerprint: f0becfeadc3d2372da177a4b9e8342ec9f2ba1d78585787d6f03e7032924544d
-  interfaces:
-  - codegraphId: interface:24e3920dde2766781bd325714476a696
-    file: lib/hono-factory-requester-xrpc/mod.ts
-    kind: interface
-    line: 17
-    name: RequesterFactoryOptions
-  - codegraphId: function:4adb00e3e75b63bbad98d6f295adf81c
-    file: lib/hono-factory-requester-xrpc/mod.ts
-    kind: function
-    line: 57
-    name: createRequesterFactory
-    signature: |-
-      (
-        opts: RequesterFactoryOptions,
-      ): Promise<{ stop: () => void }>
-  treeFiles:
-  - lib/hono-factory-requester-xrpc/deno.json
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: e95cb5dd61faa36545e58398a6e13f93517b49c95f5e52a33598b307dc484a80
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: f0becfeadc3d2372da177a4b9e8342ec9f2ba1d78585787d6f03e7032924544d
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

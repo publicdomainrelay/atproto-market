@@ -1,4 +1,91 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SystemContext
+metadata:
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-compute-events-vm
+  namespace: default
+spec:
+  repository: atproto-market
+  upstream: self
+  dependsOn:
+  - sc.atproto-market
+  intent: 'These lexicons exist so a requester and a provider can exchange VM lifecycle
+    facts over atproto: started says a VM began booting, onNetwork says it came up
+    and is reachable, registerIdentity carries the guest''s DID and relay FQDN, and
+    delete asks the provider to tear the VM down when the requester observes a terminal
+    condition the provider cannot see itself. The context is the vocabulary layer
+    only; it defines the record shapes and their validators, and leaves all dispatch
+    or handling to the market event callback code elsewhere in the repository.'
+  requirements:
+  - id: r.barrel-default-export
+    level: MUST
+    text: Each sibling .ts barrel must re-export everything from its .defs.ts module
+      and re-export the main record as the module default, so the lexicon can be imported
+      either by name or as the default record.
+    codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/registerIdentity.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.ts
+  - id: r.delete-record
+    level: MUST
+    text: Define the record lexicon com.publicdomainrelay.temp.compute.events.vm.delete,
+      whose Main type requires a reason string (for example 'workflow_complete' or
+      'policy_engine_never_came_up') plus createdAt, is built as an l.record with
+      rkey type 'tid', and asks the provider to delete or tear down a provisioned
+      VM; the requester sends it because the provider treats the VM as a black box
+      and cannot observe those conditions itself.
+    codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.ts
+  - id: r.generated-not-edited
+    level: SHOULD
+    text: Every file in this context carries the '@atproto/lex' generated-by header
+      and must be regenerated from the source lexicon rather than hand-edited, so
+      the NSIDs, field sets and validators stay in sync with the generator output.
+    codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.defs.ts
+  - id: r.on-network-record
+    level: MUST
+    text: Define the record lexicon com.publicdomainrelay.temp.compute.events.vm.onNetwork,
+      whose Main type carries an optional address string (hostname or IP the VM is
+      reachable at) plus a required createdAt datetime, is built as an l.record with
+      rkey type 'tid', and reports that a provisioned VM has come up on the network
+      and is reachable.
+    codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.ts
+  - id: r.register-identity-record
+    level: MUST
+    text: Define the record lexicon com.publicdomainrelay.temp.compute.events.vm.registerIdentity,
+      whose Main type requires a did string (did:plc or did:key) and an fqdn string
+      reachable through the relay dispatcher, accepts an optional transport string
+      ('tunnel' or 'fedproxy'), requires createdAt, is built as an l.record with rkey
+      type 'tid', and reports a guest compute identity so the requester can reach
+      the guest through the relay.
+    codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/registerIdentity.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/registerIdentity.ts
+  - id: r.shared-validator-exports
+    level: MUST
+    text: Each defs module must export the bound record-builder validators $type,
+      $isTypeOf, $build, $assert, $check, $cast, $ifMatches, $matches, $parse, $safeParse,
+      $validate and $safeValidate derived from the main record, so callers can type-check,
+      build, parse and validate these events without touching the raw record definition.
+    codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/registerIdentity.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.defs.ts
+  - id: r.started-record
+    level: MUST
+    text: Define the record lexicon com.publicdomainrelay.temp.compute.events.vm.started,
+      whose Main type has the literal $type and a required createdAt datetime string,
+      is built as an l.record with rkey type 'tid', and reports that a provisioned
+      VM has started booting.
+    codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.ts
 codeRefIndex:
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.defs.ts
   delete.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.defs.ts
@@ -16,90 +103,3 @@ codeRefIndex:
   started.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.defs.ts
 - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.ts
   started.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.ts
-kind: SystemContext
-metadata:
-  name: lib-common-market-lexicons-com-publicdomainrelay-temp-compute-events-vm
-  namespace: default
-spec:
-  dependsOn:
-  - sc.atproto-market
-  intent: 'These lexicons exist so a requester and a provider can exchange VM lifecycle
-    facts over atproto: started says a VM began booting, onNetwork says it came up
-    and is reachable, registerIdentity carries the guest''s DID and relay FQDN, and
-    delete asks the provider to tear the VM down when the requester observes a terminal
-    condition the provider cannot see itself. The context is the vocabulary layer
-    only; it defines the record shapes and their validators, and leaves all dispatch
-    or handling to the market event callback code elsewhere in the repository.'
-  repository: atproto-market
-  requirements:
-  - codeRefs:
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/registerIdentity.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.ts
-    id: r.barrel-default-export
-    level: MUST
-    text: Each sibling .ts barrel must re-export everything from its .defs.ts module
-      and re-export the main record as the module default, so the lexicon can be imported
-      either by name or as the default record.
-  - codeRefs:
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.ts
-    id: r.delete-record
-    level: MUST
-    text: Define the record lexicon com.publicdomainrelay.temp.compute.events.vm.delete,
-      whose Main type requires a reason string (for example 'workflow_complete' or
-      'policy_engine_never_came_up') plus createdAt, is built as an l.record with
-      rkey type 'tid', and asks the provider to delete or tear down a provisioned
-      VM; the requester sends it because the provider treats the VM as a black box
-      and cannot observe those conditions itself.
-  - codeRefs:
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.defs.ts
-    id: r.generated-not-edited
-    level: SHOULD
-    text: Every file in this context carries the '@atproto/lex' generated-by header
-      and must be regenerated from the source lexicon rather than hand-edited, so
-      the NSIDs, field sets and validators stay in sync with the generator output.
-  - codeRefs:
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.ts
-    id: r.on-network-record
-    level: MUST
-    text: Define the record lexicon com.publicdomainrelay.temp.compute.events.vm.onNetwork,
-      whose Main type carries an optional address string (hostname or IP the VM is
-      reachable at) plus a required createdAt datetime, is built as an l.record with
-      rkey type 'tid', and reports that a provisioned VM has come up on the network
-      and is reachable.
-  - codeRefs:
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/registerIdentity.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/registerIdentity.ts
-    id: r.register-identity-record
-    level: MUST
-    text: Define the record lexicon com.publicdomainrelay.temp.compute.events.vm.registerIdentity,
-      whose Main type requires a did string (did:plc or did:key) and an fqdn string
-      reachable through the relay dispatcher, accepts an optional transport string
-      ('tunnel' or 'fedproxy'), requires createdAt, is built as an l.record with rkey
-      type 'tid', and reports a guest compute identity so the requester can reach
-      the guest through the relay.
-  - codeRefs:
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/registerIdentity.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.defs.ts
-    id: r.shared-validator-exports
-    level: MUST
-    text: Each defs module must export the bound record-builder validators $type,
-      $isTypeOf, $build, $assert, $check, $cast, $ifMatches, $matches, $parse, $safeParse,
-      $validate and $safeValidate derived from the main record, so callers can type-check,
-      build, parse and validate these events without touching the raw record definition.
-  - codeRefs:
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.ts
-    id: r.started-record
-    level: MUST
-    text: Define the record lexicon com.publicdomainrelay.temp.compute.events.vm.started,
-      whose Main type has the literal $type and a required createdAt datetime string,
-      is built as an l.record with rkey type 'tid', and reports that a provisioned
-      VM has started booting.
-  upstream: self

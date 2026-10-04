@@ -1,23 +1,15 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: CodeRefsUnresolved
+  message: 'unresolved requirement code refs: r.barrel-reexport: file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config/wif/simple.defs.ts,
+    r.barrel-reexport: file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config/wif/simple.ts'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config/wif/simple.defs.ts
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config/wif/simple.ts
-  fingerprint: 4850b2b6050ce97e4ccddfe32a12b619eb794ec815d2b6f5c181c25037601e4c
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: 363e93322f2d09079430c399ecae5d4e4078f16a21b0b067a3a59488a17676ad
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 4850b2b6050ce97e4ccddfe32a12b619eb794ec815d2b6f5c181c25037601e4c
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

@@ -1,36 +1,17 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: InterfacesMissing
+  message: 'missing: BskyMutualsVouchResolverOpts, createBskyMutualsVouchResolver;
+    unresolved: r.conform-to-vouch-resolver: file:lib/trust-graph-bsky-mutuals/mod.ts,
+    r.conform-to-vouch-resolver: function:34fc226f1ebe43b6ca206f58c9e43a2f, r.export-factory:
+    interface:db90b579bdaef85c0398478a8d9c2578, r.package-manifest: file:lib/trust-graph-bsky-mutuals/deno.json'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/trust-graph-bsky-mutuals/mod.ts
-  fingerprint: b8e3d05832678a399e9de4ecce9394faf689809041b052eb389f929b36259f88
-  interfaces:
-  - codegraphId: interface:db90b579bdaef85c0398478a8d9c2578
-    file: lib/trust-graph-bsky-mutuals/mod.ts
-    kind: interface
-    line: 3
-    name: BskyMutualsVouchResolverOpts
-  - codegraphId: function:34fc226f1ebe43b6ca206f58c9e43a2f
-    file: lib/trust-graph-bsky-mutuals/mod.ts
-    kind: function
-    line: 8
-    name: createBskyMutualsVouchResolver
-    signature: '(opts: BskyMutualsVouchResolverOpts): VouchResolver'
-  treeFiles:
-  - lib/trust-graph-bsky-mutuals/deno.json
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: d44ee571617a01be4266689a8afab00979e733817b244030c57d5739d2bd1f59
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: b8e3d05832678a399e9de4ecce9394faf689809041b052eb389f929b36259f88
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

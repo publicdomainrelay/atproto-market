@@ -1,143 +1,23 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: InterfacesMissing
+  message: 'missing: DidResolverLike, OAuthAgentOptions, OAuthAgentSession, applyWrites,
+    createDesktopATProto, createOAuthAgent, createRecord, dpopFetch, getRecord, getServiceAuth,
+    listRecords, putRecord, refreshLock; unresolved: r.agent-surface: file:lib/market-bidder-agent/mod.ts,
+    r.agent-surface: function:407e4c41cef3e86724e04659cedadfdb, r.apply-writes: function:06cebf856c3be35de17c689a0ccaca29,
+    r.call-service: function:a690e444f084e1d7e654f05a07f22482, r.call-service: function:a9adf14c6ea59e323dcdd8a8ad87784f,
+    r.did-resolver: interface:ac5d8663ab340c835a37c121adbb2dac, r.dpop-proof-inline:
+    function:1b2e0f2694d705889bcfb6ed573a9d5a, r.get-record: function:fdc54648c4f6169ee7c3ef17e76f9628,
+    r.list-records: function:08fbe16787fbdc5b92d51bda4c9a4519, r.refresh-lock: function:691e68a35723a4f0e774745f7efb891b,
+    r.refresh-lock: interface:981804416897bc52d8c40722ea378abb, r.session-shape: interface:76dfa4cb57701d3cf137a9d79e664dfe,
+    r.write-records: function:8f78299c9e8f2a298e0fa81860dd13d0, r.write-records: function:96dc609775f8f9f5382312d19ec99f0e'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/market-bidder-agent/mod.ts
-  fingerprint: 2076c902857ac4bea558bd1462f045436c7e0300383a9622284edbd16b81eac9
-  interfaces:
-  - codegraphId: interface:ac5d8663ab340c835a37c121adbb2dac
-    file: lib/market-bidder-agent/mod.ts
-    kind: interface
-    line: 136
-    name: DidResolverLike
-  - codegraphId: interface:76dfa4cb57701d3cf137a9d79e664dfe
-    file: lib/market-bidder-agent/mod.ts
-    kind: interface
-    line: 144
-    name: OAuthAgentSession
-  - codegraphId: interface:981804416897bc52d8c40722ea378abb
-    file: lib/market-bidder-agent/mod.ts
-    kind: interface
-    line: 152
-    name: OAuthAgentOptions
-  - codegraphId: function:407e4c41cef3e86724e04659cedadfdb
-    file: lib/market-bidder-agent/mod.ts
-    kind: function
-    line: 163
-    name: createOAuthAgent
-    signature: |-
-      (
-        session: OAuthAgentSession,
-        signer: { did(): string; sign(bytes: Uint8Array): Promise<Uint8Array> },
-        opts: OAuthAgentOptions,
-      ): AtprotoAgentLike
-  - codegraphId: function:691e68a35723a4f0e774745f7efb891b
-    file: lib/market-bidder-agent/mod.ts
-    kind: function
-    line: 225
-    name: refreshLock
-    signature: '(): Promise<void>'
-  - codegraphId: function:1b2e0f2694d705889bcfb6ed573a9d5a
-    file: lib/market-bidder-agent/mod.ts
-    kind: function
-    line: 249
-    name: dpopFetch
-    signature: |-
-      (
-          method: string,
-          url: string,
-          body?: Record<string, unknown>,
-        ): Promise<Response>
-  - codegraphId: function:06cebf856c3be35de17c689a0ccaca29
-    file: lib/market-bidder-agent/mod.ts
-    kind: function
-    line: 294
-    name: applyWrites
-    signature: |-
-      (
-          did: string,
-          writes: WriteOp[],
-        )
-  - codegraphId: function:fdc54648c4f6169ee7c3ef17e76f9628
-    file: lib/market-bidder-agent/mod.ts
-    kind: function
-    line: 314
-    name: getRecord
-    signature: |-
-      (
-          did: string,
-          collection: string,
-          rkey: string,
-        ): Promise<{ uri: string; cid: string; value: Record<string, unknown> } | null>
-  - codegraphId: function:08fbe16787fbdc5b92d51bda4c9a4519
-    file: lib/market-bidder-agent/mod.ts
-    kind: function
-    line: 332
-    name: listRecords
-    signature: |-
-      (
-          did: string,
-          collection: string,
-          opts?: { limit?: number },
-        ): Promise<{ records: Array<{ uri: string; cid: string; value: Record<string, unknown> }> }>
-  - codegraphId: function:8f78299c9e8f2a298e0fa81860dd13d0
-    file: lib/market-bidder-agent/mod.ts
-    kind: function
-    line: 349
-    name: createRecord
-    signature: |-
-      (
-          did: string,
-          collection: string,
-          rkey: string,
-          record: Record<string, unknown>,
-        ): Promise<{ uri: string; cid: string }>
-  - codegraphId: function:96dc609775f8f9f5382312d19ec99f0e
-    file: lib/market-bidder-agent/mod.ts
-    kind: function
-    line: 367
-    name: putRecord
-    signature: |-
-      (
-          did: string,
-          collection: string,
-          rkey: string,
-          record: Record<string, unknown>,
-        ): Promise<{ uri: string; cid: string }>
-  - codegraphId: function:a690e444f084e1d7e654f05a07f22482
-    file: lib/market-bidder-agent/mod.ts
-    kind: function
-    line: 385
-    name: getServiceAuth
-    signature: '(aud: string, lxm?: string): Promise<string>'
-  - codegraphId: function:a9adf14c6ea59e323dcdd8a8ad87784f
-    file: lib/market-bidder-agent/mod.ts
-    kind: function
-    line: 418
-    name: createDesktopATProto
-    signature: |-
-      (
-        logger: StructuredLoggerInterface,
-        agent: AtprotoAgentLike,
-        badgeBlueSigner: CreateATProtoOpts["badgeBlueSigner"],
-        idResolver: DidResolverLike,
-        plcClient: CreateATProtoOpts["plcDirectory"],
-      ): Promise<ATProto>
-  treeFiles:
-  - lib/market-bidder-agent/deno.json
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: a310cd4b38acd7905421ad6f385d0d376ccdfa0c1f45a45670a200008681ca33
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 2076c902857ac4bea558bd1462f045436c7e0300383a9622284edbd16b81eac9
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

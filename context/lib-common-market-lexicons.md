@@ -9,8 +9,5 @@ _The resolved code references are regenerated on every run. Cite the ids above r
 <!-- SPECD_MANAGED_BEGIN -->
 ## Resolved code references
 
-- `file:lib/common/market-lexicons/com.ts` file com.ts (lib/common/market-lexicons/com.ts)
-- `file:lib/common/market-lexicons/mod.ts` file mod.ts (lib/common/market-lexicons/mod.ts)
-- `file:lib/common/market-lexicons/network.ts` file network.ts (lib/common/market-lexicons/network.ts)
-- `file:lib/common/market-lexicons/nsids.ts` file nsids.ts (lib/common/market-lexicons/nsids.ts)
+_None yet._
 <!-- SPECD_MANAGED_END -->

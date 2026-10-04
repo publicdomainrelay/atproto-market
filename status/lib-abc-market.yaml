@@ -1,17 +1,21 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: 5bd58b97bfb1cec3dfaaf335833717f321206a4b2980ea6d766d321fdc710614
+realizedSpecHash: 5a1ebcec262cbe9708d38feef05f54dcef8e9ff1e19fcd70f42b1cfbf52cf3db
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
+- type: CodeSynced
+  status: "True"
   reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+- type: Drifted
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
+- type: SpecValid
   status: "True"
-  type: SpecValid
+  reason: ValidatorPassed
+  message: the spec passes the validator
 observed:
   files:
   - lib/abc/market/attestation.ts
@@ -20,176 +24,172 @@ observed:
   - lib/abc/market/mod.ts
   - lib/abc/market/resolve.ts
   - lib/abc/market/settlement.ts
-  fingerprint: 5bd58b97bfb1cec3dfaaf335833717f321206a4b2980ea6d766d321fdc710614
-  interfaces:
-  - codegraphId: interface:7c4ceebaecd03e6d27746999a54821d2
-    file: lib/abc/market/attestation.ts
-    kind: interface
-    line: 8
-    name: AttestationKeypair
-  - codegraphId: type_alias:c2e697175930be3ef1c6b21a7b6e1472
-    file: lib/abc/market/callbacks.ts
-    kind: type_alias
-    line: 11
-    name: HandlerResult
-  - codegraphId: interface:ff0c27330e697df5114c8bef0c21e380
-    file: lib/abc/market/callbacks.ts
-    kind: interface
-    line: 13
-    name: SubmitRfpContext
-  - codegraphId: type_alias:32fcebe14317b9d1b49d3b48bcb3ca40
-    file: lib/abc/market/callbacks.ts
-    kind: type_alias
-    line: 30
-    name: SubmitRfpCallback
-  - codegraphId: type_alias:caeab7a15e595c198b75e96251bfe5d8
-    file: lib/abc/market/callbacks.ts
-    kind: type_alias
-    line: 33
-    name: RfpCallbacks
-  - codegraphId: interface:9be2bacad9b50e4fe402adc03562b2fb
-    file: lib/abc/market/callbacks.ts
-    kind: interface
-    line: 35
-    name: SubmitBidContext
-  - codegraphId: type_alias:5f2c2806cdf4c52f0324b4d29875f620
-    file: lib/abc/market/callbacks.ts
-    kind: type_alias
-    line: 47
-    name: SubmitBidCallback
-  - codegraphId: interface:2e006fab2ae9f1b1265f8f1d98886565
-    file: lib/abc/market/callbacks.ts
-    kind: interface
-    line: 49
-    name: SubmitAcceptContext
-  - codegraphId: type_alias:072e38723584e04ddf9824fe73b8ae8d
-    file: lib/abc/market/callbacks.ts
-    kind: type_alias
-    line: 60
-    name: SubmitAcceptCallback
-  - codegraphId: interface:783b2e7264d1c2455e923a183aa08af2
-    file: lib/abc/market/callbacks.ts
-    kind: interface
-    line: 62
-    name: EventDispatchContext
-  - codegraphId: type_alias:5c297d7e51972b79b3f90a4857f9f822
-    file: lib/abc/market/callbacks.ts
-    kind: type_alias
-    line: 77
-    name: EventCallback
-  - codegraphId: type_alias:a5fad144b700800ee41170bd530c2038
-    file: lib/abc/market/callbacks.ts
-    kind: type_alias
-    line: 80
-    name: EventCallbacks
-  - codegraphId: interface:30de74b08ca0dfbe29306bb852e2c2f5
-    file: lib/abc/market/contract.ts
-    kind: interface
-    line: 3
-    name: ContractGraph
-  - codegraphId: class:d2f9b5d5998f84730325047d9db1340d
-    file: lib/abc/market/contract.ts
-    kind: class
-    line: 14
-    name: ContractGraphError
-  - codegraphId: method:9bca3b5354a39ba5e5a08834053af403
-    file: lib/abc/market/contract.ts
-    kind: method
-    line: 16
-    name: ContractGraphError.constructor
-    signature: '(message: string, status = 400)'
-  - codegraphId: interface:50e55cd486d00a6d88fbbbc9513ea0be
-    file: lib/abc/market/resolve.ts
-    kind: interface
-    line: 3
-    name: AtUriParts
-  - codegraphId: function:0b5e12ce3c1c857f2c95548a731c5193
-    file: lib/abc/market/resolve.ts
-    kind: function
-    line: 9
-    name: parseAtUri
-    signature: '(uri: string): AtUriParts'
-  - codegraphId: function:43e20fb2680803ef7ecfd166aff58966
-    file: lib/abc/market/resolve.ts
-    kind: function
-    line: 14
-    name: atUriAuthority
-    signature: '(uri: string): string'
-  - codegraphId: function:e1b677a59c449d5b3a8df99e8c065aaa
-    file: lib/abc/market/resolve.ts
-    kind: function
-    line: 18
-    name: nsidFromUri
-    signature: '(uri: string): string'
-  - codegraphId: interface:1a01cd0adebae6ece66a71a28e7e34ca
-    file: lib/abc/market/resolve.ts
-    kind: interface
-    line: 23
-    name: RecordRef
-  - codegraphId: function:e01a0614b1d05394405331fc4f91dd7a
-    file: lib/abc/market/resolve.ts
-    kind: function
-    line: 28
-    name: refKey
-    signature: '(ref: RecordRef): string'
-  - codegraphId: function:6098bf13a256d45b83e56dba75b170ba
-    file: lib/abc/market/resolve.ts
-    kind: function
-    line: 32
-    name: refsEqual
-    signature: '(a: RecordRef, b: RecordRef): boolean'
-  - codegraphId: function:a0b78ea629d02463b11bee34bbee99c3
-    file: lib/abc/market/resolve.ts
-    kind: function
-    line: 36
-    name: stripResolved
-    signature: '(resolved: Resolved<T>): T'
-  - codegraphId: function:4c0fc8eba95ff6940c69d8c957e19f82
-    file: lib/abc/market/resolve.ts
-    kind: function
-    line: 41
-    name: resolvedRef
-    signature: '(resolved: Resolved<T>): StrongRef'
-  - codegraphId: class:9828d35cfd8b58a1cd6a8a7f61cbd771
-    file: lib/abc/market/resolve.ts
-    kind: class
-    line: 45
-    name: RecordVersionError
-  - codegraphId: method:cb5ff5f27df8f18f6f47ed0cb0207572
-    file: lib/abc/market/resolve.ts
-    kind: method
-    line: 46
-    name: RecordVersionError.constructor
-    signature: '(version: string)'
-  - codegraphId: interface:46637b41730d998d7409bb094a199fbe
-    file: lib/abc/market/resolve.ts
-    kind: interface
-    line: 51
-    name: RecordResolver
-  - codegraphId: type_alias:15b66e1486bb1129d9a6b3136080517b
-    file: lib/abc/market/settlement.ts
-    kind: type_alias
-    line: 4
-    name: SettlementMode
-  - codegraphId: interface:463898e97d88180ba985082bf1910898
-    file: lib/abc/market/settlement.ts
-    kind: interface
-    line: 6
-    name: SettlementCtx
-  - codegraphId: interface:534292774b0efca0f35c954e05c1c3e0
-    file: lib/abc/market/settlement.ts
-    kind: interface
-    line: 14
-    name: Settlement
-  - codegraphId: function:ff7b2b644f6f0a994b9f5492fe767eb8
-    file: lib/abc/market/settlement.ts
-    kind: function
-    line: 21
-    name: receiptUrlFor
-    signature: '(baseUrl: string, reqUrl: string, path: string): string'
   treeFiles:
   - lib/abc/market/deno.json
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: 5a1ebcec262cbe9708d38feef05f54dcef8e9ff1e19fcd70f42b1cfbf52cf3db
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 5bd58b97bfb1cec3dfaaf335833717f321206a4b2980ea6d766d321fdc710614
+  interfaces:
+  - name: AttestationKeypair
+    kind: interface
+    file: lib/abc/market/attestation.ts
+    line: 8
+    codegraphId: interface:7c4ceebaecd03e6d27746999a54821d2
+  - name: HandlerResult
+    kind: type_alias
+    file: lib/abc/market/callbacks.ts
+    line: 11
+    codegraphId: type_alias:c2e697175930be3ef1c6b21a7b6e1472
+  - name: SubmitRfpContext
+    kind: interface
+    file: lib/abc/market/callbacks.ts
+    line: 13
+    codegraphId: interface:ff0c27330e697df5114c8bef0c21e380
+  - name: SubmitRfpCallback
+    kind: type_alias
+    file: lib/abc/market/callbacks.ts
+    line: 30
+    codegraphId: type_alias:32fcebe14317b9d1b49d3b48bcb3ca40
+  - name: RfpCallbacks
+    kind: type_alias
+    file: lib/abc/market/callbacks.ts
+    line: 33
+    codegraphId: type_alias:caeab7a15e595c198b75e96251bfe5d8
+  - name: SubmitBidContext
+    kind: interface
+    file: lib/abc/market/callbacks.ts
+    line: 35
+    codegraphId: interface:9be2bacad9b50e4fe402adc03562b2fb
+  - name: SubmitBidCallback
+    kind: type_alias
+    file: lib/abc/market/callbacks.ts
+    line: 47
+    codegraphId: type_alias:5f2c2806cdf4c52f0324b4d29875f620
+  - name: SubmitAcceptContext
+    kind: interface
+    file: lib/abc/market/callbacks.ts
+    line: 49
+    codegraphId: interface:2e006fab2ae9f1b1265f8f1d98886565
+  - name: SubmitAcceptCallback
+    kind: type_alias
+    file: lib/abc/market/callbacks.ts
+    line: 60
+    codegraphId: type_alias:072e38723584e04ddf9824fe73b8ae8d
+  - name: EventDispatchContext
+    kind: interface
+    file: lib/abc/market/callbacks.ts
+    line: 62
+    codegraphId: interface:783b2e7264d1c2455e923a183aa08af2
+  - name: EventCallback
+    kind: type_alias
+    file: lib/abc/market/callbacks.ts
+    line: 77
+    codegraphId: type_alias:5c297d7e51972b79b3f90a4857f9f822
+  - name: EventCallbacks
+    kind: type_alias
+    file: lib/abc/market/callbacks.ts
+    line: 80
+    codegraphId: type_alias:a5fad144b700800ee41170bd530c2038
+  - name: ContractGraph
+    kind: interface
+    file: lib/abc/market/contract.ts
+    line: 3
+    codegraphId: interface:30de74b08ca0dfbe29306bb852e2c2f5
+  - name: ContractGraphError
+    kind: class
+    file: lib/abc/market/contract.ts
+    line: 14
+    codegraphId: class:d2f9b5d5998f84730325047d9db1340d
+  - name: ContractGraphError.constructor
+    kind: method
+    signature: '(message: string, status = 400)'
+    file: lib/abc/market/contract.ts
+    line: 16
+    codegraphId: method:9bca3b5354a39ba5e5a08834053af403
+  - name: AtUriParts
+    kind: interface
+    file: lib/abc/market/resolve.ts
+    line: 3
+    codegraphId: interface:50e55cd486d00a6d88fbbbc9513ea0be
+  - name: parseAtUri
+    kind: function
+    signature: '(uri: string): AtUriParts'
+    file: lib/abc/market/resolve.ts
+    line: 9
+    codegraphId: function:0b5e12ce3c1c857f2c95548a731c5193
+  - name: atUriAuthority
+    kind: function
+    signature: '(uri: string): string'
+    file: lib/abc/market/resolve.ts
+    line: 14
+    codegraphId: function:43e20fb2680803ef7ecfd166aff58966
+  - name: nsidFromUri
+    kind: function
+    signature: '(uri: string): string'
+    file: lib/abc/market/resolve.ts
+    line: 18
+    codegraphId: function:e1b677a59c449d5b3a8df99e8c065aaa
+  - name: RecordRef
+    kind: interface
+    file: lib/abc/market/resolve.ts
+    line: 23
+    codegraphId: interface:1a01cd0adebae6ece66a71a28e7e34ca
+  - name: refKey
+    kind: function
+    signature: '(ref: RecordRef): string'
+    file: lib/abc/market/resolve.ts
+    line: 28
+    codegraphId: function:e01a0614b1d05394405331fc4f91dd7a
+  - name: refsEqual
+    kind: function
+    signature: '(a: RecordRef, b: RecordRef): boolean'
+    file: lib/abc/market/resolve.ts
+    line: 32
+    codegraphId: function:6098bf13a256d45b83e56dba75b170ba
+  - name: stripResolved
+    kind: function
+    signature: '(resolved: Resolved<T>): T'
+    file: lib/abc/market/resolve.ts
+    line: 36
+    codegraphId: function:a0b78ea629d02463b11bee34bbee99c3
+  - name: resolvedRef
+    kind: function
+    signature: '(resolved: Resolved<T>): StrongRef'
+    file: lib/abc/market/resolve.ts
+    line: 41
+    codegraphId: function:4c0fc8eba95ff6940c69d8c957e19f82
+  - name: RecordVersionError
+    kind: class
+    file: lib/abc/market/resolve.ts
+    line: 45
+    codegraphId: class:9828d35cfd8b58a1cd6a8a7f61cbd771
+  - name: RecordVersionError.constructor
+    kind: method
+    signature: '(version: string)'
+    file: lib/abc/market/resolve.ts
+    line: 46
+    codegraphId: method:cb5ff5f27df8f18f6f47ed0cb0207572
+  - name: RecordResolver
+    kind: interface
+    file: lib/abc/market/resolve.ts
+    line: 51
+    codegraphId: interface:46637b41730d998d7409bb094a199fbe
+  - name: SettlementMode
+    kind: type_alias
+    file: lib/abc/market/settlement.ts
+    line: 4
+    codegraphId: type_alias:15b66e1486bb1129d9a6b3136080517b
+  - name: SettlementCtx
+    kind: interface
+    file: lib/abc/market/settlement.ts
+    line: 6
+    codegraphId: interface:463898e97d88180ba985082bf1910898
+  - name: Settlement
+    kind: interface
+    file: lib/abc/market/settlement.ts
+    line: 14
+    codegraphId: interface:534292774b0efca0f35c954e05c1c3e0
+  - name: receiptUrlFor
+    kind: function
+    signature: '(baseUrl: string, reqUrl: string, path: string): string'
+    file: lib/abc/market/settlement.ts
+    line: 21
+    codegraphId: function:ff7b2b644f6f0a994b9f5492fe767eb8
+  fingerprint: 5bd58b97bfb1cec3dfaaf335833717f321206a4b2980ea6d766d321fdc710614

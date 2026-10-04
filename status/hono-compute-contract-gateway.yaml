@@ -1,28 +1,28 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: 14a1ed105a3c3442e17143adbc8d6e54f2d0b3e2f67b33108d43a6ff96e46ba3
+realizedSpecHash: 378650749657ef8d43d2a62a7514b111592887cf2c247fe806621d019705e127
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
+- type: CodeSynced
+  status: "True"
   reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+- type: Drifted
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
+- type: SpecValid
   status: "True"
-  type: SpecValid
+  reason: ValidatorPassed
+  message: the spec passes the validator
 observed:
   files:
   - hono-compute-contract-gateway/mod.ts
-  fingerprint: 14a1ed105a3c3442e17143adbc8d6e54f2d0b3e2f67b33108d43a6ff96e46ba3
   treeFiles:
   - hono-compute-contract-gateway/GOAL.md
   - hono-compute-contract-gateway/README.md
   - hono-compute-contract-gateway/cli-args-env.json
   - hono-compute-contract-gateway/config.json
   - hono-compute-contract-gateway/deno.json
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: 378650749657ef8d43d2a62a7514b111592887cf2c247fe806621d019705e127
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 14a1ed105a3c3442e17143adbc8d6e54f2d0b3e2f67b33108d43a6ff96e46ba3
+  fingerprint: 14a1ed105a3c3442e17143adbc8d6e54f2d0b3e2f67b33108d43a6ff96e46ba3

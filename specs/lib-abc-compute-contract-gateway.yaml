@@ -1,12 +1,11 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
-codeRefIndex:
-- file:lib/abc/compute-contract-gateway/mod.ts mod.ts@lib/abc/compute-contract-gateway/mod.ts
-- interface:686284d942a70c576d3538a0ee80e825 ComputeContractGateway@lib/abc/compute-contract-gateway/mod.ts:8
 kind: SystemContext
 metadata:
   name: lib-abc-compute-contract-gateway
   namespace: default
 spec:
+  repository: atproto-market
+  upstream: self
   dependsOn:
   - sc.atproto-market
   intent: This context exists to fix the contract that separates compute provisioning
@@ -19,60 +18,61 @@ spec:
     torn down afterwards, and pins the shared shapes (CallerIdentity, ComputeRequestVMInput,
     ComputeRequestWorkerInput, GatewayComputeResponse) that cross that boundary, so
     a second transport or a test double can be substituted without changing call sites.
-  interfaces:
-  - file: lib/abc/compute-contract-gateway/mod.ts
-    kind: interface
-    name: ComputeContractGateway
-    signature: export interface ComputeContractGateway
-  repository: atproto-market
   requirements:
-  - codeRefs:
-    - file:lib/abc/compute-contract-gateway/mod.ts
-    - interface:686284d942a70c576d3538a0ee80e825
-    id: r.caller-and-input-types
+  - id: r.caller-and-input-types
     level: SHOULD
     text: The interface should keep CallerIdentity, ComputeRequestVMInput, ComputeRequestWorkerInput
       and GatewayComputeResponse as the shared types crossing the boundary, so callers
       and implementations agree on request identity, request payload and response
       shape without redefining them per transport.
-  - codeRefs:
+    codeRefs:
+    - file:lib/abc/compute-contract-gateway/mod.ts
     - interface:686284d942a70c576d3538a0ee80e825
-    id: r.delete-compute
+  - id: r.delete-compute
     level: MUST
     text: ComputeContractGateway must expose deleteCompute taking a CallerIdentity,
       a receipt URI, a receipt CID and a token, resolving to an object with a boolean
       ok field, so a caller can tear down an existing compute allocation identified
       by its receipt record and learn whether the deletion succeeded.
-  - codeRefs:
-    - file:lib/abc/compute-contract-gateway/mod.ts
+    codeRefs:
     - interface:686284d942a70c576d3538a0ee80e825
-    id: r.expose-gateway-interface
+  - id: r.expose-gateway-interface
     level: MUST
     text: The compute-contract-gateway abc module must export a single ComputeContractGateway
       interface that the transport, Hono factory and market callers all depend on,
       so that provisioning callers never import a concrete gateway implementation
       directly.
-  - codeRefs:
+    codeRefs:
+    - file:lib/abc/compute-contract-gateway/mod.ts
     - interface:686284d942a70c576d3538a0ee80e825
-    id: r.gateway-identity-field
+  - id: r.gateway-identity-field
     level: MUST
     text: ComputeContractGateway must expose a did string field identifying the gateway,
       so callers can address the gateway's own repository and service endpoint without
       inspecting the underlying PDS object.
-  - codeRefs:
+    codeRefs:
     - interface:686284d942a70c576d3538a0ee80e825
-    id: r.gateway-lifecycle
+  - id: r.gateway-lifecycle
     level: MUST
     text: ComputeContractGateway must expose an async beginServe that brings the gateway
       into a serving state and an async dispose that releases it, so a caller can
       start and stop a gateway deterministically around its use rather than relying
       on implicit startup.
-  - codeRefs:
+    codeRefs:
     - interface:686284d942a70c576d3538a0ee80e825
-    id: r.provisioning-calls
+  - id: r.provisioning-calls
     level: MUST
     text: ComputeContractGateway must expose requestComputeVM, requestComputeWorkerEphemeral
       and requestComputeWorkerPersistent, each accepting a CallerIdentity plus a VM
       or worker input record and resolving to a GatewayComputeResponse, so VM and
       worker provisioning differ only by the call made and the input shape passed.
-  upstream: self
+    codeRefs:
+    - interface:686284d942a70c576d3538a0ee80e825
+  interfaces:
+  - name: ComputeContractGateway
+    kind: interface
+    signature: export interface ComputeContractGateway
+    file: lib/abc/compute-contract-gateway/mod.ts
+codeRefIndex:
+- file:lib/abc/compute-contract-gateway/mod.ts mod.ts@lib/abc/compute-contract-gateway/mod.ts
+- interface:686284d942a70c576d3538a0ee80e825 ComputeContractGateway@lib/abc/compute-contract-gateway/mod.ts:8

@@ -9,9 +9,5 @@ _The resolved code references are regenerated on every run. Cite the ids above r
 <!-- SPECD_MANAGED_BEGIN -->
 ## Resolved code references
 
-- `file:lib/common/market-lexicons/com/fedproxy/rbac.defs.ts` file rbac.defs.ts (lib/common/market-lexicons/com/fedproxy/rbac.defs.ts)
-- `file:lib/common/market-lexicons/com/fedproxy/rbac.ts` file rbac.ts (lib/common/market-lexicons/com/fedproxy/rbac.ts)
-- `file:lib/common/market-lexicons/com/fedproxy/sshPublicKey.defs.ts` file sshPublicKey.defs.ts (lib/common/market-lexicons/com/fedproxy/sshPublicKey.defs.ts)
-- `file:lib/common/market-lexicons/com/fedproxy/sshPublicKey.ts` file sshPublicKey.ts (lib/common/market-lexicons/com/fedproxy/sshPublicKey.ts)
-- `file:lib/common/market-lexicons/com/fedproxy/temp.ts` file temp.ts (lib/common/market-lexicons/com/fedproxy/temp.ts)
+_None yet._
 <!-- SPECD_MANAGED_END -->

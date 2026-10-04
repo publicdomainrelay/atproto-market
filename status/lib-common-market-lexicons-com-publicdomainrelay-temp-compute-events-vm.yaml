@@ -1,29 +1,21 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: CodeRefsUnresolved
+  message: 'unresolved requirement code refs: r.barrel-default-export: file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.ts,
+    r.barrel-default-export: file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.ts,
+    r.barrel-default-export: file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/registerIdentity.ts,
+    r.barrel-default-export: file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.ts,
+    r.delete-record: file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.defs.ts,
+    r.generated-not-edited: file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.defs.ts,
+    r.on-network-record: file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.defs.ts,
+    r.register-identity-record: file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/registerIdentity.defs.ts'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.defs.ts
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.ts
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.defs.ts
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.ts
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/registerIdentity.defs.ts
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/registerIdentity.ts
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.defs.ts
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.ts
-  fingerprint: a3d17fa1c39b52e8f0a497aca48f34b40103bbe8b6f65e2e8f7b764d93bafc17
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: 3cc76dec47f05c6923d3725546c05efba131776f03c963e37ff4a0d1e29c613f
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: a3d17fa1c39b52e8f0a497aca48f34b40103bbe8b6f65e2e8f7b764d93bafc17
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

@@ -9,5 +9,5 @@ _The resolved code references are regenerated on every run. Cite the ids above r
 <!-- SPECD_MANAGED_BEGIN -->
 ## Resolved code references
 
-- `file:lib/common/market-lexicons/com/fedproxy/temp/xrpc.ts` file xrpc.ts (lib/common/market-lexicons/com/fedproxy/temp/xrpc.ts)
+_None yet._
 <!-- SPECD_MANAGED_END -->

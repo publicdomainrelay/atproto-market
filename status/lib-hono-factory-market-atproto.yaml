@@ -1,45 +1,16 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: InterfacesMissing
+  message: 'missing: MarketEnv, MarketFactoryHandlers, createMarketFactory; unresolved:
+    r.bid-accept-event-routes: function:800a02055445c67608223d52523a4f52, r.bid-accept-event-routes:
+    interface:8e5a087b65382c18eeeb71bed01f210a, r.deps-on-context: type_alias:7760b83d04c47b7681b47b9d97351064'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/hono-factory-market-atproto/mod.ts
-  fingerprint: b65a7d98db73cca6a40d38dee5b38259cbd7b330a90527f53e83826f1b143408
-  interfaces:
-  - codegraphId: type_alias:7760b83d04c47b7681b47b9d97351064
-    file: lib/hono-factory-market-atproto/mod.ts
-    kind: type_alias
-    line: 29
-    name: MarketEnv
-  - codegraphId: interface:8e5a087b65382c18eeeb71bed01f210a
-    file: lib/hono-factory-market-atproto/mod.ts
-    kind: interface
-    line: 35
-    name: MarketFactoryHandlers
-  - codegraphId: function:800a02055445c67608223d52523a4f52
-    file: lib/hono-factory-market-atproto/mod.ts
-    kind: function
-    line: 44
-    name: createMarketFactory
-    signature: |-
-      (
-        deps: MarketServerDeps,
-        handlers?: MarketFactoryHandlers,
-      )
-  treeFiles:
-  - lib/hono-factory-market-atproto/deno.json
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: 895246b05198472b6e0f88bfd30d73c86dbd599c10e4bb0acea970716395681c
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: b65a7d98db73cca6a40d38dee5b38259cbd7b330a90527f53e83826f1b143408
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

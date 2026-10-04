@@ -1,42 +1,17 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: InterfacesMissing
+  message: 'missing: CreateIngressOpts, createIngress, getServiceAuthToken; unresolved:
+    r.close-idempotent-before-serve: function:ab0d43e74646836bd86d4b393d2cafa0, r.create-ingress-factory:
+    file:lib/did-key-ingress-proxy/mod.ts, r.create-ingress-factory: interface:da388f002919a2fd08b59e8f65646870,
+    r.service-auth-token: function:720938c17d8a919da0fa9510c65cc8d1'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/did-key-ingress-proxy/mod.ts
-  fingerprint: e28e67f6737f8c55bb366814adcf8bd94e1c9319f609707b7d811b74b5ef067c
-  interfaces:
-  - codegraphId: interface:da388f002919a2fd08b59e8f65646870
-    file: lib/did-key-ingress-proxy/mod.ts
-    kind: interface
-    line: 8
-    name: CreateIngressOpts
-  - codegraphId: function:ab0d43e74646836bd86d4b393d2cafa0
-    file: lib/did-key-ingress-proxy/mod.ts
-    kind: function
-    line: 38
-    name: createIngress
-    signature: '(opts: CreateIngressOpts): IngressRef'
-  - codegraphId: function:720938c17d8a919da0fa9510c65cc8d1
-    file: lib/did-key-ingress-proxy/mod.ts
-    kind: function
-    line: 51
-    name: getServiceAuthToken
-    signature: '(lxm: string): Promise<string>'
-  treeFiles:
-  - lib/did-key-ingress-proxy/deno.json
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: 5c6086004314431e2da56212b552defffcf4be24c009fadeae9641834cf083f7
-syncedCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
-syncedFingerprint: e28e67f6737f8c55bb366814adcf8bd94e1c9319f609707b7d811b74b5ef067c
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

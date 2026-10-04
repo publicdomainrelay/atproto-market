@@ -4,21 +4,17 @@ metadata:
   name: atproto-market
   namespace: default
 spec:
-  branch: spec/iroh-dumbpipe-20261004141803
-  populate:
-    partition: directory
-    root: true
-    summarize: true
   source: {}
+  branch: spec/iroh-dumbpipe-20261004141803
   verify:
   - bash
   - -lc
   - deno check && deno test -A test/cloud_init_snapshot_test.ts
+  populate:
+    partition: directory
+    summarize: true
+    root: true
 status:
-  contexts:
-    failed: 0
-    summarized: 81
-    total: 81
   headCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
   indexedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-  phase: Populated
+  phase: Indexing

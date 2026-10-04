@@ -1,23 +1,15 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: CodeRefsUnresolved
+  message: 'unresolved requirement code refs: r.barrel-surface: file:lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist/rbacDid.ts,
+    r.generated-not-edited: file:lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist/rbacDid.defs.ts'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist/rbacDid.defs.ts
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/auth/allowlist/rbacDid.ts
-  fingerprint: 8e5d147f9f0ccdad9943481f9bbd3faf896070a1446f8e0ec111919128286678
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: c242addd153e7b0f4dede3994673110dd503c14adc2c340891fb206247cfaac3
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 8e5d147f9f0ccdad9943481f9bbd3faf896070a1446f8e0ec111919128286678
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

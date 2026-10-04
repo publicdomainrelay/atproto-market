@@ -9,8 +9,5 @@ _The resolved code references are regenerated on every run. Cite the ids above r
 <!-- SPECD_MANAGED_BEGIN -->
 ## Resolved code references
 
-- `file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/free.defs.ts` file free.defs.ts (lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/free.defs.ts)
-- `file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/free.ts` file free.ts (lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/free.ts)
-- `file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/x402.defs.ts` file x402.defs.ts (lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/x402.defs.ts)
-- `file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/x402.ts` file x402.ts (lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts/x402.ts)
+_None yet._
 <!-- SPECD_MANAGED_END -->

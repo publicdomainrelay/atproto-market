@@ -1,14 +1,11 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
-codeRefIndex:
-- file:lib/delegated-trust-badge-blue-keys/mod.ts mod.ts@lib/delegated-trust-badge-blue-keys/mod.ts
-- function:473e9effb9d9e91445db68e031e329ea createBadgeBlueKeysDelegatedTrustResolver@lib/delegated-trust-badge-blue-keys/mod.ts:15
-- interface:05ddb65bca17c3188f02d33eda8b8481 DelegatedTrustBadgeBlueKeysOpts@lib/delegated-trust-badge-blue-keys/mod.ts:9
-- interface:9ba074d070c57eb2e62aa0df62cb0178 ListedRecord@lib/delegated-trust-badge-blue-keys/mod.ts:4
 kind: SystemContext
 metadata:
   name: lib-delegated-trust-badge-blue-keys
   namespace: default
 spec:
+  repository: atproto-market
+  upstream: self
   dependsOn:
   - sc.atproto-market
   intent: 'This context exists so that delegated trust is transitive through an association
@@ -16,93 +13,93 @@ spec:
     should also be trusted by that DID''s associated parties. It hides the two record
     shapes and the failure modes behind the DelegatedTrustResolver contract so market-bidder
     and requester-xrpc can wire it in without knowing the badgeBlueKeys layout.'
-  interfaces:
-  - file: lib/delegated-trust-badge-blue-keys/mod.ts
-    kind: interface
-    name: DelegatedTrustBadgeBlueKeysOpts
-    signature: 'interface DelegatedTrustBadgeBlueKeysOpts { vouchResolver: VouchResolver;
-      listOwnRecords(collection: string, opts?: { limit?: number }): Promise<ListedRecord[]>;
-      log?(level: string, msg: string, meta?: Record<string, unknown>): void }'
-  - file: lib/delegated-trust-badge-blue-keys/mod.ts
-    kind: interface
-    name: ListedRecord
-    signature: 'interface ListedRecord { uri: string; value: Record<string, unknown>
-      }'
-  - file: lib/delegated-trust-badge-blue-keys/mod.ts
-    kind: function
-    name: createBadgeBlueKeysDelegatedTrustResolver
-    signature: |-
-      (
-        opts: DelegatedTrustBadgeBlueKeysOpts,
-      ): DelegatedTrustResolver
-  repository: atproto-market
   requirements:
-  - codeRefs:
-    - function:473e9effb9d9e91445db68e031e329ea
-    id: r-degrade-on-listing-failure
+  - id: r-degrade-on-listing-failure
     level: MUST
     text: A failure while listing or scanning badgeBlueKeys records must be caught,
       reported through the logger at warn level with selfDid and the stringified error,
       and must leave the self-vouch set returned rather than failing the call.
-  - codeRefs:
+    codeRefs:
     - function:473e9effb9d9e91445db68e031e329ea
-    - interface:05ddb65bca17c3188f02d33eda8b8481
-    id: r-optional-logger
+  - id: r-optional-logger
     level: MUST
     text: 'The log callback is optional: when opts.log is absent the resolver must
       use a no-op logger, and when present it must be called with a level, a message
       and a metadata object carrying fields such as challenge, service, keyId, selfDid,
       opVouchCount or error.'
-  - codeRefs:
+    codeRefs:
     - function:473e9effb9d9e91445db68e031e329ea
-    id: r-two-association-shapes
+    - interface:05ddb65bca17c3188f02d33eda8b8481
+  - id: r-two-association-shapes
     level: MUST
     text: 'A record must be read as an association when keyId equals selfDid and challenge
       is a did: string (canonical, challenge names the operator), and also when challenge
       equals selfDid and keyId is a did: string (legacy inverted, keyId names the
       operator); both shapes contribute their operator DID to the candidate set.'
-  - codeRefs:
+    codeRefs:
     - function:473e9effb9d9e91445db68e031e329ea
-    id: r-union-operator-vouches
+  - id: r-union-operator-vouches
     level: MUST
     text: For every candidate operator the resolver must call vouchResolver.getVouchedDids(operator)
       and union the result into the returned set, so that a wrong candidate with no
       vouches adds nothing and the correct operator adds the vouches that matter.
-  - codeRefs:
-    - file:lib/delegated-trust-badge-blue-keys/mod.ts
-    - interface:05ddb65bca17c3188f02d33eda8b8481
-    id: r-vouch-resolver-injected
+    codeRefs:
+    - function:473e9effb9d9e91445db68e031e329ea
+  - id: r-vouch-resolver-injected
     level: MUST
     text: 'The module must not construct its own trust source: the vouchResolver and
       listOwnRecords capabilities arrive through DelegatedTrustBadgeBlueKeysOpts,
       keeping the module free of transport or repository dependencies.'
-  - codeRefs:
-    - function:473e9effb9d9e91445db68e031e329ea
+    codeRefs:
+    - file:lib/delegated-trust-badge-blue-keys/mod.ts
     - interface:05ddb65bca17c3188f02d33eda8b8481
-    id: r.factory-returns-resolver
+  - id: r.factory-returns-resolver
     level: MUST
     text: createBadgeBlueKeysDelegatedTrustResolver must accept a DelegatedTrustBadgeBlueKeysOpts
       and return a DelegatedTrustResolver whose only method is getDelegatedTrustedDids(selfDid),
       which resolves to a Set of DID strings.
-  - codeRefs:
+    codeRefs:
     - function:473e9effb9d9e91445db68e031e329ea
-    id: r.filter-association-services
+    - interface:05ddb65bca17c3188f02d33eda8b8481
+  - id: r.filter-association-services
     level: MUST
     text: Records whose service field is neither requester_associate nor bidder_associate
       must be skipped and must not contribute any candidate operator.
-  - codeRefs:
+    codeRefs:
     - function:473e9effb9d9e91445db68e031e329ea
-    - interface:9ba074d070c57eb2e62aa0df62cb0178
-    id: r.list-badge-blue-keys
+  - id: r.list-badge-blue-keys
     level: MUST
     text: The resolver must read the subject's own records through listOwnRecords
       for the badgeBlueKeys collection with a limit of 200, consuming each record's
       uri and value fields as described by ListedRecord.
-  - codeRefs:
+    codeRefs:
     - function:473e9effb9d9e91445db68e031e329ea
-    id: r.seed-with-own-vouches
+    - interface:9ba074d070c57eb2e62aa0df62cb0178
+  - id: r.seed-with-own-vouches
     level: MUST
     text: getDelegatedTrustedDids must seed the returned set with the DIDs vouchResolver.getVouchedDids(selfDid)
       yields, and must substitute an empty set instead of propagating an error when
       that call rejects.
-  upstream: self
+    codeRefs:
+    - function:473e9effb9d9e91445db68e031e329ea
+  interfaces:
+  - name: DelegatedTrustBadgeBlueKeysOpts
+    kind: interface
+    signature: 'interface DelegatedTrustBadgeBlueKeysOpts { vouchResolver: VouchResolver;
+      listOwnRecords(collection: string, opts?: { limit?: number }): Promise<ListedRecord[]>;
+      log?(level: string, msg: string, meta?: Record<string, unknown>): void }'
+    file: lib/delegated-trust-badge-blue-keys/mod.ts
+  - name: ListedRecord
+    kind: interface
+    signature: 'interface ListedRecord { uri: string; value: Record<string, unknown>
+      }'
+    file: lib/delegated-trust-badge-blue-keys/mod.ts
+  - name: createBadgeBlueKeysDelegatedTrustResolver
+    kind: function
+    signature: |-
+      (
+        opts: DelegatedTrustBadgeBlueKeysOpts,
+      ): DelegatedTrustResolver
+    file: lib/delegated-trust-badge-blue-keys/mod.ts
+codeRefIndex:
+- file:lib/delegated-trust-badge-blue-keys/mod.ts mod.ts@lib/delegated-trust-badge-blue-keys/mod.ts

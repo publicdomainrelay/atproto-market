@@ -9,5 +9,5 @@ _The resolved code references are regenerated on every run. Cite the ids above r
 <!-- SPECD_MANAGED_BEGIN -->
 ## Resolved code references
 
-- `file:lib/common/market-lexicons/network/attested.ts` file attested.ts (lib/common/market-lexicons/network/attested.ts)
+_None yet._
 <!-- SPECD_MANAGED_END -->

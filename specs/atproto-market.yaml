@@ -1,13 +1,11 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
-codeRefIndex:
-- file:LEXICONS.md LEXICONS.md@LEXICONS.md
-- file:deno.json deno.json@deno.json
-- file:deno.lock deno.lock@deno.lock
 kind: SystemContext
 metadata:
   name: atproto-market
   namespace: default
 spec:
+  repository: atproto-market
+  upstream: self
   intent: This context exists so that the marketplace packages do not each re-implement
     identity, signing, PLC and record-write plumbing. createATProto centralizes how
     the repo obtains an agent bound to a DID and signer and how records are created
@@ -15,7 +13,6 @@ spec:
     construction of the market XRPC client over a service. Downstream packages (bidders,
     gateways, market settlement, trust graph, requester) depend on these two factories
     rather than on raw agents or raw XRPC services.
-  repository: atproto-market
   requirements:
   - id: r.agent-factory
     level: MUST
@@ -28,15 +25,15 @@ spec:
     text: Attestation signing is supplied to the agent factory as an AttestationKeypair
       rather than as a raw key, keeping key material behind the market attestation
       abstraction.
-  - codeRefs:
-    - file:LEXICONS.md
-    - file:deno.json
-    - file:deno.lock
-    id: r.deno-workspace
+  - id: r.deno-workspace
     level: MUST
     text: 'The repository is a Deno workspace: dependencies and tasks are declared
       in deno.json with the resolved graph committed as deno.lock, and LEXICONS.md
       documents the lexicon set the packages implement.'
+    codeRefs:
+    - file:LEXICONS.md
+    - file:deno.json
+    - file:deno.lock
   - id: r.market-client-factory
     level: MUST
     text: createMarketClient takes an XrpcService plus an optional MarketClientOptions
@@ -61,4 +58,7 @@ spec:
       to agent.applyWrites with an update action followed by agent.getRecord; it returns
       the same com.atproto.repo.strongRef shape as createRecord, including the empty-string
       cid fallback.
-  upstream: self
+codeRefIndex:
+- file:LEXICONS.md LEXICONS.md@LEXICONS.md
+- file:deno.json deno.json@deno.json
+- file:deno.lock deno.lock@deno.lock

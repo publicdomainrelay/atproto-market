@@ -1,15 +1,11 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
-codeRefIndex:
-- file:lib/hono-factory-market-settlement-free/deno.json deno.json@lib/hono-factory-market-settlement-free/deno.json
-- file:lib/hono-factory-market-settlement-free/mod.ts mod.ts@lib/hono-factory-market-settlement-free/mod.ts
-- function:7bbe9c9808ae3467009f796d9d61f7a7 createFreeSettlementFactory@lib/hono-factory-market-settlement-free/mod.ts:28
-- interface:d9c1f785121068db886f45f3e476e730 FreeSettlementConfig@lib/hono-factory-market-settlement-free/mod.ts:18
-- type_alias:259f1f8ce12ab1cae693c13fa0c86028 FreeSettlementEnv@lib/hono-factory-market-settlement-free/mod.ts:11
 kind: SystemContext
 metadata:
   name: lib-hono-factory-market-settlement-free
   namespace: default
 spec:
+  repository: atproto-market
+  upstream: self
   dependsOn:
   - sc.atproto-market
   intent: 'The context exists so that the free settlement mode has a transport adapter
@@ -20,99 +16,100 @@ spec:
     read from globals. It keeps the free-settlement HTTP surface thin, configurable,
     and reusable across deployments, at the cost of being usable only where a caller
     can supply an Agent, a RecordResolver, and a RecordSigner.'
-  interfaces:
-  - file: lib/hono-factory-market-settlement-free/mod.ts
-    kind: interface
-    name: FreeSettlementConfig
-    signature: 'interface FreeSettlementConfig { getAgent: () => Agent; resolve: RecordResolver;
-      getSigner: () => RecordSigner; log?: Logger; path?: string }'
-  - file: lib/hono-factory-market-settlement-free/mod.ts
-    kind: type_alias
-    name: FreeSettlementEnv
-    signature: 'type FreeSettlementEnv = { Variables: { agent: Agent; resolve: RecordResolver
-      } }'
-  - file: lib/hono-factory-market-settlement-free/mod.ts
-    kind: function
-    name: createFreeSettlementFactory
-    signature: 'function createFreeSettlementFactory(config: FreeSettlementConfig)'
-  repository: atproto-market
   requirements:
-  - codeRefs:
-    - function:7bbe9c9808ae3467009f796d9d61f7a7
-    - interface:d9c1f785121068db886f45f3e476e730
-    id: r.config-defaults
+  - id: r.config-defaults
     level: MUST
     text: The factory destructures its config at creation time, defaulting log to
       noopLog and path to "free/receipt" when the caller omits them, so the route
       is always defined and logging never throws on an unconfigured deployment.
-  - codeRefs:
+    codeRefs:
     - function:7bbe9c9808ae3467009f796d9d61f7a7
     - interface:d9c1f785121068db886f45f3e476e730
-    id: r.dependencies-injected
+  - id: r.dependencies-injected
     level: SHOULD
     text: The factory reads agent, resolver, and signer through the config callbacks
       and value on every request rather than capturing them once, so a caller can
       rotate the agent or signer without rebuilding the app.
-  - codeRefs:
-    - file:lib/hono-factory-market-settlement-free/mod.ts
+    codeRefs:
+    - function:7bbe9c9808ae3467009f796d9d61f7a7
     - interface:d9c1f785121068db886f45f3e476e730
-    id: r.export-config-interface
+  - id: r.export-config-interface
     level: MUST
     text: 'The module exports FreeSettlementConfig, the injection surface for the
       factory: required getAgent returning an Agent, resolve as a RecordResolver,
       and getSigner returning a RecordSigner; optional log as a Logger and optional
       path as the mount path string.'
-  - codeRefs:
+    codeRefs:
     - file:lib/hono-factory-market-settlement-free/mod.ts
-    - type_alias:259f1f8ce12ab1cae693c13fa0c86028
-    id: r.export-env-type
+    - interface:d9c1f785121068db886f45f3e476e730
+  - id: r.export-env-type
     level: MUST
     text: The module exports FreeSettlementEnv as the Hono environment type used by
       the factory, declaring Variables with agent (Agent) and resolve (RecordResolver)
       so downstream middleware and handlers can read the request-scoped agent and
       record resolver from the Hono context.
-  - codeRefs:
+    codeRefs:
     - file:lib/hono-factory-market-settlement-free/mod.ts
-    - function:7bbe9c9808ae3467009f796d9d61f7a7
-    id: r.factory-entrypoint
+    - type_alias:259f1f8ce12ab1cae693c13fa0c86028
+  - id: r.factory-entrypoint
     level: MUST
     text: createFreeSettlementFactory accepts a FreeSettlementConfig and returns a
       factory built by createFactory parameterised with FreeSettlementEnv, so callers
       obtain a mountable app rather than a running server.
-  - codeRefs:
+    codeRefs:
+    - file:lib/hono-factory-market-settlement-free/mod.ts
     - function:7bbe9c9808ae3467009f796d9d61f7a7
-    id: r.json-response
+  - id: r.json-response
     level: MUST
     text: The handler responds with c.json({ uri, cid }) taken from the StrongRef
       returned by mintGrantForAccepts, so the client receives exactly the minted receipt
       reference and nothing else.
-  - codeRefs:
+    codeRefs:
     - function:7bbe9c9808ae3467009f796d9d61f7a7
-    id: r.log-request
+  - id: r.log-request
     level: MUST
     text: On each request the handler logs an info entry "free grant receipt requested"
       carrying the parsed acceptsUri and acceptsCid before any minting work happens.
-  - codeRefs:
+    codeRefs:
     - function:7bbe9c9808ae3467009f796d9d61f7a7
-    - interface:d9c1f785121068db886f45f3e476e730
-    id: r.mint-grant
+  - id: r.mint-grant
     level: MUST
     text: The handler mints the receipt by calling mintGrantForAccepts with agent
       from getAgent(), the configured resolve, the parsed acceptsUri and acceptsCid,
       and signer from getSigner(), then logs an info entry "receipts.free minted"
       with the resulting uri and cid.
-  - codeRefs:
-    - file:lib/hono-factory-market-settlement-free/mod.ts
+    codeRefs:
     - function:7bbe9c9808ae3467009f796d9d61f7a7
-    id: r.mount-get-route
+    - interface:d9c1f785121068db886f45f3e476e730
+  - id: r.mount-get-route
     level: MUST
     text: initApp registers a GET handler on `/${path}/*` and derives the acceptsUri
       and acceptsCid pair by calling parseGrantPath(c.req.path, `${path}/`), so the
       receipt URL shape and the mount prefix stay in agreement.
-  - codeRefs:
-    - file:lib/hono-factory-market-settlement-free/deno.json
-    id: r.package-config
+    codeRefs:
+    - file:lib/hono-factory-market-settlement-free/mod.ts
+    - function:7bbe9c9808ae3467009f796d9d61f7a7
+  - id: r.package-config
     level: MAY
     text: The package carries its own deno.json so the factory can be imported as
       a standalone workspace member independent of the CLI that mounts it.
-  upstream: self
+    codeRefs:
+    - file:lib/hono-factory-market-settlement-free/deno.json
+  interfaces:
+  - name: FreeSettlementConfig
+    kind: interface
+    signature: 'interface FreeSettlementConfig { getAgent: () => Agent; resolve: RecordResolver;
+      getSigner: () => RecordSigner; log?: Logger; path?: string }'
+    file: lib/hono-factory-market-settlement-free/mod.ts
+  - name: FreeSettlementEnv
+    kind: type_alias
+    signature: 'type FreeSettlementEnv = { Variables: { agent: Agent; resolve: RecordResolver
+      } }'
+    file: lib/hono-factory-market-settlement-free/mod.ts
+  - name: createFreeSettlementFactory
+    kind: function
+    signature: 'function createFreeSettlementFactory(config: FreeSettlementConfig)'
+    file: lib/hono-factory-market-settlement-free/mod.ts
+codeRefIndex:
+- file:lib/hono-factory-market-settlement-free/deno.json deno.json@lib/hono-factory-market-settlement-free/deno.json
+- file:lib/hono-factory-market-settlement-free/mod.ts mod.ts@lib/hono-factory-market-settlement-free/mod.ts

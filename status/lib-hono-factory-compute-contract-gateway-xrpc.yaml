@@ -1,45 +1,17 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: InterfacesMissing
+  message: 'missing: ComputeContractGatewayFactoryOptions, createComputeContractGatewayFactory,
+    requireAuth; unresolved: r.auth-failure-401: file:lib/hono-factory-compute-contract-gateway-xrpc/mod.ts,
+    r.auth-failure-401: function:35f62ddaabe8e88061e3c0f6d7f5c28c, r.cors-all-routes:
+    function:fb9c0b643b6c0ae7e354f595aa7280cf, r.factory-returns-hono-app: interface:9ce82a55642acec416e2eb4c3b27f13c'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
-  fingerprint: 7174d4b2b423f737042b159e2a95f0f5142ed7757cb0945d528e62ba7e1c116a
-  interfaces:
-  - codegraphId: interface:9ce82a55642acec416e2eb4c3b27f13c
-    file: lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
-    kind: interface
-    line: 18
-    name: ComputeContractGatewayFactoryOptions
-  - codegraphId: function:fb9c0b643b6c0ae7e354f595aa7280cf
-    file: lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
-    kind: function
-    line: 25
-    name: createComputeContractGatewayFactory
-    signature: |-
-      (
-        opts: ComputeContractGatewayFactoryOptions,
-      ): { app: Hono }
-  - codegraphId: function:35f62ddaabe8e88061e3c0f6d7f5c28c
-    file: lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
-    kind: function
-    line: 30
-    name: requireAuth
-    signature: '(lxm: string)'
-  treeFiles:
-  - lib/hono-factory-compute-contract-gateway-xrpc/deno.json
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: 9365b719e875ee3d38f1714e9a6470761315d29592ee6dd1220f149ffd078817
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 7174d4b2b423f737042b159e2a95f0f5142ed7757cb0945d528e62ba7e1c116a
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

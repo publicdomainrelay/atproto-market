@@ -1,76 +1,11 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
-codeRefIndex:
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accept.defs.ts
-  accept.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/accept.defs.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accept.ts accept.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/accept.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts.ts accepts.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/badgeBlueKey.defs.ts
-  badgeBlueKey.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/badgeBlueKey.defs.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/badgeBlueKey.ts
-  badgeBlueKey.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/badgeBlueKey.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.defs.ts bid.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.defs.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.ts bid.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderAssociation.defs.ts
-  bidderAssociation.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderAssociation.defs.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderAssociation.ts
-  bidderAssociation.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderAssociation.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderDiscovery.defs.ts
-  bidderDiscovery.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderDiscovery.defs.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderDiscovery.ts
-  bidderDiscovery.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderDiscovery.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderRegistration.defs.ts
-  bidderRegistration.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderRegistration.defs.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderRegistration.ts
-  bidderRegistration.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderRegistration.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids.ts bids.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/event.defs.ts
-  event.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/event.defs.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/event.ts event.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/event.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts
-  listBidders.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.ts
-  listBidders.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/offering.defs.ts
-  offering.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/offering.defs.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/offering.ts offering.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/offering.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies.ts policies.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipt.defs.ts
-  receipt.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipt.defs.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipt.ts receipt.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipt.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts.ts receipts.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts
-  registerBidder.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.ts
-  registerBidder.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/relays.defs.ts
-  relays.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/relays.defs.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/relays.ts relays.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/relays.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/rfp.defs.ts rfp.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/rfp.defs.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/rfp.ts rfp.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/rfp.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitAccept.defs.ts
-  submitAccept.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitAccept.defs.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitAccept.ts
-  submitAccept.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitAccept.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitBid.defs.ts
-  submitBid.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitBid.defs.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitBid.ts submitBid.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitBid.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitEvent.defs.ts
-  submitEvent.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitEvent.defs.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitEvent.ts
-  submitEvent.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitEvent.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitRfp.defs.ts
-  submitRfp.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitRfp.defs.ts
-- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitRfp.ts submitRfp.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitRfp.ts
-- type_alias:0adc1f8af630092bb7aa4cac5ebc8920 $OutputBody@lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts:34
-- type_alias:223f5d5cc4466f3f957ec28f3aad7b15 $Output@lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts:33
-- type_alias:e4d4f5aae838439d1466beefaf7ba698 $Input@lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts:22
-- type_alias:eb8e5b103503939aa7f2e56d68d1b9a2 $InputBody@lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts:23
-- type_alias:edd4c019723622fb37683f85866b881b $Params@lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts:24
 kind: SystemContext
 metadata:
   name: lib-common-market-lexicons-com-publicdomainrelay-temp-market
   namespace: default
 spec:
+  repository: atproto-market
+  upstream: self
   dependsOn:
   - sc.atproto-market
   intent: 'This context exists so a consumer of the market lexicon package can call
@@ -82,41 +17,8 @@ spec:
     source of truth for the market registry, RFP, bid, accept, receipt and event vocabulary,
     and it pins the cross-lexicon dependencies (strongRef, attested signatures, payload
     variant subdirectories) that those record schemas rely on.'
-  interfaces:
-  - file: lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts
-    kind: type_alias
-    name: $Input
-    signature: export type $Input<B = l.BinaryData> = l.InferPayload<typeof $input,
-      B>
-  - file: lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts
-    kind: type_alias
-    name: $InputBody
-    signature: export type $InputBody<B = l.BinaryData> = l.InferPayloadBody<typeof
-      $input, B>
-  - file: lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts
-    kind: type_alias
-    name: $Output
-    signature: export type $Output<B = l.BinaryData> = l.InferPayload<typeof $output,
-      B>
-  - file: lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts
-    kind: type_alias
-    name: $OutputBody
-    signature: export type $OutputBody<B = l.BinaryData> = l.InferPayloadBody<typeof
-      $output, B>
-  - file: lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts
-    kind: type_alias
-    name: $Params
-    signature: export type $Params = l.InferOutput<typeof $params>
-  repository: atproto-market
   requirements:
-  - codeRefs:
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accept.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderAssociation.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/event.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipt.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/rfp.defs.ts
-    id: r.attested-signatures
+  - id: r.attested-signatures
     level: MUST
     text: Records that carry `badge.blue` attestations (bid, accept, receipt, event,
       rfp, bidderAssociation) include a required `signatures` field typed as `network.attested.signature`'s
@@ -124,14 +26,14 @@ spec:
       module; a bid must carry its bidder's inline signature attached at creation
       so the bid's CID stays stable, with post-hoc third-party attestations going
       to separate remote proof records instead.
-  - codeRefs:
+    codeRefs:
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accept.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accept.ts
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/relays.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/relays.ts
-    id: r.generated-module-pairing
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderAssociation.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/event.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipt.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/rfp.defs.ts
+  - id: r.generated-module-pairing
     level: MUST
     text: 'Every market lexicon is published as a pair: a `<name>.defs.ts` file that
       declares `$nsid`, the schema value named `main`, and `$lxm`, and a `<name>.ts`
@@ -140,10 +42,14 @@ spec:
       the full defs surface or the default schema value. Both files carry the `THIS
       FILE WAS GENERATED BY "@atproto/lex". DO NOT EDIT.` header, so hand edits to
       either are out of contract.'
-  - codeRefs:
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.ts
-    id: r.list-bidders-query
+    codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accept.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accept.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/relays.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/relays.ts
+  - id: r.list-bidders-query
     level: MUST
     text: '`listBidders` is an `l.query` whose params are `payloadNsid` (optional,
       string with `nsid` format), `maxResults` (optional integer, minimum 1, maximum
@@ -152,13 +58,10 @@ spec:
       as a `did`-formatted string and `appliesTo` as a string array) plus an optional
       `cursor`, and the query declares `InvalidRequest` as its only error, so a registry
       listing that filters by payload NSID and paginates must speak exactly this shape.'
-  - codeRefs:
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.defs.ts
+    codeRefs:
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitAccept.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitBid.defs.ts
-    id: r.nsid-naming
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.ts
+  - id: r.nsid-naming
     level: MUST
     text: Each lexicon's `$nsid` (aliased as `$lxm`) equals `com.publicdomainrelay.temp.market.`
       concatenated with the file's base name, so `bid.defs.ts` yields `com.publicdomainrelay.temp.market.bid`,
@@ -166,12 +69,13 @@ spec:
       and `submitBid.defs.ts` yields `com.publicdomainrelay.temp.market.submitBid`;
       the same string is what callers put in the `atproto-proxy` target when service-proxying
       a procedure call.
-  - codeRefs:
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts.ts
-    id: r.payload-variant-namespaces
+    codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitAccept.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitBid.defs.ts
+  - id: r.payload-variant-namespaces
     level: MUST
     text: 'Payload, policy and acceptance variants are exposed through namespace aggregator
       modules rather than flat files: `bids.ts` re-exports `free` and `x402`, `accepts.ts`
@@ -180,13 +84,12 @@ spec:
       matching subdirectory module; record `payload`/`policies` reference fields must
       resolve to one of these variants so the free and x402 payment flows stay distinguishable
       by $type.'
-  - codeRefs:
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitAccept.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitBid.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitEvent.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitRfp.defs.ts
-    id: r.procedure-contracts
+    codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts.ts
+  - id: r.procedure-contracts
     level: MUST
     text: 'The five procedures declare empty `l.params()` and a JSON input body, and
       return a JSON output body: `submitBid` and `submitEvent` take `uri`, `cid` and
@@ -197,42 +100,36 @@ spec:
       (non-empty array of `nsid`-formatted strings) and returns `ok`, `registrationUri`
       and `registrationCid`, declaring both `InvalidRequest` and `Forbidden` because
       it verifies the caller''s service-auth JWT issuer against `bidderDid`.'
-  - codeRefs:
+    codeRefs:
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitAccept.defs.ts
-    - type_alias:0adc1f8af630092bb7aa4cac5ebc8920
-    - type_alias:223f5d5cc4466f3f957ec28f3aad7b15
-    - type_alias:e4d4f5aae838439d1466beefaf7ba698
-    - type_alias:eb8e5b103503939aa7f2e56d68d1b9a2
-    id: r.procedure-input-types
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitBid.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitEvent.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitRfp.defs.ts
+  - id: r.procedure-input-types
     level: SHOULD
     text: 'Procedure bindings expose distinct inferred payload types so callers pass
       the right half of the exchange: `$Input` and `$InputBody` derive from `$input`
       (as on registerBidder, whose input requires `bidderDid` and a non-empty `appliesTo`),
       while `$Output` and `$OutputBody` derive from `$output`, each generic over `B
       = l.BinaryData` so binary payload variants remain expressible.'
-  - codeRefs:
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts
-    - type_alias:edd4c019723622fb37683f85866b881b
-    id: r.query-param-type
+    codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitAccept.defs.ts
+    - type_alias:0adc1f8af630092bb7aa4cac5ebc8920
+    - type_alias:223f5d5cc4466f3f957ec28f3aad7b15
+    - type_alias:e4d4f5aae838439d1466beefaf7ba698
+    - type_alias:eb8e5b103503939aa7f2e56d68d1b9a2
+  - id: r.query-param-type
     level: SHOULD
     text: The `listBidders` query exposes `$Params` as the inferred output of its
       `$params` schema, so a caller reaching the registry for a page of bidders gets
       compile-time typing on `payloadNsid`, `maxResults` and `cursor` instead of hand-built
       query strings.
-  - codeRefs:
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accept.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/badgeBlueKey.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderAssociation.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderDiscovery.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderRegistration.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/event.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/offering.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipt.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/relays.defs.ts
-    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/rfp.defs.ts
-    id: r.record-field-shape
+    codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts
+    - type_alias:edd4c019723622fb37683f85866b881b
+  - id: r.record-field-shape
     level: MUST
     text: 'Each record''s `Main` object exposes exactly its declared fields: accept
       has rfp, bid, payload, submitEvent and signatures; bid has rfp, config (optional),
@@ -246,7 +143,7 @@ spec:
       (rfp, bid, accept, payload, config, submitEvent, receipt, submitBid) are `RepoStrongRef`
       refs, and every bid payload field is one of the payload variant subschemas rather
       than free-form JSON.'
-  - codeRefs:
+    codeRefs:
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accept.defs.ts
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/badgeBlueKey.defs.ts
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.defs.ts
@@ -258,7 +155,7 @@ spec:
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipt.defs.ts
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/relays.defs.ts
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/rfp.defs.ts
-    id: r.record-key-types
+  - id: r.record-key-types
     level: MUST
     text: 'Record lexicons declare their record-key strategy in `l.record<K, Main>`:
       the TID-keyed records accept, bid, bidderAssociation, bidderDiscovery, event,
@@ -266,30 +163,108 @@ spec:
       and bidderRegistration use key type `''any''` because their key is derived from
       content rather than generated; the key type must stay consistent with the `Main`
       type alias''s `$type` literal discriminant.'
-  - codeRefs:
+    codeRefs:
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accept.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/badgeBlueKey.defs.ts
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderAssociation.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderDiscovery.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderRegistration.defs.ts
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/event.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/offering.defs.ts
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipt.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/relays.defs.ts
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/rfp.defs.ts
-    id: r.record-validation-exports
+  - id: r.record-validation-exports
     level: MUST
     text: 'Every record defs module re-exports the full `main` schema surface bound
       to the record value: `$type`, `$isTypeOf`, `$build`, `$assert`, `$check`, `$cast`,
       `$ifMatches`, `$matches`, `$parse`, `$safeParse`, `$validate` and `$safeValidate`,
       so consumers can build, parse, validate and safely-validate records (for example
       a bid or an accept) without re-deriving the schema from the raw Lexicon JSON.'
-  - codeRefs:
+    codeRefs:
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accept.defs.ts
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.defs.ts
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/event.defs.ts
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipt.defs.ts
     - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/rfp.defs.ts
-    id: r.strongref-reuse
+  - id: r.strongref-reuse
     level: MUST
     text: All cross-record pointers reuse the shared `atproto/repo/strongRef` lexicon's
       `Main` type, imported from `lib/common/market-lexicons/atproto/repo/strongRef.defs.ts`,
       rather than declaring local {uri, cid} shapes, so a bid, accept, receipt, event,
       rfp or bidderAssociation reference is structurally identical and interchangeable
       across the market lexicons.
-  upstream: self
+    codeRefs:
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accept.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/event.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipt.defs.ts
+    - file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/rfp.defs.ts
+  interfaces:
+  - name: $Input
+    kind: type_alias
+    signature: export type $Input<B = l.BinaryData> = l.InferPayload<typeof $input,
+      B>
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts
+  - name: $InputBody
+    kind: type_alias
+    signature: export type $InputBody<B = l.BinaryData> = l.InferPayloadBody<typeof
+      $input, B>
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts
+  - name: $Output
+    kind: type_alias
+    signature: export type $Output<B = l.BinaryData> = l.InferPayload<typeof $output,
+      B>
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts
+  - name: $OutputBody
+    kind: type_alias
+    signature: export type $OutputBody<B = l.BinaryData> = l.InferPayloadBody<typeof
+      $output, B>
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts
+  - name: $Params
+    kind: type_alias
+    signature: export type $Params = l.InferOutput<typeof $params>
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts
+codeRefIndex:
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accept.defs.ts
+  accept.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/accept.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accept.ts accept.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/accept.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts.ts accepts.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/accepts.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/badgeBlueKey.defs.ts
+  badgeBlueKey.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/badgeBlueKey.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.defs.ts bid.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.ts bid.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bid.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderAssociation.defs.ts
+  bidderAssociation.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderAssociation.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderDiscovery.defs.ts
+  bidderDiscovery.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderDiscovery.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderRegistration.defs.ts
+  bidderRegistration.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bidderRegistration.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids.ts bids.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/event.defs.ts
+  event.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/event.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts
+  listBidders.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.ts
+  listBidders.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/listBidders.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/offering.defs.ts
+  offering.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/offering.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies.ts policies.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/policies.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipt.defs.ts
+  receipt.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipt.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts.ts receipts.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/receipts.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts
+  registerBidder.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/registerBidder.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/relays.defs.ts
+  relays.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/relays.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/relays.ts relays.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/relays.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/rfp.defs.ts rfp.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/rfp.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitAccept.defs.ts
+  submitAccept.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitAccept.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitBid.defs.ts
+  submitBid.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitBid.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitEvent.defs.ts
+  submitEvent.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitEvent.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitRfp.defs.ts
+  submitRfp.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/market/submitRfp.defs.ts

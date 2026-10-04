@@ -1,26 +1,11 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
-codeRefIndex:
-- file:lib/hono-factory-did-plc-directory/did-resolution.ts did-resolution.ts@lib/hono-factory-did-plc-directory/did-resolution.ts
-- file:lib/hono-factory-did-plc-directory/factory.ts factory.ts@lib/hono-factory-did-plc-directory/factory.ts
-- file:lib/hono-factory-did-plc-directory/handlers.ts handlers.ts@lib/hono-factory-did-plc-directory/handlers.ts
-- file:lib/hono-factory-did-plc-directory/mod.ts mod.ts@lib/hono-factory-did-plc-directory/mod.ts
-- file:lib/hono-factory-did-plc-directory/validation.ts validation.ts@lib/hono-factory-did-plc-directory/validation.ts
-- function:3179a5fa554e021c00aadca31e4500e6 createPlcDirectoryFactory@lib/hono-factory-did-plc-directory/factory.ts:19
-- function:3cdeb3d911d0b80c2f67f10b8b825205 validateRotationKeyAuth@lib/hono-factory-did-plc-directory/validation.ts:99
-- function:45efe51af646c2a859080a62330a6a54 resolveDidDocument@lib/hono-factory-did-plc-directory/did-resolution.ts:9
-- function:5503ef41dd95dd3ff95e23b6b7bd072e validateOperationStructure@lib/hono-factory-did-plc-directory/validation.ts:32
-- function:b33678bc247c0cfd81b6157c59e5bde5 mountHandlers@lib/hono-factory-did-plc-directory/handlers.ts:30
-- function:ce60a9ce515fde8a842b8e510617e5e3 validatePrevChain@lib/hono-factory-did-plc-directory/validation.ts:81
-- function:cee54877382c117e060715b89d4affa0 computeOperationCid@lib/hono-factory-did-plc-directory/validation.ts:25
-- function:d29a8b70510a2a66739855a818989601 verifyOperationSignature@lib/hono-factory-did-plc-directory/validation.ts:70
-- interface:5a96ae66f70475a99ec34b51ef860a0b PlcDirectoryOptions@lib/hono-factory-did-plc-directory/factory.ts:6
-- interface:cc3d4161f433917a2f2ac397219b72d6 HandlerDeps@lib/hono-factory-did-plc-directory/handlers.ts:14
-- interface:ebd7cb20d08759e13cef8d018c871479 PlcDirectoryFactory@lib/hono-factory-did-plc-directory/factory.ts:12
 kind: SystemContext
 metadata:
   name: lib-hono-factory-did-plc-directory
   namespace: default
 spec:
+  repository: atproto-market
+  upstream: self
   dependsOn:
   - sc.atproto-market
   intent: This context exists so the PLC directory's HTTP surface can be constructed
@@ -31,100 +16,17 @@ spec:
     and resolution logic so that a service embedding the directory supplies its own
     PlcStore, version string and signature verifier, and gets back a standard routes
     set plus the store it was given.
-  interfaces:
-  - file: lib/hono-factory-did-plc-directory/handlers.ts
-    kind: interface
-    name: HandlerDeps
-    signature: |-
-      {
-        store: PlcStore;
-        version: string;
-        verifySig?: (did: string, data: Uint8Array, sig: Uint8Array) => Promise<boolean>;
-      }
-  - file: lib/hono-factory-did-plc-directory/factory.ts
-    kind: interface
-    name: PlcDirectoryFactory
-    signature: |-
-      {
-        app: Hono;
-        store: PlcStore;
-      }
-  - file: lib/hono-factory-did-plc-directory/factory.ts
-    kind: interface
-    name: PlcDirectoryOptions
-    signature: |-
-      {
-        store?: PlcStore;
-        version?: string;
-        verifySig?: HandlerDeps["verifySig"];
-      }
-  - file: lib/hono-factory-did-plc-directory/validation.ts
-    kind: function
-    name: computeOperationCid
-    signature: '(signedBytes: Uint8Array): Promise<string>'
-  - file: lib/hono-factory-did-plc-directory/factory.ts
-    kind: function
-    name: createPlcDirectoryFactory
-    signature: |-
-      (
-        opts: PlcDirectoryOptions = {},
-      ): PlcDirectoryFactory
-  - file: lib/hono-factory-did-plc-directory/handlers.ts
-    kind: function
-    name: mountHandlers
-    signature: '(app: Hono, deps: HandlerDeps): void'
-  - file: lib/hono-factory-did-plc-directory/did-resolution.ts
-    kind: function
-    name: resolveDidDocument
-    signature: |-
-      (
-        did: string,
-        currentOps: LogEntry[],
-      ): DidDocument | null
-  - file: lib/hono-factory-did-plc-directory/validation.ts
-    kind: function
-    name: validateOperationStructure
-    signature: '(op: unknown): string | null'
-  - file: lib/hono-factory-did-plc-directory/validation.ts
-    kind: function
-    name: validatePrevChain
-    signature: |-
-      (
-        prev: string | null,
-        existingOps: LogEntry[],
-      ): string | null
-  - file: lib/hono-factory-did-plc-directory/validation.ts
-    kind: function
-    name: validateRotationKeyAuth
-    signature: |-
-      (
-        prevOp: PlcOp,
-        signerDid: string,
-      ): boolean
-  - file: lib/hono-factory-did-plc-directory/validation.ts
-    kind: function
-    name: verifyOperationSignature
-    signature: |-
-      (
-        op: PlcOp | TombstoneOp,
-        signerDid: string,
-        verifySig: (did: string, data: Uint8Array, sig: Uint8Array) => Promise<boolean>,
-      ): Promise<boolean>
-  repository: atproto-market
   requirements:
-  - codeRefs:
-    - file:lib/hono-factory-did-plc-directory/validation.ts
-    - function:cee54877382c117e060715b89d4affa0
-    id: r.cid-computation
+  - id: r.cid-computation
     level: MUST
     text: computeOperationCid hashes the signed operation bytes with SHA-256, prefixes
       them with the 0x12 0x20 multihash header and the 0x01 0x71 dag-cbor CIDv1 header,
       and returns the result as a multibase base32 string beginning with 'b', so the
       same signed bytes always yield the same CID.
-  - codeRefs:
-    - file:lib/hono-factory-did-plc-directory/did-resolution.ts
-    - function:45efe51af646c2a859080a62330a6a54
-    id: r.did-document-resolution
+    codeRefs:
+    - file:lib/hono-factory-did-plc-directory/validation.ts
+    - function:cee54877382c117e060715b89d4affa0
+  - id: r.did-document-resolution
     level: MUST
     text: 'resolveDidDocument replays a DID''s operation log in order and returns
       the resulting DID document, or null when the log is empty or its last entry
@@ -133,77 +35,164 @@ spec:
       merge their verificationMethods, alsoKnownAs and services over that state, with
       verification methods emitted as Multikey entries (did:key: prefix stripped)
       and duplicate alsoKnownAs values collapsed.'
-  - codeRefs:
-    - file:lib/hono-factory-did-plc-directory/handlers.ts
-    id: r.export-pagination
+    codeRefs:
+    - file:lib/hono-factory-did-plc-directory/did-resolution.ts
+    - function:45efe51af646c2a859080a62330a6a54
+  - id: r.export-pagination
     level: MUST
     text: 'The export handler reads the `after` and `count` query parameters, returning
       400 ''Invalid Query Parameter: after'' for an unparseable date and 400 ''Invalid
       Query Parameter: count'' for a non-numeric or negative count, clamping an accepted
       count to at most 1000, and passes the parsed values to store.exportLogs as the
       response body.'
-  - codeRefs:
-    - file:lib/hono-factory-did-plc-directory/factory.ts
-    - file:lib/hono-factory-did-plc-directory/mod.ts
-    - function:3179a5fa554e021c00aadca31e4500e6
-    - interface:5a96ae66f70475a99ec34b51ef860a0b
-    - interface:ebd7cb20d08759e13cef8d018c871479
-    id: r.factory-construction
+    codeRefs:
+    - file:lib/hono-factory-did-plc-directory/handlers.ts
+  - id: r.factory-construction
     level: MUST
     text: createPlcDirectoryFactory accepts an optional PlcDirectoryOptions object
       (store, version, verifySig, all optional, defaulting to an empty options object)
       and returns a PlcDirectoryFactory exposing the constructed Hono `app` together
       with the `store` in use, so a caller can mount the routes and keep a handle
       on the same store.
-  - codeRefs:
-    - file:lib/hono-factory-did-plc-directory/handlers.ts
-    - function:b33678bc247c0cfd81b6157c59e5bde5
-    - interface:cc3d4161f433917a2f2ac397219b72d6
-    id: r.handler-mounting
+    codeRefs:
+    - file:lib/hono-factory-did-plc-directory/factory.ts
+    - file:lib/hono-factory-did-plc-directory/mod.ts
+    - function:3179a5fa554e021c00aadca31e4500e6
+    - interface:5a96ae66f70475a99ec34b51ef860a0b
+    - interface:ebd7cb20d08759e13cef8d018c871479
+  - id: r.handler-mounting
     level: MUST
     text: mountHandlers takes the Hono app and a HandlerDeps (required store and version,
       optional verifySig) and registers exactly the routes GET /health, GET /export,
       GET /:did, POST /:did, GET /:did/log and GET /:did/log/audit, each dispatching
       to its dedicated handler with the same deps, so the route table is the whole
       HTTP surface of the directory.
-  - codeRefs:
+    codeRefs:
     - file:lib/hono-factory-did-plc-directory/handlers.ts
-    id: r.health-reports-version
+    - function:b33678bc247c0cfd81b6157c59e5bde5
+    - interface:cc3d4161f433917a2f2ac397219b72d6
+  - id: r.health-reports-version
     level: SHOULD
     text: The health handler responds with a JSON body containing the version string
       supplied through HandlerDeps, so an operator can confirm which build of the
       directory is running.
-  - codeRefs:
-    - file:lib/hono-factory-did-plc-directory/validation.ts
-    - function:ce60a9ce515fde8a842b8e510617e5e3
-    id: r.prev-chain-validation
+    codeRefs:
+    - file:lib/hono-factory-did-plc-directory/handlers.ts
+  - id: r.prev-chain-validation
     level: MUST
     text: validatePrevChain checks an operation's `prev` pointer against the existing
       log entries, returning null when the chain link is consistent and a string describing
       the failure otherwise, so that gaps, forks and stale prevs are rejected.
-  - codeRefs:
+    codeRefs:
     - file:lib/hono-factory-did-plc-directory/validation.ts
-    - function:3cdeb3d911d0b80c2f67f10b8b825205
-    id: r.rotation-key-auth
+    - function:ce60a9ce515fde8a842b8e510617e5e3
+  - id: r.rotation-key-auth
     level: MUST
     text: validateRotationKeyAuth takes the previous operation and the signer DID
       and returns a boolean telling whether that signer was authorised by the previous
       operation's rotation keys, so only key holders can extend a DID's log.
-  - codeRefs:
+    codeRefs:
     - file:lib/hono-factory-did-plc-directory/validation.ts
-    - function:d29a8b70510a2a66739855a818989601
-    id: r.signature-verification
+    - function:3cdeb3d911d0b80c2f67f10b8b825205
+  - id: r.signature-verification
     level: MUST
     text: verifyOperationSignature takes a PlcOp or TombstoneOp, the signer DID and
       an injected verifySig callback, and resolves to a boolean indicating whether
       the operation's signature is valid for that signer, keeping the cryptographic
       primitive outside the library.
-  - codeRefs:
+    codeRefs:
     - file:lib/hono-factory-did-plc-directory/validation.ts
-    - function:5503ef41dd95dd3ff95e23b6b7bd072e
-    id: r.structure-validation
+    - function:d29a8b70510a2a66739855a818989601
+  - id: r.structure-validation
     level: MUST
     text: validateOperationStructure takes an unknown operation and returns a string
       describing the structural problem, or null when the operation is well formed,
       so callers can reject malformed operations before any cryptographic work.
-  upstream: self
+    codeRefs:
+    - file:lib/hono-factory-did-plc-directory/validation.ts
+    - function:5503ef41dd95dd3ff95e23b6b7bd072e
+  interfaces:
+  - name: HandlerDeps
+    kind: interface
+    signature: |-
+      {
+        store: PlcStore;
+        version: string;
+        verifySig?: (did: string, data: Uint8Array, sig: Uint8Array) => Promise<boolean>;
+      }
+    file: lib/hono-factory-did-plc-directory/handlers.ts
+  - name: PlcDirectoryFactory
+    kind: interface
+    signature: |-
+      {
+        app: Hono;
+        store: PlcStore;
+      }
+    file: lib/hono-factory-did-plc-directory/factory.ts
+  - name: PlcDirectoryOptions
+    kind: interface
+    signature: |-
+      {
+        store?: PlcStore;
+        version?: string;
+        verifySig?: HandlerDeps["verifySig"];
+      }
+    file: lib/hono-factory-did-plc-directory/factory.ts
+  - name: computeOperationCid
+    kind: function
+    signature: '(signedBytes: Uint8Array): Promise<string>'
+    file: lib/hono-factory-did-plc-directory/validation.ts
+  - name: createPlcDirectoryFactory
+    kind: function
+    signature: |-
+      (
+        opts: PlcDirectoryOptions = {},
+      ): PlcDirectoryFactory
+    file: lib/hono-factory-did-plc-directory/factory.ts
+  - name: mountHandlers
+    kind: function
+    signature: '(app: Hono, deps: HandlerDeps): void'
+    file: lib/hono-factory-did-plc-directory/handlers.ts
+  - name: resolveDidDocument
+    kind: function
+    signature: |-
+      (
+        did: string,
+        currentOps: LogEntry[],
+      ): DidDocument | null
+    file: lib/hono-factory-did-plc-directory/did-resolution.ts
+  - name: validateOperationStructure
+    kind: function
+    signature: '(op: unknown): string | null'
+    file: lib/hono-factory-did-plc-directory/validation.ts
+  - name: validatePrevChain
+    kind: function
+    signature: |-
+      (
+        prev: string | null,
+        existingOps: LogEntry[],
+      ): string | null
+    file: lib/hono-factory-did-plc-directory/validation.ts
+  - name: validateRotationKeyAuth
+    kind: function
+    signature: |-
+      (
+        prevOp: PlcOp,
+        signerDid: string,
+      ): boolean
+    file: lib/hono-factory-did-plc-directory/validation.ts
+  - name: verifyOperationSignature
+    kind: function
+    signature: |-
+      (
+        op: PlcOp | TombstoneOp,
+        signerDid: string,
+        verifySig: (did: string, data: Uint8Array, sig: Uint8Array) => Promise<boolean>,
+      ): Promise<boolean>
+    file: lib/hono-factory-did-plc-directory/validation.ts
+codeRefIndex:
+- file:lib/hono-factory-did-plc-directory/did-resolution.ts did-resolution.ts@lib/hono-factory-did-plc-directory/did-resolution.ts
+- file:lib/hono-factory-did-plc-directory/factory.ts factory.ts@lib/hono-factory-did-plc-directory/factory.ts
+- file:lib/hono-factory-did-plc-directory/handlers.ts handlers.ts@lib/hono-factory-did-plc-directory/handlers.ts
+- file:lib/hono-factory-did-plc-directory/mod.ts mod.ts@lib/hono-factory-did-plc-directory/mod.ts
+- file:lib/hono-factory-did-plc-directory/validation.ts validation.ts@lib/hono-factory-did-plc-directory/validation.ts

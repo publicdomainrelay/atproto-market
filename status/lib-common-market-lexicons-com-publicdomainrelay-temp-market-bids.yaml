@@ -1,25 +1,17 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: CodeRefsUnresolved
+  message: 'unresolved requirement code refs: r.bid-signatures-nonrepudiable: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/free.defs.ts,
+    r.bid-signatures-nonrepudiable: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.defs.ts,
+    r.free-record-fields: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/free.ts,
+    r.generated-do-not-edit: file:lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.ts'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/free.defs.ts
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/free.ts
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.defs.ts
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/market/bids/x402.ts
-  fingerprint: 5032fc19592f2fd7551c525be8cec7ed791f60a3b76fd4b8916cc60b88ce051a
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: 16c93658f7e6c803589a3d1905598b4ad3d526c958994e33f0ec1175b794f688
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 5032fc19592f2fd7551c525be8cec7ed791f60a3b76fd4b8916cc60b88ce051a
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

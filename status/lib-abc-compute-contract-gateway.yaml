@@ -1,30 +1,30 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: 3ace54d94a28605fd535e1685d355c9b5b2f7456a18aee9347b6e44991572b24
+realizedSpecHash: 881a850c00cd0e7748bbed71aa91f9f3d0b54a4515dd2d53f956cccb02094f52
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: InterfacesMissing
+  message: 'missing: ComputeContractGateway; unresolved: r.caller-and-input-types:
+    file:lib/abc/compute-contract-gateway/mod.ts, r.caller-and-input-types: interface:686284d942a70c576d3538a0ee80e825'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
+  reason: ValidatorPassed
+  message: the spec passes the validator
 observed:
   files:
   - lib/abc/compute-contract-gateway/mod.ts
-  fingerprint: 3ace54d94a28605fd535e1685d355c9b5b2f7456a18aee9347b6e44991572b24
-  interfaces:
-  - codegraphId: interface:686284d942a70c576d3538a0ee80e825
-    file: lib/abc/compute-contract-gateway/mod.ts
-    kind: interface
-    line: 8
-    name: ComputeContractGateway
   treeFiles:
   - lib/abc/compute-contract-gateway/deno.json
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: 881a850c00cd0e7748bbed71aa91f9f3d0b54a4515dd2d53f956cccb02094f52
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 3ace54d94a28605fd535e1685d355c9b5b2f7456a18aee9347b6e44991572b24
+  interfaces:
+  - name: ComputeContractGateway
+    kind: interface
+    file: lib/abc/compute-contract-gateway/mod.ts
+    line: 8
+    codegraphId: interface:686284d942a70c576d3538a0ee80e825
+  fingerprint: 3ace54d94a28605fd535e1685d355c9b5b2f7456a18aee9347b6e44991572b24

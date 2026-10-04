@@ -1,73 +1,73 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: da59922f5887beb5930682b6acaad0c3a3204dd9cafb48151ba50fe2b48b00e8
+realizedSpecHash: 90075edc5a35858f16eb60521c61d97c01e611392aef924a686c12cb5026fe12
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
+- type: CodeSynced
+  status: "True"
   reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+- type: Drifted
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
+- type: SpecValid
   status: "True"
-  type: SpecValid
+  reason: ValidatorPassed
+  message: the spec passes the validator
 observed:
   files:
   - lib/abc/guest-capability/mod.ts
-  fingerprint: da59922f5887beb5930682b6acaad0c3a3204dd9cafb48151ba50fe2b48b00e8
-  interfaces:
-  - codegraphId: interface:b7bf881b25d7887524eb96f3c3e767d7
-    file: lib/abc/guest-capability/mod.ts
-    kind: interface
-    line: 7
-    name: WifSimpleConfig
-  - codegraphId: interface:ef44ecde4500e20b9d199d5a1a0e1fbd
-    file: lib/abc/guest-capability/mod.ts
-    kind: interface
-    line: 20
-    name: GrantVars
-  - codegraphId: interface:e5b63e63421abe6ef6831d96f92908ca
-    file: lib/abc/guest-capability/mod.ts
-    kind: interface
-    line: 29
-    name: PrepareContext
-  - codegraphId: interface:5f5c338392bdac0f1231e29c58ed026a
-    file: lib/abc/guest-capability/mod.ts
-    kind: interface
-    line: 38
-    name: CapabilityPrepared
-  - codegraphId: interface:4a42c93f29714a7a7b77a0bc305ced37
-    file: lib/abc/guest-capability/mod.ts
-    kind: interface
-    line: 48
-    name: GuestCapability
-  - codegraphId: function:843034a41b996ad93e7eddbd263f3ff7
-    file: lib/abc/guest-capability/mod.ts
-    kind: function
-    line: 63
-    name: subjectKeyOf
-    signature: '(did: string): string'
-  - codegraphId: interface:08837ecc0b4c67d61d030acb83c87cff
-    file: lib/abc/guest-capability/mod.ts
-    kind: interface
-    line: 67
-    name: DeriveGrantVarsInput
-  - codegraphId: function:d4dc1e02e9dae26d725c63e37e4e73ad
-    file: lib/abc/guest-capability/mod.ts
-    kind: function
-    line: 83
-    name: deriveGrantVars
-    signature: '(input: DeriveGrantVarsInput): GrantVars'
-  - codegraphId: function:9fc5d3416856b249927132984c52288d
-    file: lib/abc/guest-capability/mod.ts
-    kind: function
-    line: 99
-    name: isWifSimpleConfig
-    signature: '(v: unknown): v is WifSimpleConfig'
   treeFiles:
   - lib/abc/guest-capability/deno.json
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: 90075edc5a35858f16eb60521c61d97c01e611392aef924a686c12cb5026fe12
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: da59922f5887beb5930682b6acaad0c3a3204dd9cafb48151ba50fe2b48b00e8
+  interfaces:
+  - name: WifSimpleConfig
+    kind: interface
+    file: lib/abc/guest-capability/mod.ts
+    line: 7
+    codegraphId: interface:b7bf881b25d7887524eb96f3c3e767d7
+  - name: GrantVars
+    kind: interface
+    file: lib/abc/guest-capability/mod.ts
+    line: 20
+    codegraphId: interface:ef44ecde4500e20b9d199d5a1a0e1fbd
+  - name: PrepareContext
+    kind: interface
+    file: lib/abc/guest-capability/mod.ts
+    line: 29
+    codegraphId: interface:e5b63e63421abe6ef6831d96f92908ca
+  - name: CapabilityPrepared
+    kind: interface
+    file: lib/abc/guest-capability/mod.ts
+    line: 38
+    codegraphId: interface:5f5c338392bdac0f1231e29c58ed026a
+  - name: GuestCapability
+    kind: interface
+    file: lib/abc/guest-capability/mod.ts
+    line: 48
+    codegraphId: interface:4a42c93f29714a7a7b77a0bc305ced37
+  - name: subjectKeyOf
+    kind: function
+    signature: '(did: string): string'
+    file: lib/abc/guest-capability/mod.ts
+    line: 63
+    codegraphId: function:843034a41b996ad93e7eddbd263f3ff7
+  - name: DeriveGrantVarsInput
+    kind: interface
+    file: lib/abc/guest-capability/mod.ts
+    line: 67
+    codegraphId: interface:08837ecc0b4c67d61d030acb83c87cff
+  - name: deriveGrantVars
+    kind: function
+    signature: '(input: DeriveGrantVarsInput): GrantVars'
+    file: lib/abc/guest-capability/mod.ts
+    line: 83
+    codegraphId: function:d4dc1e02e9dae26d725c63e37e4e73ad
+  - name: isWifSimpleConfig
+    kind: function
+    signature: '(v: unknown): v is WifSimpleConfig'
+    file: lib/abc/guest-capability/mod.ts
+    line: 99
+    codegraphId: function:9fc5d3416856b249927132984c52288d
+  fingerprint: da59922f5887beb5930682b6acaad0c3a3204dd9cafb48151ba50fe2b48b00e8

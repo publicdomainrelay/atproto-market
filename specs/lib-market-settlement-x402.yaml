@@ -1,21 +1,11 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
-codeRefIndex:
-- class:d9cae8acb5befdb69053a678528cf3a0 X402PaymentError@lib/market-settlement-x402/server.ts:23
-- file:lib/market-settlement-x402/client.ts client.ts@lib/market-settlement-x402/client.ts
-- file:lib/market-settlement-x402/deno.json deno.json@lib/market-settlement-x402/deno.json
-- file:lib/market-settlement-x402/mod.ts mod.ts@lib/market-settlement-x402/mod.ts
-- file:lib/market-settlement-x402/server.ts server.ts@lib/market-settlement-x402/server.ts
-- function:400c91a8c6a70894daf46da876572ee6 settleX402Payment@lib/market-settlement-x402/client.ts:25
-- function:72d054e2b58c2f3913d7a9482387f0b2 mintReceiptForAccepts@lib/market-settlement-x402/server.ts:38
-- function:b47d0322129cbcac24381eeb837e0eb5 verifyX402Payment@lib/market-settlement-x402/server.ts:66
-- function:bf43ae046d865cd951a7121f188a1ba0 parseReceiptPath@lib/market-settlement-x402/server.ts:30
-- interface:79bc0568c0c3d466282e33574ce3067e SettleX402Options@lib/market-settlement-x402/client.ts:13
-- method:164471847987d5ac0028bee41736e5ab X402PaymentError.constructor@lib/market-settlement-x402/server.ts:24
 kind: SystemContext
 metadata:
   name: lib-market-settlement-x402
   namespace: default
 spec:
+  repository: atproto-market
+  upstream: self
   dependsOn:
   - sc.atproto-market
   intent: 'This context exists to encapsulate the x402 payment settlement flow so
@@ -25,47 +15,8 @@ spec:
     needed to mint or verify the receipts.x402 proof. It is a self-contained package
     whose only outward surface is mod.ts, keeping the egress safety check, timeout
     defaults and error-status conventions in one place.'
-  interfaces:
-  - file: lib/market-settlement-x402/client.ts
-    kind: interface
-    name: SettleX402Options
-    signature: 'interface SettleX402Options { agent: Agent; signer: RecordSigner;
-      bid: StrongRef; bidPayload: StrongRef; url: string; egress?: EgressOptions;
-      fetch?: typeof fetch; timeoutMs?: number; log?: Logger }'
-  - file: lib/market-settlement-x402/server.ts
-    kind: class
-    name: X402PaymentError
-    signature: class X402PaymentError extends Error
-  - file: lib/market-settlement-x402/server.ts
-    kind: method
-    name: X402PaymentError.constructor
-    signature: 'X402PaymentError.constructor(public readonly status: number, message:
-      string)'
-  - file: lib/market-settlement-x402/server.ts
-    kind: function
-    name: mintReceiptForAccepts
-    signature: 'mintReceiptForAccepts(opts: { agent: Agent; resolve: RecordResolver;
-      acceptsUri: string; acceptsCid: string; signer: RecordSigner }): Promise<StrongRef>'
-  - file: lib/market-settlement-x402/server.ts
-    kind: function
-    name: parseReceiptPath
-    signature: 'parseReceiptPath(path: string, prefix = ""): { acceptsUri: string;
-      acceptsCid: string }'
-  - file: lib/market-settlement-x402/client.ts
-    kind: function
-    name: settleX402Payment
-    signature: 'settleX402Payment(opts: SettleX402Options): Promise<StrongRef>'
-  - file: lib/market-settlement-x402/server.ts
-    kind: function
-    name: verifyX402Payment
-    signature: 'verifyX402Payment(opts: { payment: StrongRef | undefined; resolve:
-      RecordResolver; bidderDid: string }): Promise<Resolved<ReceiptsX402>>'
-  repository: atproto-market
   requirements:
-  - codeRefs:
-    - class:d9cae8acb5befdb69053a678528cf3a0
-    - function:72d054e2b58c2f3913d7a9482387f0b2
-    id: r.mint-receipt-validates-and-binds-accepts
+  - id: r.mint-receipt-validates-and-binds-accepts
     level: MUST
     text: mintReceiptForAccepts must resolve the acceptsUri/acceptsCid pair, reject
       with X402PaymentError status 400 when the resolved record's $type is present
@@ -73,58 +24,57 @@ spec:
       record whose accept field is a strongRef to the accepts record and whose proof
       binds to the accepts record content (with the accepts record stripped of resolution
       metadata) and to the DID authority of acceptsUri.
-  - codeRefs:
-    - file:lib/market-settlement-x402/client.ts
-    - file:lib/market-settlement-x402/deno.json
-    - file:lib/market-settlement-x402/mod.ts
-    - file:lib/market-settlement-x402/server.ts
-    id: r.package-entrypoint-reexports-both-halves
+    codeRefs:
+    - class:d9cae8acb5befdb69053a678528cf3a0
+    - function:72d054e2b58c2f3913d7a9482387f0b2
+  - id: r.package-entrypoint-reexports-both-halves
     level: MUST
     text: mod.ts must re-export both the client and server modules so the package's
       single export surface (declared as ./mod.ts in deno.json under the name @publicdomainrelay/market-settlement-x402)
       exposes settleX402Payment, SettleX402Options, parseReceiptPath, mintReceiptForAccepts,
       verifyX402Payment and X402PaymentError together.
-  - codeRefs:
-    - class:d9cae8acb5befdb69053a678528cf3a0
-    - function:bf43ae046d865cd951a7121f188a1ba0
-    id: r.parse-receipt-path-extracts-accepts-ref
+    codeRefs:
+    - file:lib/market-settlement-x402/client.ts
+    - file:lib/market-settlement-x402/deno.json
+    - file:lib/market-settlement-x402/mod.ts
+    - file:lib/market-settlement-x402/server.ts
+  - id: r.parse-receipt-path-extracts-accepts-ref
     level: MUST
     text: parseReceiptPath must strip leading slashes, drop an optional caller-supplied
       prefix when the path starts with it, and split the remainder at the last slash
       into acceptsUri and acceptsCid; when no slash remains after the leading slash
       it must throw an X402PaymentError with status 400 and the message "missing cid".
-  - codeRefs:
+    codeRefs:
     - class:d9cae8acb5befdb69053a678528cf3a0
-    - file:lib/market-settlement-x402/server.ts
-    - method:164471847987d5ac0028bee41736e5ab
-    id: r.payment-error-carries-http-status
+    - function:bf43ae046d865cd951a7121f188a1ba0
+  - id: r.payment-error-carries-http-status
     level: MUST
     text: X402PaymentError must extend Error, expose its HTTP status as a public readonly
       field so callers can map it to a response code, and set its name to "X402PaymentError"
       so it is distinguishable from plain errors.
-  - codeRefs:
-    - function:400c91a8c6a70894daf46da876572ee6
-    - interface:79bc0568c0c3d466282e33574ce3067e
-    id: r.settle-options-shape
+    codeRefs:
+    - class:d9cae8acb5befdb69053a678528cf3a0
+    - file:lib/market-settlement-x402/server.ts
+    - method:164471847987d5ac0028bee41736e5ab
+  - id: r.settle-options-shape
     level: MUST
     text: SettleX402Options must carry the required agent, signer, bid, bidPayload
       and url inputs, and accept optional egress, fetch, timeoutMs and log overrides
       so callers can inject a fetch implementation, timeout and logger for testing;
       the logger defaults to a no-op and the fetch to the global fetch.
-  - codeRefs:
+    codeRefs:
     - function:400c91a8c6a70894daf46da876572ee6
     - interface:79bc0568c0c3d466282e33574ce3067e
-    id: r.settle-payment-enforces-safe-egress
+  - id: r.settle-payment-enforces-safe-egress
     level: MUST
     text: settleX402Payment must call assertSafeEgressUrl with the target url and
       the caller-supplied EgressOptions before signing the accepts record or issuing
       any fetch, so an unsafe destination is rejected before any record is written
       or network call made.
-  - codeRefs:
-    - file:lib/market-settlement-x402/client.ts
+    codeRefs:
     - function:400c91a8c6a70894daf46da876572ee6
     - interface:79bc0568c0c3d466282e33574ce3067e
-    id: r.settle-payment-signs-accepts-and-fetches-receipt
+  - id: r.settle-payment-signs-accepts-and-fetches-receipt
     level: MUST
     text: settleX402Payment must, given an agent, signer, bid and bidPayload, create
       a signed accepts.x402 record via createSignedRecord, build the receipt URL by
@@ -133,10 +83,11 @@ spec:
       from the JSON response as a StrongRef. A non-ok response or a response body
       missing uri or cid must raise an Error carrying the status and body text, and
       the request must be aborted after timeoutMs (default 30000).
-  - codeRefs:
-    - class:d9cae8acb5befdb69053a678528cf3a0
-    - function:b47d0322129cbcac24381eeb837e0eb5
-    id: r.verify-payment-checks-type-author-and-binding
+    codeRefs:
+    - file:lib/market-settlement-x402/client.ts
+    - function:400c91a8c6a70894daf46da876572ee6
+    - interface:79bc0568c0c3d466282e33574ce3067e
+  - id: r.verify-payment-checks-type-author-and-binding
     level: MUST
     text: verifyX402Payment must throw X402PaymentError with status 402 when the payment
       reference is absent, when the resolved record's type (its $type, falling back
@@ -145,4 +96,46 @@ spec:
       strongRef it must additionally resolve that accepts.x402 record and run verifyRemoteProof
       against it, throwing status 402 if the proof does not bind. On success it returns
       the resolved receipt.
-  upstream: self
+    codeRefs:
+    - class:d9cae8acb5befdb69053a678528cf3a0
+    - function:b47d0322129cbcac24381eeb837e0eb5
+  interfaces:
+  - name: SettleX402Options
+    kind: interface
+    signature: 'interface SettleX402Options { agent: Agent; signer: RecordSigner;
+      bid: StrongRef; bidPayload: StrongRef; url: string; egress?: EgressOptions;
+      fetch?: typeof fetch; timeoutMs?: number; log?: Logger }'
+    file: lib/market-settlement-x402/client.ts
+  - name: X402PaymentError
+    kind: class
+    signature: class X402PaymentError extends Error
+    file: lib/market-settlement-x402/server.ts
+  - name: X402PaymentError.constructor
+    kind: method
+    signature: 'X402PaymentError.constructor(public readonly status: number, message:
+      string)'
+    file: lib/market-settlement-x402/server.ts
+  - name: mintReceiptForAccepts
+    kind: function
+    signature: 'mintReceiptForAccepts(opts: { agent: Agent; resolve: RecordResolver;
+      acceptsUri: string; acceptsCid: string; signer: RecordSigner }): Promise<StrongRef>'
+    file: lib/market-settlement-x402/server.ts
+  - name: parseReceiptPath
+    kind: function
+    signature: 'parseReceiptPath(path: string, prefix = ""): { acceptsUri: string;
+      acceptsCid: string }'
+    file: lib/market-settlement-x402/server.ts
+  - name: settleX402Payment
+    kind: function
+    signature: 'settleX402Payment(opts: SettleX402Options): Promise<StrongRef>'
+    file: lib/market-settlement-x402/client.ts
+  - name: verifyX402Payment
+    kind: function
+    signature: 'verifyX402Payment(opts: { payment: StrongRef | undefined; resolve:
+      RecordResolver; bidderDid: string }): Promise<Resolved<ReceiptsX402>>'
+    file: lib/market-settlement-x402/server.ts
+codeRefIndex:
+- file:lib/market-settlement-x402/client.ts client.ts@lib/market-settlement-x402/client.ts
+- file:lib/market-settlement-x402/deno.json deno.json@lib/market-settlement-x402/deno.json
+- file:lib/market-settlement-x402/mod.ts mod.ts@lib/market-settlement-x402/mod.ts
+- file:lib/market-settlement-x402/server.ts server.ts@lib/market-settlement-x402/server.ts

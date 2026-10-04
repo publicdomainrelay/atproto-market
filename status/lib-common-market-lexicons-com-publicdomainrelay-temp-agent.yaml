@@ -1,25 +1,17 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: CodeRefsUnresolved
+  message: 'unresolved requirement code refs: r.class-nsid-and-key: file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/class.defs.ts,
+    r.generated-not-edited: file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/class.ts,
+    r.generated-not-edited: file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/skill.defs.ts,
+    r.generated-not-edited: file:lib/common/market-lexicons/com/publicdomainrelay/temp/agent/skill.ts'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/agent/class.defs.ts
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/agent/class.ts
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/agent/skill.defs.ts
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/agent/skill.ts
-  fingerprint: 861aa24b4224ba0d2928753881e57ae81b5aac4236b564ad0bf83f0c05e38866
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: 36074d29eed02e430935a99fec4997b4a1b3487542158cf028f9598b36f6e7e9
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 861aa24b4224ba0d2928753881e57ae81b5aac4236b564ad0bf83f0c05e38866
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

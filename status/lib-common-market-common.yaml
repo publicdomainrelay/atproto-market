@@ -1,96 +1,27 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: InterfacesMissing
+  message: 'missing: Accept, Bid, EgressOptions, LogLevel, Logger, MarketEvent, Offering,
+    RFP, Resolved, StrongRef, assertSafeEgressUrl, noopLogger, strongRef; unresolved:
+    r.deno-package-config: file:lib/common/market-common/deno.json, r.egress-metadata-hosts-always-blocked:
+    function:4a9182a659c42eaf5efea613d576bf56, r.egress-opt-in-private-blocking: type_alias:3b05835c22ae315ee54800118068199e,
+    r.egress-scheme-allowlist: file:lib/common/market-common/egress.ts, r.logger-contract:
+    function:bdb007fdd15fa3b35d2579e3f50a9102, r.logger-contract: type_alias:5227ebb1a1c9a0e6fc64c180ba49b225,
+    r.logger-contract: type_alias:a1be7c028260b060bface7fb68430980, r.market-record-types:
+    type_alias:0ddacc3f4f8324551fc28543224d5848, r.market-record-types: type_alias:1415ed8e9c4445551461c01489f8e98e,
+    r.market-record-types: type_alias:4a83a08396757c59cee4d1abc1ac4e96, r.market-record-types:
+    type_alias:68f1befbdba2e558d52f81fadb208604, r.market-record-types: type_alias:bf97d5bc1681c49e28bb73c0ef924a28,
+    r.market-record-types: type_alias:cecc1b0d37ba12dc3d30a216f27c4d7d, r.shared-constants:
+    file:lib/common/market-common/constants.ts, r.single-entry-point: file:lib/common/market-common/mod.ts,
+    r.strong-ref-alias: file:lib/common/market-common/types.ts, r.strong-ref-alias:
+    type_alias:094ab49db888ff112d27c2d9863156fb, r.strong-ref-constructor: function:98a3eb25fe3e5d71119b4776db96f280'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/common/market-common/constants.ts
-  - lib/common/market-common/egress.ts
-  - lib/common/market-common/mod.ts
-  - lib/common/market-common/types.ts
-  fingerprint: 45b9b8260b4d7a8e89d8374490a616ec2b976315211f46bd754cafb73a751879
-  interfaces:
-  - codegraphId: type_alias:3b05835c22ae315ee54800118068199e
-    file: lib/common/market-common/egress.ts
-    kind: type_alias
-    line: 1
-    name: EgressOptions
-  - codegraphId: function:4a9182a659c42eaf5efea613d576bf56
-    file: lib/common/market-common/egress.ts
-    kind: function
-    line: 5
-    name: assertSafeEgressUrl
-    signature: '(raw: string, opts: EgressOptions = {}): URL'
-  - codegraphId: type_alias:094ab49db888ff112d27c2d9863156fb
-    file: lib/common/market-common/types.ts
-    kind: type_alias
-    line: 8
-    name: StrongRef
-  - codegraphId: type_alias:bf97d5bc1681c49e28bb73c0ef924a28
-    file: lib/common/market-common/types.ts
-    kind: type_alias
-    line: 9
-    name: Offering
-  - codegraphId: type_alias:1415ed8e9c4445551461c01489f8e98e
-    file: lib/common/market-common/types.ts
-    kind: type_alias
-    line: 10
-    name: RFP
-  - codegraphId: type_alias:cecc1b0d37ba12dc3d30a216f27c4d7d
-    file: lib/common/market-common/types.ts
-    kind: type_alias
-    line: 11
-    name: Accept
-  - codegraphId: type_alias:4a83a08396757c59cee4d1abc1ac4e96
-    file: lib/common/market-common/types.ts
-    kind: type_alias
-    line: 12
-    name: Bid
-  - codegraphId: type_alias:68f1befbdba2e558d52f81fadb208604
-    file: lib/common/market-common/types.ts
-    kind: type_alias
-    line: 13
-    name: MarketEvent
-  - codegraphId: type_alias:0ddacc3f4f8324551fc28543224d5848
-    file: lib/common/market-common/types.ts
-    kind: type_alias
-    line: 15
-    name: Resolved
-  - codegraphId: type_alias:a1be7c028260b060bface7fb68430980
-    file: lib/common/market-common/types.ts
-    kind: type_alias
-    line: 17
-    name: LogLevel
-  - codegraphId: type_alias:5227ebb1a1c9a0e6fc64c180ba49b225
-    file: lib/common/market-common/types.ts
-    kind: type_alias
-    line: 19
-    name: Logger
-  - codegraphId: function:bdb007fdd15fa3b35d2579e3f50a9102
-    file: lib/common/market-common/types.ts
-    kind: function
-    line: 21
-    name: noopLogger
-    signature: ()
-  - codegraphId: function:98a3eb25fe3e5d71119b4776db96f280
-    file: lib/common/market-common/types.ts
-    kind: function
-    line: 23
-    name: strongRef
-    signature: '(uri: string, cid: string): StrongRef'
-  treeFiles:
-  - lib/common/market-common/deno.json
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: 29a2ab5c1ecc810b1718e861ef9ac025eb5af3804d47b6f5b4dc2a72ac0ceaea
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 45b9b8260b4d7a8e89d8374490a616ec2b976315211f46bd754cafb73a751879
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

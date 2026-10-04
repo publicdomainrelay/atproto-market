@@ -1,22 +1,14 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: CodeRefsUnresolved
+  message: 'unresolved requirement code refs: r.generated-not-hand-edited: file:lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle.ts'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - lib/common/market-lexicons/com/publicdomainrelay/temp/tangled/spindle.ts
-  fingerprint: 78c049a7dad82b04a7f91af773ab7e5d469111e9cb16fb0ea9eba68c30cf201d
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: 064ccc13b5a32f6fbdde35904b79b7f0d05965e3028c88609103fb705bc3c707
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 78c049a7dad82b04a7f91af773ab7e5d469111e9cb16fb0ea9eba68c30cf201d
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}

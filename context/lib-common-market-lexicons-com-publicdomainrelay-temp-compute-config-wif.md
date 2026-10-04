@@ -9,6 +9,5 @@ _The resolved code references are regenerated on every run. Cite the ids above r
 <!-- SPECD_MANAGED_BEGIN -->
 ## Resolved code references
 
-- `file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config/wif/simple.defs.ts` file simple.defs.ts (lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config/wif/simple.defs.ts)
-- `file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config/wif/simple.ts` file simple.ts (lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config/wif/simple.ts)
+_None yet._
 <!-- SPECD_MANAGED_END -->

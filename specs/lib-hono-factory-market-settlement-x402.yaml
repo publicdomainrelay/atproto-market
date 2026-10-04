@@ -1,109 +1,106 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
-codeRefIndex:
-- file:lib/hono-factory-market-settlement-x402/mod.ts mod.ts@lib/hono-factory-market-settlement-x402/mod.ts
-- function:78e258a8c5323f8774599a9e9adf6dad createX402SettlementFactory@lib/hono-factory-market-settlement-x402/mod.ts:30
-- interface:689a63cbfa61ba7bfe171e76eeea36d4 X402SettlementConfig@lib/hono-factory-market-settlement-x402/mod.ts:19
-- type_alias:aed7d5829498218c0606453c9468be76 X402SettlementEnv@lib/hono-factory-market-settlement-x402/mod.ts:12
 kind: SystemContext
 metadata:
   name: lib-hono-factory-market-settlement-x402
   namespace: default
 spec:
+  repository: atproto-market
+  upstream: self
   dependsOn:
   - sc.atproto-market
   intent: 'This context exists to bind the x402 settlement server logic to an HTTP
     surface: it is the Hono factory layer that turns the path-parsing and receipt-minting
     helpers into a route mounted by the application, while keeping agent, resolver,
     signer and payment middleware injected by the caller rather than hard-coded.'
-  interfaces:
-  - file: lib/hono-factory-market-settlement-x402/mod.ts
-    kind: interface
-    name: X402SettlementConfig
-    signature: 'interface X402SettlementConfig { getAgent: () => Agent; resolve: RecordResolver;
-      getSigner: () => RecordSigner; log?: Logger; path?: string; paymentMiddleware?:
-      MiddlewareHandler }'
-  - file: lib/hono-factory-market-settlement-x402/mod.ts
-    kind: type_alias
-    name: X402SettlementEnv
-    signature: 'type X402SettlementEnv = { Variables: { agent: Agent; resolve: RecordResolver
-      } }'
-  - file: lib/hono-factory-market-settlement-x402/mod.ts
-    kind: function
-    name: createX402SettlementFactory
-    signature: 'createX402SettlementFactory(config: X402SettlementConfig)'
-  repository: atproto-market
   requirements:
-  - codeRefs:
-    - function:78e258a8c5323f8774599a9e9adf6dad
-    - interface:689a63cbfa61ba7bfe171e76eeea36d4
-    id: r.config-optional-overrides
+  - id: r.config-optional-overrides
     level: MAY
     text: X402SettlementConfig may carry an optional log of type Logger, an optional
       path string, and an optional paymentMiddleware of type MiddlewareHandler; when
       log is absent it defaults to noopLog and when path is absent it defaults to
       "x402/receipt".
-  - codeRefs:
-    - file:lib/hono-factory-market-settlement-x402/mod.ts
+    codeRefs:
+    - function:78e258a8c5323f8774599a9e9adf6dad
     - interface:689a63cbfa61ba7bfe171e76eeea36d4
-    id: r.config-required-dependencies
+  - id: r.config-required-dependencies
     level: MUST
     text: X402SettlementConfig must require getAgent returning an Agent, resolve of
       type RecordResolver, and getSigner returning a RecordSigner, so receipt minting
       always has an agent, a resolver and a signer supplied by the caller.
-  - codeRefs:
+    codeRefs:
     - file:lib/hono-factory-market-settlement-x402/mod.ts
-    - type_alias:aed7d5829498218c0606453c9468be76
-    id: r.env-variables
+    - interface:689a63cbfa61ba7bfe171e76eeea36d4
+  - id: r.env-variables
     level: MUST
     text: X402SettlementEnv must declare Hono Variables carrying an agent of type
       Agent and a resolve of type RecordResolver, so handlers can read the agent and
       resolver from the request context.
-  - codeRefs:
-    - function:78e258a8c5323f8774599a9e9adf6dad
-    - interface:689a63cbfa61ba7bfe171e76eeea36d4
+    codeRefs:
+    - file:lib/hono-factory-market-settlement-x402/mod.ts
     - type_alias:aed7d5829498218c0606453c9468be76
-    id: r.factory-returns-hono-factory
+  - id: r.factory-returns-hono-factory
     level: MUST
     text: createX402SettlementFactory must accept an X402SettlementConfig and return
       a factory over X402SettlementEnv via createFactory, so the returned value can
       be mounted by the host application.
-  - codeRefs:
-    - file:lib/hono-factory-market-settlement-x402/mod.ts
+    codeRefs:
     - function:78e258a8c5323f8774599a9e9adf6dad
-    id: r.json-response
+    - interface:689a63cbfa61ba7bfe171e76eeea36d4
+    - type_alias:aed7d5829498218c0606453c9468be76
+  - id: r.json-response
     level: MUST
     text: The handler must respond with c.json containing the minted receipt's uri
       and cid.
-  - codeRefs:
+    codeRefs:
     - file:lib/hono-factory-market-settlement-x402/mod.ts
     - function:78e258a8c5323f8774599a9e9adf6dad
-    id: r.logging
+  - id: r.logging
     level: MUST
     text: The handler must log an informational "x402 receipt requested" entry carrying
       acceptsUri and acceptsCid before minting, and an informational "receipts.x402
       minted" entry carrying the minted uri and cid afterwards.
-  - codeRefs:
+    codeRefs:
     - file:lib/hono-factory-market-settlement-x402/mod.ts
     - function:78e258a8c5323f8774599a9e9adf6dad
-    id: r.mint-receipt
+  - id: r.mint-receipt
     level: MUST
     text: The handler must mint the receipt by calling mintReceiptForAccepts with
       the current agent from getAgent(), the configured resolve, the parsed acceptsUri
       and acceptsCid, and the signer from getSigner().
-  - codeRefs:
+    codeRefs:
     - file:lib/hono-factory-market-settlement-x402/mod.ts
     - function:78e258a8c5323f8774599a9e9adf6dad
-    id: r.payment-middleware-mount
+  - id: r.payment-middleware-mount
     level: MUST
     text: When paymentMiddleware is provided, the factory must apply it with app.use
       on /<path>/* so every request under the configured path passes through payment
       handling before the receipt handler runs.
-  - codeRefs:
+    codeRefs:
     - file:lib/hono-factory-market-settlement-x402/mod.ts
     - function:78e258a8c5323f8774599a9e9adf6dad
-    id: r.receipt-get-route
+  - id: r.receipt-get-route
     level: MUST
     text: The factory must register a GET handler on /<path>/* that parses the request
       path with parseReceiptPath against the "<path>/" prefix into acceptsUri and
       acceptsCid, and that parsing plus the subsequent mint determine the response.
-  upstream: self
+    codeRefs:
+    - file:lib/hono-factory-market-settlement-x402/mod.ts
+    - function:78e258a8c5323f8774599a9e9adf6dad
+  interfaces:
+  - name: X402SettlementConfig
+    kind: interface
+    signature: 'interface X402SettlementConfig { getAgent: () => Agent; resolve: RecordResolver;
+      getSigner: () => RecordSigner; log?: Logger; path?: string; paymentMiddleware?:
+      MiddlewareHandler }'
+    file: lib/hono-factory-market-settlement-x402/mod.ts
+  - name: X402SettlementEnv
+    kind: type_alias
+    signature: 'type X402SettlementEnv = { Variables: { agent: Agent; resolve: RecordResolver
+      } }'
+    file: lib/hono-factory-market-settlement-x402/mod.ts
+  - name: createX402SettlementFactory
+    kind: function
+    signature: 'createX402SettlementFactory(config: X402SettlementConfig)'
+    file: lib/hono-factory-market-settlement-x402/mod.ts
+codeRefIndex:
+- file:lib/hono-factory-market-settlement-x402/mod.ts mod.ts@lib/hono-factory-market-settlement-x402/mod.ts

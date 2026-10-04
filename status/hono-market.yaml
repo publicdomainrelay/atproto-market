@@ -1,24 +1,24 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: 902b76f1af18104351565e32a27bcde3ff0879267928ec6adfbb2c4351e903ee
+realizedSpecHash: 8787790056793ecaecc45cd7180ba08eafb86be82e26bd855b5af42269fcfa0c
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
+- type: CodeSynced
+  status: "True"
   reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+- type: Drifted
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
+- type: SpecValid
   status: "True"
-  type: SpecValid
+  reason: ValidatorPassed
+  message: the spec passes the validator
 observed:
   files:
   - hono-market/mod.ts
-  fingerprint: 902b76f1af18104351565e32a27bcde3ff0879267928ec6adfbb2c4351e903ee
   treeFiles:
   - hono-market/deno.json
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: 8787790056793ecaecc45cd7180ba08eafb86be82e26bd855b5af42269fcfa0c
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: 902b76f1af18104351565e32a27bcde3ff0879267928ec6adfbb2c4351e903ee
+  fingerprint: 902b76f1af18104351565e32a27bcde3ff0879267928ec6adfbb2c4351e903ee

@@ -1,28 +1,16 @@
 conditions:
-- message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-  reason: InterfacesObserved
-  status: "True"
-  type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
+- type: CodeSynced
   status: "False"
-  type: Drifted
-- message: the spec passes the validator
-  reason: ValidatorPassed
+  reason: CodeRefsUnresolved
+  message: 'unresolved requirement code refs: r.association-proof: file:request-vm-ssh/mod.ts,
+    r.cli-configuration-surface: file:request-vm-ssh/cli-args-env.ts, r.cli-smoke-test:
+    file:request-vm-ssh/cli_smoke_test.ts'
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
   status: "True"
-  type: SpecValid
-observed:
-  files:
-  - request-vm-ssh/cli-args-env.ts
-  - request-vm-ssh/cli_smoke_test.ts
-  - request-vm-ssh/mod.ts
-  fingerprint: ec4d81f79640bb751be4d5f9b5a27db4b327fda8a2a3c779402bf05d7b50f68f
-  treeFiles:
-  - request-vm-ssh/README.md
-  - request-vm-ssh/config.json
-  - request-vm-ssh/deno.json
-observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-realizedSpecHash: f1cc934aee1db7971c41a2c575edcc9d204e51c73e508bf7a417151f51250d77
-syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
-syncedFingerprint: ec4d81f79640bb751be4d5f9b5a27db4b327fda8a2a3c779402bf05d7b50f68f
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed: {}
