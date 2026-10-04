@@ -787,6 +787,22 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.revoke-and-dispose` (MUST): "onRevoke must revoke the authorizer's grant and log secrets_grant_revoked, and dispose must additionally shut down the serve handle and clear the serve and relay references before resolving, so no secrets endpoint outlives the capability."
 - added `r.single-module-package` (SHOULD): "The package should expose its whole surface from lib/guest-capability-secrets/mod.ts with only lib/guest-capability-secrets/deno.json beside it as package metadata, so consumers import one module path."
 
+### lib-hono-factory-compute-contract-gateway-xrpc
+
+- intent: "" -> "This context exists so a process can stand up an atproto-speaking HTTP surface in front of any ComputeContractGateway implementation without hand-writing the transport each time. It fixes the wire contract of the compute gateway: which XRPC NSIDs are served, what the well-known did:web document advertises, how inter-service service-auth tokens are verified per method, and how gateway results and errors map onto HTTP status codes. Callers supply only a gateway implementation, a hostname, an IdResolver and an optional audience DID list, and receive a ready Hono app."
+- added `r.auth-failure-401` (MUST): "If verifyServiceAuth throws, the middleware returns a 401 JSON body { error: "Unauthorized", message: String(err) } and does not invoke the downstream handler; on success it awaits next."
+- added `r.auth-header-required` (MUST): "The requireAuth middleware factory closes over a per-route lxm string and, when the request has no authorization header, short-circuits with a 401 JSON body { error: "Unauthorized", message: "missing Authorization header" } instead of calling the downstream handler."
+- added `r.cors-all-routes` (MUST): "The app applies the cors middleware to every route via app.use on the wildcard path."
+- added `r.delete-compute-handler` (MUST): "The deleteCompute handler parses the JSON body for receiptUri, receiptCid and token strings, calls gateway.deleteCompute({ did: "unknown" }, receiptUri, receiptCid, token ?? ""), and returns the result as JSON without setting an error-derived status code."
+- added `r.did-web-document` (MUST): "GET /.well-known/did.json returns a DID document whose @context is ["https://www.w3.org/ns/did/v1"], whose id is did:web:<hostname>, and whose single service entry has id #<DEFAULT_GATEWAY_SERVICE_ID>, type PDRComputeContractGateway and serviceEndpoint https://<hostname>."
+- added `r.factory-returns-hono-app` (MUST): "createComputeContractGatewayFactory takes a ComputeContractGatewayFactoryOptions bag and returns an object with a single app property holding a Hono instance; it destructures gateway, hostname, idResolver and audienceDids from the options."
+- added `r.health-endpoint` (MUST): "GET /health responds with the JSON body { status: "ok" }."
+- added `r.options-shape` (MUST): "The factory options must carry a required gateway of type ComputeContractGateway, a required hostname string, a required idResolver of type IdResolver, and an optional audienceDids string array."
+- added `r.request-compute-vm-issuer` (MUST): "The requestComputeVM handler parses the JSON body, takes body.payload as a string, base64-decodes the second dot-separated segment of that JWT-shaped payload and reads its iss claim as the caller DID, falling back to the string "unknown" when payload is absent, then calls gateway.requestComputeVM({ did: issuerDid }, body) and returns the result with status 500 when result.error is set and 200 otherwise; the handler also reads the authorization header into a local that is not otherwise used."
+- added `r.service-auth-verification` (MUST): "When an authorization header is present the middleware derives the audience host from the request Host header with any port suffix stripped, falling back to the configured hostname when the header is absent, and calls verifyServiceAuth with that hostname, the route lxm, serviceIds fixed to [DEFAULT_GATEWAY_SERVICE_ID], extraAudienceDids resolved to the configured audienceDids or else [gateway.did] when audienceDids is undefined, and the injected idResolver."
+- added `r.worker-routes-caller-did` (MUST): "The requestComputeWorkerEphemeral and requestComputeWorkerPersistent handlers parse the JSON body, call the corresponding gateway method with caller { did: "unknown" } and the body, and return the result with status 500 when result.error is set and 200 otherwise."
+- added `r.xrpc-post-routes` (MUST): "The app registers POST routes at /xrpc/<REQUEST_COMPUTE_VM_NSID>, /xrpc/<REQUEST_COMPUTE_WORKER_EPHEMERAL_NSID>, /xrpc/<REQUEST_COMPUTE_WORKER_PERSISTENT_NSID> and /xrpc/<DELETE_COMPUTE_NSID>, each guarded by requireAuth bound to the matching LXM constant for that method."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance |
@@ -850,5 +866,5 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-did-plc-generated-client-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-did-plc-generated-core-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-guest-capability-secrets-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-hono-factory-compute-contract-gateway-xrpc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-hono-factory-compute-contract-gateway-xrpc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-hono-factory-did-plc-directory-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |

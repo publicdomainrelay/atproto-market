@@ -1,6 +1,9 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
 codeRefIndex:
 - file:lib/hono-factory-compute-contract-gateway-xrpc/mod.ts mod.ts@lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+- function:35f62ddaabe8e88061e3c0f6d7f5c28c requireAuth@lib/hono-factory-compute-contract-gateway-xrpc/mod.ts:30
+- function:fb9c0b643b6c0ae7e354f595aa7280cf createComputeContractGatewayFactory@lib/hono-factory-compute-contract-gateway-xrpc/mod.ts:25
+- interface:9ce82a55642acec416e2eb4c3b27f13c ComputeContractGatewayFactoryOptions@lib/hono-factory-compute-contract-gateway-xrpc/mod.ts:18
 kind: SystemContext
 metadata:
   name: lib-hono-factory-compute-contract-gateway-xrpc
@@ -8,5 +11,131 @@ metadata:
 spec:
   dependsOn:
   - sc.atproto-market
+  intent: 'This context exists so a process can stand up an atproto-speaking HTTP
+    surface in front of any ComputeContractGateway implementation without hand-writing
+    the transport each time. It fixes the wire contract of the compute gateway: which
+    XRPC NSIDs are served, what the well-known did:web document advertises, how inter-service
+    service-auth tokens are verified per method, and how gateway results and errors
+    map onto HTTP status codes. Callers supply only a gateway implementation, a hostname,
+    an IdResolver and an optional audience DID list, and receive a ready Hono app.'
+  interfaces:
+  - file: lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+    kind: interface
+    name: ComputeContractGatewayFactoryOptions
+    signature: 'interface ComputeContractGatewayFactoryOptions { gateway: ComputeContractGateway;
+      hostname: string; idResolver: IdResolver; audienceDids?: string[] }'
+  - file: lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+    kind: function
+    name: createComputeContractGatewayFactory
+    signature: '(opts: ComputeContractGatewayFactoryOptions): { app: Hono }'
+  - file: lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+    kind: function
+    name: requireAuth
+    signature: '(lxm: string)'
   repository: atproto-market
+  requirements:
+  - codeRefs:
+    - file:lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+    - function:35f62ddaabe8e88061e3c0f6d7f5c28c
+    id: r.auth-failure-401
+    level: MUST
+    text: 'If verifyServiceAuth throws, the middleware returns a 401 JSON body { error:
+      "Unauthorized", message: String(err) } and does not invoke the downstream handler;
+      on success it awaits next.'
+  - codeRefs:
+    - file:lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+    - function:35f62ddaabe8e88061e3c0f6d7f5c28c
+    id: r.auth-header-required
+    level: MUST
+    text: 'The requireAuth middleware factory closes over a per-route lxm string and,
+      when the request has no authorization header, short-circuits with a 401 JSON
+      body { error: "Unauthorized", message: "missing Authorization header" } instead
+      of calling the downstream handler.'
+  - codeRefs:
+    - file:lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+    - function:fb9c0b643b6c0ae7e354f595aa7280cf
+    id: r.cors-all-routes
+    level: MUST
+    text: The app applies the cors middleware to every route via app.use on the wildcard
+      path.
+  - codeRefs:
+    - file:lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+    - function:fb9c0b643b6c0ae7e354f595aa7280cf
+    id: r.delete-compute-handler
+    level: MUST
+    text: 'The deleteCompute handler parses the JSON body for receiptUri, receiptCid
+      and token strings, calls gateway.deleteCompute({ did: "unknown" }, receiptUri,
+      receiptCid, token ?? ""), and returns the result as JSON without setting an
+      error-derived status code.'
+  - codeRefs:
+    - file:lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+    - function:fb9c0b643b6c0ae7e354f595aa7280cf
+    id: r.did-web-document
+    level: MUST
+    text: 'GET /.well-known/did.json returns a DID document whose @context is ["https://www.w3.org/ns/did/v1"],
+      whose id is did:web:<hostname>, and whose single service entry has id #<DEFAULT_GATEWAY_SERVICE_ID>,
+      type PDRComputeContractGateway and serviceEndpoint https://<hostname>.'
+  - codeRefs:
+    - file:lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+    - function:fb9c0b643b6c0ae7e354f595aa7280cf
+    - interface:9ce82a55642acec416e2eb4c3b27f13c
+    id: r.factory-returns-hono-app
+    level: MUST
+    text: createComputeContractGatewayFactory takes a ComputeContractGatewayFactoryOptions
+      bag and returns an object with a single app property holding a Hono instance;
+      it destructures gateway, hostname, idResolver and audienceDids from the options.
+  - codeRefs:
+    - file:lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+    - function:fb9c0b643b6c0ae7e354f595aa7280cf
+    id: r.health-endpoint
+    level: MUST
+    text: 'GET /health responds with the JSON body { status: "ok" }.'
+  - codeRefs:
+    - file:lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+    - interface:9ce82a55642acec416e2eb4c3b27f13c
+    id: r.options-shape
+    level: MUST
+    text: The factory options must carry a required gateway of type ComputeContractGateway,
+      a required hostname string, a required idResolver of type IdResolver, and an
+      optional audienceDids string array.
+  - codeRefs:
+    - file:lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+    - function:fb9c0b643b6c0ae7e354f595aa7280cf
+    id: r.request-compute-vm-issuer
+    level: MUST
+    text: 'The requestComputeVM handler parses the JSON body, takes body.payload as
+      a string, base64-decodes the second dot-separated segment of that JWT-shaped
+      payload and reads its iss claim as the caller DID, falling back to the string
+      "unknown" when payload is absent, then calls gateway.requestComputeVM({ did:
+      issuerDid }, body) and returns the result with status 500 when result.error
+      is set and 200 otherwise; the handler also reads the authorization header into
+      a local that is not otherwise used.'
+  - codeRefs:
+    - file:lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+    - function:35f62ddaabe8e88061e3c0f6d7f5c28c
+    id: r.service-auth-verification
+    level: MUST
+    text: When an authorization header is present the middleware derives the audience
+      host from the request Host header with any port suffix stripped, falling back
+      to the configured hostname when the header is absent, and calls verifyServiceAuth
+      with that hostname, the route lxm, serviceIds fixed to [DEFAULT_GATEWAY_SERVICE_ID],
+      extraAudienceDids resolved to the configured audienceDids or else [gateway.did]
+      when audienceDids is undefined, and the injected idResolver.
+  - codeRefs:
+    - file:lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+    - function:fb9c0b643b6c0ae7e354f595aa7280cf
+    id: r.worker-routes-caller-did
+    level: MUST
+    text: 'The requestComputeWorkerEphemeral and requestComputeWorkerPersistent handlers
+      parse the JSON body, call the corresponding gateway method with caller { did:
+      "unknown" } and the body, and return the result with status 500 when result.error
+      is set and 200 otherwise.'
+  - codeRefs:
+    - file:lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+    - function:fb9c0b643b6c0ae7e354f595aa7280cf
+    id: r.xrpc-post-routes
+    level: MUST
+    text: The app registers POST routes at /xrpc/<REQUEST_COMPUTE_VM_NSID>, /xrpc/<REQUEST_COMPUTE_WORKER_EPHEMERAL_NSID>,
+      /xrpc/<REQUEST_COMPUTE_WORKER_PERSISTENT_NSID> and /xrpc/<DELETE_COMPUTE_NSID>,
+      each guarded by requireAuth bound to the matching LXM constant for that method.
   upstream: self

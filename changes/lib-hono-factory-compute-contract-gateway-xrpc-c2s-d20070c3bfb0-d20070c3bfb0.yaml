@@ -10,5 +10,21 @@ spec:
   systemContext: lib-hono-factory-compute-contract-gateway-xrpc
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-hono-factory-compute-contract-gateway-xrpc
-  phase: Running
+  agentLog: This context is the Deno Hono factory that exposes a compute-contract
+    gateway over atproto XRPC. lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+    exports ComputeContractGatewayFactoryOptions, the options bag carrying the ComputeContractGateway
+    implementation, the service hostname, an IdResolver and an optional audienceDids
+    allowlist, and createComputeContractGatewayFactory, which builds a Hono app from
+    those options. The factory installs CORS on every route, serves GET /health and
+    a did:web document at GET /.well-known/did.json, and mounts four authenticated
+    POST routes under /xrpc/ for requesting a compute VM, requesting an ephemeral
+    worker, requesting a persistent worker, and deleting compute. Authentication is
+    supplied by an inner requireAuth(lxm) middleware factory that reads the Host and
+    Authorization headers, rejects missing credentials with 401, and otherwise calls
+    verifyServiceAuth against the gateway service id with the gateway DID as the default
+    audience. Each XRPC handler parses the JSON body, derives a caller DID (the JWT
+    issuer for requestComputeVM, the literal "unknown" elsewhere), forwards to the
+    corresponding method on the injected gateway, and returns the gateway result as
+    JSON with a 500 status when the result carries an error.
+  message: wrote 12 requirement(s) and 3 interface(s) for lib-hono-factory-compute-contract-gateway-xrpc
+  phase: Succeeded
