@@ -1,0 +1,29 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-requester-xrpc-s2c-275aea2136d3
+  namespace: default
+spec:
+  delta:
+    requirements:
+    - id: r.proxycommand-follows-transport-id
+      op: added
+      to:
+        codeRefs:
+        - file:lib/requester-xrpc/mod.ts
+        id: r.proxycommand-follows-transport-id
+        level: MUST
+        text: 'The dumbpipe-versus-websocat choice must follow the selected transport
+          id itself, not a negative test against one legacy id: only the `iroh` transport
+          dials the published ticket with `dumbpipe connect <ticket>` and needs the
+          dumbpipe helper; the `tunnel` and `fedproxy-ssh` transports both keep the
+          websocat ProxyCommand to the relay tunnel URL and need the websocat helper.
+          A caller that selects `--user-data-transport tunnel` must get the legacy
+          tunnel-subscriber guest and the websocat SSH path, not a dumbpipe connection
+          to a relay FQDN, which can never succeed.'
+  direction: SpecToCode
+  fromSpecHash: 8ffed522ec4d01267be17f6fefcc6ff6c1d84799ebde78f20199a3a4b677010b
+  systemContext: lib-requester-xrpc
+  toSpecHash: 275aea2136d3f217d797136f848e8b8d58e1c52c1258f4e22d59b5ddc10feead
+status:
+  phase: Pending

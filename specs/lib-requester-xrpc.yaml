@@ -291,6 +291,18 @@ spec:
     text: The module is published as a Deno package described by lib/requester-xrpc/deno.json,
       which declares the entrypoint and dependency imports for everything mod.ts re-exports.
   - codeRefs:
+    - file:lib/requester-xrpc/mod.ts
+    id: r.proxycommand-follows-transport-id
+    level: MUST
+    text: 'The dumbpipe-versus-websocat choice must follow the selected transport
+      id itself, not a negative test against one legacy id: only the `iroh` transport
+      dials the published ticket with `dumbpipe connect <ticket>` and needs the dumbpipe
+      helper; the `tunnel` and `fedproxy-ssh` transports both keep the websocat ProxyCommand
+      to the relay tunnel URL and need the websocat helper. A caller that selects
+      `--user-data-transport tunnel` must get the legacy tunnel-subscriber guest and
+      the websocat SSH path, not a dumbpipe connection to a relay FQDN, which can
+      never succeed.'
+  - codeRefs:
     - function:90e261d66d34a637786e137d0c260cd8
     id: r.relay-autodiscovery
     level: SHOULD
