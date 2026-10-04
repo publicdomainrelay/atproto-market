@@ -8,4 +8,7 @@ _None: this branch declares the same requirements as the default branch._
 
 ## Realization
 
-_None: no SpecChange landed on this branch yet._
+| change | direction | phase | commit | verify | acceptance |
+| --- | --- | --- | --- | --- | --- |
+| atproto-market-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| compute-contract-full-flow-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
