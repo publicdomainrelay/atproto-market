@@ -44,14 +44,18 @@ spec:
       built from ctx.sshAuthorizedKey, the key-only sshd drop-in (PermitRootLogin
       prohibit-password, PasswordAuthentication no, no ListenAddress), the dumbpipe
       install step extracting the `./dumbpipe` member of the pinned release archive,
-      the dumbpipe-listen systemd unit running listen-tcp --host 127.0.0.1:22 with
-      EnvironmentFile=-/root/secrets/iroh.env, an ExecStartPre that truncates the
-      log and creates the IROH_SECRET environment file once, and an ExecStartPost
-      that extracts the ticket into /root/secrets/iroh-node-id and reports it to the
-      ctx.irohReportUrl endpoint with the ctx.irohReportToken bearer token. This fixture
-      must be generated from the composer output (never hand-written), and the existing
-      tunnel.yaml, tunnel-secrets.yaml, fedproxy-ssh.yaml and fedproxy-web-wootty.yaml
-      fixtures must remain unchanged and green.'
+      and the dumbpipe-listen systemd unit whose ExecStart is a bare path to the listener
+      script. That script sources /root/secrets/iroh.env, writes /root/secrets/iroh-dumbpipe.log
+      through its own redirection, and launches the ticket reporter before exec-ing
+      listen-tcp --host 127.0.0.1:22, because the container-mode systemctl shim cannot
+      run a quoted ExecStart, ignores a StandardOutput=append: redirect and implements
+      no ExecStartPost; the reporter extracts the ticket into /root/secrets/iroh-node-id
+      and POSTs it to the ctx.irohReportUrl endpoint with an Authorization bearer
+      token it mints at boot from the accept bundle bid_config, never a token carried
+      in the cloud-config. This fixture must be generated from the composer output
+      (never hand-written), so a change to the module must regenerate it in the same
+      change, and the existing tunnel.yaml, tunnel-secrets.yaml, fedproxy-ssh.yaml
+      and fedproxy-web-wootty.yaml fixtures must remain unchanged and green.'
     codeRefs:
     - file:test/fixtures/cloud-init/iroh.yaml
   - id: r.snapshot-files-are-composer-output
