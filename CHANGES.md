@@ -1029,6 +1029,20 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.per-did-memo-cache` (MUST): "Results are memoized in a map keyed by atproto DID and reused on subsequent calls, and only non-empty discovery results are cached, so a failed or empty lookup is retried on the next call."
 - added `r.record-listing-is-injected` (MUST): "Record access is never performed by the module itself: opts supplies listRecordsOwn(collection, {limit}) for the caller's own repo and listRecordsPublic(repo, collection) for another repo, both returning ListedRecord values carrying a uri and a value record; the optional log(level, msg, meta) sink is the only observability channel."
 
+### lib-secrets-oidc
+
+- intent: "" -> "This context exists so the requester side can validate workload-identity tokens minted by an OIDC provider for guests without itself being an OIDC issuer: it verifies against the provider's published JWKS rather than oidc-issuer-hono's OIDCToken.validate (which would require configureOidc() and generate an unused signing key), and it turns a verified subject into an RBAC decision for a specific request path and method."
+- added `r.audience-precheck` (MUST): "The token is decoded unverified first (jose.decodeJwt; a decode failure raises UnauthorizedException 'malformed token'), and the first entry of the aud claim, treating an array aud as its first element, must equal the grant's expectedAud or the request is rejected with an audience mismatch."
+- added `r.grant-lifecycle` (MUST): "The authorizer holds at most one active SecretsGrant: install(grant) replaces it, revoke() clears it to null, and the granted getter reports whether a grant is currently installed."
+- added `r.injected-fetch-and-tolerance` (MUST): "createSecretsAuthorizer takes CreateSecretsAuthorizerOpts where fetch defaults to globalThis.fetch and clockToleranceSec defaults to 5; every discovery and JWKS request goes through that injected fetch so caller-patched transports such as local dispatchers and tests are not bypassed by jose's remote JWKS fetching."
+- added `r.jwks-discovery-and-cache` (MUST): "getJwks resolves keys by fetching <issuerUri>/.well-known/openid-configuration from the trimmed issuer, requiring a jwks_uri in the response, fetching that URI, and turning the document into a local jose JWK set; the result is cached per issuer URI and returned from cache unless reload is true, and a non-OK discovery or JWKS response raises UnauthorizedException naming the URL and status."
+- added `r.package-surface` (MUST): "The package @publicdomainrelay/secrets-oidc exports ./mod.ts and depends on jose (npm ^5) plus the jsr packages secrets-common, rbac-atproto and oidc-issuer-abc, so consumers get the authorizer types and factory from the single module entrypoint."
+- added `r.rbac-decision` (MUST): "After verification the grant's rbac record, the token sub, the request path and the request method are passed to checkRBACPolicy, and a successful authorize returns AuthorizedRequest carrying that sub."
+- added `r.reject-without-grant-or-token` (MUST): "authorize throws UnauthorizedException when no grant is installed ('no active secrets grant') or when the token argument is empty ('missing bearer token'), before any decoding or verification happens."
+- added `r.rotation-retry` (MUST): "When verification fails specifically with jose.errors.JWKSNoMatchingKey, the authorizer reloads the issuer's JWKS once (getJwks with reload) and retries verification; a retry failure is reported as UnauthorizedException."
+- added `r.signature-verification` (MUST): "The token signature is verified with jose.jwtVerify against the grant's issuerUri as issuer and expectedAud as audience, using the configured clockTolerance; any failure other than a missing key surfaces as UnauthorizedException 'token verification failed'."
+- added `r.sub-required` (MUST): "A verified payload without a sub claim is rejected with UnauthorizedException 'token has no sub'."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance |
@@ -1110,4 +1124,4 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-market-settlement-x402-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-operator-discovery-badge-blue-keys-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-requester-xrpc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
-| lib-secrets-oidc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-secrets-oidc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |

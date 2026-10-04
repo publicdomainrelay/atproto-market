@@ -11780,11 +11780,141 @@ system_contexts:
 - code:
   - lib/secrets-oidc/mod.ts
   codeRefIndex:
+  - file:lib/secrets-oidc/deno.json deno.json@lib/secrets-oidc/deno.json
   - file:lib/secrets-oidc/mod.ts mod.ts@lib/secrets-oidc/mod.ts
+  - function:5f4aad08662e2d2094582832d7b08310 createSecretsAuthorizer@lib/secrets-oidc/mod.ts:34
+  - function:d7d076f635e975de9b23dac9be2ef9e7 getJwks@lib/secrets-oidc/mod.ts:48
+  - interface:05b597fb30f58132a5be06a41f6fba0d SecretsAuthorizer@lib/secrets-oidc/mod.ts:16
+  - interface:bf1e05cf2e07ed74d51e51e2e63afc40 SecretsGrant@lib/secrets-oidc/mod.ts:6
+  - interface:d3e1a8191afeaac9625fd120d563275c AuthorizedRequest@lib/secrets-oidc/mod.ts:12
+  - interface:dc48a990f6ac35504ef07082ebff16e1 CreateSecretsAuthorizerOpts@lib/secrets-oidc/mod.ts:23
   depends_on:
   - sc.atproto-market
   id: sc.lib-secrets-oidc
+  intent: 'This context exists so the requester side can validate workload-identity
+    tokens minted by an OIDC provider for guests without itself being an OIDC issuer:
+    it verifies against the provider''s published JWKS rather than oidc-issuer-hono''s
+    OIDCToken.validate (which would require configureOidc() and generate an unused
+    signing key), and it turns a verified subject into an RBAC decision for a specific
+    request path and method.'
+  interfaces:
+  - file: lib/secrets-oidc/mod.ts
+    kind: interface
+    name: AuthorizedRequest
+    signature: 'interface AuthorizedRequest { sub: string }'
+  - file: lib/secrets-oidc/mod.ts
+    kind: interface
+    name: CreateSecretsAuthorizerOpts
+    signature: 'interface CreateSecretsAuthorizerOpts { clockToleranceSec?: number;
+      fetch?: typeof fetch }'
+  - file: lib/secrets-oidc/mod.ts
+    kind: interface
+    name: SecretsAuthorizer
+    signature: 'interface SecretsAuthorizer { install(grant: SecretsGrant): void;
+      revoke(): void; readonly granted: boolean; authorize(token: string, path: string,
+      method: string): Promise<AuthorizedRequest> }'
+  - file: lib/secrets-oidc/mod.ts
+    kind: interface
+    name: SecretsGrant
+    signature: 'interface SecretsGrant { rbac: RbacRecordShape; issuerUri: string;
+      expectedAud: string }'
+  - file: lib/secrets-oidc/mod.ts
+    kind: function
+    name: createSecretsAuthorizer
+    signature: 'createSecretsAuthorizer(opts: CreateSecretsAuthorizerOpts = {}): SecretsAuthorizer'
+  - file: lib/secrets-oidc/mod.ts
+    kind: function
+    name: getJwks
+    signature: 'getJwks(issuerUri: string, reload = false): Promise<jose.JWTVerifyGetKey>'
   name: lib-secrets-oidc
+  requirements:
+  - codeRefs:
+    - function:5f4aad08662e2d2094582832d7b08310
+    - interface:bf1e05cf2e07ed74d51e51e2e63afc40
+    id: r.audience-precheck
+    level: MUST
+    text: The token is decoded unverified first (jose.decodeJwt; a decode failure
+      raises UnauthorizedException 'malformed token'), and the first entry of the
+      aud claim, treating an array aud as its first element, must equal the grant's
+      expectedAud or the request is rejected with an audience mismatch.
+  - codeRefs:
+    - function:5f4aad08662e2d2094582832d7b08310
+    - interface:05b597fb30f58132a5be06a41f6fba0d
+    - interface:bf1e05cf2e07ed74d51e51e2e63afc40
+    id: r.grant-lifecycle
+    level: MUST
+    text: 'The authorizer holds at most one active SecretsGrant: install(grant) replaces
+      it, revoke() clears it to null, and the granted getter reports whether a grant
+      is currently installed.'
+  - codeRefs:
+    - function:5f4aad08662e2d2094582832d7b08310
+    - function:d7d076f635e975de9b23dac9be2ef9e7
+    - interface:dc48a990f6ac35504ef07082ebff16e1
+    id: r.injected-fetch-and-tolerance
+    level: MUST
+    text: createSecretsAuthorizer takes CreateSecretsAuthorizerOpts where fetch defaults
+      to globalThis.fetch and clockToleranceSec defaults to 5; every discovery and
+      JWKS request goes through that injected fetch so caller-patched transports such
+      as local dispatchers and tests are not bypassed by jose's remote JWKS fetching.
+  - codeRefs:
+    - function:5f4aad08662e2d2094582832d7b08310
+    - function:d7d076f635e975de9b23dac9be2ef9e7
+    id: r.jwks-discovery-and-cache
+    level: MUST
+    text: getJwks resolves keys by fetching <issuerUri>/.well-known/openid-configuration
+      from the trimmed issuer, requiring a jwks_uri in the response, fetching that
+      URI, and turning the document into a local jose JWK set; the result is cached
+      per issuer URI and returned from cache unless reload is true, and a non-OK discovery
+      or JWKS response raises UnauthorizedException naming the URL and status.
+  - codeRefs:
+    - file:lib/secrets-oidc/deno.json
+    - file:lib/secrets-oidc/mod.ts
+    id: r.package-surface
+    level: MUST
+    text: The package @publicdomainrelay/secrets-oidc exports ./mod.ts and depends
+      on jose (npm ^5) plus the jsr packages secrets-common, rbac-atproto and oidc-issuer-abc,
+      so consumers get the authorizer types and factory from the single module entrypoint.
+  - codeRefs:
+    - function:5f4aad08662e2d2094582832d7b08310
+    - interface:05b597fb30f58132a5be06a41f6fba0d
+    - interface:d3e1a8191afeaac9625fd120d563275c
+    id: r.rbac-decision
+    level: MUST
+    text: After verification the grant's rbac record, the token sub, the request path
+      and the request method are passed to checkRBACPolicy, and a successful authorize
+      returns AuthorizedRequest carrying that sub.
+  - codeRefs:
+    - function:5f4aad08662e2d2094582832d7b08310
+    - interface:05b597fb30f58132a5be06a41f6fba0d
+    id: r.reject-without-grant-or-token
+    level: MUST
+    text: authorize throws UnauthorizedException when no grant is installed ('no active
+      secrets grant') or when the token argument is empty ('missing bearer token'),
+      before any decoding or verification happens.
+  - codeRefs:
+    - function:5f4aad08662e2d2094582832d7b08310
+    - function:d7d076f635e975de9b23dac9be2ef9e7
+    id: r.rotation-retry
+    level: MUST
+    text: When verification fails specifically with jose.errors.JWKSNoMatchingKey,
+      the authorizer reloads the issuer's JWKS once (getJwks with reload) and retries
+      verification; a retry failure is reported as UnauthorizedException.
+  - codeRefs:
+    - function:5f4aad08662e2d2094582832d7b08310
+    - interface:bf1e05cf2e07ed74d51e51e2e63afc40
+    id: r.signature-verification
+    level: MUST
+    text: The token signature is verified with jose.jwtVerify against the grant's
+      issuerUri as issuer and expectedAud as audience, using the configured clockTolerance;
+      any failure other than a missing key surfaces as UnauthorizedException 'token
+      verification failed'.
+  - codeRefs:
+    - function:5f4aad08662e2d2094582832d7b08310
+    - interface:d3e1a8191afeaac9625fd120d563275c
+    id: r.sub-required
+    level: MUST
+    text: A verified payload without a sub claim is rejected with UnauthorizedException
+      'token has no sub'.
   upstream: self
 - code:
   - lib/trust-graph-bsky-mutuals/mod.ts
