@@ -7,6 +7,7 @@ import {
   createOAuthRequester,
   runComputeContract,
   createSshSessionProvider,
+  ensureDumbpipe,
   ensureWebsocat,
 } from "@publicdomainrelay/requester-xrpc";
 import { pollForOAuthSession, createOAuthAgentFromSession, tryRestoreOAuthQRSession, saveOAuthQRSession, OAuthSessionExpiredError } from "@publicdomainrelay/atproto-helpers";
@@ -89,6 +90,10 @@ if (userDataPath) {
   logger.info("user_data_loaded", { userDataPath, bytes: baseUserData.length });
 }
 const rbac = !(options.skipRbac as boolean);
+// Guest transport module. Default iroh (dumbpipe listener); only fedproxy-ssh
+// selects the legacy websocat/relay plane, and it is reachable only by naming
+// it explicitly.
+const userDataTransport = (options.userDataTransport as string) ?? "iroh";
 
 const capabilities: GuestCapability[] = [];
 const secretsPath = options.secrets as string | undefined;
@@ -102,7 +107,15 @@ if (secretsPath) {
   });
 }
 
-await ensureWebsocat(logger);
+// SSH runs through the dumbpipe helper under the default iroh transport; only
+// an explicit fedproxy-ssh selection needs websocat. --skip-ssh needs neither.
+if (!(options.skipSsh as boolean)) {
+  if (userDataTransport === "fedproxy-ssh") {
+    await ensureWebsocat(logger);
+  } else {
+    await ensureDumbpipe(logger);
+  }
+}
 logger.info("requester_starting", { label, ingressProxyHost, relayUrls });
 
 const serve = createServe({
@@ -512,9 +525,7 @@ const result = await runComputeContract(pds, {
   denyBidderDids,
   relayUrls,
   baseUserData,
-  userData: (options.userDataTransport as string | undefined)
-    ? { transport: options.userDataTransport as string }
-    : undefined,
+  userData: { transport: userDataTransport },
   rbac,
   capabilities,
   policy,

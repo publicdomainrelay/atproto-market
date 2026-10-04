@@ -227,6 +227,10 @@ export interface ContractFlowResult {
   error?: string;
   sshReady?: boolean;
   sshExitCode?: number;
+  /** Guest transport module actually used for this run ("iroh" by default). */
+  transport?: string;
+  /** iroh dumbpipe ticket the guest published, when the iroh transport ran. */
+  ticket?: string;
 }
 
 export interface ConsoleBuffer {

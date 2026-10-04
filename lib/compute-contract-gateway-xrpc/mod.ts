@@ -113,9 +113,15 @@ export function createComputeContractGateway(
         };
       }
 
-      const vmFqdn =
-        `${flattenLabel(vmName)}--${flattenLabel(pds.did)}.${fedingressHost}`;
-      const websocatUrl = `wss://${vmFqdn}`;
+      // Report the transport that actually ran. Only the legacy fedproxy-ssh
+      // transport publishes a relay FQDN/websocat URL; under iroh the guest
+      // publishes a dumbpipe ticket, so no wss:// URL is synthesized.
+      const transport = result.transport ?? "iroh";
+      const legacySsh = transport === "fedproxy-ssh";
+      const vmFqdn = legacySsh
+        ? `${flattenLabel(vmName)}--${flattenLabel(pds.did)}.${fedingressHost}`
+        : undefined;
+      const websocatUrl = legacySsh ? `wss://${vmFqdn}` : undefined;
 
       return {
         receiptUri: result.receiptUri,
@@ -125,6 +131,8 @@ export function createComputeContractGateway(
         sshExitCode: result.sshExitCode,
         websocatUrl,
         vmFqdn,
+        transport,
+        ticket: result.ticket,
         winnerDid: result.winnerDid,
         winnerBidUri: result.bidUri,
         winnerBidCid: result.bidCid,

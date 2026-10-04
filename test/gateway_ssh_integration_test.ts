@@ -208,8 +208,12 @@ Deno.test(
         "receiptUri should be a string",
       );
       assert(
-        typeof result.websocatUrl === "string",
-        "websocatUrl should be a string",
+        result.transport === "iroh",
+        "transport should default to iroh",
+      );
+      assert(
+        result.websocatUrl === undefined,
+        "no wss:// URL is synthesized under the iroh transport",
       );
 
       await gateway.dispose();

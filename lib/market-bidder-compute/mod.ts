@@ -75,6 +75,45 @@ function refKey(ref: { uri: string; cid: string }): string {
   return `${ref.uri}#${ref.cid}`;
 }
 
+/** Optional provider hook returning the guest's iroh endpoint id (ticket). */
+type IrohTicketProvider = {
+  getNodeId?: (providerId: string | number) => Promise<string | undefined>;
+};
+
+const IROH_TICKET_TIMEOUT_MS = 600_000;
+const IROH_TICKET_INITIAL_BACKOFF_MS = 2_000;
+const IROH_TICKET_MAX_BACKOFF_MS = 30_000;
+
+/**
+ * Poll the provider's getNodeId hook until the guest's ticket appears. The
+ * guest writes /root/secrets/iroh-node-id only after boot, so lookups retry
+ * with a bounded backoff up to the provisioning timeout; a provider without
+ * the hook (or one that never returns a ticket) yields undefined so the
+ * caller can fall back to the provisioned address.
+ */
+async function resolveIrohTicket(
+  provider: ComputeProvider,
+  providerId: string | number,
+  log: Logger,
+): Promise<string | undefined> {
+  const getNodeId = (provider as unknown as IrohTicketProvider).getNodeId;
+  if (typeof getNodeId !== "function") return undefined;
+  const deadline = Date.now() + IROH_TICKET_TIMEOUT_MS;
+  let delay = IROH_TICKET_INITIAL_BACKOFF_MS;
+  while (Date.now() < deadline) {
+    try {
+      const ticket = await getNodeId.call(provider, providerId);
+      if (ticket) return ticket;
+    } catch (err) {
+      log("warn", "iroh ticket lookup failed", { error: String(err) });
+    }
+    if (Date.now() + delay >= deadline) break;
+    await new Promise((resolve) => setTimeout(resolve, delay));
+    delay = Math.min(delay * 2, IROH_TICKET_MAX_BACKOFF_MS);
+  }
+  return undefined;
+}
+
 export function createVmBidderCallbacks(deps: VmBidderDeps): {
   rfp: Record<string, Record<string, SubmitRfpCallback>>;
   accept: SubmitAcceptCallback;
@@ -301,9 +340,16 @@ export function createVmBidderCallbacks(deps: VmBidderDeps): {
         registered.add(rk);
         const nowIso = new Date().toISOString();
 
+        // The guest writes /root/secrets/iroh-node-id only after boot, so the
+        // provider's getNodeId hook is polled with a bounded backoff up to the
+        // provisioning timeout. When the hook is absent or never returns a
+        // ticket, fall back to the provisioned address.
+        const ticket = await resolveIrohTicket(computeProvider, providerId, cbLog);
+        const address = ticket ?? provisionIp;
+
         createRepoRecord(COMPUTE_EVENTS_VM_ONNETWORK_NSID, {
           $type: COMPUTE_EVENTS_VM_ONNETWORK_NSID,
-          address: provisionIp,
+          address,
           createdAt: nowIso,
         }).then(({ uri: vmOnNetworkUri, cid: vmOnNetworkCid }) => {
           return createSignedRepoRecord(EVENT_NSID, {
@@ -312,7 +358,7 @@ export function createVmBidderCallbacks(deps: VmBidderDeps): {
             payload: strongRef(vmOnNetworkUri, vmOnNetworkCid),
           }, did);
         }).then(({ uri: eventUri, cid: eventCid, record: eventRecord }) => {
-          cbLog("info", "vm.onNetwork event created on PDS (firehose)", { receiptKey: rk, ip: provisionIp, eventUri });
+          cbLog("info", "vm.onNetwork event created on PDS (firehose)", { receiptKey: rk, address, ticket, eventUri });
 
           // Best-effort: also push via submitEvent XRPC if endpoint available.
           const submitEventUrl = (accept as { submitEvent?: string }).submitEvent;

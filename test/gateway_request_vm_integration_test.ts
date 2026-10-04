@@ -210,12 +210,12 @@ Deno.test(
         "receiptUri should be a string",
       );
       assert(
-        typeof result.websocatUrl === "string",
-        "websocatUrl should be a string",
+        result.transport === "iroh",
+        "transport should default to iroh",
       );
       assert(
-        result.websocatUrl!.includes("gateway-test-vm"),
-        "websocatUrl should include vm name",
+        result.websocatUrl === undefined && result.vmFqdn === undefined,
+        "no relay FQDN is synthesized under the iroh transport",
       );
       assert(
         typeof result.winnerDid === "string",

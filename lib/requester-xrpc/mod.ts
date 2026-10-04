@@ -1970,6 +1970,12 @@ runcmd:
     }
   }
 
+  // Report the transport that actually ran and, under iroh, the ticket the
+  // guest published (vmFqdn holds the transport target: the dumbpipe ticket
+  // for iroh, the relay FQDN for the legacy fedproxy-ssh transport).
+  result.transport = transport;
+  if (usesDumbpipe && vmFqdn) result.ticket = vmFqdn;
+
   await disposeCapabilities();
   return result;
 }
