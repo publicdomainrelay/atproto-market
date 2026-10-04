@@ -65,7 +65,7 @@ observed:
     signature: '(): void'
   treeFiles:
   - lib/market-bidder/deno.json
-observedCommit: b296a7ee7c1aae256a81c378b419bf16b3a3aca6
-realizedSpecHash: b24a9f4c22671134465fda79aa0cdebc4f6b2f4378384a742865ad6aa63476d9
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
+observedCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
+realizedSpecHash: 57311f62afaddd4618efbaa8bd40ec1f4c089ef0b257721e4ae8c0a174af2660
+syncedCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
 syncedFingerprint: 4b44f720d53132ed76693466a2ed553d7bd11cd8d652a1f12190630e48cfc6a3
