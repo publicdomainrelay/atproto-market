@@ -1,0 +1,28 @@
+conditions:
+- message: 'undeclared: loadOrCreateAttestationKeyHex'
+  reason: InterfacesMissing
+  status: "False"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/utils-attestation-key/mod.ts
+  fingerprint: c22b33cc6646e0dae8141ad778a4b1bf50bd12d1e741a6ca7a545bcd410a2352
+  interfaces:
+  - codegraphId: function:31d6822de041bbe285c919680dd5898d
+    file: lib/utils-attestation-key/mod.ts
+    kind: function
+    line: 22
+    name: loadOrCreateAttestationKeyHex
+    signature: '(jwkPath: string | URL): Promise<string>'
+  treeFiles:
+  - lib/utils-attestation-key/deno.json
+realizedSpecHash: 28f92e10f2dd084d2640041a8d83a758bb35e6511bf39d2c8ec4af6f0b23659d
+syncedFingerprint: c22b33cc6646e0dae8141ad778a4b1bf50bd12d1e741a6ca7a545bcd410a2352

@@ -1,0 +1,12 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/utils-attestation-key/mod.ts mod.ts@lib/utils-attestation-key/mod.ts
+kind: SystemContext
+metadata:
+  name: lib-utils-attestation-key
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

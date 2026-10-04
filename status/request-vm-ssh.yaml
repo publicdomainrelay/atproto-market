@@ -1,0 +1,26 @@
+conditions:
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - request-vm-ssh/cli-args-env.ts
+  - request-vm-ssh/cli_smoke_test.ts
+  - request-vm-ssh/mod.ts
+  fingerprint: ec4d81f79640bb751be4d5f9b5a27db4b327fda8a2a3c779402bf05d7b50f68f
+  treeFiles:
+  - request-vm-ssh/README.md
+  - request-vm-ssh/config.json
+  - request-vm-ssh/deno.json
+realizedSpecHash: afc80852e0cd2a0734226d3df2a4f3d337aa59ee722ff9572982904b65df1599
+syncedFingerprint: ec4d81f79640bb751be4d5f9b5a27db4b327fda8a2a3c779402bf05d7b50f68f

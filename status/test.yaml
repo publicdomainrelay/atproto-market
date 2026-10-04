@@ -1,0 +1,53 @@
+conditions:
+- message: 'undeclared: installFetchInterceptor'
+  reason: InterfacesMissing
+  status: "False"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - test/badge_blue_keys_binding_test.ts
+  - test/bid_collector_test.ts
+  - test/bidder_container_integration_test.ts
+  - test/bidder_cross_platform_integration_test.ts
+  - test/bidder_policy_only_me_integration_test.ts
+  - test/bidder_prod_integration_test.ts
+  - test/bidder_ssh_relay_test.ts
+  - test/cloud_init_snapshot_test.ts
+  - test/fetch-interceptor.ts
+  - test/firehose_watcher_test.ts
+  - test/gateway_caller_rbac_integration_test.ts
+  - test/gateway_readme_smoke_test.ts
+  - test/gateway_request_vm_integration_test.ts
+  - test/gateway_ssh_integration_test.ts
+  - test/gateway_worker_integration_test.ts
+  - test/oauth_session_transfer_test.ts
+  - test/offering_refresh_test.ts
+  - test/registry_discovery_test.ts
+  - test/secrets_capability_test.ts
+  fingerprint: b60d00c50463bcfe2c6d0b22772899983c9c7c43ffe44fc48b9561bc57ac1426
+  interfaces:
+  - codegraphId: function:c6f81957f952317eb0e87d2454b5add3
+    file: test/fetch-interceptor.ts
+    kind: function
+    line: 7
+    name: installFetchInterceptor
+    signature: |-
+      (opts: {
+        realFetch: typeof globalThis.fetch;
+        plcDirectoryUrl: string;
+        dispPort: number;
+        /** Self-signed CA PEM. When set, *.localhost URLs keep HTTPS (no downgrade)
+         * and are fetched with an HttpClient that trusts this CA. PLC redirects
+         * are unaffected (local PLC serves plain HTTP). */
+        caCertPem?: string;
+      }): () => void
+realizedSpecHash: 3a780ca8a7363e2ebf1d1a21a70fa2b8f9952a9e5201549e1c4a0cd463f071ab
+syncedFingerprint: b60d00c50463bcfe2c6d0b22772899983c9c7c43ffe44fc48b9561bc57ac1426

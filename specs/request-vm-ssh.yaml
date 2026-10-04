@@ -1,0 +1,14 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:request-vm-ssh/cli-args-env.ts cli-args-env.ts@request-vm-ssh/cli-args-env.ts
+- file:request-vm-ssh/cli_smoke_test.ts cli_smoke_test.ts@request-vm-ssh/cli_smoke_test.ts
+- file:request-vm-ssh/mod.ts mod.ts@request-vm-ssh/mod.ts
+kind: SystemContext
+metadata:
+  name: request-vm-ssh
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self
