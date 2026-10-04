@@ -45,4 +45,5 @@ spec:
   systemContext: request-vm-ssh
   toSpecHash: f1cc934aee1db7971c41a2c575edcc9d204e51c73e508bf7a417151f51250d77
 status:
-  phase: Pending
+  message: the agent is realizing request-vm-ssh
+  phase: Running
