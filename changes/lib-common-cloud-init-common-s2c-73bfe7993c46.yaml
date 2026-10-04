@@ -20,4 +20,6 @@ spec:
     - ~r.iroh-dumbpipe-listener
     - ~r.iroh-ticket-file
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is realizing lib-common-cloud-init-common in a batch of 12 led
+    by lib-abc-requester

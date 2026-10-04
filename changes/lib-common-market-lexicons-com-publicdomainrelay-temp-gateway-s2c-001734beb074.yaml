@@ -14,4 +14,6 @@ spec:
     requirements:
     - ~r.request-compute-vm-procedure
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is realizing lib-common-market-lexicons-com-publicdomainrelay-temp-gateway
+    in a batch of 12 led by lib-abc-requester

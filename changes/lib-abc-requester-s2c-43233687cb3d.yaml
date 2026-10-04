@@ -15,4 +15,5 @@ spec:
     - ~r.iroh-ticket-transport-surface
     - ~r.requester-pds-iroh-and-dispose
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is realizing lib-abc-requester in a batch of 12 led by lib-abc-requester

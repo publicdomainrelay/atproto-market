@@ -19,4 +19,5 @@ spec:
     - +r.transport-selection-tests
     - ~r.iroh-ticket-extraction-tested
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is realizing test in a batch of 12 led by lib-abc-requester

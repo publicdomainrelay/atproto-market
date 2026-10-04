@@ -16,4 +16,6 @@ spec:
     - +r.out-of-scope-xrpc-and-secrets-plane
     - ~r.xrpc-ingress-not-ssh
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is realizing lib-did-key-ingress-proxy in a batch of 12 led by
+    lib-abc-requester

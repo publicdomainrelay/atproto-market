@@ -15,4 +15,6 @@ spec:
     - ~r.iroh-ticket-emission
     - ~r.vm-onnetwork-emission
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is realizing lib-market-bidder-compute in a batch of 12 led by
+    lib-abc-requester

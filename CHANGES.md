@@ -1172,15 +1172,15 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 
 | change | direction | phase | commit | verify | acceptance |
 | --- | --- | --- | --- | --- | --- |
-| compute-contract-full-flow-s2c-a1f11383d1c6 | SpecToCode | Pending |  | 0 | - |
-| hono-compute-contract-gateway-s2c-61ccdb8e80cc | SpecToCode | Pending |  | 0 | - |
-| lib-abc-requester-s2c-43233687cb3d | SpecToCode | Pending |  | 0 | - |
-| lib-common-cloud-init-common-s2c-73bfe7993c46 | SpecToCode | Pending |  | 0 | - |
-| lib-common-market-lexicons-com-publicdomainrelay-temp-compute-events-vm-s2c-048ade2e6c09 | SpecToCode | Pending |  | 0 | - |
-| lib-common-market-lexicons-com-publicdomainrelay-temp-gateway-s2c-001734beb074 | SpecToCode | Pending |  | 0 | - |
-| lib-did-key-ingress-proxy-s2c-1b41bfbf7018 | SpecToCode | Pending |  | 0 | - |
-| lib-market-bidder-compute-s2c-5807b7c34327 | SpecToCode | Pending |  | 0 | - |
-| lib-requester-xrpc-s2c-e9de5d5bf233 | SpecToCode | Pending |  | 0 | - |
-| request-vm-ssh-s2c-d8b5dfdb85a7 | SpecToCode | Pending |  | 0 | - |
-| test-fixtures-cloud-init-s2c-3469ff76fae9 | SpecToCode | Pending |  | 0 | - |
-| test-s2c-360d82d5cad1 | SpecToCode | Pending |  | 0 | - |
+| compute-contract-full-flow-s2c-a1f11383d1c6 | SpecToCode | Running |  | 0 | - |
+| hono-compute-contract-gateway-s2c-61ccdb8e80cc | SpecToCode | Running |  | 0 | - |
+| lib-abc-requester-s2c-43233687cb3d | SpecToCode | Running |  | 0 | - |
+| lib-common-cloud-init-common-s2c-73bfe7993c46 | SpecToCode | Running |  | 0 | - |
+| lib-common-market-lexicons-com-publicdomainrelay-temp-compute-events-vm-s2c-048ade2e6c09 | SpecToCode | Running |  | 0 | - |
+| lib-common-market-lexicons-com-publicdomainrelay-temp-gateway-s2c-001734beb074 | SpecToCode | Running |  | 0 | - |
+| lib-did-key-ingress-proxy-s2c-1b41bfbf7018 | SpecToCode | Running |  | 0 | - |
+| lib-market-bidder-compute-s2c-5807b7c34327 | SpecToCode | Running |  | 0 | - |
+| lib-requester-xrpc-s2c-e9de5d5bf233 | SpecToCode | Running |  | 0 | - |
+| request-vm-ssh-s2c-d8b5dfdb85a7 | SpecToCode | Running |  | 0 | - |
+| test-fixtures-cloud-init-s2c-3469ff76fae9 | SpecToCode | Running |  | 0 | - |
+| test-s2c-360d82d5cad1 | SpecToCode | Running |  | 0 | - |

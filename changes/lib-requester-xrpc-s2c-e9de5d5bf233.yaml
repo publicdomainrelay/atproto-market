@@ -18,4 +18,5 @@ spec:
     - ~r.iroh-ticket-onnetwork
     - ~r.proxycommand-follows-transport-id
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is realizing lib-requester-xrpc in a batch of 12 led by lib-abc-requester

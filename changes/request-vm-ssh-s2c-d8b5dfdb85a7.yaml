@@ -14,4 +14,5 @@ spec:
     requirements:
     - +r.readme-documents-iroh-transport
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is realizing request-vm-ssh in a batch of 12 led by lib-abc-requester

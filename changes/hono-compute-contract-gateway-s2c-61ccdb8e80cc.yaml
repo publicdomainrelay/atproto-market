@@ -14,4 +14,6 @@ spec:
     requirements:
     - ~r.readme-block-coverage
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is realizing hono-compute-contract-gateway in a batch of 12 led
+    by lib-abc-requester

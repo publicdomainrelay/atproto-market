@@ -14,4 +14,6 @@ spec:
     requirements:
     - ~r.write-three-artifacts
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is realizing compute-contract-full-flow in a batch of 12 led
+    by lib-abc-requester
