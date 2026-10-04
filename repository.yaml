@@ -24,8 +24,8 @@ spec:
     summarize: true
     root: true
 status:
-  headCommit: a15d9cdab92c38dfb523398231ab0344f6d06909
-  indexedCommit: a15d9cdab92c38dfb523398231ab0344f6d06909
+  headCommit: 0a87f24ea18623b5b5bbe386dc317350144c9ffd
+  indexedCommit: 0a87f24ea18623b5b5bbe386dc317350144c9ffd
   phase: Populated
   contexts:
     total: 81
