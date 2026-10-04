@@ -1,7 +1,8 @@
 conditions:
-- message: 'undeclared: BskyMutualsVouchResolverOpts, createBskyMutualsVouchResolver'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -29,5 +30,5 @@ observed:
     signature: '(opts: BskyMutualsVouchResolverOpts): VouchResolver'
   treeFiles:
   - lib/trust-graph-bsky-mutuals/deno.json
-realizedSpecHash: f0f1a8327d74a1485b5744c7cc61b9e23a0d80199f99d22092ee7674aa1eb222
+realizedSpecHash: d44ee571617a01be4266689a8afab00979e733817b244030c57d5739d2bd1f59
 syncedFingerprint: b8e3d05832678a399e9de4ecce9394faf689809041b052eb389f929b36259f88

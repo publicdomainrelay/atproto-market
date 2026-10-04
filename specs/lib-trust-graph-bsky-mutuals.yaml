@@ -1,6 +1,9 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
 codeRefIndex:
+- file:lib/trust-graph-bsky-mutuals/deno.json deno.json@lib/trust-graph-bsky-mutuals/deno.json
 - file:lib/trust-graph-bsky-mutuals/mod.ts mod.ts@lib/trust-graph-bsky-mutuals/mod.ts
+- function:34fc226f1ebe43b6ca206f58c9e43a2f createBskyMutualsVouchResolver@lib/trust-graph-bsky-mutuals/mod.ts:8
+- interface:db90b579bdaef85c0398478a8d9c2578 BskyMutualsVouchResolverOpts@lib/trust-graph-bsky-mutuals/mod.ts:3
 kind: SystemContext
 metadata:
   name: lib-trust-graph-bsky-mutuals
@@ -8,5 +11,101 @@ metadata:
 spec:
   dependsOn:
   - sc.atproto-market
+  intent: This context exists to plug a real social signal — the Bluesky follow graph
+    — into the trust graph's resolver seam without the trust graph knowing anything
+    about Bluesky or about how follows are fetched. The module owns only the interpretation
+    (follows are vouches) and the failure policy (a broken follow lookup must not
+    break trust evaluation), while the caller supplies the transport via getFollows
+    and observation via log. Keeping it as a thin, dependency-injected adapter means
+    the trust graph can be exercised with a fake follow source and the same resolver
+    can later be backed by a cache, a PDS, or an indexer.
+  interfaces:
+  - file: lib/trust-graph-bsky-mutuals/mod.ts
+    kind: interface
+    name: BskyMutualsVouchResolverOpts
+    signature: 'interface BskyMutualsVouchResolverOpts { getFollows(actor: string):
+      Promise<Set<string>>; log?(level: string, msg: string, meta?: Record<string,
+      unknown>): void }'
+  - file: lib/trust-graph-bsky-mutuals/mod.ts
+    kind: function
+    name: createBskyMutualsVouchResolver
+    signature: 'createBskyMutualsVouchResolver(opts: BskyMutualsVouchResolverOpts):
+      VouchResolver'
   repository: atproto-market
+  requirements:
+  - codeRefs:
+    - file:lib/trust-graph-bsky-mutuals/mod.ts
+    - function:34fc226f1ebe43b6ca206f58c9e43a2f
+    id: r.conform-to-vouch-resolver
+    level: SHOULD
+    text: The returned object should satisfy the VouchResolver contract from lib/abc/trust-graph/mod.ts
+      so the module stays a drop-in implementation of that ABC interface and callers
+      depend only on the abstraction.
+  - codeRefs:
+    - file:lib/trust-graph-bsky-mutuals/mod.ts
+    - function:34fc226f1ebe43b6ca206f58c9e43a2f
+    - interface:db90b579bdaef85c0398478a8d9c2578
+    id: r.export-factory
+    level: MUST
+    text: The module must export createBskyMutualsVouchResolver, a factory taking
+      BskyMutualsVouchResolverOpts and returning a VouchResolver with getVouchedDids
+      and isVouched, so the Bluesky follow graph can be supplied to the trust graph
+      as a resolver.
+  - codeRefs:
+    - file:lib/trust-graph-bsky-mutuals/mod.ts
+    - function:34fc226f1ebe43b6ca206f58c9e43a2f
+    id: r.fail-soft-on-lookup-error
+    level: MUST
+    text: 'A rejected getFollows must never propagate: getVouchedDids must catch it
+      and return an empty Set, and isVouched must catch it and return false, so an
+      unreachable follow source degrades to no-vouch instead of failing the caller.'
+  - codeRefs:
+    - file:lib/trust-graph-bsky-mutuals/mod.ts
+    - function:34fc226f1ebe43b6ca206f58c9e43a2f
+    id: r.is-vouched-membership
+    level: MUST
+    text: isVouched(voucher, vouchee) must await getFollows(voucher) and report whether
+      the resulting Set contains vouchee, so a vouch holds exactly when the voucher
+      follows the vouchee.
+  - codeRefs:
+    - file:lib/trust-graph-bsky-mutuals/mod.ts
+    - function:34fc226f1ebe43b6ca206f58c9e43a2f
+    - interface:db90b579bdaef85c0398478a8d9c2578
+    id: r.log-optional-noop-default
+    level: MUST
+    text: When opts.log is absent the resolver must fall back to a no-op logger so
+      logging is never required and never throws, while a supplied log is called directly
+      with (level, msg, meta).
+  - codeRefs:
+    - file:lib/trust-graph-bsky-mutuals/mod.ts
+    - interface:db90b579bdaef85c0398478a8d9c2578
+    id: r.opts-get-follows-required
+    level: MUST
+    text: 'BskyMutualsVouchResolverOpts must require a getFollows(actor: string):
+      Promise<Set<string>> member, which is the sole source of vouch data, and may
+      accept an optional log(level, msg, meta?) member; the resolver destructures
+      both from its options argument.'
+  - codeRefs:
+    - file:lib/trust-graph-bsky-mutuals/deno.json
+    id: r.package-manifest
+    level: MAY
+    text: The package may carry a lib/trust-graph-bsky-mutuals/deno.json manifest
+      declaring its module metadata, which the code index does not treat as source.
+  - codeRefs:
+    - file:lib/trust-graph-bsky-mutuals/mod.ts
+    - function:34fc226f1ebe43b6ca206f58c9e43a2f
+    id: r.vouched-dids-are-follows
+    level: MUST
+    text: getVouchedDids(did) must return the Set produced by getFollows(did) unchanged,
+      treating the actor's follow set as exactly the set of DIDs that actor vouches
+      for.
+  - codeRefs:
+    - file:lib/trust-graph-bsky-mutuals/mod.ts
+    - function:34fc226f1ebe43b6ca206f58c9e43a2f
+    id: r.warn-log-on-error
+    level: MUST
+    text: On a caught lookup error the resolver must log level "warn" with the message
+      "bsky-mutuals follow lookup failed" and metadata carrying the actor DID (the
+      did argument for getVouchedDids, the voucher for isVouched) plus the error stringified
+      via String(err).
   upstream: self

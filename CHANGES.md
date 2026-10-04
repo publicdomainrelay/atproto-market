@@ -1062,6 +1062,19 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.signature-verification` (MUST): "The token signature is verified with jose.jwtVerify against the grant's issuerUri as issuer and expectedAud as audience, using the configured clockTolerance; any failure other than a missing key surfaces as UnauthorizedException 'token verification failed'."
 - added `r.sub-required` (MUST): "A verified payload without a sub claim is rejected with UnauthorizedException 'token has no sub'."
 
+### lib-trust-graph-bsky-mutuals
+
+- intent: "" -> "This context exists to plug a real social signal — the Bluesky follow graph — into the trust graph's resolver seam without the trust graph knowing anything about Bluesky or about how follows are fetched. The module owns only the interpretation (follows are vouches) and the failure policy (a broken follow lookup must not break trust evaluation), while the caller supplies the transport via getFollows and observation via log. Keeping it as a thin, dependency-injected adapter means the trust graph can be exercised with a fake follow source and the same resolver can later be backed by a cache, a PDS, or an indexer."
+- added `r.conform-to-vouch-resolver` (SHOULD): "The returned object should satisfy the VouchResolver contract from lib/abc/trust-graph/mod.ts so the module stays a drop-in implementation of that ABC interface and callers depend only on the abstraction."
+- added `r.export-factory` (MUST): "The module must export createBskyMutualsVouchResolver, a factory taking BskyMutualsVouchResolverOpts and returning a VouchResolver with getVouchedDids and isVouched, so the Bluesky follow graph can be supplied to the trust graph as a resolver."
+- added `r.fail-soft-on-lookup-error` (MUST): "A rejected getFollows must never propagate: getVouchedDids must catch it and return an empty Set, and isVouched must catch it and return false, so an unreachable follow source degrades to no-vouch instead of failing the caller."
+- added `r.is-vouched-membership` (MUST): "isVouched(voucher, vouchee) must await getFollows(voucher) and report whether the resulting Set contains vouchee, so a vouch holds exactly when the voucher follows the vouchee."
+- added `r.log-optional-noop-default` (MUST): "When opts.log is absent the resolver must fall back to a no-op logger so logging is never required and never throws, while a supplied log is called directly with (level, msg, meta)."
+- added `r.opts-get-follows-required` (MUST): "BskyMutualsVouchResolverOpts must require a getFollows(actor: string): Promise<Set<string>> member, which is the sole source of vouch data, and may accept an optional log(level, msg, meta?) member; the resolver destructures both from its options argument."
+- added `r.package-manifest` (MAY): "The package may carry a lib/trust-graph-bsky-mutuals/deno.json manifest declaring its module metadata, which the code index does not treat as source."
+- added `r.vouched-dids-are-follows` (MUST): "getVouchedDids(did) must return the Set produced by getFollows(did) unchanged, treating the actor's follow set as exactly the set of DIDs that actor vouches for."
+- added `r.warn-log-on-error` (MUST): "On a caught lookup error the resolver must log level "warn" with the message "bsky-mutuals follow lookup failed" and metadata carrying the actor DID (the did argument for getVouchedDids, the voucher for isVouched) plus the error stringified via String(err)."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance |
@@ -1144,5 +1157,6 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-operator-discovery-badge-blue-keys-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-requester-xrpc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-secrets-oidc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-trust-graph-bsky-mutuals-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-trust-graph-bsky-mutuals-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-trust-graph-tangled-graph-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-utils-attestation-key-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
