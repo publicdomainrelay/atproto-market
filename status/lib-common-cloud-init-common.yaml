@@ -1,7 +1,7 @@
-observedCommit: 1e1cd3c58d5d52ccc1910f033eb41dc978dfdbc2
-syncedCommit: 1e1cd3c58d5d52ccc1910f033eb41dc978dfdbc2
-syncedFingerprint: f313f2e2b9219e2bd28ab6f245df7577376824414839c2ab3795a38b266cdc4c
-realizedSpecHash: f6cdd5199a78a60091abb94182b9343dd23821e0cc99facce7a5ac04b4fe7b4e
+observedCommit: a15d9cdab92c38dfb523398231ab0344f6d06909
+syncedCommit: a15d9cdab92c38dfb523398231ab0344f6d06909
+syncedFingerprint: f1df3e4b14bbd7ffaab569337e29facbb2d496946eca2de28568c72e2e310342
+realizedSpecHash: 0c1bd2c5dcde6bfcb503dac4cb3d700db7ab6a4cd1e2fbc63e300251371773c4
 conditions:
 - type: CodeSynced
   status: "False"
@@ -31,47 +31,47 @@ observed:
   - name: TunnelCloudInitContext
     kind: interface
     file: lib/common/cloud-init-common/mod.ts
-    line: 72
-    codegraphId: interface:10a15e4341c76e7c8c9d8396df484bb7
+    line: 71
+    codegraphId: interface:4dd396d02d0395bd6db6013daf5b7e39
   - name: WriteFileEntry
     kind: interface
     file: lib/common/cloud-init-common/mod.ts
-    line: 87
-    codegraphId: interface:1e1823b52b02c0660cba8385871c05e9
+    line: 86
+    codegraphId: interface:b91c269f41d7e3d696ce538f83ee9305
   - name: UserDataPatch
     kind: interface
     file: lib/common/cloud-init-common/mod.ts
-    line: 96
-    codegraphId: interface:33d4c92b2cd53743595391dae5ced5f5
+    line: 95
+    codegraphId: interface:1428c9f2922b1657bb39eef71dd7aa5d
   - name: UserDataModule
     kind: type_alias
     file: lib/common/cloud-init-common/mod.ts
-    line: 109
-    codegraphId: type_alias:6e54dc375f73d3c3e7308fae90f1d786
+    line: 108
+    codegraphId: type_alias:1c122be13d716b6fba19e6a5ec2e8f11
   - name: flattenLabel
     kind: function
     signature: '(s: string): string'
     file: lib/common/cloud-init-common/mod.ts
-    line: 112
-    codegraphId: function:91109927e406bbb83931911c21d9e32a
+    line: 111
+    codegraphId: function:01307f3439d4b76f5bfc174dde2583a9
   - name: registerUserDataModule
     kind: function
     signature: '(id: string, m: UserDataModule): void'
     file: lib/common/cloud-init-common/mod.ts
-    line: 123
-    codegraphId: function:881cbcdcc63c1b71db29810965464c11
+    line: 122
+    codegraphId: function:53f5bb0040b7d369029fd8bca511a0db
   - name: getUserDataModules
     kind: function
     signature: '(ids: Array<string | UserDataModule>): UserDataModule[]'
     file: lib/common/cloud-init-common/mod.ts
-    line: 128
-    codegraphId: function:1e95bb6ea8915b9f5ba83dc886796445
+    line: 127
+    codegraphId: function:3f68e24ba719a41c1948c008335e110e
   - name: listUserDataModules
     kind: function
     signature: '(): string[]'
     file: lib/common/cloud-init-common/mod.ts
-    line: 137
-    codegraphId: function:5b4243197b6fc01e7613665b045a419a
+    line: 136
+    codegraphId: function:1796ee277ea051578f5da6a5844f5ccc
   - name: buildUserData
     kind: function
     signature: |-
@@ -82,8 +82,8 @@ observed:
         overrides?: Partial<UserDataPatch>;
       }): string
     file: lib/common/cloud-init-common/mod.ts
-    line: 210
-    codegraphId: function:abdc82dd14921cdce8ae29819e706996
+    line: 209
+    codegraphId: function:60926b54e4c29025add7657a3bd604f5
   - name: acceptBundleModule
     kind: function
     signature: |-
@@ -92,24 +92,24 @@ observed:
         bundle: Record<string, unknown>,
       ): UserDataModule
     file: lib/common/cloud-init-common/mod.ts
-    line: 230
-    codegraphId: function:e30d33d17e4979ea0cda5962c97432fb
+    line: 229
+    codegraphId: function:0e368f0b0439ab6ea272f375c267a4f5
   - name: buildDefaultUserData
     kind: function
     signature: '(ctx: CloudInitContext): string'
     file: lib/common/cloud-init-common/mod.ts
-    line: 1077
-    codegraphId: function:4a2114985299a051d4d3b765e1ceed2b
+    line: 1074
+    codegraphId: function:bf09d2a1b8445d2bd46dad4edba1e783
   - name: buildTunnelUserData
     kind: function
     signature: '(ctx: TunnelCloudInitContext): string'
     file: lib/common/cloud-init-common/mod.ts
-    line: 1085
-    codegraphId: function:6426721042d437e4ae5164f6f8247ad2
+    line: 1082
+    codegraphId: function:41c63d48d669bfcfa64e81ffdc519b94
   - name: injectJsrUrl
     kind: function
     signature: '(userData: string, jsrUrl: string): string'
     file: lib/common/cloud-init-common/mod.ts
-    line: 1090
-    codegraphId: function:e2a3490282c22c6873b46b4989033e78
-  fingerprint: f313f2e2b9219e2bd28ab6f245df7577376824414839c2ab3795a38b266cdc4c
+    line: 1087
+    codegraphId: function:53bf485b8d6c0e9c01d9d55d93d51dfa
+  fingerprint: f1df3e4b14bbd7ffaab569337e29facbb2d496946eca2de28568c72e2e310342

@@ -792,17 +792,17 @@ system_contexts:
     level: MUST
   codeRefIndex:
   - file:lib/common/cloud-init-common/mod.ts mod.ts@lib/common/cloud-init-common/mod.ts
-  - function:1e95bb6ea8915b9f5ba83dc886796445 getUserDataModules@lib/common/cloud-init-common/mod.ts:128
-  - function:5b4243197b6fc01e7613665b045a419a listUserDataModules@lib/common/cloud-init-common/mod.ts:137
-  - function:881cbcdcc63c1b71db29810965464c11 registerUserDataModule@lib/common/cloud-init-common/mod.ts:123
-  - function:91109927e406bbb83931911c21d9e32a flattenLabel@lib/common/cloud-init-common/mod.ts:112
-  - function:abdc82dd14921cdce8ae29819e706996 buildUserData@lib/common/cloud-init-common/mod.ts:210
-  - function:e30d33d17e4979ea0cda5962c97432fb acceptBundleModule@lib/common/cloud-init-common/mod.ts:230
+  - function:01307f3439d4b76f5bfc174dde2583a9 flattenLabel@lib/common/cloud-init-common/mod.ts:111
+  - function:0e368f0b0439ab6ea272f375c267a4f5 acceptBundleModule@lib/common/cloud-init-common/mod.ts:229
+  - function:1796ee277ea051578f5da6a5844f5ccc listUserDataModules@lib/common/cloud-init-common/mod.ts:136
+  - function:3f68e24ba719a41c1948c008335e110e getUserDataModules@lib/common/cloud-init-common/mod.ts:127
+  - function:53f5bb0040b7d369029fd8bca511a0db registerUserDataModule@lib/common/cloud-init-common/mod.ts:122
+  - function:60926b54e4c29025add7657a3bd604f5 buildUserData@lib/common/cloud-init-common/mod.ts:209
   - interface:0bccaee64ad56c10f80842c828570d30 CloudInitContext@lib/common/cloud-init-common/mod.ts:16
-  - interface:10a15e4341c76e7c8c9d8396df484bb7 TunnelCloudInitContext@lib/common/cloud-init-common/mod.ts:72
-  - interface:1e1823b52b02c0660cba8385871c05e9 WriteFileEntry@lib/common/cloud-init-common/mod.ts:87
-  - interface:33d4c92b2cd53743595391dae5ced5f5 UserDataPatch@lib/common/cloud-init-common/mod.ts:96
-  - type_alias:6e54dc375f73d3c3e7308fae90f1d786 UserDataModule@lib/common/cloud-init-common/mod.ts:109
+  - interface:1428c9f2922b1657bb39eef71dd7aa5d UserDataPatch@lib/common/cloud-init-common/mod.ts:95
+  - interface:4dd396d02d0395bd6db6013daf5b7e39 TunnelCloudInitContext@lib/common/cloud-init-common/mod.ts:71
+  - interface:b91c269f41d7e3d696ce538f83ee9305 WriteFileEntry@lib/common/cloud-init-common/mod.ts:86
+  - type_alias:1c122be13d716b6fba19e6a5ec2e8f11 UserDataModule@lib/common/cloud-init-common/mod.ts:108
 - id: sc.lib-common-compute-contract-gateway-common
   name: lib-common-compute-contract-gateway-common
   spec: specs/lib-common-compute-contract-gateway-common.yaml
