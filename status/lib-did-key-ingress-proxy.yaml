@@ -36,7 +36,7 @@ observed:
     signature: '(lxm: string): Promise<string>'
   treeFiles:
   - lib/did-key-ingress-proxy/deno.json
-observedCommit: b807bd49b14ab808f967efc8bd2d2a76bceacb7a
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
 realizedSpecHash: 5c6086004314431e2da56212b552defffcf4be24c009fadeae9641834cf083f7
 syncedCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
 syncedFingerprint: e28e67f6737f8c55bb366814adcf8bd94e1c9319f609707b7d811b74b5ef067c
