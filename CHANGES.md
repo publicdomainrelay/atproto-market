@@ -840,6 +840,19 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.rfp-route` (MUST): "When handlers.rfp is supplied, the factory registers POST /xrpc/SUBmit_RFP_NSID built from createSubmitRfpHandler with the deps, the rfp callbacks, and handlers.rfpScopeFilter as acceptScopeFilter; when handlers.rfp is absent the route is not registered at all."
 - added `r.verify-route` (MUST): "The verify route is registered unconditionally as GET /xrpc/NETWORK_ATTESTED_VERIFY_NSID, using a createVerifyHandler configured with deps.idResolver, a did:key resolver from createDidKeyResolver(), and deps.log."
 
+### lib-hono-factory-market-settlement-x402
+
+- intent: "" -> "This context exists to bind the x402 settlement server logic to an HTTP surface: it is the Hono factory layer that turns the path-parsing and receipt-minting helpers into a route mounted by the application, while keeping agent, resolver, signer and payment middleware injected by the caller rather than hard-coded."
+- added `r.config-optional-overrides` (MAY): "X402SettlementConfig may carry an optional log of type Logger, an optional path string, and an optional paymentMiddleware of type MiddlewareHandler; when log is absent it defaults to noopLog and when path is absent it defaults to "x402/receipt"."
+- added `r.config-required-dependencies` (MUST): "X402SettlementConfig must require getAgent returning an Agent, resolve of type RecordResolver, and getSigner returning a RecordSigner, so receipt minting always has an agent, a resolver and a signer supplied by the caller."
+- added `r.env-variables` (MUST): "X402SettlementEnv must declare Hono Variables carrying an agent of type Agent and a resolve of type RecordResolver, so handlers can read the agent and resolver from the request context."
+- added `r.factory-returns-hono-factory` (MUST): "createX402SettlementFactory must accept an X402SettlementConfig and return a factory over X402SettlementEnv via createFactory, so the returned value can be mounted by the host application."
+- added `r.json-response` (MUST): "The handler must respond with c.json containing the minted receipt's uri and cid."
+- added `r.logging` (MUST): "The handler must log an informational "x402 receipt requested" entry carrying acceptsUri and acceptsCid before minting, and an informational "receipts.x402 minted" entry carrying the minted uri and cid afterwards."
+- added `r.mint-receipt` (MUST): "The handler must mint the receipt by calling mintReceiptForAccepts with the current agent from getAgent(), the configured resolve, the parsed acceptsUri and acceptsCid, and the signer from getSigner()."
+- added `r.payment-middleware-mount` (MUST): "When paymentMiddleware is provided, the factory must apply it with app.use on /<path>/* so every request under the configured path passes through payment handling before the receipt handler runs."
+- added `r.receipt-get-route` (MUST): "The factory must register a GET handler on /<path>/* that parses the request path with parseReceiptPath against the "<path>/" prefix into acceptsUri and acceptsCid, and that parsing plus the subsequent mint determine the response."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance |
@@ -909,4 +922,4 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-hono-factory-market-atproto-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-hono-factory-market-settlement-free-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Failed |  | 0 | - |
 | lib-hono-factory-market-settlement-free-c2s-d20070c3bfb0-d20070c3bfb0-a2 | CodeToSpec | Running |  | 0 | - |
-| lib-hono-factory-market-settlement-x402-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-hono-factory-market-settlement-x402-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
