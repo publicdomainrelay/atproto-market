@@ -167,3 +167,43 @@ system_contexts:
   id: sc.lib-atproto-oauth-helpers
   name: lib-atproto-oauth-helpers
   upstream: self
+- code:
+  - lib/cocore-api/mod.ts
+  codeRefIndex:
+  - file:lib/cocore-api/mod.ts mod.ts@lib/cocore-api/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-cocore-api
+  name: lib-cocore-api
+  upstream: self
+- code:
+  - lib/common/cloud-init-common/mod.ts
+  codeRefIndex:
+  - file:lib/common/cloud-init-common/mod.ts mod.ts@lib/common/cloud-init-common/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-cloud-init-common
+  name: lib-common-cloud-init-common
+  upstream: self
+- code:
+  - lib/common/compute-contract-gateway-common/mod.ts
+  - lib/common/compute-contract-gateway-common/nsids.ts
+  - lib/common/compute-contract-gateway-common/types.ts
+  codeRefIndex:
+  - file:lib/common/compute-contract-gateway-common/mod.ts mod.ts@lib/common/compute-contract-gateway-common/mod.ts
+  - file:lib/common/compute-contract-gateway-common/nsids.ts nsids.ts@lib/common/compute-contract-gateway-common/nsids.ts
+  - file:lib/common/compute-contract-gateway-common/types.ts types.ts@lib/common/compute-contract-gateway-common/types.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-compute-contract-gateway-common
+  name: lib-common-compute-contract-gateway-common
+  upstream: self
+- code:
+  - lib/common/fedproxy-rbac-common/mod.ts
+  codeRefIndex:
+  - file:lib/common/fedproxy-rbac-common/mod.ts mod.ts@lib/common/fedproxy-rbac-common/mod.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-fedproxy-rbac-common
+  name: lib-common-fedproxy-rbac-common
+  upstream: self

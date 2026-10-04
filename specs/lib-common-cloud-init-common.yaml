@@ -1,0 +1,12 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/common/cloud-init-common/mod.ts mod.ts@lib/common/cloud-init-common/mod.ts
+kind: SystemContext
+metadata:
+  name: lib-common-cloud-init-common
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

@@ -1,0 +1,12 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/common/fedproxy-rbac-common/mod.ts mod.ts@lib/common/fedproxy-rbac-common/mod.ts
+kind: SystemContext
+metadata:
+  name: lib-common-fedproxy-rbac-common
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self
