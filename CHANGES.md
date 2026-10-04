@@ -1179,9 +1179,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-atproto-oauth-helpers-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-cocore-api-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-common-cloud-init-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-common-cloud-init-common-s2c-066cde23d162 | SpecToCode | Failed |  | 1 | - |
-| lib-common-cloud-init-common-s2c-066cde23d162-a2 | SpecToCode | Failed |  | 1 | - |
-| lib-common-cloud-init-common-s2c-066cde23d162-a3 | SpecToCode | Failed |  | 1 | - |
+| lib-common-cloud-init-common-s2c-066cde23d162 | SpecToCode | Pending |  | 0 | - |
 | lib-common-compute-contract-gateway-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-common-fedproxy-rbac-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-common-market-common-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
