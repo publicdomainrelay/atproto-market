@@ -43,7 +43,9 @@ spec:
   systemContext: test-fixtures-cloud-init
   toSpecHash: 5bdeb2bf7f6b155cebc82b79f8d5cefd212dfa4806f336a963ff841a4f118185
 status:
-  phase: Pending
+  message: the agent is realizing test-fixtures-cloud-init in a batch of 9 led by
+    lib-abc-requester
+  phase: Running
 superseded:
 - message: "...ou mean to write 'rbacProvisioner'?\n      oidcProvisioner: createOidcProvisioningEnricher(()
     => relay.ingressUrl),\n\e[0m\e[31m      ~~~~~~~~~~~~~~~\e[0m\n    at \e[0m\e[36mfile:///tmp/specd-worktree-877206667/atproto-market/hono-bidder/mod.ts\e[0m:\e[0m\e[33m495\e[0m:\e[0m\e[33m7\e[0m\n\n\e[0m\e[1mTS2353

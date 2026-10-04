@@ -45,7 +45,9 @@ spec:
   systemContext: lib-did-key-ingress-proxy
   toSpecHash: 5c6086004314431e2da56212b552defffcf4be24c009fadeae9641834cf083f7
 status:
-  phase: Pending
+  message: the agent is realizing lib-did-key-ingress-proxy in a batch of 9 led by
+    lib-abc-requester
+  phase: Running
 superseded:
 - message: "...ou mean to write 'rbacProvisioner'?\n      oidcProvisioner: createOidcProvisioningEnricher(()
     => relay.ingressUrl),\n\e[0m\e[31m      ~~~~~~~~~~~~~~~\e[0m\n    at \e[0m\e[36mfile:///tmp/specd-worktree-877206667/atproto-market/hono-bidder/mod.ts\e[0m:\e[0m\e[33m495\e[0m:\e[0m\e[33m7\e[0m\n\n\e[0m\e[1mTS2353

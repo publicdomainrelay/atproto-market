@@ -48,7 +48,9 @@ spec:
   systemContext: lib-market-bidder-compute
   toSpecHash: e583cca0ffebd750bcc8b7e87dc7dfb3ad0b34d6dfd595b6be0c34b56930220e
 status:
-  phase: Pending
+  message: the agent is realizing lib-market-bidder-compute in a batch of 9 led by
+    lib-abc-requester
+  phase: Running
 superseded:
 - message: "...ou mean to write 'rbacProvisioner'?\n      oidcProvisioner: createOidcProvisioningEnricher(()
     => relay.ingressUrl),\n\e[0m\e[31m      ~~~~~~~~~~~~~~~\e[0m\n    at \e[0m\e[36mfile:///tmp/specd-worktree-877206667/atproto-market/hono-bidder/mod.ts\e[0m:\e[0m\e[33m495\e[0m:\e[0m\e[33m7\e[0m\n\n\e[0m\e[1mTS2353

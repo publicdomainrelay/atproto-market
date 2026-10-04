@@ -26,7 +26,8 @@ spec:
   systemContext: test
   toSpecHash: 02610595978aabda028e0ae82f7b959d79a6436bcfc68ec0dbfb5063a01283b9
 status:
-  phase: Pending
+  message: the agent is realizing test in a batch of 9 led by lib-abc-requester
+  phase: Running
 superseded:
 - message: "...ou mean to write 'rbacProvisioner'?\n      oidcProvisioner: createOidcProvisioningEnricher(()
     => relay.ingressUrl),\n\e[0m\e[31m      ~~~~~~~~~~~~~~~\e[0m\n    at \e[0m\e[36mfile:///tmp/specd-worktree-877206667/atproto-market/hono-bidder/mod.ts\e[0m:\e[0m\e[33m495\e[0m:\e[0m\e[33m7\e[0m\n\n\e[0m\e[1mTS2353
