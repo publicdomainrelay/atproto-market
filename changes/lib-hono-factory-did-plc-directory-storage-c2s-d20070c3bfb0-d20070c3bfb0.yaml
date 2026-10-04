@@ -10,5 +10,16 @@ spec:
   systemContext: lib-hono-factory-did-plc-directory-storage
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-hono-factory-did-plc-directory-storage
-  phase: Running
+  agentLog: 'This context is the storage layer of the Hono PLC directory factory:
+    a single TypeScript file, lib/hono-factory-did-plc-directory/storage/plc-store.ts,
+    that defines the PlcStore port and its only adapter, MemoryPlcStore. PlcStore
+    declares six async operations over per-DID operation logs — read the current (non-nullified)
+    ops, read the full audit log, fetch one op by CID, insert an op, nullify a set
+    of CIDs, and export logs globally. MemoryPlcStore implements the port on top of
+    an in-process Map keyed by DID and holding ordered arrays of LogEntry records,
+    mutating entries in place when they are nullified. The interface is consumed by
+    the surrounding factory, handlers, and mod modules (PlcDirectoryOptions, PlcDirectoryFactory,
+    HandlerDeps), which call getCurrentOps for resolution and log reads, getAuditLog
+    for the audit endpoint, and insertOp/nullifyOps on writes.'
+  message: wrote 8 requirement(s) and 8 interface(s) for lib-hono-factory-did-plc-directory-storage
+  phase: Succeeded

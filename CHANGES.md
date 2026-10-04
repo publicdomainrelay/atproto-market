@@ -817,6 +817,18 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.signature-verification` (MUST): "verifyOperationSignature takes a PlcOp or TombstoneOp, the signer DID and an injected verifySig callback, and resolves to a boolean indicating whether the operation's signature is valid for that signer, keeping the cryptographic primitive outside the library."
 - added `r.structure-validation` (MUST): "validateOperationStructure takes an unknown operation and returns a string describing the structural problem, or null when the operation is well formed, so callers can reject malformed operations before any cryptographic work."
 
+### lib-hono-factory-did-plc-directory-storage
+
+- intent: "" -> "The context exists to separate the PLC directory's persistence contract from its transport: handlers depend on the PlcStore interface rather than a concrete database, so a durable backend can be swapped in without touching routing, and MemoryPlcStore supplies a zero-dependency implementation for tests and local development. It fixes the semantics each operation must satisfy — current ops exclude nullified entries, the audit log retains them, CID lookup returns null rather than throwing on a miss, nullification is a flag flip rather than a delete, and export is a globally time-ordered, optionally counted scan across every DID."
+- added `r.audit-log-retains-nullified` (MUST): "getAuditLog must return every entry recorded for the DID, including entries nullified by nullifyOps, and must return an empty array for an unknown DID so the audit trail is never narrowed by later writes."
+- added `r.current-ops-exclude-nullified` (MUST): "getCurrentOps must return only the entries for the given DID whose nullified flag is falsy, and must return an empty array for an unknown DID rather than null or a throw."
+- added `r.export-logs-ordering-and-paging` (MUST): "exportLogs must scan the logs of all DIDs, skip entries whose createdAt is at or before the optional after date, sort the remainder ascending by createdAt, and, when count is supplied, return only the first count entries; with no arguments it returns every entry across every DID."
+- added `r.insert-op-appends` (MUST): "insertOp must append the entry to the log of the DID named by the entry itself, creating that DID's array when it does not yet exist, and must preserve insertion order so later reads see entries in the order they arrived."
+- added `r.memory-implements-port` (MUST): "MemoryPlcStore must implement PlcStore, holding operation logs in an in-memory map keyed by DID whose values are ordered arrays of LogEntry records."
+- added `r.nullify-marks-in-place` (MUST): "nullifyOps must set the nullified flag on every entry of the DID whose CID appears in the supplied list, leaving entries with other CIDs untouched, and must return without error when the DID is unknown."
+- added `r.op-by-cid-lookup` (MUST): "getOpByCid must return the first entry recorded for the DID whose cid equals the requested CID, regardless of whether that entry is nullified, and must return null when the DID is unknown or no entry matches."
+- added `r.store-port` (MUST): "PlcStore must declare exactly six asynchronous operations over per-DID operation logs — getCurrentOps, getAuditLog, getOpByCid, insertOp, nullifyOps, and exportLogs — all delivering LogEntry values, so that consumers depend on the port and not on a concrete backend."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance |
@@ -882,5 +894,6 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-guest-capability-secrets-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-hono-factory-compute-contract-gateway-xrpc-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-hono-factory-did-plc-directory-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| lib-hono-factory-did-plc-directory-storage-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-hono-factory-did-plc-directory-storage-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | lib-hono-factory-market-atproto-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| lib-hono-factory-market-settlement-free-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
