@@ -1,5 +1,10 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
 codeRefIndex:
+- class:33b7d068752c38948075552d9cef40eb PlcNotFoundError@lib/did-plc/client.ts:52
+- class:8a857a0ac52fbb0a4da6a57b447664ec PlcInvalidOperationError@lib/did-plc/client.ts:66
+- class:9b6ece3d7112f0cf0be907735c5f3d5a PlcTombstonedError@lib/did-plc/client.ts:59
+- class:a02218cd093a941f85749da7960298a5 PlcError@lib/did-plc/client.ts:42
+- class:ca276d9a71683fdf566bcdf5fb46e47c PlcClient@lib/did-plc/client.ts:131
 - file:lib/did-plc/client.ts client.ts@lib/did-plc/client.ts
 - file:lib/did-plc/fixup-openapi.ts fixup-openapi.ts@lib/did-plc/fixup-openapi.ts
 - file:lib/did-plc/genesis.ts genesis.ts@lib/did-plc/genesis.ts
@@ -9,6 +14,36 @@ codeRefIndex:
 - file:lib/did-plc/openapi.official.yaml openapi.official.yaml@lib/did-plc/openapi.official.yaml
 - file:lib/did-plc/resolver.ts resolver.ts@lib/did-plc/resolver.ts
 - file:lib/did-plc/types.ts types.ts@lib/did-plc/types.ts
+- function:3a3751439dd48106c07530ecb7436c23 plcClientAsKeyResolver@lib/did-plc/resolver.ts:77
+- function:3b90763d12a0a4c3f820e3c6672dc372 keysFromDidDocument@lib/did-plc/resolver.ts:22
+- function:689a9b51d2e09d093defe4dfd3db3deb loadKeypairState@lib/did-plc/keypair-state.ts:17
+- function:8da01723383daa387c12dc941628b9a7 createGenesisOp@lib/did-plc/genesis.ts:63
+- function:a44d36ee0dc159bf2beed768aaff1e61 createPlcKeyResolver@lib/did-plc/resolver.ts:54
+- function:c4d5a623ba103c6f42dd447f82559553 saveKeypairState@lib/did-plc/keypair-state.ts:37
+- function:e49cc4a90e023dc47d5a2d109f1d2f08 createPlcDirectoryClient@lib/did-plc/client.ts:340
+- interface:4c23cbfe2fc6db60fea7fe843a47a8f6 GenesisOptions@lib/did-plc/genesis.ts:21
+- interface:4f51012b3df9c0dc5b7b93dc7b0249ba PlcService@lib/did-plc/types.ts:51
+- interface:5998a6ebd292373230c747dba056be85 GenesisResult@lib/did-plc/genesis.ts:43
+- interface:d1adb282179ee1bc93186f577980da48 PlcKeyResolverOptions@lib/did-plc/resolver.ts:31
+- interface:d20f19dc21ed3a83a1714e5dd722b53e HealthResponse@lib/did-plc/types.ts:65
+- interface:d759a391fe304d866db88c324e3e12bc PlcClientOptions@lib/did-plc/client.ts:120
+- interface:da65aed4a72e5d371a6f16031aa0ef83 ExportOptions@lib/did-plc/types.ts:57
+- interface:df8391de25b80908a518669067a0216c KeypairState@lib/did-plc/keypair-state.ts:3
+- method:21f0cc8824e1b4f6b3504c835e87cf1d PlcClient.getAuditLog@lib/did-plc/client.ts:210
+- method:3eb76e760f6161e2133b61ae52ba09e2 PlcError.constructor@lib/did-plc/client.ts:43
+- method:4a87ed875b87c760b18994d50d1b79d5 PlcInvalidOperationError.constructor@lib/did-plc/client.ts:67
+- method:56dc0a2c422513844c595e8ec9a9b661 PlcNotFoundError.constructor@lib/did-plc/client.ts:53
+- method:6265c2659cccf561f5f79d7c67669548 PlcClient.submitOp@lib/did-plc/client.ts:252
+- method:72c360d1837be5bb5dcfa1140fa19cc7 PlcTombstonedError.constructor@lib/did-plc/client.ts:60
+- method:72f0f2fbb2ecf38e70ef7708ae62c81b PlcClient.exportPages@lib/did-plc/client.ts:325
+- method:7a27bfcb60ada39f3859bf8cd78c6fed PlcClient.getData@lib/did-plc/client.ts:238
+- method:934b52fe49087234488561a3e9fa265c PlcClient.health@lib/did-plc/client.ts:269
+- method:a608364390c07ffbcb4053df02e4f50c PlcClient.resolve@lib/did-plc/client.ts:182
+- method:a8b2aede97428a79b7847a31740b5845 PlcClient.export@lib/did-plc/client.ts:283
+- method:acc069a9598f75909843cc79e05f199d PlcClient.getLastOp@lib/did-plc/client.ts:224
+- method:ccfc740ff0345ec11783cafe8b0545c9 PlcClient.constructor@lib/did-plc/client.ts:137
+- method:f049cdcb1705123200f64a903d8d30bf PlcClient.getLog@lib/did-plc/client.ts:196
+- type_alias:cda4456d40f40308bc05b5e1f3d08229 KeysForDid@lib/did-plc/resolver.ts:15
 kind: SystemContext
 metadata:
   name: lib-did-plc
@@ -16,5 +51,337 @@ metadata:
 spec:
   dependsOn:
   - sc.atproto-market
+  intent: 'This context exists so the rest of atproto-market has one typed, runtime-portable
+    way to talk to the PLC directory and to reason about did:plc identities: resolving
+    DID documents and operation logs, submitting signed operations, deriving a new
+    did:plc from a genesis op, and turning a DID document into the verification keys
+    that attestation code needs. It isolates the awkward parts of the official OpenAPI
+    client (Deno/`Request` incompatibility, JSON Lines export responses, status-code-to-error
+    mapping) behind a small stable surface so callers such as the attestation/verification
+    code, PDS setup, and CLI tooling never touch the generated SDK directly.'
+  interfaces:
+  - file: lib/did-plc/types.ts
+    kind: interface
+    name: ExportOptions
+    signature: 'interface ExportOptions { after?: string; count?: number }'
+  - file: lib/did-plc/genesis.ts
+    kind: interface
+    name: GenesisOptions
+    signature: 'interface GenesisOptions { rotationKeys: string[]; verificationMethods?:
+      Record<string, string>; alsoKnownAs?: string[]; services?: Record<string, PlcService>
+      | ((preliminaryDid: string) => Record<string, PlcService>); sign: (bytes: Uint8Array)
+      => Promise<Uint8Array> }'
+  - file: lib/did-plc/genesis.ts
+    kind: interface
+    name: GenesisResult
+    signature: 'interface GenesisResult { did: string; op: Operation }'
+  - file: lib/did-plc/types.ts
+    kind: interface
+    name: HealthResponse
+    signature: 'interface HealthResponse { version: string }'
+  - file: lib/did-plc/keypair-state.ts
+    kind: interface
+    name: KeypairState
+    signature: 'interface KeypairState { privateKeyHex: string; didPlc: string; createdAt:
+      string }'
+  - file: lib/did-plc/resolver.ts
+    kind: type_alias
+    name: KeysForDid
+    signature: 'type KeysForDid = (did: string) => Promise<string[]>'
+  - file: lib/did-plc/client.ts
+    kind: class
+    name: PlcClient
+    signature: class PlcClient
+  - file: lib/did-plc/client.ts
+    kind: method
+    name: PlcClient.constructor
+    signature: 'constructor(opts: PlcClientOptions = {})'
+  - file: lib/did-plc/client.ts
+    kind: method
+    name: PlcClient.export
+    signature: 'export(opts: ExportOptions = {}): Promise<LogEntry[]>'
+  - file: lib/did-plc/client.ts
+    kind: method
+    name: PlcClient.exportPages
+    signature: 'exportPages(pageSize = 1000): AsyncGenerator<LogEntry[]>'
+  - file: lib/did-plc/client.ts
+    kind: method
+    name: PlcClient.getAuditLog
+    signature: 'getAuditLog(did: string): Promise<LogEntry[]>'
+  - file: lib/did-plc/client.ts
+    kind: method
+    name: PlcClient.getData
+    signature: 'getData(did: string): Promise<unknown>'
+  - file: lib/did-plc/client.ts
+    kind: method
+    name: PlcClient.getLastOp
+    signature: 'getLastOp(did: string): Promise<Operation>'
+  - file: lib/did-plc/client.ts
+    kind: method
+    name: PlcClient.getLog
+    signature: 'getLog(did: string): Promise<Operation[]>'
+  - file: lib/did-plc/client.ts
+    kind: method
+    name: PlcClient.health
+    signature: 'health(): Promise<HealthResponse>'
+  - file: lib/did-plc/client.ts
+    kind: method
+    name: PlcClient.resolve
+    signature: 'resolve(did: string): Promise<DidDocument>'
+  - file: lib/did-plc/client.ts
+    kind: method
+    name: PlcClient.submitOp
+    signature: 'submitOp(did: string, op: Operation): Promise<void>'
+  - file: lib/did-plc/client.ts
+    kind: interface
+    name: PlcClientOptions
+    signature: 'interface PlcClientOptions { baseUrl?: string; timeout?: number; fetch?:
+      typeof globalThis.fetch }'
+  - file: lib/did-plc/client.ts
+    kind: class
+    name: PlcError
+    signature: class PlcError extends Error
+  - file: lib/did-plc/client.ts
+    kind: method
+    name: PlcError.constructor
+    signature: 'constructor(status: number, message: string)'
+  - file: lib/did-plc/client.ts
+    kind: class
+    name: PlcInvalidOperationError
+    signature: class PlcInvalidOperationError extends PlcError
+  - file: lib/did-plc/client.ts
+    kind: method
+    name: PlcInvalidOperationError.constructor
+    signature: 'constructor(message: string)'
+  - file: lib/did-plc/resolver.ts
+    kind: interface
+    name: PlcKeyResolverOptions
+    signature: 'interface PlcKeyResolverOptions extends PlcClientOptions { cache?:
+      boolean }'
+  - file: lib/did-plc/client.ts
+    kind: class
+    name: PlcNotFoundError
+    signature: class PlcNotFoundError extends PlcError
+  - file: lib/did-plc/client.ts
+    kind: method
+    name: PlcNotFoundError.constructor
+    signature: 'constructor(did: string)'
+  - file: lib/did-plc/types.ts
+    kind: interface
+    name: PlcService
+    signature: 'interface PlcService { type: string; endpoint: string }'
+  - file: lib/did-plc/client.ts
+    kind: class
+    name: PlcTombstonedError
+    signature: class PlcTombstonedError extends PlcError
+  - file: lib/did-plc/client.ts
+    kind: method
+    name: PlcTombstonedError.constructor
+    signature: 'constructor(did: string)'
+  - file: lib/did-plc/genesis.ts
+    kind: function
+    name: createGenesisOp
+    signature: 'createGenesisOp(opts: GenesisOptions): Promise<GenesisResult>'
+  - file: lib/did-plc/client.ts
+    kind: function
+    name: createPlcDirectoryClient
+    signature: 'createPlcDirectoryClient(opts: { plcDirectoryUrl: string }): PlcClient'
+  - file: lib/did-plc/resolver.ts
+    kind: function
+    name: createPlcKeyResolver
+    signature: 'createPlcKeyResolver(opts: PlcKeyResolverOptions = {}): KeysForDid'
+  - file: lib/did-plc/resolver.ts
+    kind: function
+    name: keysFromDidDocument
+    signature: 'keysFromDidDocument(doc: DidDocument): string[]'
+  - file: lib/did-plc/keypair-state.ts
+    kind: function
+    name: loadKeypairState
+    signature: 'loadKeypairState(path: string): Promise<KeypairState | null>'
+  - file: lib/did-plc/resolver.ts
+    kind: function
+    name: plcClientAsKeyResolver
+    signature: 'plcClientAsKeyResolver(client: PlcClient, opts: { cache?: boolean
+      } = {}): KeysForDid'
+  - file: lib/did-plc/keypair-state.ts
+    kind: function
+    name: saveKeypairState
+    signature: 'saveKeypairState(path: string, state: KeypairState): Promise<void>'
   repository: atproto-market
+  requirements:
+  - codeRefs:
+    - function:e49cc4a90e023dc47d5a2d109f1d2f08
+    id: r.client-factory
+    level: MUST
+    text: createPlcDirectoryClient must build a PlcClient pointed at the caller-supplied
+      PLC directory URL rather than the public default.
+  - codeRefs:
+    - file:lib/did-plc/client.ts
+    - interface:d759a391fe304d866db88c324e3e12bc
+    - method:ccfc740ff0345ec11783cafe8b0545c9
+    id: r.client-options-defaults
+    level: MUST
+    text: PlcClient must default its base URL to the public PLC directory (trailing
+      slash stripped), default its fetch to the bound global fetch, leave the timeout
+      unset when not supplied, and apply the configured timeout as an AbortSignal
+      on every request it issues.
+  - codeRefs:
+    - method:3eb76e760f6161e2133b61ae52ba09e2
+    - method:4a87ed875b87c760b18994d50d1b79d5
+    - method:56dc0a2c422513844c595e8ec9a9b661
+    - method:72c360d1837be5bb5dcfa1140fa19cc7
+    id: r.error-class-identity
+    level: MUST
+    text: Each error subclass must set its own `name` and pass its fixed HTTP status
+      to the PlcError base, so PlcError exposes a readonly `status` alongside the
+      inherited message.
+  - codeRefs:
+    - interface:da65aed4a72e5d371a6f16031aa0ef83
+    - method:72f0f2fbb2ecf38e70ef7708ae62c81b
+    - method:a8b2aede97428a79b7847a31740b5845
+    id: r.export-pagination
+    level: MUST
+    text: PlcClient.export must page the /export endpoint using the ExportOptions
+      `after` cursor and `count` limit, tolerate both the array shape and the single-object
+      shape the server/spec disagree on, and return an empty array when nothing usable
+      is returned; exportPages must be an async generator that repeatedly calls export
+      with the page size (default 1000), stops on an empty page or a short page, and
+      uses the last entry's createdAt as the next cursor.
+  - codeRefs:
+    - file:lib/did-plc/fixup-openapi.ts
+    - file:lib/did-plc/openapi-ts.config.ts
+    - file:lib/did-plc/openapi.official.yaml
+    id: r.generated-client-provenance
+    level: SHOULD
+    text: The generated OpenAPI client that PlcClient builds on should be produced
+      from the checked-in official PLC OpenAPI document via the openapi-ts configuration
+      and its fixup script, so the generated types stay in sync with the upstream
+      spec.
+  - codeRefs:
+    - function:8da01723383daa387c12dc941628b9a7
+    - interface:4c23cbfe2fc6db60fea7fe843a47a8f6
+    - interface:5998a6ebd292373230c747dba056be85
+    id: r.genesis-derivation
+    level: MUST
+    text: createGenesisOp must build an unsigned plc_operation (rotationKeys, verificationMethods,
+      alsoKnownAs, services, prev null), DAG-CBOR encode it, sign the encoded bytes
+      via the caller-supplied signer, attach the base64url (unpadded, URL-safe) signature,
+      then derive the did:plc identifier as base32-lower of the first 15 bytes of
+      sha256 over the DAG-CBOR encoding of the signed operation, returning both the
+      DID and the ready-to-submit operation.
+  - codeRefs:
+    - function:8da01723383daa387c12dc941628b9a7
+    - interface:4c23cbfe2fc6db60fea7fe843a47a8f6
+    id: r.genesis-two-pass-services
+    level: MUST
+    text: 'When GenesisOptions.services is a function instead of a map, createGenesisOp
+      must run a two-pass derivation: first build with empty services to obtain a
+      preliminary DID, then rebuild with the services that callback returns for that
+      preliminary DID.'
+  - codeRefs:
+    - interface:d20f19dc21ed3a83a1714e5dd722b53e
+    - method:934b52fe49087234488561a3e9fa265c
+    id: r.health-endpoint
+    level: MUST
+    text: PlcClient.health must GET `<baseUrl>/health` with the configured fetch and
+      timeout and return the parsed HealthResponse, throwing PlcError with the response
+      status on a non-ok response; this endpoint has no generated OpenAPI type and
+      must not go through the generated SDK.
+  - codeRefs:
+    - function:3b90763d12a0a4c3f820e3c6672dc372
+    - type_alias:cda4456d40f40308bc05b5e1f3d08229
+    id: r.key-extraction
+    level: MUST
+    text: keysFromDidDocument must return every verificationMethod public key of a
+      DID document as a did:key string, passing through values already prefixed with
+      `did:key:` and prefixing raw multibase values, and returning an empty array
+      when the document has no verificationMethod.
+  - codeRefs:
+    - function:689a9b51d2e09d093defe4dfd3db3deb
+    - function:c4d5a623ba103c6f42dd447f82559553
+    - interface:df8391de25b80908a518669067a0216c
+    id: r.keypair-state-persistence
+    level: MUST
+    text: loadKeypairState must read and JSON-parse a keypair state file, return null
+      when the file does not exist, and throw on malformed JSON or when privateKeyHex,
+      didPlc or createdAt is missing or not a string; saveKeypairState must write
+      the state as pretty-printed JSON to a temp file and rename it into place so
+      the write is atomic.
+  - codeRefs:
+    - file:lib/did-plc/mod.ts
+    id: r.module-exports
+    level: MUST
+    text: mod.ts must be the package's single entrypoint, re-exporting the high-level
+      client, the hand-tuned and generated types, the resolver, genesis and keypair-state
+      modules, and additionally exposing the low-level generated SDK functions and
+      client factory for consumers that want them directly.
+  - codeRefs:
+    - method:21f0cc8824e1b4f6b3504c835e87cf1d
+    - method:7a27bfcb60ada39f3859bf8cd78c6fed
+    - method:a608364390c07ffbcb4053df02e4f50c
+    - method:acc069a9598f75909843cc79e05f199d
+    - method:f049cdcb1705123200f64a903d8d30bf
+    id: r.read-endpoints
+    level: MUST
+    text: 'PlcClient must expose read calls against the PLC directory: resolve a did:plc
+      DID to a DidDocument, fetch the current non-nullified operation chain, fetch
+      the full audit log including nullified operations, fetch only the latest operation,
+      and fetch the DID''s current PLC data, each keyed by DID and rejecting with
+      the mapped error on failure.'
+  - codeRefs:
+    - function:3a3751439dd48106c07530ecb7436c23
+    - function:a44d36ee0dc159bf2beed768aaff1e61
+    - interface:d1adb282179ee1bc93186f577980da48
+    - type_alias:cda4456d40f40308bc05b5e1f3d08229
+    id: r.resolver-cache
+    level: MUST
+    text: createPlcKeyResolver and plcClientAsKeyResolver must return a KeysForDid
+      function that resolves the DID document through a PlcClient and maps it through
+      keysFromDidDocument, memoizing results in an in-memory Map (default on, disableable),
+      and must swallow resolution failures by caching and returning an empty key list
+      rather than rejecting.
+  - codeRefs:
+    - class:ca276d9a71683fdf566bcdf5fb46e47c
+    - file:lib/did-plc/client.ts
+    - method:a608364390c07ffbcb4053df02e4f50c
+    id: r.runtime-detection
+    level: MUST
+    text: PlcClient must detect at module load whether it is running under Deno and,
+      on Deno, bypass the generated SDK functions in favor of direct `_client.get`/`_client.post`
+      calls, because Deno's Request constructor rejects the `client` option the generated
+      SDK spreads into every request; in the browser it must use the generated SDK
+      functions.
+  - codeRefs:
+    - class:33b7d068752c38948075552d9cef40eb
+    - class:8a857a0ac52fbb0a4da6a57b447664ec
+    - class:9b6ece3d7112f0cf0be907735c5f3d5a
+    - class:a02218cd093a941f85749da7960298a5
+    - file:lib/did-plc/client.ts
+    id: r.status-error-mapping
+    level: MUST
+    text: 'An unsuccessful PLC response must be turned into the matching error type:
+      status 404 into PlcNotFoundError, 410 into PlcTombstonedError, 400 into PlcInvalidOperationError,
+      and any other non-ok status into PlcError carrying the numeric status; a failed
+      fetch (no response) must throw PlcError with status 0. The server''s own message
+      must be preferred over the HTTP status text, using the already-parsed generated-client
+      error when available and only falling back to reading the response body when
+      it is not.'
+  - codeRefs:
+    - file:lib/did-plc/client.ts
+    - method:6265c2659cccf561f5f79d7c67669548
+    id: r.submit-op
+    level: MUST
+    text: PlcClient.submitOp must POST a signed Operation to the directory for the
+      given DID and throw the mapped PLC error when the signature is invalid or the
+      prev pointer is wrong.
+  - codeRefs:
+    - file:lib/did-plc/types.ts
+    - interface:4f51012b3df9c0dc5b7b93dc7b0249ba
+    - interface:d20f19dc21ed3a83a1714e5dd722b53e
+    - interface:da65aed4a72e5d371a6f16031aa0ef83
+    id: r.type-augmentation
+    level: SHOULD
+    text: 'types.ts should re-export the generated OpenAPI types while adding the
+      hand-tuned types the spec models loosely: PlcService, the export pagination
+      options, and the health response.'
   upstream: self

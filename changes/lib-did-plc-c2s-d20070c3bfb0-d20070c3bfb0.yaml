@@ -10,5 +10,21 @@ spec:
   systemContext: lib-did-plc
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-did-plc
-  phase: Running
+  agentLog: lib/did-plc is a self-contained TypeScript/Deno package that wraps the
+    AT Protocol PLC directory HTTP API. It ships a `PlcClient` class (with `resolve`,
+    `getLog`, `getAuditLog`, `getLastOp`, `getData`, `submitOp`, `health`, `export`,
+    `exportPages`) that works in both Deno and the browser by detecting the runtime
+    at module load and either calling the generated OpenAPI client directly (Deno,
+    because Deno's `Request` constructor rejects the `client` field the generated
+    SDK spreads) or using the generated SDK functions (browser). It defines a typed
+    error hierarchy (`PlcError` plus `PlcNotFoundError` 404, `PlcTombstonedError`
+    410, `PlcInvalidOperationError` 400) mapped from HTTP status codes, `createGenesisOp`
+    for building and signing a did:plc genesis operation and deriving the DID from
+    the DAG-CBOR hash, DID-document key extraction and caching resolvers (`createPlcKeyResolver`,
+    `plcClientAsKeyResolver`, `keysFromDidDocument`) compatible with the `KeysForDid`
+    type from lib/market/attest.ts, and atomic JSON persistence of a keypair identity
+    (`loadKeypairState`, `saveKeypairState`). `mod.ts` re-exports the high-level API,
+    the hand-tuned types, and the low-level generated SDK, and `fixup-openapi.ts`
+    / `openapi-ts.config.ts` maintain the generated client from `openapi.official.yaml`.
+  message: wrote 17 requirement(s) and 35 interface(s) for lib-did-plc
+  phase: Succeeded
