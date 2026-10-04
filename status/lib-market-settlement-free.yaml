@@ -74,7 +74,7 @@ observed:
       }): Promise<Resolved<ReceiptsFree>>
   treeFiles:
   - lib/market-settlement-free/deno.json
-observedCommit: 857b94a22ea058825611b4f155cdc639e3c0139d
+observedCommit: b296a7ee7c1aae256a81c378b419bf16b3a3aca6
 realizedSpecHash: 7a3ffdf845f5308ba37c74a0308705549b251a1accd1e411338321a1f09bc8af
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 93429871b8e52d2f65cd9070b16c6ff7efdcd2180cdc532b611086b801cc528e

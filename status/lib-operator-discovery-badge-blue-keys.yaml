@@ -35,7 +35,7 @@ observed:
     signature: '(opts: BadgeBlueKeysOperatorDiscoveryOpts): OperatorDiscovery'
   treeFiles:
   - lib/operator-discovery-badge-blue-keys/deno.json
-observedCommit: 857b94a22ea058825611b4f155cdc639e3c0139d
+observedCommit: b296a7ee7c1aae256a81c378b419bf16b3a3aca6
 realizedSpecHash: b8ad37514c014f11e85f44cde81617f0a6ccdce744b2462bdfa47f930becb3d4
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: fa8e9debd81599bb4b301a537e322a66d6dd7e88976705ac4f3cfeebad18b73d
