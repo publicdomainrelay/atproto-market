@@ -74,6 +74,6 @@ observed:
       }): Promise<Resolved<ReceiptsX402>>
   treeFiles:
   - lib/market-settlement-x402/deno.json
-observedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
+observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
 realizedSpecHash: 70ea6aae37be78e4efa96d4d09907f70edbb6a7d5fc854ad3f8d32dfa74957d9
 syncedFingerprint: 3dfea414cf72ae476d8b1a12059db92550e1cecdff85df709b21948550da4fbb
