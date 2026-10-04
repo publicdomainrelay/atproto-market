@@ -20,4 +20,5 @@ spec:
     - -r.teardown-restores-fetch
     - ~r.iroh-private-ticket-report-tested
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is realizing test in a batch of 3 led by lib-common-cloud-init-common
