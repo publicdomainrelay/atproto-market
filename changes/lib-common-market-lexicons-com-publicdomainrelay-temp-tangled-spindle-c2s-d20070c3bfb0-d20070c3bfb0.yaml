@@ -10,5 +10,16 @@ spec:
   systemContext: lib-common-market-lexicons-com-publicdomainrelay-temp-tangled-spindle
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-common-market-lexicons-com-publicdomainrelay-temp-tangled-spindle
-  phase: Running
+  agentLog: This context is a single generated AT Protocol lexicon module for the
+    XRPC procedure `com.publicdomainrelay.temp.tangled.spindle.trigger`, split across
+    `trigger.defs.ts` (the lexicon definitions, payload schemas, and procedure registration)
+    and `trigger.ts` (a one-line re-export barrel that forwards every definition from
+    `trigger.defs.ts` and re-exports the `main` procedure as the module default).
+    The procedure takes no parameters, accepts a JSON input body carrying a knot name,
+    pipeline record key, actor DID, repo DID, repo name, git ref, and an optional
+    lex-map of inputs, and returns a JSON output body reporting whether the run was
+    submitted plus the knot, pipeline rkey, ref, and an array of workflow results.
+    The module exists so the market/market-lexicons tree has a typed, locally generated
+    client-and-server contract for asking a Tangled spindle to run a pipeline on demand.
+  message: wrote 9 requirement(s) and 5 interface(s) for lib-common-market-lexicons-com-publicdomainrelay-temp-tangled-spindle
+  phase: Succeeded
