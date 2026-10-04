@@ -107,12 +107,21 @@ if (secretsPath) {
   });
 }
 
-// SSH runs through the dumbpipe helper under the default iroh transport; only
-// an explicit fedproxy-ssh selection needs websocat. --skip-ssh needs neither.
+// Fetch the helper binary the selected transport's SSH ProxyCommand needs:
+// dumbpipe under the default iroh transport, websocat for the legacy
+// tunnel/fedproxy-ssh transports. --skip-ssh runs no SSH and fetches neither;
+// an unknown transport id fetches nothing and later fails in the cloud-init
+// module registry.
+const sshHelperByTransport: Record<string, "dumbpipe" | "websocat"> = {
+  iroh: "dumbpipe",
+  tunnel: "websocat",
+  "fedproxy-ssh": "websocat",
+};
 if (!(options.skipSsh as boolean)) {
-  if (userDataTransport === "fedproxy-ssh") {
+  const sshHelper = sshHelperByTransport[userDataTransport];
+  if (sshHelper === "websocat") {
     await ensureWebsocat(logger);
-  } else {
+  } else if (sshHelper === "dumbpipe") {
     await ensureDumbpipe(logger);
   }
 }
