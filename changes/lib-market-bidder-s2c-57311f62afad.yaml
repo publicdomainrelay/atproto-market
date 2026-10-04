@@ -1,0 +1,47 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-market-bidder-s2c-57311f62afad
+  namespace: default
+spec:
+  delta:
+    intent:
+      from: 'This context exists to hold the bidder-side lifecycle orchestration for
+        the market: the single place where a bidder''s identity, allowlist, offering
+        record, policy scope gate and record-discovery watchers are assembled from
+        injectable dependencies. It sits downstream of the market ABC/lexicon/server
+        packages and upstream of any concrete bidder entrypoint, so that provider
+        callbacks, policy executors and trust resolvers can be composed without the
+        factory knowing anything about process startup or transport ownership.'
+      to: 'This context exists to hold the bidder-side lifecycle orchestration for
+        the market: the single place where a bidder''s identity, allowlist, offering
+        record, policy scope gate and record-discovery watchers are assembled from
+        injectable dependencies. It sits downstream of the market ABC/lexicon/server
+        packages and upstream of any concrete bidder entrypoint, so that provider
+        callbacks, policy executors and trust resolvers can be composed without the
+        factory knowing anything about process startup or transport ownership. Its
+        guest on-network route is also the channel by which a guest reports the iroh
+        ticket the requester will dial, so it must pass that value through verbatim.'
+    requirements:
+    - id: r.guest-on-network-iroh-ticket
+      op: added
+      to:
+        codeRefs:
+        - function:47138519ea324c71993a2053303ad1a3
+        id: r.guest-on-network-iroh-ticket
+        level: MUST
+        text: Under the default iroh transport the /v1/on-network body's address field
+          is the guest's dumbpipe ticket (a base32 iroh endpoint id, not an IP or
+          hostname); the route must pass it through verbatim into the vm-on-network
+          record's address so the requester's event handler receives the exact ticket
+          the guest's dumbpipe listener printed, without validating it as an address
+          or rewriting it, and the receipt-linked market.event wrapper must keep referencing
+          the contract receipt so the requester can attribute the ticket to the right
+          contract. The route must keep accepting a legacy address value unchanged
+          for the fedproxy-ssh transport.
+  direction: SpecToCode
+  fromSpecHash: b24a9f4c22671134465fda79aa0cdebc4f6b2f4378384a742865ad6aa63476d9
+  systemContext: lib-market-bidder
+  toSpecHash: 57311f62afaddd4618efbaa8bd40ec1f4c089ef0b257721e4ae8c0a174af2660
+status:
+  phase: Pending

@@ -22,7 +22,9 @@ spec:
     dependencies. It sits downstream of the market ABC/lexicon/server packages and
     upstream of any concrete bidder entrypoint, so that provider callbacks, policy
     executors and trust resolvers can be composed without the factory knowing anything
-    about process startup or transport ownership.'
+    about process startup or transport ownership. Its guest on-network route is also
+    the channel by which a guest reports the iroh ticket the requester will dial,
+    so it must pass that value through verbatim.'
   interfaces:
   - file: lib/market-bidder/mod.ts
     kind: interface
@@ -140,6 +142,18 @@ spec:
       map with UnknownAccept, and on success write a vm-on-network compute event plus
       a receipt-linked market.event record, forwarding the event to the guest entry's
       submitEventUrl when one is set.
+  - codeRefs:
+    - function:47138519ea324c71993a2053303ad1a3
+    id: r.guest-on-network-iroh-ticket
+    level: MUST
+    text: Under the default iroh transport the /v1/on-network body's address field
+      is the guest's dumbpipe ticket (a base32 iroh endpoint id, not an IP or hostname);
+      the route must pass it through verbatim into the vm-on-network record's address
+      so the requester's event handler receives the exact ticket the guest's dumbpipe
+      listener printed, without validating it as an address or rewriting it, and the
+      receipt-linked market.event wrapper must keep referencing the contract receipt
+      so the requester can attribute the ticket to the right contract. The route must
+      keep accepting a legacy address value unchanged for the fedproxy-ssh transport.
   - codeRefs:
     - function:b19f7ada80292e197cdcc8a29e763b0c
     id: r.offering-shape
