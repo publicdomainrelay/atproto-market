@@ -310,8 +310,12 @@ const DUMBPIPE_VERSION = "v0.39.0";
 /**
  * iroh — dumbpipe listener transport (replaces the did-key-ingress-proxy
  * tunnel-subscriber). Guest sshd keeps :22 on loopback; dumbpipe publishes a
- * `listen-tcp` endpoint over the iroh network and the ticket it prints at
- * startup is captured to /root/secrets/iroh-node-id for the guest to publish.
+ * `listen-tcp` endpoint over the iroh network. dumbpipe prints its control
+ * output -- including the ticket as the argument of the `dumbpipe connect
+ * <ticket>` line -- on stdout/stderr, so the unit appends the listener's
+ * combined output to a log and runcmd extracts the ticket token from it into
+ * /root/secrets/iroh-node-id (the compute provider's getNodeId hook cats that
+ * path). The service keeps running after the capture so the ticket stays valid.
  * Requires ctx.sshAuthorizedKey. Optional: ctx.targetPort.
  */
 const irohModule: UserDataModule = (ctx) => {
@@ -355,8 +359,10 @@ const irohModule: UserDataModule = (ctx) => {
           "Restart=always",
           "RestartSec=5",
           "TimeoutStopSec=10",
-          "StandardOutput=journal",
-          "StandardError=journal",
+          "# dumbpipe prints the ticket on its output stream; capture both streams so",
+          "# runcmd can extract it. The log lives under /root/secrets (0700, root).",
+          "StandardOutput=append:/root/secrets/iroh-dumbpipe.log",
+          "StandardError=append:/root/secrets/iroh-dumbpipe.log",
           "",
           "[Install]",
           "WantedBy=multi-user.target",
@@ -372,12 +378,17 @@ const irohModule: UserDataModule = (ctx) => {
   chmod 755 /usr/local/bin/dumbpipe
 }`],
       ["sh", "-c", "install -d -m 0700 -o root -g root /root/secrets"],
-      ["sh", "-c", `timeout 30 /usr/local/bin/dumbpipe listen-tcp --host 127.0.0.1:${targetPort} > /root/secrets/iroh-node-id || true
-chmod 0600 /root/secrets/iroh-node-id
-[ -s /root/secrets/iroh-node-id ] || { echo "dumbpipe ticket never appeared" >&2; exit 1; }`],
       "systemctl daemon-reload",
       "systemctl enable --now ssh || systemctl enable --now sshd",
       "systemctl enable --now dumbpipe-listen.service",
+      ["sh", "-c", `for _ in $(seq 1 60); do
+  _ticket=$(grep -m1 -oE 'dumbpipe connect [^[:space:]]+' /root/secrets/iroh-dumbpipe.log 2>/dev/null | cut -d' ' -f3)
+  [ -n "$_ticket" ] && break
+  sleep 1
+done
+[ -n "$_ticket" ] || { echo "dumbpipe ticket never appeared" >&2; exit 1; }
+printf '%s' "$_ticket" > /root/secrets/iroh-node-id
+chmod 0600 /root/secrets/iroh-node-id`],
     ],
   };
 };
