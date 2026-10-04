@@ -59,13 +59,12 @@ export interface CloudInitContext {
 
   // iroh transport ticket report
   /**
-   * Absolute URL of the requester's per-contract transport-report endpoint.
-   * Supplied by the requester that composes this cloud-config. Never a value
-   * that may be published in a record.
+   * Absolute URL of the requester's per-contract transport-report endpoint,
+   * supplied by the requester that composes this cloud-config. Public: the
+   * composed user_data is published inside the compute.vm record, so no secret
+   * may be carried here.
    */
   irohReportUrl?: string;
-  /** That contract's random bearer token. Never published in a record. */
-  irohReportToken?: string;
 }
 
 /** Back-compat context for the tunnel-subscriber transport (historical buildTunnelUserData shape). */
@@ -330,18 +329,17 @@ const DEFAULT_ACCEPT_PATH = "/root/secrets/publicdomainrelay.com/market/accept.j
  * output to /root/secrets/iroh-dumbpipe.log and an ExecStartPost extracts the
  * ticket token, writes /root/secrets/iroh-node-id (a local convenience only)
  * and reports it to the requester's own per-contract endpoint
- * (ctx.irohReportUrl + ctx.irohReportToken) -- never to a public record. The
+ * (ctx.irohReportUrl) -- never to a public record. The
  * log is truncated and the ticket re-extracted on every start, and the iroh
  * identity is persisted in /root/secrets/iroh.env so restarts keep the same
  * endpoint id. Requires ctx.sshAuthorizedKey. Optional: ctx.targetPort,
- * ctx.irohReportUrl, ctx.irohReportToken, ctx.secretsAcceptPath.
+ * ctx.irohReportUrl, ctx.secretsAcceptPath.
  */
 const irohModule: UserDataModule = (ctx) => {
   const targetPort = ctx.targetPort ?? 22;
   const acceptPath = ctx.secretsAcceptPath ?? DEFAULT_ACCEPT_PATH;
   const reportUrl = ctx.irohReportUrl ?? "";
-  const reportToken = ctx.irohReportToken ?? "";
-  const reports = reportUrl !== "" && reportToken !== "";
+  const reports = reportUrl !== "";
 
   // Persist a stable iroh identity: dumbpipe mints a fresh one (printing
   // "using secret key <hex>") when IROH_SECRET is unset, which would change the
@@ -387,14 +385,13 @@ const irohModule: UserDataModule = (ctx) => {
       "# Report the ticket to the requester's per-contract endpoint (never a record).",
       "if [ -s /root/secrets/iroh-report.json ]; then",
       "  _url=$(sed -n 's/.*\"url\":\"\\([^\"]*\\)\".*/\\1/p' /root/secrets/iroh-report.json)",
-      "  _token=$(sed -n 's/.*\"token\":\"\\([^\"]*\\)\".*/\\1/p' /root/secrets/iroh-report.json)",
       `  _accept_uri=$(jq -r '.accept.uri // empty' ${acceptPath} 2>/dev/null || true)`,
       `  _accept_cid=$(jq -r '.accept.cid // empty' ${acceptPath} 2>/dev/null || true)`,
       "  _body=$(printf '{\"acceptUri\":\"%s\",\"acceptCid\":\"%s\",\"address\":\"%s\",\"createdAt\":\"%s\"}' \"$_accept_uri\" \"$_accept_cid\" \"$TICKET\" \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\")",
       "  _attempt=1",
       "  _delay=2",
       "  while [ \"$_attempt\" -le 5 ]; do",
-      "    if curl -fsS -m 10 -X POST \"$_url\" -H \"Authorization: Bearer $_token\" -H \"content-type: application/json\" -d \"$_body\" >/dev/null; then",
+      "    if curl -fsS -m 10 -X POST \"$_url\" -H \"content-type: application/json\" -d \"$_body\" >/dev/null; then",
       "      echo \"iroh ticket reported\" >&2",
       "      break",
       "    fi",
@@ -447,7 +444,7 @@ const irohModule: UserDataModule = (ctx) => {
       path: "/root/secrets/iroh-report.json",
       owner: "root:root",
       permissions: "0600",
-      content: JSON.stringify({ url: reportUrl, token: reportToken }) + "\n",
+      content: JSON.stringify({ url: reportUrl }) + "\n",
     });
   }
   writeFiles.push({

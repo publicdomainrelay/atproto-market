@@ -1,10 +1,13 @@
 // The private ticket path under the default iroh transport.
 //
-// (a) The requester's POST /v1/on-network accepts a ticket only from the
-//     contract whose bearer token matches and whose posted accept ref equals
-//     that contract's current accept ref; a successful post settles the
-//     contract's SSH wait with the address. Wrong token (401), missing token
-//     (401) and a mismatched accept ref (409) leave the wait unsettled.
+// (a) The requester mounts POST /v1/on-network on the app its ingress actually
+//     serves -- createRequesterPDS has already copied the repo app's routes
+//     into the serve app with serve.app.route("/", repoApp), so a route added
+//     to the repo app afterwards is unreachable. The handler accepts a ticket
+//     only when the posted accept ref equals a live contract's current ref and
+//     that contract has not reported yet; a mismatched ref and a second report
+//     after the wait settled each answer 409. No credential is carried: the
+//     composed user_data is published in the compute.vm record.
 // (b) The bidder never publishes a ticket: vm.onNetwork's address carries the
 //     provider's provisioned address even when the provider exposes a
 //     ticket-shaped getNodeId hook.
@@ -24,87 +27,84 @@ const TICKET = "2n7kq3xr5vbn4mh6wqk2s7d9fz3jptc5u4ye6a2b7c8d9e0f1g2h3j4k5m";
 const ACCEPT_URI = "at://did:plc:requester/com.publicdomainrelay.temp.market.accept/a1";
 const ACCEPT_CID = "bafyreiaccept";
 
-function reportApp(token: string, acceptUri: string, acceptCid: string) {
-  const app = new Hono();
+// Mirrors createRequesterPDS: the repo app is a child mounted on the parent
+// (the serve app) before anything is registered. The report must be mounted on
+// the parent, or the ingress cannot reach it.
+function reportHarness() {
+  const repoApp = new Hono();
+  repoApp.get("/xrpc/com.atproto.repo.describeRepo", (c) => c.json({ did: "did:plc:requester" }));
+  const serveApp = new Hono();
+  serveApp.route("/", repoApp);
+
   const settled: string[] = [];
   const { promise: wait, resolve: resolveWait } = Promise.withResolvers<string>();
-  registerOnNetworkReport(app, token, {
-    accept: () => ({ uri: acceptUri, cid: acceptCid }),
-    onTicket: (ticket) => {
+  const entry = {
+    accept: () => ({ uri: ACCEPT_URI, cid: ACCEPT_CID }),
+    onTicket: (ticket: string) => {
       settled.push(ticket);
       resolveWait(ticket);
     },
-  });
-  return { app, settled, wait };
+  };
+  registerOnNetworkReport(serveApp, entry);
+  return { serveApp, entry, settled, wait };
 }
 
-async function post(app: Hono, body: unknown, token?: string): Promise<Response> {
+async function post(app: Hono, body: unknown): Promise<Response> {
   return await app.fetch(new Request("http://requester.local/v1/on-network", {
     method: "POST",
-    headers: {
-      "content-type": "application/json",
-      ...(token ? { authorization: `Bearer ${token}` } : {}),
-    },
+    headers: { "content-type": "application/json" },
     body: JSON.stringify(body),
   }));
 }
 
-Deno.test("report endpoint settles the SSH wait with the posted ticket", async () => {
-  const { app, settled, wait } = reportApp("tok-contract", ACCEPT_URI, ACCEPT_CID);
-  const res = await post(app, {
+Deno.test("report endpoint mounted on the serve app settles the SSH wait", async () => {
+  const { serveApp, entry, settled, wait } = reportHarness();
+  // The route sits beside the routes copied from the repo app, not on the repo
+  // app itself: both are reachable through the app the ingress serves.
+  const repo = await serveApp.fetch(
+    new Request("http://requester.local/xrpc/com.atproto.repo.describeRepo"),
+  );
+  assertEquals(repo.status, 200, "the repo app's routes stay reachable");
+
+  const res = await post(serveApp, {
     acceptUri: ACCEPT_URI,
     acceptCid: ACCEPT_CID,
     address: TICKET,
-  }, "tok-contract");
+  });
   assertEquals(res.status, 200);
   assertEquals(await res.json(), { ok: true });
   assertEquals(await wait, TICKET, "the wait settles with the reported ticket");
   assertEquals(settled, [TICKET]);
-  unregisterOnNetworkReport(app, "tok-contract");
+  unregisterOnNetworkReport(serveApp, entry);
 });
 
-Deno.test("missing or wrong token answers 401 and never settles the wait", async () => {
-  const { app, settled, wait } = reportApp("tok-contract", ACCEPT_URI, ACCEPT_CID);
+Deno.test("a mismatched ref and a second report both answer 409", async () => {
+  const { serveApp, entry, settled, wait } = reportHarness();
   const body = { acceptUri: ACCEPT_URI, acceptCid: ACCEPT_CID, address: TICKET };
 
-  assertEquals((await post(app, body)).status, 401, "missing token");
-  assertEquals((await post(app, body, "tok-other")).status, 401, "wrong token");
-  assertEquals(settled, [], "no ticket recorded");
+  const stale = await post(serveApp, { ...body, acceptCid: "bafyreistale" });
+  assertEquals(stale.status, 409, "a stale accept ref cannot resolve the wait");
+  assertEquals(settled, [], "nothing settled yet");
 
-  // The wait is still open: a later, correctly authenticated report settles it.
-  const ok = await post(app, body, "tok-contract");
+  const ok = await post(serveApp, body);
   assertEquals(ok.status, 200);
-  assertEquals(await wait, TICKET);
+  assertEquals(await wait, TICKET, "the wait settles once");
+
+  const again = await post(serveApp, { ...body, address: "2notherticket" });
+  assertEquals(again.status, 409, "exactly one report per contract");
+  assertEquals(settled, [TICKET], "a later report never replaces the settled ticket");
+  unregisterOnNetworkReport(serveApp, entry);
 });
 
-Deno.test("mismatched accept ref answers 409 and never settles the wait", async () => {
-  const { app, settled, wait } = reportApp("tok-contract", ACCEPT_URI, ACCEPT_CID);
-  const res = await post(app, {
-    acceptUri: ACCEPT_URI,
-    acceptCid: "bafyreistale",
-    address: TICKET,
-  }, "tok-contract");
-  assertEquals(res.status, 409);
-  assertEquals(settled, [], "a stale accept ref cannot resolve the wait");
-
-  const ok = await post(app, {
+Deno.test("the endpoint is unmounted when the contract ends", async () => {
+  const { serveApp, entry } = reportHarness();
+  unregisterOnNetworkReport(serveApp, entry);
+  const res = await post(serveApp, {
     acceptUri: ACCEPT_URI,
     acceptCid: ACCEPT_CID,
     address: TICKET,
-  }, "tok-contract");
-  assertEquals(ok.status, 200);
-  assertEquals(await wait, TICKET);
-});
-
-Deno.test("an invalidated token stops accepting reports", async () => {
-  const { app } = reportApp("tok-contract", ACCEPT_URI, ACCEPT_CID);
-  unregisterOnNetworkReport(app, "tok-contract");
-  const res = await post(app, {
-    acceptUri: ACCEPT_URI,
-    acceptCid: ACCEPT_CID,
-    address: TICKET,
-  }, "tok-contract");
-  assertEquals(res.status, 401, "contract ended, token invalidated");
+  });
+  assertEquals(res.status, 404, "contract ended, endpoint unmounted");
 });
 
 // -- (b) the bidder must not publish the ticket -----------------------------

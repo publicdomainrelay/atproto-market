@@ -31,9 +31,9 @@ const CTX = {
   ingressProxyHost: "relay.local:443",
   audHost: "relay.local",
   // Requester-supplied per-contract report channel: the guest posts its iroh
-  // ticket here instead of publishing it in a world-readable record.
+  // ticket here instead of publishing it in a world-readable record. No
+  // credential may be carried -- this user_data is published in a record.
   irohReportUrl: "https://req-abc.relay.local/v1/on-network",
-  irohReportToken: "iroh-report-token-abc123",
 };
 
 function fixture(name: string): Promise<string> {
@@ -172,14 +172,15 @@ Deno.test("iroh listener keeps a stable identity and a fresh ticket", () => {
   );
   assert(y.includes("ExecStartPre=/usr/local/bin/iroh-prepare.sh"), "prepares secret + log");
   // Private report channel: the ticket goes to the requester's own endpoint,
-  // never into a public record.
+  // never into a public record -- and the destination carries no credential,
+  // because this cloud-config is published inside the compute.vm record.
   assert(y.includes(CTX.irohReportUrl), "report endpoint from ctx.irohReportUrl");
-  assert(y.includes(CTX.irohReportToken), "bearer token from ctx.irohReportToken");
-  assert(y.includes("/root/secrets/iroh-report.json"), "report credentials written 0600");
+  assert(y.includes("/root/secrets/iroh-report.json"), "report destination written 0600");
   assert(
-    y.includes('Authorization: Bearer $_token'),
-    "reports with the contract bearer token",
+    y.includes(`{"url":"${CTX.irohReportUrl}"}`),
+    "report destination carries only the url",
   );
+  assert(!y.includes("Bearer"), "no credential baked into cloud-init");
   assert(y.includes("accept.uri"), "accept ref read from the injected bundle");
 });
 

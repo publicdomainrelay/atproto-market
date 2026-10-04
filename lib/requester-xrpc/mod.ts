@@ -102,70 +102,122 @@ export interface RequesterPDSImpl extends RequesterPDS {
 // Under the default iroh transport the guest reports its dumbpipe ticket to the
 // requester's own app (POST /v1/on-network), never to a public record: a record
 // on the bidder's PDS is world-readable and the ticket is the capability that
-// dials the guest's sshd. One requester serves several contracts at once, so
-// entries are looked up by the contract's random bearer token and an entry only
-// accepts a ticket whose accept ref equals that contract's current accept ref.
+// dials the guest's sshd. The route is mounted on the app the ingress actually
+// serves -- createRequesterPDS has already copied the repo app's routes into it
+// with serve.app.route("/", app), and Hono copies a child app's routes at that
+// call, so a route added to the repo app afterwards is never reachable. One
+// requester serves several contracts at once, so the handler matches the posted
+// accept ref against each live contract's own ref and accepts exactly one
+// report per contract. No credential is baked into the cloud-config: the
+// composed user_data is published inside the compute.vm record, so a bearer
+// token there would be public and would only appear to protect the endpoint.
 
 export interface OnNetworkReportEntry {
   /** The contract's current accept ref; empty until the accept is written. */
   accept(): { uri: string; cid: string };
-  /** Called with the reported ticket once the token and accept ref match. */
+  /** Called with the reported ticket the first time this contract reports. */
   onTicket(ticket: string): void;
 }
 
-const onNetworkReportEntries = new WeakMap<object, Map<string, OnNetworkReportEntry>>();
+const REPORT_PATH = "/v1/on-network";
 
-/** Hono app of a requester PDS, when the implementation exposes one. */
+/** Live report entries per app, keyed by entry; the value is the settled flag. */
+const onNetworkReportEntries = new WeakMap<object, Map<OnNetworkReportEntry, boolean>>();
+
+/** Hono app a requester's ingress actually serves, when it can be routed. */
 export function requesterApp(pds: RequesterPDS): HonoApp | undefined {
-  return (pds as unknown as { app?: HonoApp }).app;
+  const app = (pds.serve as unknown as { app?: HonoApp } | undefined)?.app;
+  return app && typeof app.post === "function" ? app : undefined;
 }
 
 /**
- * Mount POST /v1/on-network on the requester's own app. Mounted once per app;
- * a missing or wrong bearer token answers 401 and an accept ref that does not
- * match the contract's answers 409, and neither resolves the wait.
+ * Replay an app's route list into a fresh router. Hono compiles its matcher
+ * after the first request, so mutating `app.routes` alone cannot add or remove
+ * a route that has already been served; replaying into a fresh router can.
+ */
+function rebuildReportRouter(app: HonoApp): boolean {
+  try {
+    const routes = (app as { routes?: Array<{ method: string; path: string; handler: unknown }> }).routes;
+    if (!Array.isArray(routes)) return false;
+    const Fresh = (app as { constructor: new () => HonoApp }).constructor;
+    const fresh = new Fresh();
+    for (const r of routes) fresh.on(r.method, r.path, r.handler);
+    (app as { router?: unknown }).router = (fresh as { router: unknown }).router;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Mount POST /v1/on-network on the app the ingress serves. Mounted once per
+ * app; a posted accept ref that matches no live contract answers 409, and a
+ * second report for a contract that already settled answers 409 without
+ * replacing the ticket.
  */
 export function mountOnNetworkReportHandler(app: HonoApp): void {
   if (onNetworkReportEntries.has(app as object)) return;
-  const entries = new Map<string, OnNetworkReportEntry>();
-  onNetworkReportEntries.set(app as object, entries);
-  app.post("/v1/on-network", async (c: HonoApp) => {
-    const auth = String(c.req.header("authorization") ?? "");
-    const token = auth.startsWith("Bearer ") ? auth.slice("Bearer ".length).trim() : "";
-    if (!token) return c.json({ error: "missing token" }, 401);
-    const entry = entries.get(token);
-    if (!entry) return c.json({ error: "invalid token" }, 401);
+  onNetworkReportEntries.set(app as object, new Map());
+  const handler = async (c: HonoApp) => {
     const body = await c.req.json().catch(() => ({})) as {
       acceptUri?: string;
       acceptCid?: string;
       address?: string;
     };
-    const current = entry.accept();
-    if (
-      !body?.acceptUri || !body?.acceptCid ||
-      body.acceptUri !== current.uri || body.acceptCid !== current.cid
-    ) {
+    if (!body?.acceptUri || !body?.acceptCid) {
       return c.json({ error: "accept ref mismatch" }, 409);
     }
+    const entries = onNetworkReportEntries.get(app as object);
+    let match: OnNetworkReportEntry | undefined;
+    for (const entry of entries?.keys() ?? []) {
+      const current = entry.accept();
+      if (current.uri === body.acceptUri && current.cid === body.acceptCid) {
+        match = entry;
+        break;
+      }
+    }
+    if (!match) return c.json({ error: "accept ref mismatch" }, 409);
+    if (entries!.get(match)) return c.json({ error: "already settled" }, 409);
     if (!body.address) return c.json({ error: "missing address" }, 400);
-    entry.onTicket(String(body.address));
+    entries!.set(match, true);
+    match.onTicket(String(body.address));
     return c.json({ ok: true });
-  });
+  };
+  const routes = (app as { routes?: Array<{ method: string; path: string; handler: unknown }> }).routes;
+  if (!Array.isArray(routes)) {
+    app.post(REPORT_PATH, handler);
+    return;
+  }
+  routes.push({ method: "POST", path: REPORT_PATH, handler });
+  if (!rebuildReportRouter(app)) {
+    routes.pop();
+    app.post(REPORT_PATH, handler);
+  }
 }
 
-/** Register a contract's report token. Mounts the route on first use. */
-export function registerOnNetworkReport(
-  app: HonoApp,
-  token: string,
-  entry: OnNetworkReportEntry,
-): void {
+/** Register a contract's report entry. Mounts the route on first use. */
+export function registerOnNetworkReport(app: HonoApp, entry: OnNetworkReportEntry): void {
   mountOnNetworkReportHandler(app);
-  onNetworkReportEntries.get(app as object)!.set(token, entry);
+  onNetworkReportEntries.get(app as object)!.set(entry, false);
 }
 
-/** Invalidate a contract's report token when the contract ends. */
-export function unregisterOnNetworkReport(app: HonoApp, token: string): void {
-  onNetworkReportEntries.get(app as object)?.delete(token);
+/**
+ * Drop a contract's report entry when the contract ends. When no contract is
+ * left the route is unmounted, so it can no longer accept anything.
+ */
+export function unregisterOnNetworkReport(app: HonoApp, entry: OnNetworkReportEntry): void {
+  const entries = onNetworkReportEntries.get(app as object);
+  if (!entries) return;
+  entries.delete(entry);
+  if (entries.size > 0) return;
+  onNetworkReportEntries.delete(app as object);
+  const routes = (app as { routes?: Array<{ method: string; path: string; handler: unknown }> }).routes;
+  if (!Array.isArray(routes)) return;
+  const kept = routes.filter((r) => !(r.method === "POST" && r.path === REPORT_PATH));
+  if (kept.length === routes.length) return;
+  routes.length = 0;
+  for (const r of kept) routes.push(r);
+  rebuildReportRouter(app);
 }
 
 // ---------------------------------------------------------------------------
@@ -1302,34 +1354,36 @@ export async function runComputeContract(
   // is only accepted from the contract that owns the bearer token.
   let acceptRef: { uri: string; cid: string } = { uri: "", cid: "" };
 
-  // Per-contract private report channel (iroh). Mounted before the cloud-config
-  // is composed because the endpoint URL and token are baked into it. skipSsh
-  // mounts nothing: no SSH means no ticket to resolve.
+  // Per-contract private report channel (iroh). Mounted on the app the ingress
+  // serves, before the cloud-config is composed because the endpoint URL is
+  // baked into it. skipSsh mounts nothing: no SSH means no ticket to resolve.
   const reportApp = (usesDumbpipe && !skipSsh) ? requesterApp(pds) : undefined;
   const reportUrl = reportApp
     ? `${(pds.relay.ingressUrl || pds.ingressUrl).replace(/\/+$/, "")}/v1/on-network`
     : "";
-  const reportToken = (reportApp && reportUrl) ? randomHex(32) : "";
-  const reportRegistered = !!(reportApp && reportToken);
-  if (reportApp && reportToken) {
-    registerOnNetworkReport(reportApp, reportToken, {
+  const reportRegistered = !!(reportApp && reportUrl);
+  const reportEntry = reportRegistered
+    ? {
       accept: () => acceptRef,
       onTicket: (ticket: string) => {
-        // The ticket is the SSH transport target under iroh: settle the
-        // receipt-keyed wait with it (the accept ref already bound it to this
-        // contract).
+        // The ticket is the SSH transport target under iroh: settle the wait
+        // with it (the endpoint already bound it to this contract's accept ref
+        // and accepts exactly one report per contract).
         if (!vmFqdn) {
           vmFqdn = ticket;
           vmFqdnReady.resolve(ticket);
           log("iroh_ticket_reported", { ticketLen: ticket.length });
         }
       },
-    });
+    }
+    : undefined;
+  if (reportApp && reportEntry) {
+    registerOnNetworkReport(reportApp, reportEntry);
   } else if (usesDumbpipe && !skipSsh) {
     log("iroh_report_endpoint_unavailable", { ingressUrl: pds.relay.ingressUrl });
   }
   const endReport = () => {
-    if (reportApp && reportToken) unregisterOnNetworkReport(reportApp, reportToken);
+    if (reportApp && reportEntry) unregisterOnNetworkReport(reportApp, reportEntry);
   };
 
   // Wire guest-side onNetwork events (submitEvent) -> vmFqdnReady. Only the
@@ -1411,10 +1465,9 @@ export async function runComputeContract(
         // /root/.ssh/authorized_keys.
         sshAuthorizedKey: [ssh.publicKey, ...(opts.sshAuthorizedKeys ?? [])].join("\n"),
         // Private per-contract report channel: the iroh module POSTs the guest
-        // ticket here, so the capability never enters a record. The token is
-        // never written into a repo record.
+        // ticket here, so the capability never enters a record. Nothing secret
+        // is carried -- this user_data is published in the compute.vm record.
         irohReportUrl: reportRegistered ? reportUrl : undefined,
-        irohReportToken: reportRegistered ? reportToken : undefined,
         ...capCtx,
       },
       base: ud?.base ?? opts.baseUserData,

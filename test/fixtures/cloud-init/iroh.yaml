@@ -56,14 +56,13 @@ write_files:
       # Report the ticket to the requester's per-contract endpoint (never a record).
       if [ -s /root/secrets/iroh-report.json ]; then
         _url=$(sed -n 's/.*"url":"\([^"]*\)".*/\1/p' /root/secrets/iroh-report.json)
-        _token=$(sed -n 's/.*"token":"\([^"]*\)".*/\1/p' /root/secrets/iroh-report.json)
         _accept_uri=$(jq -r '.accept.uri // empty' /root/secrets/publicdomainrelay.com/market/accept.json 2>/dev/null || true)
         _accept_cid=$(jq -r '.accept.cid // empty' /root/secrets/publicdomainrelay.com/market/accept.json 2>/dev/null || true)
         _body=$(printf '{"acceptUri":"%s","acceptCid":"%s","address":"%s","createdAt":"%s"}' "$_accept_uri" "$_accept_cid" "$TICKET" "$(date -u +%Y-%m-%dT%H:%M:%SZ)")
         _attempt=1
         _delay=2
         while [ "$_attempt" -le 5 ]; do
-          if curl -fsS -m 10 -X POST "$_url" -H "Authorization: Bearer $_token" -H "content-type: application/json" -d "$_body" >/dev/null; then
+          if curl -fsS -m 10 -X POST "$_url" -H "content-type: application/json" -d "$_body" >/dev/null; then
             echo "iroh ticket reported" >&2
             break
           fi
@@ -79,7 +78,7 @@ write_files:
     owner: root:root
     permissions: "0600"
     content: |
-      {"url":"https://req-abc.relay.local/v1/on-network","token":"iroh-report-token-abc123"}
+      {"url":"https://req-abc.relay.local/v1/on-network"}
   - path: /etc/systemd/system/dumbpipe-listen.service
     owner: root:root
     permissions: "0644"
