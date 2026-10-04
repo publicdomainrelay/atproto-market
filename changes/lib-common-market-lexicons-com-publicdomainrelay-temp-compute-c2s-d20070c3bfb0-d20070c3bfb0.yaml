@@ -10,5 +10,36 @@ spec:
   systemContext: lib-common-market-lexicons-com-publicdomainrelay-temp-compute
   toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 status:
-  message: the agent is summarizing lib-common-market-lexicons-com-publicdomainrelay-temp-compute
-  phase: Running
+  agentLog: 'This context is the generated `com.publicdomainrelay.temp.compute` lexicon
+    package inside `lib/common/market-lexicons`: the AT Protocol schema bindings a
+    requester and a compute provider use to negotiate VM provisioning. Four files
+    sit at the top level and act as barrels and type definitions. `vm.defs.ts` defines
+    the `com.publicdomainrelay.temp.compute.vm` record (keyed by tid) describing a
+    requested machine — vCPU count, memory, disk, network quota, an optional geographic
+    `location`, the RBAC `role` the compute runs under, and `user_data` cloud-init
+    bootstrap — plus the embedded `location` object with optional `country` and `region`.
+    `vm.ts` re-exports everything from `vm.defs.ts` and promotes the `main` record
+    validator to the module default export. `config.ts` re-exports the WIF subtree
+    as the `wif` namespace (`config/wif/simple.defs.ts`, the workload-identity-federation
+    parameters a requester uses to obtain a provider-authorized token). `events.ts`
+    re-exports the VM lifecycle event subtree as the `vm` namespace (`events/vm/{delete,started,onNetwork}.defs.ts`).
+    Every file carries the `@atproto/lex` generated header and is not meant to be
+    hand-edited. Note that `events/vm/registerIdentity.defs.ts` exists on disk but
+    is not yet re-exported by `events/vm.ts`.'
+  message: wrote 13 requirement(s) and 0 interface(s) for lib-common-market-lexicons-com-publicdomainrelay-temp-compute;
+    interface Main is not in the observed facts; dropped; interface Location is not
+    in the observed facts; dropped; interface main is not in the observed facts; dropped;
+    interface location is not in the observed facts; dropped; interface $nsid is not
+    in the observed facts; dropped; interface $type is not in the observed facts;
+    dropped; interface $isTypeOf is not in the observed facts; dropped; interface
+    $build is not in the observed facts; dropped; interface $assert is not in the
+    observed facts; dropped; interface $check is not in the observed facts; dropped;
+    interface $cast is not in the observed facts; dropped; interface $ifMatches is
+    not in the observed facts; dropped; interface $matches is not in the observed
+    facts; dropped; interface $parse is not in the observed facts; dropped; interface
+    $safeParse is not in the observed facts; dropped; interface $validate is not in
+    the observed facts; dropped; interface $safeValidate is not in the observed facts;
+    dropped; interface default is not in the observed facts; dropped; interface wif
+    is not in the observed facts; dropped; interface vm is not in the observed facts;
+    dropped
+  phase: Succeeded
