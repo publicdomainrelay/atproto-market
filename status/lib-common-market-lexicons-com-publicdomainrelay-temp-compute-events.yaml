@@ -16,5 +16,5 @@ observed:
   files:
   - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm.ts
   fingerprint: 48622380993a1a821973e29bdd0d08200806dbc146e8d1e1ff762724006176be
-realizedSpecHash: a1ff34fc307ec6e438af1f1ae996507572e3ae853f8da0385b644deaa34eae05
+realizedSpecHash: 06b36113f0b9b7d3dce64836904870416e0b9673204fa281734f9e0a8d7f35ea
 syncedFingerprint: 48622380993a1a821973e29bdd0d08200806dbc146e8d1e1ff762724006176be
