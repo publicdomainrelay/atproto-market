@@ -1,8 +1,8 @@
 conditions:
-- message: 'undeclared: SettleX402Options, X402PaymentError, X402PaymentError.constructor,
-    mintReceiptForAccepts, parseReceiptPath, settleX402Payment, verifyX402Payment'
-  reason: InterfacesMissing
-  status: "False"
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
   type: CodeSynced
 - message: observed facts match the synced fingerprint
   reason: FingerprintEqual
@@ -74,5 +74,5 @@ observed:
       }): Promise<Resolved<ReceiptsX402>>
   treeFiles:
   - lib/market-settlement-x402/deno.json
-realizedSpecHash: d08fea096bf7f446b32a4aa38941dc1b43279d8a55c6bf965abf177be0e5d88c
+realizedSpecHash: 70ea6aae37be78e4efa96d4d09907f70edbb6a7d5fc854ad3f8d32dfa74957d9
 syncedFingerprint: 3dfea414cf72ae476d8b1a12059db92550e1cecdff85df709b21948550da4fbb
