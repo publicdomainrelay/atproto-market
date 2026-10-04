@@ -287,7 +287,7 @@ observed:
       ): Promise<void>
   treeFiles:
   - lib/atproto-helpers/deno.json
-observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
+observedCommit: 857b94a22ea058825611b4f155cdc639e3c0139d
 realizedSpecHash: 555729b58a17616a214f92530889a8861d77d4042c707f70b1c69fb702c10062
 syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
 syncedFingerprint: 0504f641f7ac23b9b163d968c308c8df75ac00a51fa62b5cec413f7f091fabc4

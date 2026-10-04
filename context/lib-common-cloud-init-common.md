@@ -10,14 +10,14 @@ _The resolved code references are regenerated on every run. Cite the ids above r
 ## Resolved code references
 
 - `file:lib/common/cloud-init-common/mod.ts` file mod.ts (lib/common/cloud-init-common/mod.ts)
-- `function:1755fe3f2bf73f1ed1a41d5ca8ca9577` function buildDefaultUserData (lib/common/cloud-init-common/mod.ts)
+- `function:3e73d1016ca2863c978570327927ad3c` function injectJsrUrl (lib/common/cloud-init-common/mod.ts)
 - `function:4b5291e8f10c0cf8f4ac044370b5d20e` function acceptBundleModule (lib/common/cloud-init-common/mod.ts)
-- `function:637aa27aa76514217f8a526aa6b77dec` function buildTunnelUserData (lib/common/cloud-init-common/mod.ts)
-- `function:8ebc1d2a73b7f6452aa7083b474633f6` function injectJsrUrl (lib/common/cloud-init-common/mod.ts)
+- `function:86a846ba5c67bc050b3357f75785d2a4` function buildTunnelUserData (lib/common/cloud-init-common/mod.ts)
 - `function:a68626e26bed80b6d685682d2680efdb` function registerUserDataModule (lib/common/cloud-init-common/mod.ts)
 - `function:a852acc6663f06c9724c3272a33b42a4` function listUserDataModules (lib/common/cloud-init-common/mod.ts)
 - `function:b171eb2dbd8264151491ce36f02925d2` function buildUserData (lib/common/cloud-init-common/mod.ts)
 - `function:b757a298771ae8dcbe1086c37860fb1e` function getUserDataModules (lib/common/cloud-init-common/mod.ts)
+- `function:c3bfd001f17c82c59255dc767d4864d6` function buildDefaultUserData (lib/common/cloud-init-common/mod.ts)
 - `function:c42fe19fa18470a330f72a65da020d2d` function flattenLabel (lib/common/cloud-init-common/mod.ts)
 - `interface:0bccaee64ad56c10f80842c828570d30` interface CloudInitContext (lib/common/cloud-init-common/mod.ts)
 - `interface:a1ea99f0f39ad710f4f5c37a44b76b5a` interface TunnelCloudInitContext (lib/common/cloud-init-common/mod.ts)

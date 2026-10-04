@@ -5,9 +5,9 @@ conditions:
   reason: CodeRefsUnresolved
   status: "False"
   type: CodeSynced
-- message: observed facts changed since the spec was last synced
-  reason: FingerprintChanged
-  status: "True"
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
   type: Drifted
 - message: the spec passes the validator
   reason: ValidatorPassed
@@ -16,7 +16,7 @@ conditions:
 observed:
   files:
   - lib/common/cloud-init-common/mod.ts
-  fingerprint: 5d92b6301c76fe05fa99cac072963fe942b67c363adb7a281ab01de283f51041
+  fingerprint: 9ec59512cab38134c7582a3463393e1435f3ea48697504f5423edd73a3c9aeaa
   interfaces:
   - codegraphId: interface:0bccaee64ad56c10f80842c828570d30
     file: lib/common/cloud-init-common/mod.ts
@@ -89,27 +89,27 @@ observed:
         acceptPathVm: string,
         bundle: Record<string, unknown>,
       ): UserDataModule
-  - codegraphId: function:1755fe3f2bf73f1ed1a41d5ca8ca9577
+  - codegraphId: function:c3bfd001f17c82c59255dc767d4864d6
     file: lib/common/cloud-init-common/mod.ts
     kind: function
-    line: 953
+    line: 964
     name: buildDefaultUserData
     signature: '(ctx: CloudInitContext): string'
-  - codegraphId: function:637aa27aa76514217f8a526aa6b77dec
+  - codegraphId: function:86a846ba5c67bc050b3357f75785d2a4
     file: lib/common/cloud-init-common/mod.ts
     kind: function
-    line: 961
+    line: 972
     name: buildTunnelUserData
     signature: '(ctx: TunnelCloudInitContext): string'
-  - codegraphId: function:8ebc1d2a73b7f6452aa7083b474633f6
+  - codegraphId: function:3e73d1016ca2863c978570327927ad3c
     file: lib/common/cloud-init-common/mod.ts
     kind: function
-    line: 966
+    line: 977
     name: injectJsrUrl
     signature: '(userData: string, jsrUrl: string): string'
   treeFiles:
   - lib/common/cloud-init-common/deno.json
-observedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
-realizedSpecHash: 687f83492a8ecceaa75df21cd29ca42634632a6c69e2d144fd6c3a42af43a002
-syncedCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
-syncedFingerprint: b3b5c693040c31034ae3a0bb86e5dca1a0d83e474a0f2e995ef5b2ec1a6c4dd8
+observedCommit: 857b94a22ea058825611b4f155cdc639e3c0139d
+realizedSpecHash: 066cde23d1625274f4ecc509619e3058bbb411a14cc9b42f2cad58c57a80d608
+syncedCommit: 857b94a22ea058825611b4f155cdc639e3c0139d
+syncedFingerprint: 9ec59512cab38134c7582a3463393e1435f3ea48697504f5423edd73a3c9aeaa

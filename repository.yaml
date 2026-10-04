@@ -19,6 +19,6 @@ status:
     failed: 0
     summarized: 81
     total: 81
-  headCommit: 89b584d8b58ce18bb849552f887389ea9267134b
-  indexedCommit: 89b584d8b58ce18bb849552f887389ea9267134b
+  headCommit: 857b94a22ea058825611b4f155cdc639e3c0139d
+  indexedCommit: 857b94a22ea058825611b4f155cdc639e3c0139d
   phase: Populated
