@@ -1,0 +1,60 @@
+conditions:
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
+  type: CodeSynced
+- message: no synced fingerprint has been recorded yet
+  reason: NotSyncedYet
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeVM.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeVM.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerEphemeral.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerEphemeral.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerPersistent.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerPersistent.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/subscribeComputeEvents.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/subscribeComputeEvents.ts
+  fingerprint: 85bfbc282945fca14c0c13fdaf9404ee53ea4ab63c2585960e5df7aabcf075e0
+  interfaces:
+  - codegraphId: type_alias:f236e40d2419fcf685be494db9c50a84
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.defs.ts
+    kind: type_alias
+    line: 13
+    name: $Params
+  - codegraphId: type_alias:393831b8d75c1249270e671756544ddb
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.defs.ts
+    kind: type_alias
+    line: 20
+    name: $Input
+  - codegraphId: type_alias:c6ef996f74e21ae1c38c7755e9923196
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.defs.ts
+    kind: type_alias
+    line: 21
+    name: $InputBody
+  - codegraphId: type_alias:ea94174ed7f56e765770915c6a088775
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.defs.ts
+    kind: type_alias
+    line: 28
+    name: $Output
+  - codegraphId: type_alias:8dd8c3ab1dfe28788340058f4ef2def6
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.defs.ts
+    kind: type_alias
+    line: 29
+    name: $OutputBody
+  - codegraphId: type_alias:6cbf471842bed7607958a9024f6c1586
+    file: lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/subscribeComputeEvents.defs.ts
+    kind: type_alias
+    line: 27
+    name: $Message
+realizedSpecHash: d09b2e69b7417c0f1d41d6c3e760ceaffe1f5e800b0305b6d92b129cfe46bda2
+syncedFingerprint: 85bfbc282945fca14c0c13fdaf9404ee53ea4ab63c2585960e5df7aabcf075e0

@@ -1,0 +1,31 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.defs.ts
+  deleteCompute.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.ts
+  deleteCompute.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeVM.defs.ts
+  requestComputeVM.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeVM.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeVM.ts
+  requestComputeVM.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeVM.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerEphemeral.defs.ts
+  requestComputeWorkerEphemeral.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerEphemeral.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerEphemeral.ts
+  requestComputeWorkerEphemeral.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerEphemeral.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerPersistent.defs.ts
+  requestComputeWorkerPersistent.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerPersistent.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerPersistent.ts
+  requestComputeWorkerPersistent.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerPersistent.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/subscribeComputeEvents.defs.ts
+  subscribeComputeEvents.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/subscribeComputeEvents.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/subscribeComputeEvents.ts
+  subscribeComputeEvents.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/subscribeComputeEvents.ts
+kind: SystemContext
+metadata:
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-gateway
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

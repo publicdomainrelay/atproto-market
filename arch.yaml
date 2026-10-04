@@ -407,3 +407,104 @@ system_contexts:
   id: sc.lib-common-market-lexicons-com-publicdomainrelay-temp-compute
   name: lib-common-market-lexicons-com-publicdomainrelay-temp-compute
   upstream: self
+- code:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config/wif.ts
+  codeRefIndex:
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config/wif.ts
+    wif.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config/wif.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-lexicons-com-publicdomainrelay-temp-compute-config
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-compute-config
+  upstream: self
+- code:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config/wif/simple.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config/wif/simple.ts
+  codeRefIndex:
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config/wif/simple.defs.ts
+    simple.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config/wif/simple.defs.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config/wif/simple.ts
+    simple.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config/wif/simple.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-lexicons-com-publicdomainrelay-temp-compute-config-wif
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-compute-config-wif
+  upstream: self
+- code:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm.ts
+  codeRefIndex:
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm.ts
+    vm.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-lexicons-com-publicdomainrelay-temp-compute-events
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-compute-events
+  upstream: self
+- code:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/registerIdentity.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/registerIdentity.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.ts
+  codeRefIndex:
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.defs.ts
+    delete.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.defs.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.ts
+    delete.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.defs.ts
+    onNetwork.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.defs.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.ts
+    onNetwork.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/registerIdentity.defs.ts
+    registerIdentity.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/registerIdentity.defs.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/registerIdentity.ts
+    registerIdentity.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/registerIdentity.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.defs.ts
+    started.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.defs.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.ts
+    started.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-lexicons-com-publicdomainrelay-temp-compute-events-vm
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-compute-events-vm
+  upstream: self
+- code:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeVM.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeVM.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerEphemeral.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerEphemeral.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerPersistent.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerPersistent.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/subscribeComputeEvents.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/subscribeComputeEvents.ts
+  codeRefIndex:
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.defs.ts
+    deleteCompute.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.defs.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.ts
+    deleteCompute.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeVM.defs.ts
+    requestComputeVM.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeVM.defs.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeVM.ts
+    requestComputeVM.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeVM.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerEphemeral.defs.ts
+    requestComputeWorkerEphemeral.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerEphemeral.defs.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerEphemeral.ts
+    requestComputeWorkerEphemeral.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerEphemeral.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerPersistent.defs.ts
+    requestComputeWorkerPersistent.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerPersistent.defs.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerPersistent.ts
+    requestComputeWorkerPersistent.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerPersistent.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/subscribeComputeEvents.defs.ts
+    subscribeComputeEvents.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/subscribeComputeEvents.defs.ts
+  - file:lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/subscribeComputeEvents.ts
+    subscribeComputeEvents.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/subscribeComputeEvents.ts
+  depends_on:
+  - sc.atproto-market
+  id: sc.lib-common-market-lexicons-com-publicdomainrelay-temp-gateway
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-gateway
+  upstream: self

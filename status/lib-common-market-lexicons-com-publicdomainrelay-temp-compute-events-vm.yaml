@@ -1,0 +1,27 @@
+conditions:
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/registerIdentity.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/registerIdentity.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.defs.ts
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.ts
+  fingerprint: a3d17fa1c39b52e8f0a497aca48f34b40103bbe8b6f65e2e8f7b764d93bafc17
+realizedSpecHash: 929481d0aecc96472f8ac46959f805fd8d63b8578149458c1242333d5db51434
+syncedFingerprint: a3d17fa1c39b52e8f0a497aca48f34b40103bbe8b6f65e2e8f7b764d93bafc17

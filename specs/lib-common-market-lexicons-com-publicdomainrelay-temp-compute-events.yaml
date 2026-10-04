@@ -1,0 +1,13 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm.ts
+  vm.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm.ts
+kind: SystemContext
+metadata:
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-compute-events
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

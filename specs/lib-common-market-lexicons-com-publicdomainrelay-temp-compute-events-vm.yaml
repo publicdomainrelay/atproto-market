@@ -1,0 +1,27 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+codeRefIndex:
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.defs.ts
+  delete.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.ts
+  delete.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.defs.ts
+  onNetwork.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.ts
+  onNetwork.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/registerIdentity.defs.ts
+  registerIdentity.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/registerIdentity.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/registerIdentity.ts
+  registerIdentity.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/registerIdentity.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.defs.ts
+  started.defs.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.defs.ts
+- file:lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.ts
+  started.ts@lib/common/market-lexicons/com/publicdomainrelay/temp/compute/events/vm/started.ts
+kind: SystemContext
+metadata:
+  name: lib-common-market-lexicons-com-publicdomainrelay-temp-compute-events-vm
+  namespace: default
+spec:
+  dependsOn:
+  - sc.atproto-market
+  repository: atproto-market
+  upstream: self

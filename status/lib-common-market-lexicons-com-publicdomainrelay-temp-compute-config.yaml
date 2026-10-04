@@ -1,0 +1,20 @@
+conditions:
+- message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+  reason: InterfacesObserved
+  status: "True"
+  type: CodeSynced
+- message: observed facts match the synced fingerprint
+  reason: FingerprintEqual
+  status: "False"
+  type: Drifted
+- message: the spec passes the validator
+  reason: ValidatorPassed
+  status: "True"
+  type: SpecValid
+observed:
+  files:
+  - lib/common/market-lexicons/com/publicdomainrelay/temp/compute/config/wif.ts
+  fingerprint: 6afbeeeef3c81633ee72149dd9441a9ffb041ed429c238c7f24508d4cd123ee8
+realizedSpecHash: e84b1a77833910f2dc8e92fe5440d019f16427738d23921df213b981e4a53c15
+syncedFingerprint: 6afbeeeef3c81633ee72149dd9441a9ffb041ed429c238c7f24508d4cd123ee8
