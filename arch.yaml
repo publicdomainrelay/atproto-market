@@ -2527,6 +2527,9 @@ system_contexts:
     level: MUST
   codeRefIndex:
   - file:lib/hono-factory-secrets-oidc/mod.ts mod.ts@lib/hono-factory-secrets-oidc/mod.ts
+  - function:9217ff283324c4a352117c8801e75b4a createSecretsApp@lib/hono-factory-secrets-oidc/mod.ts:19
+  - function:d93e06a7dd7538ef41434823de865c6e extractBearer@lib/hono-factory-secrets-oidc/mod.ts:13
+  - interface:7e777067ac67ae39e4b4da5c05ea6802 SecretsFactoryOptions@lib/hono-factory-secrets-oidc/mod.ts:6
 - id: sc.lib-market-atproto
   name: lib-market-atproto
   spec: specs/lib-market-atproto.yaml
@@ -2565,8 +2568,87 @@ system_contexts:
   - id: r.signature-verification
     level: MUST
   codeRefIndex:
+  - class:088ab0f90fba416f3035887f3f6abcf1 ContractGraphError@lib/market-atproto/contract.ts:24
+  - class:b264115331e7de1c849ce526bb95a46d MarketClient@lib/market-atproto/client.ts:117
+  - file:lib/market-atproto/attest.ts attest.ts@lib/market-atproto/attest.ts
+  - file:lib/market-atproto/auth.ts auth.ts@lib/market-atproto/auth.ts
+  - file:lib/market-atproto/badge-blue-keys.ts badge-blue-keys.ts@lib/market-atproto/badge-blue-keys.ts
+  - file:lib/market-atproto/bid.ts bid.ts@lib/market-atproto/bid.ts
+  - file:lib/market-atproto/client.ts client.ts@lib/market-atproto/client.ts
+  - file:lib/market-atproto/contract.ts contract.ts@lib/market-atproto/contract.ts
   - file:lib/market-atproto/deno.json deno.json@lib/market-atproto/deno.json
   - file:lib/market-atproto/mod.ts mod.ts@lib/market-atproto/mod.ts
+  - file:lib/market-atproto/records.ts records.ts@lib/market-atproto/records.ts
+  - file:lib/market-atproto/server.ts server.ts@lib/market-atproto/server.ts
+  - file:lib/market-atproto/signing.ts signing.ts@lib/market-atproto/signing.ts
+  - function:068238ff7263642ac7b90ebbfc5ddca3 toStorableEntry@lib/market-atproto/attest.ts:72
+  - function:0f913e33cc210dafda22aef7e2cdc7b1 createSubmitAcceptHandler@lib/market-atproto/server.ts:367
+  - function:102ed3d4f37a62e09488394627bb14ba verifyRemoteProof@lib/market-atproto/attest.ts:230
+  - function:10d883640e8a5a7f9d0b724d937133d1 createKeyBoundByBadgeBlueKey@lib/market-atproto/badge-blue-keys.ts:77
+  - function:13fec5a02eca908bbeb919368a29e6dc createSubmitBidHandler@lib/market-atproto/server.ts:321
+  - function:16fad6b2b6420af853fbdd73759716b6 deleteRecord@lib/market-atproto/records.ts:76
+  - function:2dec0113615801ddc5fff8420d814147 createRemoteProofRecord@lib/market-atproto/signing.ts:112
+  - function:3717d81ed40faf5d4dad599c4a466c88 startOfferingRefresh@lib/market-atproto/records.ts:148
+  - function:3f161e971ad1f5274100575fc3b91d09 pdsForDid@lib/market-atproto/server.ts:529
+  - function:3f8629004305c464a50d8b1bacae6b4b listRecordsAll@lib/market-atproto/records.ts:90
+  - function:4523e9fa3db0d8713e70eb71ea17cdb5 attestationFor@lib/market-atproto/attest.ts:111
+  - function:4d0d3b3b20bd7fc36774859f10ac13dc createReceiptRecord@lib/market-atproto/records.ts:52
+  - function:565917e19429b690f77d038a1771cb93 badgeBlueKeysRkey@lib/market-atproto/badge-blue-keys.ts:37
+  - function:62506aa5278c714b78058eb4ffa8fdd4 createSignedRecord@lib/market-atproto/signing.ts:82
+  - function:6977507cc804dcb71b651b9629300054 createRfpDispatcher@lib/market-atproto/server.ts:234
+  - function:6ba98cc82d098583236519c1e8e764f1 resolvePds@lib/market-atproto/records.ts:119
+  - function:6e2cdf7b076fec814b99568afd576756 fetchRecord@lib/market-atproto/server.ts:540
+  - function:72525a51e6418b0a9341975a977fd7f7 createAndSubmitBid@lib/market-atproto/bid.ts:39
+  - function:777e711d211dc51cbd2e0d75a82e0d5b createDidKeyResolver@lib/market-atproto/attest.ts:150
+  - function:8667f4a02873405e91188462d922e2fe verifyRecordSignatures@lib/market-atproto/signing.ts:164
+  - function:87b92ea5f5717bb556617a2c1fa92cf8 extractBearer@lib/market-atproto/auth.ts:14
+  - function:97a396ee1219f7d9074d254be6aedd52 verifyMarketServiceAuth@lib/market-atproto/auth.ts:71
+  - function:98363f480e900827243e69ef1e48679b serviceDidForHost@lib/market-atproto/auth.ts:21
+  - function:985b4184227ce0a11d4eea568402dfce verifyInlineAttestation@lib/market-atproto/attest.ts:201
+  - function:9a8248f51f025f8b6e32b4e8e299f71a createRecord@lib/market-atproto/records.ts:13
+  - function:a1c9d31ffef200b9bfd10ae485037f4c inlineEntries@lib/market-atproto/attest.ts:181
+  - function:a4a549b19eff8b40c325d4759430ac84 createMarketClient@lib/market-atproto/client.ts:240
+  - function:a8e295376e37dbcc8d8027ffbc143b2e createBidFactory@lib/market-atproto/bid.ts:36
+  - function:adf545411098c5c92e62813b4283dc45 createBadgeBlueSigner@lib/market-atproto/attest.ts:106
+  - function:b42bd4e8e8a7b5c513c75339ddb940c2 createSubmitRfpHandler@lib/market-atproto/server.ts:281
+  - function:bfb74ae8c3c5764aa8fec8a08b8a6dcd createBadgeBlueKeysRecord@lib/market-atproto/badge-blue-keys.ts:94
+  - function:c01f943b04487ed6765417f89402e2c2 base58btcEncode@lib/market-atproto/badge-blue-keys.ts:17
+  - function:d086dbd2a94bb08f4868d4e1a36886d9 attestationVerificationMethod@lib/market-atproto/attest.ts:120
+  - function:d4ce49ecbfee113afc4127141aa82940 createRecordResolver@lib/market-atproto/records.ts:161
+  - function:d7be7fb39bc4e2f86fd9985e13241b85 resolveContractGraph@lib/market-atproto/contract.ts:57
+  - function:dd9dba3c37b4e3b9f52bdef5f65e1d72 normalizeSignature@lib/market-atproto/attest.ts:59
+  - function:e21dfce0e403ec8cbf782a0e996930be listRecordsPublic@lib/market-atproto/records.ts:128
+  - function:e5c728d6a9759280b70b480547592bd5 keyBoundByBadgeBlueKey@lib/market-atproto/badge-blue-keys.ts:49
+  - function:ea2b23f33739df4fc8dc7ed4efaefea8 createSubmitEventHandler@lib/market-atproto/server.ts:421
+  - function:eec1501b10e44ae978048272c4e9cced loadOrGenerateKeypair@lib/market-atproto/attest.ts:87
+  - function:fb68d4609e3ad9dcb35fa9dc0cfb9a51 createVerifyHandler@lib/market-atproto/server.ts:525
+  - interface:06b7f3d949eb2428955dc829ff88bd32 MarketClientOptions@lib/market-atproto/client.ts:94
+  - interface:0c2d4165b40cf28c14348ceb91db6d93 BidSettlementDeps@lib/market-atproto/bid.ts:25
+  - interface:3c3e311a12ad5dfe3195b5aaac36af7d VerifyHandlerDeps@lib/market-atproto/server.ts:492
+  - interface:3c712b587b45e111a5a8a12db9b7a950 ReceiptSubject@lib/market-atproto/records.ts:38
+  - interface:4479a9b41ebd3caed12b255aa2081366 ReceiptRefs@lib/market-atproto/records.ts:27
+  - interface:6e79b7b8c9ce2b70f4e3986aff5f0d77 BidFactoryDeps@lib/market-atproto/bid.ts:12
+  - interface:6fe3d0938f2e2498697e840d96caf911 RemoteProofSubject@lib/market-atproto/signing.ts:100
+  - interface:76a72b652b31091b4242c7e9e449f123 VerifyRecordSignaturesOptions@lib/market-atproto/signing.ts:133
+  - interface:90db8b9ee170a9798bba0b80f26f7874 RecordSigner@lib/market-atproto/signing.ts:30
+  - interface:9f98899afaebca0e8500df067ae28b03 ContractGraph@lib/market-atproto/contract.ts:33
+  - interface:a1fd6134e58d1be9a02ec1816d47d3d6 OfferingRefreshHandle@lib/market-atproto/records.ts:138
+  - interface:a2aebdfd88748624278922bae605823b MarketServerDeps@lib/market-atproto/server.ts:69
+  - interface:e48c155afb36e23092258ba5e83a372d VerifyRemoteProofOptions@lib/market-atproto/attest.ts:215
+  - interface:ff01c799dc7cac3a6c8a4ee77fb85202 VerifyInlineOptions@lib/market-atproto/attest.ts:186
+  - method:29c46de8762f2cda28ea9f42945ec2aa MarketClient.submitBid@lib/market-atproto/client.ts:188
+  - method:407b0c921496346755f27d2c95775484 ContractGraphError.constructor@lib/market-atproto/contract.ts:26
+  - method:460e2c9722d4f592de1c2ba79e06993e MarketClient.ensureSigner@lib/market-atproto/client.ts:151
+  - method:5a7c89ac703d88b59f76fd56a381a91f MarketClient.submitEvent@lib/market-atproto/client.ts:209
+  - method:5e00b55cb39a80b1b67ad87180a3b6ba MarketClient.submitAccept@lib/market-atproto/client.ts:198
+  - method:75948ea3fb693dc4b0e4e92c7a6cc06a MarketClient.submitRfp@lib/market-atproto/client.ts:175
+  - method:c68ce766697e07e3588237b46e812d30 MarketClient.create@lib/market-atproto/client.ts:140
+  - type_alias:07fd46a41bb1c9e9be4323c963b3e633 VerifyMarketServiceAuthOptions@lib/market-atproto/auth.ts:37
+  - type_alias:328bae5301fa305891c325db61c46469 KeysForDid@lib/market-atproto/attest.ts:141
+  - type_alias:69e9d4e152de0d940d35bb2ea3fa5e21 VerifyServiceAuthOptions@lib/market-atproto/auth.ts:104
+  - type_alias:c5125342bf372413de697892aa5b2a46 ServiceAuthResult@lib/market-atproto/auth.ts:25
+  - type_alias:d1516ebc54626f302d7a51f379e48688 XrpcService@lib/market-atproto/client.ts:53
+  - type_alias:d50b5da61960bf0467d63a21148b6499 ListedRecord@lib/market-atproto/records.ts:82
 - id: sc.lib-market-bidder
   name: lib-market-bidder
   spec: specs/lib-market-bidder.yaml
@@ -2618,6 +2700,16 @@ system_contexts:
     level: MUST
   - id: r.trust-invalidation
     level: MUST
+  codeRefIndex:
+  - file:lib/market-bidder/mod.ts mod.ts@lib/market-bidder/mod.ts
+  - function:47138519ea324c71993a2053303ad1a3 beginServe@lib/market-bidder/mod.ts:341
+  - function:9b2026d2f9671120feac1c6c94133674 createMarketBidder@lib/market-bidder/mod.ts:140
+  - function:b19f7ada80292e197cdcc8a29e763b0c buildOffering@lib/market-bidder/mod.ts:279
+  - function:b839dc17d3496456f26776592f7f10d3 ensureOffering@lib/market-bidder/mod.ts:297
+  - function:e2d4401ef119cf8107620590e41e0a6c shutdown@lib/market-bidder/mod.ts:676
+  - function:ececd2885fb9130953d79504bd2faf46 ensureOperatorAllowlist@lib/market-bidder/mod.ts:255
+  - interface:9a1b67b2492832d7ba6133e09229a106 MarketBidderConfig@lib/market-bidder/mod.ts:80
+  - interface:d09a574816bbdda0321751f00f3c47d6 MarketBidder@lib/market-bidder/mod.ts:126
 - id: sc.lib-market-bidder-agent
   name: lib-market-bidder-agent
   spec: specs/lib-market-bidder-agent.yaml
@@ -2659,6 +2751,19 @@ system_contexts:
     level: MUST
   codeRefIndex:
   - file:lib/market-bidder-agent/mod.ts mod.ts@lib/market-bidder-agent/mod.ts
+  - function:06cebf856c3be35de17c689a0ccaca29 applyWrites@lib/market-bidder-agent/mod.ts:294
+  - function:08fbe16787fbdc5b92d51bda4c9a4519 listRecords@lib/market-bidder-agent/mod.ts:332
+  - function:1b2e0f2694d705889bcfb6ed573a9d5a dpopFetch@lib/market-bidder-agent/mod.ts:249
+  - function:407e4c41cef3e86724e04659cedadfdb createOAuthAgent@lib/market-bidder-agent/mod.ts:163
+  - function:691e68a35723a4f0e774745f7efb891b refreshLock@lib/market-bidder-agent/mod.ts:225
+  - function:8f78299c9e8f2a298e0fa81860dd13d0 createRecord@lib/market-bidder-agent/mod.ts:349
+  - function:96dc609775f8f9f5382312d19ec99f0e putRecord@lib/market-bidder-agent/mod.ts:367
+  - function:a690e444f084e1d7e654f05a07f22482 getServiceAuth@lib/market-bidder-agent/mod.ts:385
+  - function:a9adf14c6ea59e323dcdd8a8ad87784f createDesktopATProto@lib/market-bidder-agent/mod.ts:418
+  - function:fdc54648c4f6169ee7c3ef17e76f9628 getRecord@lib/market-bidder-agent/mod.ts:314
+  - interface:76dfa4cb57701d3cf137a9d79e664dfe OAuthAgentSession@lib/market-bidder-agent/mod.ts:144
+  - interface:981804416897bc52d8c40722ea378abb OAuthAgentOptions@lib/market-bidder-agent/mod.ts:152
+  - interface:ac5d8663ab340c835a37c121adbb2dac DidResolverLike@lib/market-bidder-agent/mod.ts:136
 - id: sc.lib-market-bidder-compute
   name: lib-market-bidder-compute
   spec: specs/lib-market-bidder-compute.yaml
@@ -2700,6 +2805,7 @@ system_contexts:
     level: MAY
   codeRefIndex:
   - file:lib/market-bidder-compute/mod.ts mod.ts@lib/market-bidder-compute/mod.ts
+  - interface:462aac25716496197891c11616e37b58 VmBidderDeps@lib/market-bidder-compute/mod.ts:44
 - id: sc.lib-market-bidder-worker
   name: lib-market-bidder-worker
   spec: specs/lib-market-bidder-worker.yaml

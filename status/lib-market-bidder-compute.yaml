@@ -1,18 +1,50 @@
+observedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedCommit: 4e520f5aeee46298421558c8b359b2d3685b9ba3
+syncedFingerprint: f4e4d75e911a5af1734903ea9bd806d79511c0494f3f53ff913f6a8a8f9eb6db
+realizedSpecHash: e583cca0ffebd750bcc8b7e87dc7dfb3ad0b34d6dfd595b6be0c34b56930220e
 conditions:
 - type: CodeSynced
   status: "False"
-  reason: InterfacesMissing
-  message: 'missing: VmBidderDeps, createComputeProviderHooks, createVmBidderCallbacks;
-    unresolved: r.accept-bidconfig-required: file:lib/market-bidder-compute/mod.ts,
-    r.accept-bidconfig-required: function:5ec21894bcf015b3164a07db128adf72, r.callback-factory-shape:
-    interface:462aac25716496197891c11616e37b58, r.provider-ref-callback-delegation:
-    function:aed470efa09431ae131407c08a4b3c37'
+  reason: CodeRefsUnresolved
+  message: 'unresolved requirement code refs: r.accept-bidconfig-required: function:5ec21894bcf015b3164a07db128adf72,
+    r.provider-ref-callback-delegation: function:aed470efa09431ae131407c08a4b3c37'
 - type: Drifted
   status: "False"
-  reason: NotSyncedYet
-  message: no synced fingerprint has been recorded yet
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed
   message: the spec passes the validator
-observed: {}
+observed:
+  files:
+  - lib/market-bidder-compute/mod.ts
+  treeFiles:
+  - lib/market-bidder-compute/deno.json
+  interfaces:
+  - name: VmBidderDeps
+    kind: interface
+    file: lib/market-bidder-compute/mod.ts
+    line: 44
+    codegraphId: interface:462aac25716496197891c11616e37b58
+  - name: createVmBidderCallbacks
+    kind: function
+    signature: |-
+      (deps: VmBidderDeps): {
+        rfp: Record<string, Record<string, SubmitRfpCallback>>;
+        accept: SubmitAcceptCallback;
+        event: Record<string, Record<string, (ctx: EventDispatchContext) => Promise<{ status?: number; body?: unknown } | void>>>;
+      }
+    file: lib/market-bidder-compute/mod.ts
+    line: 117
+    codegraphId: function:0791308e00a93c24057bb04e10198f52
+  - name: createComputeProviderHooks
+    kind: function
+    signature: |-
+      (opts: {
+        provider: ComputeProvider;
+      }): MarketBidderProviderRef
+    file: lib/market-bidder-compute/mod.ts
+    line: 492
+    codegraphId: function:ef1bc6ab24fd35061cac77784db90302
+  fingerprint: f4e4d75e911a5af1734903ea9bd806d79511c0494f3f53ff913f6a8a8f9eb6db
