@@ -977,7 +977,7 @@ export async function runComputeContract(
   // "tunnel"/"fedproxy-ssh" transports publish a relay FQDN and only those keep
   // the websocat ProxyCommand.
   const transport = opts.userData?.transport ?? "iroh";
-  const usesDumbpipe = transport !== "fedproxy-ssh";
+  const usesDumbpipe = transport === "iroh";
   const vmReadyTimeoutSec = opts.vmReadyTimeoutSec ?? 300;
   const extraBidderDids = opts.extraBidderDids ?? [];
   const denyBidderDids = opts.denyBidderDids ?? [];
