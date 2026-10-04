@@ -1218,4 +1218,5 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-utils-attestation-key-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | request-vm-ssh-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
 | test-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Succeeded |  | 0 | - |
-| test-fixtures-cloud-init-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Running |  | 0 | - |
+| test-fixtures-cloud-init-c2s-d20070c3bfb0-d20070c3bfb0 | CodeToSpec | Failed |  | 0 | - |
+| test-fixtures-cloud-init-c2s-d20070c3bfb0-d20070c3bfb0-a2 | CodeToSpec | Running |  | 0 | - |

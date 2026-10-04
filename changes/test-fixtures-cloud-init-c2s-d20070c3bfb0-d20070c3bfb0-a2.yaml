@@ -1,0 +1,62 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: test-fixtures-cloud-init-c2s-d20070c3bfb0-d20070c3bfb0-a2
+  namespace: default
+spec:
+  delta: {}
+  direction: CodeToSpec
+  fromCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
+  systemContext: test-fixtures-cloud-init
+  toCommit: d20070c3bfb0922fa261d6fc217f8bdfb931311b
+status:
+  message: the agent is summarizing test-fixtures-cloud-init
+  phase: Running
+superseded:
+- message: |-
+    ...     ]
+        },
+        {
+          "id": "r.fixtures-loaded-by-relative-url",
+          "level": "SHOULD",
+          "text": "The snapshot test locates fixtures by joining the literal relative path ./fixtures/cloud-init/ onto import.meta.url and reading it as UTF-8 text, so the fixtures resolve from the test module's own directory rather than from the process working directory.",
+          "codeRefs": [
+            "file:test/cloud_init_snapshot_test.ts"
+          ]
+        }
+      ],
+      "interfaces": [
+        {
+          "name": "fixture",
+          "kind": "function",
+          "signature": "function fixture(name: string): Promise<string>",
+          "file": "test/cloud_init_snapshot_test.ts"
+        },
+        {
+          "name": "buildTunnelUserData",
+          "kind": "function",
+          "signature": "export function buildTunnelUserData(ctx: TunnelCloudInitContext): string",
+          "file": "lib/common/cloud-init-common/mod.ts"
+        },
+        {
+          "name": "buildUserData",
+          "kind": "function",
+          "signature": "export function buildUserData(opts: { ctx: CloudInitContext; modules: (string | UserDataModule)[]; base?: string; overrides?: Record<string, unknown> }): string",
+          "file": "lib/common/cloud-init-common/mod.ts"
+        },
+        {
+          "name": "TunnelCloudInitContext",
+          "kind": "interface",
+          "signature": "export interface TunnelCloudInitContext { ingressProxyHost: string; audHost: string; jsrUrl?: string; sshAuthorizedKey: string; targetPort?: number; hostAliases?: string[] }",
+          "file": "lib/common/cloud-init-common/mod.ts"
+        },
+        {
+          "name": "CloudInitContext",
+          "kind": "interface",
+          "signature": "export interface CloudInitContext { vmName: string; didPlc?: string; didPlcKey?: string; relayHost?: string; xrpcRelaySubdomain?: string; sshAuthorizedKey?: string; ingressProxyHost?: string; audHost?: string; jsrUrl?: string; targetPort?: number; hostAliases?: string[]; sshHandle?: string; listenPort?: number; woottyDistUrl?: string }",
+          "file": "lib/common/cloud-init-common/mod.ts"
+        }
+      ]
+    }
+  name: test-fixtures-cloud-init-c2s-d20070c3bfb0-d20070c3bfb0
+  phase: Failed
