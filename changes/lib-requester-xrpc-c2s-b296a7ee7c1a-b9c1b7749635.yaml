@@ -1,0 +1,119 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-requester-xrpc-c2s-b296a7ee7c1a-b9c1b7749635
+  namespace: default
+spec:
+  delta:
+    observed:
+      fingerprint:
+        from: 7ba7d483f13e78eb1ab14bafc9de59776ec2b909e58a5c6cf014c66325e9d1ae
+        to: ece173d70b90f5e0f4842a3114f7172d2b332210372fc41e6e6e40593befb953
+      interfaces:
+      - fields:
+        - codegraphId
+        - line
+        from:
+          codegraphId: interface:385e4ba5dee147a41dca8ef6722151f4
+          file: lib/requester-xrpc/mod.ts
+          kind: interface
+          line: 1992
+          name: CreateOAuthRequesterOpts
+        name: CreateOAuthRequesterOpts
+        op: changed
+        to:
+          codegraphId: interface:3d2c8ff0b1f5240419f60d8a8ae71ddd
+          file: lib/requester-xrpc/mod.ts
+          kind: interface
+          line: 1998
+          name: CreateOAuthRequesterOpts
+      - fields:
+        - codegraphId
+        - line
+        from:
+          codegraphId: interface:bc78f60b27d79f26c95ea77bb0a03e7b
+          file: lib/requester-xrpc/mod.ts
+          kind: interface
+          line: 1985
+          name: OAuthRequesterHandle
+        name: OAuthRequesterHandle
+        op: changed
+        to:
+          codegraphId: interface:b9a6655a7e162aa1dfd86220525c31f1
+          file: lib/requester-xrpc/mod.ts
+          kind: interface
+          line: 1991
+          name: OAuthRequesterHandle
+      - fields:
+        - codegraphId
+        - line
+        from:
+          codegraphId: function:4b4ae858309a8baa5374dc9e610cd53f
+          file: lib/requester-xrpc/mod.ts
+          kind: function
+          line: 2023
+          name: applyOAuthAgentToRequesterPDS
+          signature: |-
+            (
+              pds: RequesterPDS,
+              agent: AtprotoAgentLike & { sessionData: { userDid: string }; getServiceAuth?: (aud: string, lxm?: string) => Promise<string> },
+              opts?: { log?: (event: string, data: Record<string, unknown>) => void },
+            ): void
+        name: applyOAuthAgentToRequesterPDS
+        op: changed
+        to:
+          codegraphId: function:f520f09208cdcaf8c0ef8eb1e6b3621e
+          file: lib/requester-xrpc/mod.ts
+          kind: function
+          line: 2029
+          name: applyOAuthAgentToRequesterPDS
+          signature: |-
+            (
+              pds: RequesterPDS,
+              agent: AtprotoAgentLike & { sessionData: { userDid: string }; getServiceAuth?: (aud: string, lxm?: string) => Promise<string> },
+              opts?: { log?: (event: string, data: Record<string, unknown>) => void },
+            ): void
+      - fields:
+        - codegraphId
+        - line
+        from:
+          codegraphId: function:0055a20c8ce8bcc48d525f72fc3e4c94
+          file: lib/requester-xrpc/mod.ts
+          kind: function
+          line: 2082
+          name: createOAuthRequester
+          signature: '(opts: CreateOAuthRequesterOpts): Promise<OAuthRequesterHandle>'
+        name: createOAuthRequester
+        op: changed
+        to:
+          codegraphId: function:168014603ee29fdc3e33868cceca773f
+          file: lib/requester-xrpc/mod.ts
+          kind: function
+          line: 2088
+          name: createOAuthRequester
+          signature: '(opts: CreateOAuthRequesterOpts): Promise<OAuthRequesterHandle>'
+      - fields:
+        - codegraphId
+        - line
+        from:
+          codegraphId: function:231ba5e810dc89c81b53459f106be977
+          file: lib/requester-xrpc/mod.ts
+          kind: function
+          line: 2116
+          name: getSession
+          signature: ()
+        name: getSession
+        op: changed
+        to:
+          codegraphId: function:6fd5064a3cf8710797225f0e1c92ed40
+          file: lib/requester-xrpc/mod.ts
+          kind: function
+          line: 2122
+          name: getSession
+          signature: ()
+  direction: CodeToSpec
+  fromCommit: b296a7ee7c1aae256a81c378b419bf16b3a3aca6
+  systemContext: lib-requester-xrpc
+  toCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
+status:
+  phase: Pending

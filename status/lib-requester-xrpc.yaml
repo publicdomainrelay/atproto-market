@@ -11,9 +11,9 @@ conditions:
   reason: InterfacesMissing
   status: "False"
   type: CodeSynced
-- message: observed facts match the synced fingerprint
-  reason: FingerprintEqual
-  status: "False"
+- message: observed facts changed since the spec was last synced
+  reason: FingerprintChanged
+  status: "True"
   type: Drifted
 - message: the spec passes the validator
   reason: ValidatorPassed
@@ -22,7 +22,7 @@ conditions:
 observed:
   files:
   - lib/requester-xrpc/mod.ts
-  fingerprint: 7ba7d483f13e78eb1ab14bafc9de59776ec2b909e58a5c6cf014c66325e9d1ae
+  fingerprint: ece173d70b90f5e0f4842a3114f7172d2b332210372fc41e6e6e40593befb953
   interfaces:
   - codegraphId: interface:66b06e1611350a7f4fb4602342352a5f
     file: lib/requester-xrpc/mod.ts
@@ -230,20 +230,20 @@ observed:
           eventStreams?: import("@publicdomainrelay/atproto-event-streams-client").ATProtoEventStreamsClient;
         } = {},
       ): Promise<ContractFlowResult>
-  - codegraphId: interface:bc78f60b27d79f26c95ea77bb0a03e7b
+  - codegraphId: interface:b9a6655a7e162aa1dfd86220525c31f1
     file: lib/requester-xrpc/mod.ts
     kind: interface
-    line: 1985
+    line: 1991
     name: OAuthRequesterHandle
-  - codegraphId: interface:385e4ba5dee147a41dca8ef6722151f4
+  - codegraphId: interface:3d2c8ff0b1f5240419f60d8a8ae71ddd
     file: lib/requester-xrpc/mod.ts
     kind: interface
-    line: 1992
+    line: 1998
     name: CreateOAuthRequesterOpts
-  - codegraphId: function:4b4ae858309a8baa5374dc9e610cd53f
+  - codegraphId: function:f520f09208cdcaf8c0ef8eb1e6b3621e
     file: lib/requester-xrpc/mod.ts
     kind: function
-    line: 2023
+    line: 2029
     name: applyOAuthAgentToRequesterPDS
     signature: |-
       (
@@ -251,21 +251,21 @@ observed:
         agent: AtprotoAgentLike & { sessionData: { userDid: string }; getServiceAuth?: (aud: string, lxm?: string) => Promise<string> },
         opts?: { log?: (event: string, data: Record<string, unknown>) => void },
       ): void
-  - codegraphId: function:0055a20c8ce8bcc48d525f72fc3e4c94
+  - codegraphId: function:168014603ee29fdc3e33868cceca773f
     file: lib/requester-xrpc/mod.ts
     kind: function
-    line: 2082
+    line: 2088
     name: createOAuthRequester
     signature: '(opts: CreateOAuthRequesterOpts): Promise<OAuthRequesterHandle>'
-  - codegraphId: function:231ba5e810dc89c81b53459f106be977
+  - codegraphId: function:6fd5064a3cf8710797225f0e1c92ed40
     file: lib/requester-xrpc/mod.ts
     kind: function
-    line: 2116
+    line: 2122
     name: getSession
     signature: ()
   treeFiles:
   - lib/requester-xrpc/deno.json
-observedCommit: b296a7ee7c1aae256a81c378b419bf16b3a3aca6
+observedCommit: b9c1b77496359eeb9b266c536b964f1249aac4d1
 realizedSpecHash: fc3eb42383f954edc6a0e81c5449d4d43b676db997f0663e7c0120da500d5024
 syncedCommit: b296a7ee7c1aae256a81c378b419bf16b3a3aca6
 syncedFingerprint: 7ba7d483f13e78eb1ab14bafc9de59776ec2b909e58a5c6cf014c66325e9d1ae
