@@ -1,0 +1,36 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SystemContext
+metadata:
+  name: lib-did-plc
+  namespace: default
+spec:
+  repository: atproto-market
+  upstream: self
+  dependsOn:
+  - sc.atproto-market
+codeRefIndex:
+- file:lib/did-plc/client.ts client.ts@lib/did-plc/client.ts
+- file:lib/did-plc/fixup-openapi.ts fixup-openapi.ts@lib/did-plc/fixup-openapi.ts
+- file:lib/did-plc/generated/client.gen.ts client.gen.ts@lib/did-plc/generated/client.gen.ts
+- file:lib/did-plc/generated/client/client.gen.ts client.gen.ts@lib/did-plc/generated/client/client.gen.ts
+- file:lib/did-plc/generated/client/index.ts index.ts@lib/did-plc/generated/client/index.ts
+- file:lib/did-plc/generated/client/types.gen.ts types.gen.ts@lib/did-plc/generated/client/types.gen.ts
+- file:lib/did-plc/generated/client/utils.gen.ts utils.gen.ts@lib/did-plc/generated/client/utils.gen.ts
+- file:lib/did-plc/generated/core/auth.gen.ts auth.gen.ts@lib/did-plc/generated/core/auth.gen.ts
+- file:lib/did-plc/generated/core/bodySerializer.gen.ts bodySerializer.gen.ts@lib/did-plc/generated/core/bodySerializer.gen.ts
+- file:lib/did-plc/generated/core/params.gen.ts params.gen.ts@lib/did-plc/generated/core/params.gen.ts
+- file:lib/did-plc/generated/core/pathSerializer.gen.ts pathSerializer.gen.ts@lib/did-plc/generated/core/pathSerializer.gen.ts
+- file:lib/did-plc/generated/core/queryKeySerializer.gen.ts queryKeySerializer.gen.ts@lib/did-plc/generated/core/queryKeySerializer.gen.ts
+- file:lib/did-plc/generated/core/serverSentEvents.gen.ts serverSentEvents.gen.ts@lib/did-plc/generated/core/serverSentEvents.gen.ts
+- file:lib/did-plc/generated/core/types.gen.ts types.gen.ts@lib/did-plc/generated/core/types.gen.ts
+- file:lib/did-plc/generated/core/utils.gen.ts utils.gen.ts@lib/did-plc/generated/core/utils.gen.ts
+- file:lib/did-plc/generated/index.ts index.ts@lib/did-plc/generated/index.ts
+- file:lib/did-plc/generated/sdk.gen.ts sdk.gen.ts@lib/did-plc/generated/sdk.gen.ts
+- file:lib/did-plc/generated/types.gen.ts types.gen.ts@lib/did-plc/generated/types.gen.ts
+- file:lib/did-plc/genesis.ts genesis.ts@lib/did-plc/genesis.ts
+- file:lib/did-plc/keypair-state.ts keypair-state.ts@lib/did-plc/keypair-state.ts
+- file:lib/did-plc/mod.ts mod.ts@lib/did-plc/mod.ts
+- file:lib/did-plc/openapi-ts.config.ts openapi-ts.config.ts@lib/did-plc/openapi-ts.config.ts
+- file:lib/did-plc/openapi.official.yaml openapi.official.yaml@lib/did-plc/openapi.official.yaml
+- file:lib/did-plc/resolver.ts resolver.ts@lib/did-plc/resolver.ts
+- file:lib/did-plc/types.ts types.ts@lib/did-plc/types.ts

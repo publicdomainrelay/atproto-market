@@ -1,0 +1,39 @@
+syncedFingerprint: e28e67f6737f8c55bb366814adcf8bd94e1c9319f609707b7d811b74b5ef067c
+realizedSpecHash: 7c9d548411b8e26efacda6635deb23cacd15101ad1f347de6a851a6efb73fcbd
+conditions:
+- type: CodeSynced
+  status: "False"
+  reason: InterfacesMissing
+  message: 'undeclared: CreateIngressOpts, createIngress, getServiceAuthToken'
+- type: Drifted
+  status: "False"
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
+- type: SpecValid
+  status: "True"
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed:
+  files:
+  - lib/did-key-ingress-proxy/mod.ts
+  treeFiles:
+  - lib/did-key-ingress-proxy/deno.json
+  interfaces:
+  - name: CreateIngressOpts
+    kind: interface
+    file: lib/did-key-ingress-proxy/mod.ts
+    line: 8
+    codegraphId: interface:da388f002919a2fd08b59e8f65646870
+  - name: createIngress
+    kind: function
+    signature: '(opts: CreateIngressOpts): IngressRef'
+    file: lib/did-key-ingress-proxy/mod.ts
+    line: 38
+    codegraphId: function:ab0d43e74646836bd86d4b393d2cafa0
+  - name: getServiceAuthToken
+    kind: function
+    signature: '(lxm: string): Promise<string>'
+    file: lib/did-key-ingress-proxy/mod.ts
+    line: 51
+    codegraphId: function:720938c17d8a919da0fa9510c65cc8d1
+  fingerprint: e28e67f6737f8c55bb366814adcf8bd94e1c9319f609707b7d811b74b5ef067c
