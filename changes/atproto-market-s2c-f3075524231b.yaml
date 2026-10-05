@@ -18,4 +18,5 @@ spec:
     - +r.iroh-cloud-init-fixture
     - +r.iroh-full-flow-harness
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is realizing atproto-market
