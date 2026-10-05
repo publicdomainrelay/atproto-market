@@ -8,4 +8,7 @@ _None: this branch declares the same requirements as the default branch._
 
 ## Realization
 
-_None: no SpecChange landed on this branch yet._
+| change | direction | phase | commit | verify | acceptance | coverage |
+| --- | --- | --- | --- | --- | --- | --- |
+| atproto-market-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
+| hono-bidder-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
