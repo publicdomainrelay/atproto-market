@@ -28,5 +28,5 @@ status:
   phase: Populating
   contexts:
     total: 54
-    summarized: 46
+    summarized: 48
     failed: 0
