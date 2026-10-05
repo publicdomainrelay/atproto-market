@@ -17,8 +17,10 @@ spec:
     - +r.iroh-acceptance-plc-key-resolution
     - +r.iroh-cloud-init-fixture
 status:
-  phase: Running
-  message: the agent is realizing atproto-market in a batch of 5 led by atproto-market
+  phase: Failed
+  branch: spec/atproto-market/dcae0d4f
+  agentLog: 'verify: exit 0, 0s, 0 ok'
+  message: 'claudecli: realize atproto-market: the model did not answer within 15m0s'
   attempt: 7
   retryReason: 'The guest''s report never lands, so the requester never receives the
     ticket and ssh never becomes ready: the container''s /usr/local/bin/report-iroh-ticket.sh
@@ -37,6 +39,37 @@ status:
     from the RFP cloud-init, the dumbpipe listener runs and reports its ticket, and
     the host-side ensureDumbpipe no longer hangs.'
   retryBy: john
+  progress:
+    tools:
+    - tool: Edit
+      count: 25
+    - tool: Read
+      count: 29
+    - tool: Write
+      count: 4
+    files:
+    - compute-contract-full-flow/run_full_flow.ts
+    - it_run.out
+    - lib/abc/requester/mod.ts
+    - lib/compute-contract-gateway-xrpc/mod.ts
+    - lib/did-key-ingress-proxy/mod.ts
+    - lib/guest-capability-secrets/mod.ts
+    - lib/market-bidder-compute/mod.ts
+    - lib/requester-xrpc/mod.ts
+    - request-vm-ssh/cli-args-env.ts
+    - request-vm-ssh/mod.ts
+    - test/bidder_container_integration_test.ts
+    - test/bidder_cross_platform_integration_test.ts
+    - test/bidder_prod_integration_test.ts
+    - test/bidder_ssh_relay_test.ts
+    - test/cloud_init_snapshot_test.ts
+    - test/fetch-interceptor.ts
+    - test/fixtures/cloud-init/iroh.yaml
+    - test/scratch_deno_cert_probe.ts
+    - test/scratch_localhost_probe.ts
+    - test/scratch_tar_probe.ts
+    first: "2026-10-05T20:32:15Z"
+    last: "2026-10-05T20:45:59Z"
 superseded:
 - name: atproto-market-s2c-dcae0d4f6037-a6
   phase: Failed

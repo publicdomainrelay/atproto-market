@@ -15,9 +15,10 @@ spec:
     requirements:
     - +r.control-plane-and-report-route
 status:
-  phase: Running
-  message: the agent is realizing lib-did-key-ingress-proxy in a batch of 5 led by
-    atproto-market
+  phase: Failed
+  branch: spec/atproto-market/dcae0d4f
+  agentLog: 'verify: exit 0, 0s, 0 ok'
+  message: 'claudecli: realize atproto-market: the model did not answer within 15m0s'
   attempt: 9
   retryReason: 'The guest''s report never lands, so the requester never receives the
     ticket and ssh never becomes ready: the container''s /usr/local/bin/report-iroh-ticket.sh
