@@ -1,15 +1,13 @@
 observedCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
 syncedCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
 syncedFingerprint: 139ca181cf4f4709194afd06757cccf0fb514019c4a7518e77944479978181c5
-realizedSpecHash: 0bb8d14edb9c2352abaed37cf54c2a063fe2fdc1069236dba0fc2bf607825198
+realizedSpecHash: ec9519d3e1ff3fcfcffd3ef28510cb586e5ea33b57d9b3a369eb18b5b56ba3a2
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: Client, ClientOptions, Config, CreateClientConfig, Middleware,
-    Options, RequestOptions, RequestResult, ResolvedRequestOptions, ResponseStyle,
-    TDataShape, buildUrl, createClient, createConfig, createInterceptors, createQuerySerializer,
-    getParseAs, mergeConfigs, mergeHeaders, setAuthParams'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual

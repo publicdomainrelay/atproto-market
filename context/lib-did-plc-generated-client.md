@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+The context exists so the vendored, machine-generated did:plc HTTP client is specified rather than merely present: regeneration from the did:plc source would overwrite any hand edit that is not written down here. It records the behavioural contract of the client factory and its helpers — config defaulting and merging, the ordering of beforeRequest, auth, validators, serializers and interceptors, the empty-body and parseAs rules, the error-body extraction path, and the responseStyle return shapes — so that consumers such as lib/did-plc/client.ts can rely on those behaviours and so that a regenerated file can be diffed against what this document says must hold. It depends on the generated core context (lib-did-plc-generated-core) for the shared serializers, SSE client and config primitives it builds on.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

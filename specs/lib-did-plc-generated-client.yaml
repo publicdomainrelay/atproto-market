@@ -8,8 +8,291 @@ spec:
   upstream: self
   dependsOn:
   - sc.lib-did-plc-generated-core
+  intent: 'The context exists so the vendored, machine-generated did:plc HTTP client
+    is specified rather than merely present: regeneration from the did:plc source
+    would overwrite any hand edit that is not written down here. It records the behavioural
+    contract of the client factory and its helpers — config defaulting and merging,
+    the ordering of beforeRequest, auth, validators, serializers and interceptors,
+    the empty-body and parseAs rules, the error-body extraction path, and the responseStyle
+    return shapes — so that consumers such as lib/did-plc/client.ts can rely on those
+    behaviours and so that a regenerated file can be diffed against what this document
+    says must hold. It depends on the generated core context (lib-did-plc-generated-core)
+    for the shared serializers, SSE client and config primitives it builds on.'
+  requirements:
+  - id: r.auth-params
+    level: MUST
+    text: setAuthParams is async, takes the request's auth, query and security settings
+      plus a mutable Headers instance, resolves the auth token supplied on the config,
+      which may itself be a function returning a token or a promise of one, and writes
+      the resulting credential into either the headers or the query according to the
+      operation's security scheme.
+    codeRefs:
+    - file:lib/did-plc/generated/client/utils.gen.ts
+    - function:e9636fa71df0faaef499d2a5fb4b33cf
+  - id: r.config-defaults
+    level: SHOULD
+    text: 'createConfig supplies the documented defaults so an unconfigured client
+      behaves sensibly: parseAs ''auto'', responseStyle ''fields'' and throwOnError
+      false. baseUrl and fetch stay optional, and the next option is typed never so
+      that callers of Next.js applications are steered to the dedicated client package
+      instead of silently losing their options.'
+    codeRefs:
+    - file:lib/did-plc/generated/client/utils.gen.ts
+    - function:0131a84b31ad85543599f7fcdc257d17
+    - interface:38443be81142d5646b8f37c2d0673a74
+  - id: r.config-merge-order
+    level: MUST
+    text: Per-request options resolve by spreading the stored client config first
+      and the call options second, so call options win; fetch falls back through options.fetch,
+      then the stored config's fetch, then globalThis.fetch; and headers are combined
+      with mergeHeaders rather than overwritten so neither side is dropped. mergeConfigs
+      performs the same non-destructive combination of two Config objects for createClient
+      and setConfig.
+    codeRefs:
+    - file:lib/did-plc/generated/client/utils.gen.ts
+    - function:045b120064539e4384e726f1ad3a6cfd
+    - function:5cc56f8414c5363a5723ab1d53a49283
+  - id: r.create-client-factory
+    level: MUST
+    text: createClient is the sole entrypoint to the generated client. Given an optional
+      Config, defaulting to the empty object, it merges that config over the defaults
+      from createConfig() and returns a Client exposing buildUrl, getConfig, setConfig,
+      request, interceptors, the per-method helpers connect/delete/get/head/options/patch/post/put/trace,
+      and an sse namespace with the same method set. getConfig returns a shallow copy
+      of the live config so callers cannot mutate internal state, and setConfig merges
+      the incoming config into the stored one and returns the resulting copy. _buildUrl
+      resolves the URL from the stored config spread under the call options.
+    codeRefs:
+    - file:lib/did-plc/generated/client/client.gen.ts
+    - function:0131a84b31ad85543599f7fcdc257d17
+    - function:188d765b509d3931cfcc5bbfffb2b7dc
+    - type_alias:aff9789136e33dc58e0e596ab4913239
+  - id: r.error-body-extraction
+    level: MUST
+    text: On a non-ok response the client reads the body as text, attempts JSON.parse,
+      and throws the parsed JSON when parsing succeeds and the raw text otherwise.
+      In the catch path the error is passed through every registered error interceptor,
+      defaulted to an empty object when the chain yields nothing, and then either
+      rethrown when throwOnError is set or returned on the error field of the result.
+      This preserves the server's structured error payload for callers instead of
+      wrapping it.
+    codeRefs:
+    - file:lib/did-plc/generated/client/client.gen.ts
+    - function:188d765b509d3931cfcc5bbfffb2b7dc
+  - id: r.generated-code-provenance
+    level: MAY
+    text: The four files carry the .gen.ts suffix and live under lib/did-plc/generated/client.
+      Manual edits are permitted but must be reflected in this spec, because regeneration
+      from the did:plc source will overwrite anything not encoded as a requirement
+      here.
+    codeRefs:
+    - file:lib/did-plc/generated/client/client.gen.ts
+    - file:lib/did-plc/generated/client/index.ts
+    - file:lib/did-plc/generated/client/types.gen.ts
+    - file:lib/did-plc/generated/client/utils.gen.ts
+  - id: r.interceptors
+    level: MUST
+    text: createInterceptors returns a Middleware bundle carrying request, response
+      and error interceptor collections, each supporting registration and removal.
+      The createClient request loop tolerates sparse collections by skipping falsy
+      interceptor entries rather than invoking them, so a removed interceptor never
+      throws at call time.
+    codeRefs:
+    - file:lib/did-plc/generated/client/utils.gen.ts
+    - function:bf0bf50aa3da564c87154fb48989d79a
+    - interface:6a08e48cdf00ed57e85e84d03157d051
+  - id: r.request-pipeline
+    level: MUST
+    text: 'A request runs the pipeline in order: resolve options and URL through beforeRequest,
+      apply security via setAuthParams when opts.security is set, run requestValidator,
+      serialize the body with bodySerializer, delete the Content-Type header when
+      the body is undefined or serializes to the empty string, build the Request with
+      redirect ''follow'', pass it through every registered request interceptor, call
+      fetch, pass the Response through every registered response interceptor, then
+      parse. fetch must be invoked as a bare function rather than as a method of the
+      options object, otherwise the browser throws an illegal-invocation TypeError.'
+    codeRefs:
+    - file:lib/did-plc/generated/client/client.gen.ts
+    - function:188d765b509d3931cfcc5bbfffb2b7dc
+    - function:e9636fa71df0faaef499d2a5fb4b33cf
+  - id: r.response-parsing
+    level: MUST
+    text: 'Successful responses are parsed according to opts.parseAs; when it is ''auto''
+      the format is inferred from the response Content-Type header by getParseAs and
+      otherwise defaults to ''json''. A 204 status or a Content-Length of ''0'' yields
+      an empty value appropriate to the parse format: an empty object for json, an
+      empty FormData for formData, response.body for stream, and the parsed empty
+      value for the Body methods. For json the body is read as text and JSON.parse''d
+      only when non-empty, because servers may return 200 with an empty body that
+      response.json() would reject. responseValidator and responseTransformer apply
+      only on the json path.'
+    codeRefs:
+    - file:lib/did-plc/generated/client/client.gen.ts
+    - function:188d765b509d3931cfcc5bbfffb2b7dc
+    - function:8458ee58b9d6ddeb478f0901d8d49b7a
+  - id: r.response-style
+    level: MUST
+    text: The responseStyle config, typed as ResponseStyle ('data' | 'fields'), selects
+      the return shape and defaults to 'fields'. Under 'data' the client returns the
+      parsed payload alone and undefined on failure; under 'fields' it returns the
+      payload alongside the request and response objects on success, and alongside
+      the error on failure. throwOnError, resolved per request over the stored config,
+      makes the error thrown instead of returned so that no error field is produced.
+    codeRefs:
+    - file:lib/did-plc/generated/client/types.gen.ts
+    - interface:38443be81142d5646b8f37c2d0673a74
+    - type_alias:2af15840ea8a34874a90d03c8c53bfca
+    - type_alias:952c875d05b76621416e955f7ac584c0
+  - id: r.sse-methods
+    level: SHOULD
+    text: The sse namespace methods reuse beforeRequest so headers, auth and query
+      handling match the plain method helpers, then hand the resolved options and
+      URL to createSseClient with the validated request body and an onRequest hook
+      that runs the request interceptor chain over the constructed Request and returns
+      it. The sse set covers trace in addition to the methods the plain helpers expose.
+    codeRefs:
+    - file:lib/did-plc/generated/client/client.gen.ts
+    - function:188d765b509d3931cfcc5bbfffb2b7dc
+    - type_alias:aff9789136e33dc58e0e596ab4913239
+  - id: r.type-surface
+    level: MUST
+    text: 'The module exports the generic type surface typed callers depend on: Config
+      parameterised by a ClientOptions subtype and extending RequestInit minus body,
+      headers and method plus CoreConfig; RequestOptions and its fully-resolved counterpart
+      ResolvedRequestOptions; RequestResult parameterised by data, error, ThrowOnError
+      and response style; ClientOptions carrying baseUrl and throwOnError; Client
+      as the returned interface; CreateClientConfig; and TDataShape and Options as
+      the per-operation generics. index.ts re-exports this surface so consumers import
+      from the client directory rather than from individual generated files.'
+    codeRefs:
+    - file:lib/did-plc/generated/client/index.ts
+    - interface:060e771651286dc59512e47760351c52
+    - interface:38443be81142d5646b8f37c2d0673a74
+    - interface:52b8825cf135e083d7d54d23395fc970
+    - interface:9323c2d655bd8f9655c74438a7d51be9
+    - interface:c1fcf386d064ae2466c6e8d0fd2ac083
+    - type_alias:6ae6701371118f7f03da4ff85978bdf7
+    - type_alias:aff9789136e33dc58e0e596ab4913239
+    - type_alias:c165bd43ffb67fcfa6433020cbe99e52
+  - id: r.url-and-query-serialization
+    level: MUST
+    text: buildUrl assembles the final request URL from the resolved options, honouring
+      baseUrl and path parameters, and applies the query serializer. createQuerySerializer
+      takes QuerySerializerOptions and returns a function from a query-params object
+      to a string; by default arrays explode in form style, objects in deepObject
+      style, and reserved characters are percent-encoded.
+    codeRefs:
+    - file:lib/did-plc/generated/client/utils.gen.ts
+    - function:8b30a2691d351681cfd7042ce1e15408
+    - function:a8e4eb7e716e14eb46c35d17b48cf48b
+  interfaces:
+  - name: Client
+    kind: type_alias
+    signature: type Client
+    file: lib/did-plc/generated/client/types.gen.ts
+  - name: ClientOptions
+    kind: interface
+    signature: interface ClientOptions
+    file: lib/did-plc/generated/client/types.gen.ts
+  - name: Config
+    kind: interface
+    signature: interface Config<T extends ClientOptions = ClientOptions> extends Omit<RequestInit,
+      'body' | 'headers' | 'method'>, CoreConfig
+    file: lib/did-plc/generated/client/types.gen.ts
+  - name: CreateClientConfig
+    kind: type_alias
+    signature: type CreateClientConfig
+    file: lib/did-plc/generated/client/types.gen.ts
+  - name: Middleware
+    kind: interface
+    signature: interface Middleware
+    file: lib/did-plc/generated/client/utils.gen.ts
+  - name: Options
+    kind: type_alias
+    signature: type Options
+    file: lib/did-plc/generated/client/types.gen.ts
+  - name: RequestOptions
+    kind: interface
+    signature: interface RequestOptions
+    file: lib/did-plc/generated/client/types.gen.ts
+  - name: RequestResult
+    kind: type_alias
+    signature: type RequestResult<TData = unknown, TError = unknown, ThrowOnError
+      extends boolean = boolean, TResponseStyle extends ResponseStyle = 'fields'>
+    file: lib/did-plc/generated/client/types.gen.ts
+  - name: ResolvedRequestOptions
+    kind: interface
+    signature: interface ResolvedRequestOptions
+    file: lib/did-plc/generated/client/types.gen.ts
+  - name: ResponseStyle
+    kind: type_alias
+    signature: type ResponseStyle = 'data' | 'fields'
+    file: lib/did-plc/generated/client/types.gen.ts
+  - name: TDataShape
+    kind: interface
+    signature: interface TDataShape
+    file: lib/did-plc/generated/client/types.gen.ts
+  - name: buildUrl
+    kind: function
+    signature: (options)
+    file: lib/did-plc/generated/client/utils.gen.ts
+  - name: createClient
+    kind: function
+    signature: '(config: Config = {}): Client'
+    file: lib/did-plc/generated/client/client.gen.ts
+  - name: createConfig
+    kind: function
+    signature: '(override: Config<Omit<ClientOptions, keyof T> & T> = {}): Config<Omit<ClientOptions,
+      keyof T> & T>'
+    file: lib/did-plc/generated/client/utils.gen.ts
+  - name: createInterceptors
+    kind: function
+    signature: '(): Middleware<Req, Res, Err, Options>'
+    file: lib/did-plc/generated/client/utils.gen.ts
+  - name: createQuerySerializer
+    kind: function
+    signature: '({ parameters = {}, ...args }: QuerySerializerOptions = {}): ((queryParams:
+      T) => string)'
+    file: lib/did-plc/generated/client/utils.gen.ts
+  - name: getParseAs
+    kind: function
+    signature: '(contentType: string | null): Exclude<Config[''parseAs''], ''auto''>'
+    file: lib/did-plc/generated/client/utils.gen.ts
+  - name: mergeConfigs
+    kind: function
+    signature: '(a: Config, b: Config): Config'
+    file: lib/did-plc/generated/client/utils.gen.ts
+  - name: mergeHeaders
+    kind: function
+    signature: '(...headers: Array<Required<Config>[''headers''] | undefined>): Headers'
+    file: lib/did-plc/generated/client/utils.gen.ts
+  - name: setAuthParams
+    kind: function
+    signature: '(options: Pick<RequestOptions, ''auth'' | ''query'' | ''security''>
+      & { headers: Headers }): Promise<void>'
+    file: lib/did-plc/generated/client/utils.gen.ts
 codeRefIndex:
 - file:lib/did-plc/generated/client/client.gen.ts client.gen.ts@lib/did-plc/generated/client/client.gen.ts
 - file:lib/did-plc/generated/client/index.ts index.ts@lib/did-plc/generated/client/index.ts
 - file:lib/did-plc/generated/client/types.gen.ts types.gen.ts@lib/did-plc/generated/client/types.gen.ts
 - file:lib/did-plc/generated/client/utils.gen.ts utils.gen.ts@lib/did-plc/generated/client/utils.gen.ts
+- function:0131a84b31ad85543599f7fcdc257d17 createConfig@lib/did-plc/generated/client/utils.gen.ts:308
+- function:045b120064539e4384e726f1ad3a6cfd mergeConfigs@lib/did-plc/generated/client/utils.gen.ts:169
+- function:188d765b509d3931cfcc5bbfffb2b7dc createClient@lib/did-plc/generated/client/client.gen.ts:22
+- function:5cc56f8414c5363a5723ab1d53a49283 mergeHeaders@lib/did-plc/generated/client/utils.gen.ts:186
+- function:8458ee58b9d6ddeb478f0901d8d49b7a getParseAs@lib/did-plc/generated/client/utils.gen.ts:68
+- function:8b30a2691d351681cfd7042ce1e15408 buildUrl@lib/did-plc/generated/client/utils.gen.ts:157
+- function:a8e4eb7e716e14eb46c35d17b48cf48b createQuerySerializer@lib/did-plc/generated/client/utils.gen.ts:14
+- function:bf0bf50aa3da564c87154fb48989d79a createInterceptors@lib/did-plc/generated/client/utils.gen.ts:281
+- function:e9636fa71df0faaef499d2a5fb4b33cf setAuthParams@lib/did-plc/generated/client/utils.gen.ts:121
+- interface:060e771651286dc59512e47760351c52 RequestOptions@lib/did-plc/generated/client/types.gen.ts:56
+- interface:38443be81142d5646b8f37c2d0673a74 Config@lib/did-plc/generated/client/types.gen.ts:13
+- interface:52b8825cf135e083d7d54d23395fc970 ResolvedRequestOptions@lib/did-plc/generated/client/types.gen.ts:91
+- interface:6a08e48cdf00ed57e85e84d03157d051 Middleware@lib/did-plc/generated/client/utils.gen.ts:275
+- interface:9323c2d655bd8f9655c74438a7d51be9 TDataShape@lib/did-plc/generated/client/types.gen.ts:199
+- interface:c1fcf386d064ae2466c6e8d0fd2ac083 ClientOptions@lib/did-plc/generated/client/types.gen.ts:137
+- type_alias:2af15840ea8a34874a90d03c8c53bfca RequestResult@lib/did-plc/generated/client/types.gen.ts:100
+- type_alias:6ae6701371118f7f03da4ff85978bdf7 Options@lib/did-plc/generated/client/types.gen.ts:209
+- type_alias:952c875d05b76621416e955f7ac584c0 ResponseStyle@lib/did-plc/generated/client/types.gen.ts:11
+- type_alias:aff9789136e33dc58e0e596ab4913239 Client@lib/did-plc/generated/client/types.gen.ts:183
+- type_alias:c165bd43ffb67fcfa6433020cbe99e52 CreateClientConfig@lib/did-plc/generated/client/types.gen.ts:195

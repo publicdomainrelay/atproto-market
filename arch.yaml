@@ -1588,11 +1588,58 @@ system_contexts:
   upstream: self
   depends_on:
   - sc.lib-did-plc-generated-core
+  requirements:
+  - id: r.auth-params
+    level: MUST
+  - id: r.config-defaults
+    level: SHOULD
+  - id: r.config-merge-order
+    level: MUST
+  - id: r.create-client-factory
+    level: MUST
+  - id: r.error-body-extraction
+    level: MUST
+  - id: r.generated-code-provenance
+    level: MAY
+  - id: r.interceptors
+    level: MUST
+  - id: r.request-pipeline
+    level: MUST
+  - id: r.response-parsing
+    level: MUST
+  - id: r.response-style
+    level: MUST
+  - id: r.sse-methods
+    level: SHOULD
+  - id: r.type-surface
+    level: MUST
+  - id: r.url-and-query-serialization
+    level: MUST
   codeRefIndex:
   - file:lib/did-plc/generated/client/client.gen.ts client.gen.ts@lib/did-plc/generated/client/client.gen.ts
   - file:lib/did-plc/generated/client/index.ts index.ts@lib/did-plc/generated/client/index.ts
   - file:lib/did-plc/generated/client/types.gen.ts types.gen.ts@lib/did-plc/generated/client/types.gen.ts
   - file:lib/did-plc/generated/client/utils.gen.ts utils.gen.ts@lib/did-plc/generated/client/utils.gen.ts
+  - function:0131a84b31ad85543599f7fcdc257d17 createConfig@lib/did-plc/generated/client/utils.gen.ts:308
+  - function:045b120064539e4384e726f1ad3a6cfd mergeConfigs@lib/did-plc/generated/client/utils.gen.ts:169
+  - function:188d765b509d3931cfcc5bbfffb2b7dc createClient@lib/did-plc/generated/client/client.gen.ts:22
+  - function:5cc56f8414c5363a5723ab1d53a49283 mergeHeaders@lib/did-plc/generated/client/utils.gen.ts:186
+  - function:8458ee58b9d6ddeb478f0901d8d49b7a getParseAs@lib/did-plc/generated/client/utils.gen.ts:68
+  - function:8b30a2691d351681cfd7042ce1e15408 buildUrl@lib/did-plc/generated/client/utils.gen.ts:157
+  - function:a8e4eb7e716e14eb46c35d17b48cf48b createQuerySerializer@lib/did-plc/generated/client/utils.gen.ts:14
+  - function:bf0bf50aa3da564c87154fb48989d79a createInterceptors@lib/did-plc/generated/client/utils.gen.ts:281
+  - function:e9636fa71df0faaef499d2a5fb4b33cf setAuthParams@lib/did-plc/generated/client/utils.gen.ts:121
+  - interface:060e771651286dc59512e47760351c52 RequestOptions@lib/did-plc/generated/client/types.gen.ts:56
+  - interface:38443be81142d5646b8f37c2d0673a74 Config@lib/did-plc/generated/client/types.gen.ts:13
+  - interface:52b8825cf135e083d7d54d23395fc970 ResolvedRequestOptions@lib/did-plc/generated/client/types.gen.ts:91
+  - interface:6a08e48cdf00ed57e85e84d03157d051 Middleware@lib/did-plc/generated/client/utils.gen.ts:275
+  - interface:9323c2d655bd8f9655c74438a7d51be9 TDataShape@lib/did-plc/generated/client/types.gen.ts:199
+  - interface:c1fcf386d064ae2466c6e8d0fd2ac083 ClientOptions@lib/did-plc/generated/client/types.gen.ts:137
+  - type_alias:2af15840ea8a34874a90d03c8c53bfca RequestResult@lib/did-plc/generated/client/types.gen.ts:100
+  - type_alias:6ae6701371118f7f03da4ff85978bdf7 Options@lib/did-plc/generated/client/types.gen.ts:209
+  - type_alias:952c875d05b76621416e955f7ac584c0 ResponseStyle@lib/did-plc/generated/client/types.gen.ts:11
+  - type_alias:aff9789136e33dc58e0e596ab4913239 Client@lib/did-plc/generated/client/types.gen.ts:183
+  - type_alias:c165bd43ffb67fcfa6433020cbe99e52 CreateClientConfig@lib/did-plc/generated/client/types.gen.ts:195
 - id: sc.lib-did-plc-generated-core
   name: lib-did-plc-generated-core
   spec: specs/lib-did-plc-generated-core.yaml
