@@ -13,4 +13,5 @@ spec:
       removed: 9
       changed: 1
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is summarizing lib-hono-factory-did-plc-directory

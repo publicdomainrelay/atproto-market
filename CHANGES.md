@@ -52,6 +52,6 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-compute-contract-gateway-xrpc-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Failed |  | 0 | - | - |
 | lib-did-key-ingress-proxy-s2c-2414ea013542 | SpecToCode | Pending |  | 0 | - | - |
 | lib-did-plc-c2s-05fe29612a62-8b36a2bfe627 | CodeToSpec | Running |  | 0 | - | - |
-| lib-hono-factory-did-plc-directory-c2s-05fe29612a62-8b36a2bfe627 | CodeToSpec | Pending |  | 0 | - | - |
+| lib-hono-factory-did-plc-directory-c2s-05fe29612a62-8b36a2bfe627 | CodeToSpec | Running |  | 0 | - | - |
 | lib-market-settlement-x402-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-requester-xrpc-s2c-0c605032289f | SpecToCode | Pending |  | 0 | - | - |
