@@ -18,4 +18,5 @@ spec:
     - +ensureDumbpipe
     - ~createSshSessionProvider
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is realizing lib-requester-xrpc in a batch of 5 led by lib-common-cloud-init-common
