@@ -1183,7 +1183,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-common-cloud-init-common-c2s-a15d9cdab92c-26307737e859 | CodeToSpec | Failed |  | 0 | - |
 | lib-common-cloud-init-common-c2s-a15d9cdab92c-26307737e859-a2 | CodeToSpec | Failed |  | 0 | - |
 | lib-common-cloud-init-common-c2s-a15d9cdab92c-26307737e859-a3 | CodeToSpec | Failed |  | 0 | - |
-| lib-common-cloud-init-common-s2c-004f6cdd8bb8 | SpecToCode | Running |  | 0 | - |
+| lib-common-cloud-init-common-s2c-004f6cdd8bb8 | SpecToCode | Succeeded | ffac22ea | 0 | acceptance passed |
 | lib-common-cloud-init-common-s2c-73bfe7993c46 | SpecToCode | Succeeded | 1e1cd3c5 | 0 | - |
 | lib-common-cloud-init-common-s2c-cdde016620fc | SpecToCode | Succeeded | a15d9cda | 0 | acceptance passed |
 | lib-common-cloud-init-common-s2c-df0f09183975 | SpecToCode | Failed |  | 0 | acceptance failed |
@@ -1194,7 +1194,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-did-key-ingress-proxy-s2c-1b41bfbf7018 | SpecToCode | Succeeded | 1e1cd3c5 | 0 | - |
 | lib-market-bidder-compute-s2c-5807b7c34327 | SpecToCode | Succeeded | 1e1cd3c5 | 0 | - |
 | lib-requester-xrpc-s2c-2afa76446f16 | SpecToCode | Succeeded | a15d9cda | 0 | acceptance passed |
-| lib-requester-xrpc-s2c-8f789cbecc7a | SpecToCode | Running |  | 0 | - |
+| lib-requester-xrpc-s2c-8f789cbecc7a | SpecToCode | Succeeded | ffac22ea | 0 | acceptance passed |
 | lib-requester-xrpc-s2c-9ad9f3e6903b | SpecToCode | Succeeded | 0a87f24e | 0 | acceptance passed |
 | lib-requester-xrpc-s2c-e9de5d5bf233 | SpecToCode | Succeeded | 1e1cd3c5 | 0 | - |
 | request-vm-ssh-s2c-d8b5dfdb85a7 | SpecToCode | Succeeded | 1e1cd3c5 | 0 | - |
@@ -1208,4 +1208,4 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | test-s2c-7a9c10a26a63 | SpecToCode | Failed |  | 0 | acceptance failed |
 | test-s2c-7a9c10a26a63-a2 | SpecToCode | Failed |  | 0 | - |
 | test-s2c-7a9c10a26a63-a3 | SpecToCode | Failed |  | 0 | acceptance failed |
-| test-s2c-878eca10c6a6 | SpecToCode | Running |  | 0 | - |
+| test-s2c-878eca10c6a6 | SpecToCode | Succeeded | ffac22ea | 0 | acceptance passed |

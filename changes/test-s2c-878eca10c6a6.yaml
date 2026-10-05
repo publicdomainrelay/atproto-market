@@ -14,5 +14,62 @@ spec:
     requirements:
     - +r.container-harness-proves-live-ssh-over-iroh
 status:
-  phase: Running
-  message: the agent is realizing test in a batch of 3 led by lib-common-cloud-init-common
+  phase: Succeeded
+  branch: spec/lib-common-cloud-init-common/004f6cdd
+  commit: ffac22ea07b888ea0ddfcd7c582cab27bc8d31f3
+  filesTouched:
+  - deno.lock
+  - lib/common/cloud-init-common/mod.ts
+  - lib/requester-xrpc/deno.json
+  - lib/requester-xrpc/mod.ts
+  - test/bidder_container_integration_test.ts
+  - test/cloud_init_snapshot_test.ts
+  - test/fixtures/cloud-init/iroh.yaml
+  - test/iroh_private_report_test.ts
+  agentLog: |-
+    ...oh.env` + `ExecStartPre=/usr/local/bin/iroh-prepare.sh` (new script: creates secret under umask 077, truncates log); listener script still repeats both jobs for the container-mode shim, ExecStart stays one bare path
+      - report script: base64url payload padded to multiple of four (`case $((${#_payload} % 4))`: 2→`==`, 3→`=`, 1→`===`) instead of fixed `==`, so the provider-minted subject decodes and the token is actually minted
+    - `lib/requester-xrpc/mod.ts` — `POST /v1/on-network` authenticates the reporter:
+      - `OnNetworkReportEntry.authorize(token)`; handler extracts `Authorization: Bearer`, 401 when missing/unverifiable, ref-match 409 first, settled 409, ticket never replaced
+      - `verifyWorkloadIdentityToken` — JWKS via call-time `globalThis.fetch`, issuer/audience/sub check, one reload on `JWKSNoMatchingKey` (mirrors `createSecretsAuthorizer`)
+      - `runComputeContract` resolves the winner's `bid_config` when the report path is live and derives issuer/aud/sub with `deriveGrantVars` (aud = accept-URI authority, sub = provider tag-derived subject)
+    - `lib/requester-xrpc/deno.json`, `deno.lock` — add `jose`
+    - `test/cloud_init_snapshot_test.ts` + `test/fixtures/cloud-init/iroh.yaml` — regenerated for the new unit shape; assert EnvironmentFile/ExecStartPre, `curl -qfsSL`, and the variable padding
+    - `test/iroh_private_report_test.ts` — harness supplies `authorize`; adds 401 fail-closed test and a real JWKS verification test
+    - `test/bidder_container_integration_test.ts` — rewritten to prove live SSH over iroh: dual plain/TLS dispatcher listeners on `relay.localhost` (SANs `relay.localhost`, `*.relay.localhost`), interceptor at TLS port + CA PEM, provider gets guest TLS port + CA + `createOidcProvisioningEnricher`, contract awaited whole with no `Promise.race`, asserts `sshReady === true` and `sshExitCode === 0` for `test -x /usr/local/bin/dumbpipe && echo SSH_OK_VIA_IROH`
+
+    `deno check` passes; the four verify tests pass 36/36.
+
+    verify: exit 0, 3.264s, 0 ok
+  message: 'realized test in a batch of 3 led by lib-common-cloud-init-common on spec/lib-common-cloud-init-common/004f6cdd:
+    8 file(s) touched, verify exit 0'
+  acceptance:
+  - name: acceptance
+    exitCode: 0
+    durationSeconds: 29.353343021
+    passed: true
+    outputTail: "...6-10-05T00:37:13.450Z\",\"level\":\"info\",\"message\":\"vm_ssh_waiting\",\"prefix\":\"it\",\"vmFqdn\":\"endpointab7v65322rn5pdf4l3bxmkmnm6jjpymtl4arhusgtymjle7vofbdiayaenuhi5dqom5c6l3von3tcljrfzzgk3dbpexg4mbonfzg62bonruw42zof4aqayltuyk3xyacaeakyeiaas56aaq\",\"timeoutSec\":180}\n{\"ts\":\"2026-10-05T00:37:13.450Z\",\"level\":\"info\",\"message\":\"ssh_poll_start\",\"prefix\":\"it\",\"fqdn\":\"endpointab7v65322rn5pdf4l3bxmkmnm6jjpymtl4arhusgtymjle7vofbdiayaenuhi5dqom5c6l3von3tcljrfzzgk3dbpexg4mbonfzg62bonruw42zof4aqayltuyk3xyacaeakyeiaas56aaq\",\"timeoutMs\":180000}\n{\"ts\":\"2026-10-05T00:37:13.450Z\",\"level\":\"info\",\"message\":\"ssh_poll_cmd\",\"prefix\":\"it\",\"args\":[\"-o\",\"ProxyCommand=dumbpipe
+      connect endpointab7v65322rn5pdf4l3bxmkmnm6jjpymtl4arhusgtymjle7vofbdiayaenuhi5dqom5c6l3von3tcljrfzzgk3dbpexg4mbonfzg62bonruw42zof4aqayltuyk3xyacaeakyeiaas56aaq\",\"-o\",\"IdentityFile=/home/johnandersen777/e2e-tmp/ssh-compute-56741e96-e5d42edf2688d10/id_ed25519\",\"-o\",\"IdentitiesOnly=yes\"]}\n{\"ts\":\"2026-10-05T00:37:13.451Z\",\"level\":\"info\",\"message\":\"response\",\"prefix\":\"it\",\"method\":\"POST\",\"path\":\"/v1/on-network\",\"status\":200,\"durationMs\":46,\"label\":\"requester\"}\n{\"ts\":\"2026-10-05T00:37:13.568Z\",\"level\":\"info\",\"message\":\"vm_ssh_ready\",\"prefix\":\"it\",\"fqdn\":\"endpointab7v65322rn5pdf4l3bxmkmnm6jjpymtl4arhusgtymjle7vofbdiayaenuhi5dqom5c6l3von3tcljrfzzgk3dbpexg4mbonfzg62bonruw42zof4aqayltuyk3xyacaeakyeiaas56aaq\",\"attempt\":1}\nusing
+      secret key ebd5e49a00e8709ab295dfa97c9af481f46989907793a962c3fa945a919ec4c3\nSSH_OK_VIA_IROH\n{\"ts\":\"2026-10-05T00:37:13.689Z\",\"level\":\"info\",\"message\":\"vm_ssh_session_exit\",\"prefix\":\"it\",\"vmFqdn\":\"endpointab7v65322rn5pdf4l3bxmkmnm6jjpymtl4arhusgtymjle7vofbdiayaenuhi5dqom5c6l3von3tcljrfzzgk3dbpexg4mbonfzg62bonruw42zof4aqayltuyk3xyacaeakyeiaas56aaq\",\"code\":0}\n{\"ts\":\"2026-10-05T00:37:13.689Z\",\"level\":\"info\",\"message\":\"vm_delete_skipped\",\"prefix\":\"it\",\"reason\":\"--keep-vm\"}\n{\"ts\":\"2026-10-05T00:37:13.705Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shjaurqhpkkjqgqr6uvgvqnahzrqrslstbmpyl196vq22p\"}\n{\"ts\":\"2026-10-05T00:37:13.705Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shtyqbbbps5x5uesckvjyvsfr1db5mc1uy2knshowcsqj9\"}\n{\"ts\":\"2026-10-05T00:37:13.705Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shqfuy3az4ntsohnycj7fhghukaifwxrxorgnkub22gdrm\"}\n{\"ts\":\"2026-10-05T00:37:13.706Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shezkyc6fujtc9kit4wu6jfcvabrkysmdzfmozpofxnynb\"}\n{\"ts\":\"2026-10-05T00:37:13.706Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":1005,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T00:37:13.706Z\",\"level\":\"error\",\"message\":\"ws_error\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"error\":\"[object
+      ErrorEvent]\"}\n{\"ts\":\"2026-10-05T00:37:13.706Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":0,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T00:37:13.706Z\",\"level\":\"info\",\"message\":\"ws_reconnect_scheduled\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"delayMs\":1000,\"attempt\":1}\n{\"ts\":\"2026-10-05T00:37:13.706Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"requester\",\"code\":1005,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T00:37:13.706Z\",\"level\":\"error\",\"message\":\"ws_error\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"error\":\"[object
+      ErrorEvent]\"}\n{\"ts\":\"2026-10-05T00:37:13.706Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":0,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T00:37:13.706Z\",\"level\":\"info\",\"message\":\"ws_reconnect_scheduled\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"delayMs\":1000,\"attempt\":1}\n\e[0m\e[38;5;245m-----
+      output end -----\e[0m\n[integration] bidder (container mode) provisions a guest
+      and runs SSH over iroh ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(26s)\e[0m\n\n\e[0m\e[32mok\e[0m
+      | 1 passed | 0 failed \e[0m\e[38;5;245m(26s)\e[0m"
+  progress:
+    turns: 1
+    tools:
+    - tool: realize
+      count: 1
+    files:
+    - deno.lock
+    - lib/common/cloud-init-common/mod.ts
+    - lib/requester-xrpc/deno.json
+    - lib/requester-xrpc/mod.ts
+    - test/bidder_container_integration_test.ts
+    - test/cloud_init_snapshot_test.ts
+    - test/fixtures/cloud-init/iroh.yaml
+    - test/iroh_private_report_test.ts
+    notes: 1
+    first: "2026-10-05T00:37:25Z"
+    last: "2026-10-05T00:37:25Z"
