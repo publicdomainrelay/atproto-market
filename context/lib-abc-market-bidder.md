@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so the bidder data shapes live in one place instead of being re-declared per implementation. Three implementations — lib/market-bidder, lib/market-bidder-compute and lib/market-bidder-worker — depend on the same guest-contract identity, active-contract state, contract lifecycle event, callback injection set, callback factory dependencies, policy execution options and provider reference. Keeping them as TypeScript interfaces rather than classes means a bidder can depend on the contract with no runtime coupling, and every consumer switches on the same closed set of contract event types and the same required identity fields rather than inferring state or reaching into bidder internals.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

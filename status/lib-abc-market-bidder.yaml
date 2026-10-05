@@ -1,11 +1,11 @@
 syncedFingerprint: 7b57f4f6f9691308c1770235363a8cfb91aed6336f5c81d5b5552ca7041fb45f
-realizedSpecHash: 2f7c659b3be1bb9709d3429544eaf90da4741fe9d0024287c90e0277582f8851
+realizedSpecHash: 0a905c4d8ffe0839a1c913677d604d962f697ef56f39e808cde86f05d9fa0fac
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: ActiveContract, CallbackFactoryDeps, CallbackSet, ContractEvent,
-    GuestContractEntry, MarketBidderProviderRef, PolicyExecOptions'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual

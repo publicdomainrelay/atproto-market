@@ -9,5 +9,23 @@ spec:
   fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
   toCommit: 05fe29612a62a645d70273560238ecc3180414d2
 status:
-  phase: Running
-  message: the agent is summarizing lib-abc-market-bidder
+  phase: Succeeded
+  agentLog: lib/abc/market-bidder/mod.ts is the declaration-only TypeScript contract
+    shared by every market bidder implementation in atproto-market. It exports seven
+    interfaces and no runtime values. GuestContractEntry identifies a contract the
+    bidder did not author through a required receiptKey, receiptUri and receiptCid
+    triple plus an optional submitEventUrl. ActiveContract tracks an in-flight contract
+    with a required acceptAuthor, optional receiptUri, receiptCid and acceptedAt,
+    and an optional providerIdPromise typed Promise<string | number | undefined> so
+    a provider id is awaited lazily rather than settled. ContractEvent is the lifecycle
+    notification, discriminated by type over accepted, provisioned, provisioning-failed,
+    terminated and termination-failed, carrying key, receiptUri, receiptCid, acceptAuthor
+    and acceptedAt as required fields with terminatedAt and providerId optional. CallbackSet
+    is the host injection point, holding optional rfpCallbacks (RfpCallbacks), onAccept
+    (SubmitAcceptCallback), eventCallbacks (EventCallbacks) and eventBackground. CallbackFactoryDeps
+    references GuestContractEntry, ActiveContract and ContractEvent to hand a callback
+    factory the per-contract data it needs; PolicyExecOptions and MarketBidderProviderRef
+    carry the options a policy executes under and a provider reference the bidder
+    resolves. Concrete bidders in lib/market-bidder, lib/market-bidder-compute and
+    lib/market-bidder-worker import the module as a type-only contract.
+  message: wrote 12 requirement(s) and 7 interface(s) for lib-abc-market-bidder

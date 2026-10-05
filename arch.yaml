@@ -313,8 +313,41 @@ system_contexts:
   - sc.atproto-market
   - sc.lib-abc-market
   - sc.lib-common-market-common
+  requirements:
+  - id: r.active-contract-accept-identity
+    level: MUST
+  - id: r.active-contract-lazy-provider-id
+    level: SHOULD
+  - id: r.callback-factory-deps-bundle
+    level: MUST
+  - id: r.callback-set-injection-point
+    level: MUST
+  - id: r.contract-event-common-fields
+    level: MUST
+  - id: r.contract-event-discriminator
+    level: MUST
+  - id: r.contract-event-optional-terminal-fields
+    level: SHOULD
+  - id: r.guest-contract-entry-receipt-identity
+    level: MUST
+  - id: r.guest-contract-entry-submit-event-url
+    level: MAY
+  - id: r.policy-exec-options-separate-type
+    level: SHOULD
+  - id: r.provider-ref-shared-type
+    level: MUST
+  - id: r.types-only-declaration-module
+    level: MUST
   codeRefIndex:
+  - file:lib/abc/market-bidder/deno.json deno.json@lib/abc/market-bidder/deno.json
   - file:lib/abc/market-bidder/mod.ts mod.ts@lib/abc/market-bidder/mod.ts
+  - interface:2c4596abe13b14dd4988fbb0b94602fc CallbackFactoryDeps@lib/abc/market-bidder/mod.ts:46
+  - interface:5609df4ae617cdffc9fce7738e5e75be CallbackSet@lib/abc/market-bidder/mod.ts:39
+  - interface:647384108ca521aa1b24b60fbbf8e53a MarketBidderProviderRef@lib/abc/market-bidder/mod.ts:87
+  - interface:6ec00215165ec55bc47d1c24c39bb995 PolicyExecOptions@lib/abc/market-bidder/mod.ts:80
+  - interface:7caf4582318b20bae5d3f32ec19f2169 ContractEvent@lib/abc/market-bidder/mod.ts:28
+  - interface:92e6f8d9226ce7be70eb5107af0d0b2d ActiveContract@lib/abc/market-bidder/mod.ts:20
+  - interface:9e5d28d053bf9ead50572ed7deb21bda GuestContractEntry@lib/abc/market-bidder/mod.ts:13
 - id: sc.lib-abc-requester
   name: lib-abc-requester
   spec: specs/lib-abc-requester.yaml

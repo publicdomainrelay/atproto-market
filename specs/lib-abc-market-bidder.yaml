@@ -10,5 +10,162 @@ spec:
   - sc.atproto-market
   - sc.lib-abc-market
   - sc.lib-common-market-common
+  intent: This context exists so the bidder data shapes live in one place instead
+    of being re-declared per implementation. Three implementations — lib/market-bidder,
+    lib/market-bidder-compute and lib/market-bidder-worker — depend on the same guest-contract
+    identity, active-contract state, contract lifecycle event, callback injection
+    set, callback factory dependencies, policy execution options and provider reference.
+    Keeping them as TypeScript interfaces rather than classes means a bidder can depend
+    on the contract with no runtime coupling, and every consumer switches on the same
+    closed set of contract event types and the same required identity fields rather
+    than inferring state or reaching into bidder internals.
+  requirements:
+  - id: r.active-contract-accept-identity
+    level: MUST
+    text: ActiveContract MUST record acceptAuthor as a required field so an accepted
+      contract is traceable to the author that accepted it, and MUST expose receiptUri,
+      receiptCid and acceptedAt as optional companions describing the acceptance receipt.
+    codeRefs:
+    - file:lib/abc/market-bidder/mod.ts
+    - interface:92e6f8d9226ce7be70eb5107af0d0b2d
+  - id: r.active-contract-lazy-provider-id
+    level: SHOULD
+    text: ActiveContract SHOULD carry providerIdPromise as a Promise resolving to
+      string, number or undefined rather than a settled provider id, so provisioning
+      is awaited lazily and a contract not yet provisioned is representable as a promise
+      that resolves to undefined.
+    codeRefs:
+    - interface:92e6f8d9226ce7be70eb5107af0d0b2d
+  - id: r.callback-factory-deps-bundle
+    level: MUST
+    text: CallbackFactoryDeps MUST reference GuestContractEntry, ActiveContract and
+      ContractEvent so a callback factory receives the per-contract data it needs
+      from its dependencies argument without reaching into bidder internals for contract
+      state.
+    codeRefs:
+    - interface:2c4596abe13b14dd4988fbb0b94602fc
+    - interface:7caf4582318b20bae5d3f32ec19f2169
+    - interface:92e6f8d9226ce7be70eb5107af0d0b2d
+    - interface:9e5d28d053bf9ead50572ed7deb21bda
+  - id: r.callback-set-injection-point
+    level: MUST
+    text: 'CallbackSet MUST be the single injection point through which a host supplies
+      bidder behaviour: rfpCallbacks of type RfpCallbacks for RFP handling, onAccept
+      of type SubmitAcceptCallback for submitting an acceptance, eventCallbacks of
+      type EventCallbacks for contract event handling, and eventBackground selecting
+      whether event callbacks run in the background; every slot MUST stay optional
+      so a bidder runs with any subset supplied.'
+    codeRefs:
+    - file:lib/abc/market-bidder/mod.ts
+    - interface:5609df4ae617cdffc9fce7738e5e75be
+  - id: r.contract-event-common-fields
+    level: MUST
+    text: Every ContractEvent MUST carry key, receiptUri, receiptCid, acceptAuthor
+      and acceptedAt as required fields, so each lifecycle notification is self-describing
+      and does not depend on a prior event in the stream to be interpreted.
+    codeRefs:
+    - interface:7caf4582318b20bae5d3f32ec19f2169
+  - id: r.contract-event-discriminator
+    level: MUST
+    text: ContractEvent MUST discriminate contract lifecycle state through its type
+      field, restricted to accepted, provisioned, provisioning-failed, terminated
+      or termination-failed, so consumers switch on a closed set of states instead
+      of inferring state from which fields happen to be present.
+    codeRefs:
+    - file:lib/abc/market-bidder/mod.ts
+    - interface:7caf4582318b20bae5d3f32ec19f2169
+  - id: r.contract-event-optional-terminal-fields
+    level: SHOULD
+    text: ContractEvent SHOULD leave terminatedAt and providerId optional, populating
+      terminatedAt only on termination events and providerId only once a provider
+      exists, so earlier events in the lifecycle omit them rather than carrying placeholder
+      values.
+    codeRefs:
+    - interface:7caf4582318b20bae5d3f32ec19f2169
+  - id: r.guest-contract-entry-receipt-identity
+    level: MUST
+    text: GuestContractEntry MUST identify a contract the bidder did not itself author
+      by a required receiptKey, receiptUri and receiptCid triple, so a consumer can
+      address the receipt without a further lookup, and MUST leave only submitEventUrl
+      optional.
+    codeRefs:
+    - file:lib/abc/market-bidder/mod.ts
+    - interface:9e5d28d053bf9ead50572ed7deb21bda
+  - id: r.guest-contract-entry-submit-event-url
+    level: MAY
+    text: GuestContractEntry MAY carry submitEventUrl naming where events for that
+      guest contract are submitted; a consumer that finds it absent falls back to
+      its own event submission target.
+    codeRefs:
+    - interface:9e5d28d053bf9ead50572ed7deb21bda
+  - id: r.policy-exec-options-separate-type
+    level: SHOULD
+    text: PolicyExecOptions SHOULD hold the options under which a bidder policy is
+      executed as a declared type separate from the policy itself, so a caller can
+      vary execution conditions without altering or re-declaring the policy.
+    codeRefs:
+    - file:lib/abc/market-bidder/mod.ts
+    - interface:6ec00215165ec55bc47d1c24c39bb995
+  - id: r.provider-ref-shared-type
+    level: MUST
+    text: MarketBidderProviderRef MUST name a provider reference resolvable by the
+      bidder as one declared type exported from this module, giving every bidder implementation
+      a shared way to identify the provider a contract runs on.
+    codeRefs:
+    - file:lib/abc/market-bidder/mod.ts
+    - interface:647384108ca521aa1b24b60fbbf8e53a
+  - id: r.types-only-declaration-module
+    level: MUST
+    text: lib/abc/market-bidder/mod.ts MUST export these bidder data shapes purely
+      as TypeScript interfaces rather than as classes or runtime values, so that lib/market-bidder,
+      lib/market-bidder-compute and lib/market-bidder-worker can each depend on it
+      as a type-only contract with no runtime coupling.
+    codeRefs:
+    - file:lib/abc/market-bidder/deno.json
+    - file:lib/abc/market-bidder/mod.ts
+  interfaces:
+  - name: ActiveContract
+    kind: interface
+    signature: 'interface ActiveContract { providerIdPromise?: Promise<string | number
+      | undefined>; acceptAuthor: string; receiptUri?: string; receiptCid?: string;
+      acceptedAt?: string }'
+    file: lib/abc/market-bidder/mod.ts
+  - name: CallbackFactoryDeps
+    kind: interface
+    signature: interface CallbackFactoryDeps
+    file: lib/abc/market-bidder/mod.ts
+  - name: CallbackSet
+    kind: interface
+    signature: 'interface CallbackSet { rfpCallbacks?: RfpCallbacks; onAccept?: SubmitAcceptCallback;
+      eventCallbacks?: EventCallbacks; eventBackground?: boolean }'
+    file: lib/abc/market-bidder/mod.ts
+  - name: ContractEvent
+    kind: interface
+    signature: 'interface ContractEvent { type: "accepted" | "provisioned" | "provisioning-failed"
+      | "terminated" | "termination-failed"; key: string; receiptUri: string; receiptCid:
+      string; acceptAuthor: string; acceptedAt: string; terminatedAt?: string; providerId?:
+      string | number }'
+    file: lib/abc/market-bidder/mod.ts
+  - name: GuestContractEntry
+    kind: interface
+    signature: 'interface GuestContractEntry { receiptKey: string; receiptUri: string;
+      receiptCid: string; submitEventUrl?: string }'
+    file: lib/abc/market-bidder/mod.ts
+  - name: MarketBidderProviderRef
+    kind: interface
+    signature: interface MarketBidderProviderRef
+    file: lib/abc/market-bidder/mod.ts
+  - name: PolicyExecOptions
+    kind: interface
+    signature: interface PolicyExecOptions
+    file: lib/abc/market-bidder/mod.ts
 codeRefIndex:
+- file:lib/abc/market-bidder/deno.json deno.json@lib/abc/market-bidder/deno.json
 - file:lib/abc/market-bidder/mod.ts mod.ts@lib/abc/market-bidder/mod.ts
+- interface:2c4596abe13b14dd4988fbb0b94602fc CallbackFactoryDeps@lib/abc/market-bidder/mod.ts:46
+- interface:5609df4ae617cdffc9fce7738e5e75be CallbackSet@lib/abc/market-bidder/mod.ts:39
+- interface:647384108ca521aa1b24b60fbbf8e53a MarketBidderProviderRef@lib/abc/market-bidder/mod.ts:87
+- interface:6ec00215165ec55bc47d1c24c39bb995 PolicyExecOptions@lib/abc/market-bidder/mod.ts:80
+- interface:7caf4582318b20bae5d3f32ec19f2169 ContractEvent@lib/abc/market-bidder/mod.ts:28
+- interface:92e6f8d9226ce7be70eb5107af0d0b2d ActiveContract@lib/abc/market-bidder/mod.ts:20
+- interface:9e5d28d053bf9ead50572ed7deb21bda GuestContractEntry@lib/abc/market-bidder/mod.ts:13
