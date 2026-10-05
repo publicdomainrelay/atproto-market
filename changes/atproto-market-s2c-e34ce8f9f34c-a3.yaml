@@ -18,8 +18,31 @@ spec:
     - +r.iroh-cloud-init-fixture
     - +r.iroh-full-flow-harness
 status:
-  phase: Running
-  message: the agent is realizing atproto-market in a batch of 3 led by atproto-market
+  phase: Failed
+  branch: spec/atproto-market/e34ce8f9
+  agentLog: 'verify: exit 0, 0s, 0 ok'
+  message: 'claudecli: realize atproto-market: the model did not answer within 15m0s'
+  progress:
+    tools:
+    - tool: Edit
+      count: 9
+    - tool: Read
+      count: 6
+    - tool: Write
+      count: 1
+    files:
+    - compute-contract-full-flow/run_full_flow.ts
+    - lib/abc/requester/mod.ts
+    - lib/common/cloud-init-common/mod.ts
+    - lib/did-key-ingress-proxy/mod.ts
+    - lib/requester-xrpc/mod.ts
+    - test/bidder_container_integration_test.ts
+    - test/bidder_cross_platform_integration_test.ts
+    - test/bidder_prod_integration_test.ts
+    - test/bidder_ssh_relay_test.ts
+    - test/cloud_init_snapshot_test.ts
+    first: "2026-10-05T18:24:27Z"
+    last: "2026-10-05T18:30:38Z"
 superseded:
 - name: atproto-market-s2c-e34ce8f9f34c-a2
   phase: Failed

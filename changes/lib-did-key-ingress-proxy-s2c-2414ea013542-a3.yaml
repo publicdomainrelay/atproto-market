@@ -15,9 +15,10 @@ spec:
     requirements:
     - +r.control-plane-and-report-route
 status:
-  phase: Running
-  message: the agent is realizing lib-did-key-ingress-proxy in a batch of 3 led by
-    atproto-market
+  phase: Failed
+  branch: spec/atproto-market/e34ce8f9
+  agentLog: 'verify: exit 0, 0s, 0 ok'
+  message: 'claudecli: realize atproto-market: the model did not answer within 15m0s'
 superseded:
 - name: lib-did-key-ingress-proxy-s2c-2414ea013542-a2
   phase: Failed
