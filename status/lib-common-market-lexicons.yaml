@@ -1,10 +1,11 @@
 syncedFingerprint: 8603161b1c5fbc10a0242fdd265cc5267d02d2fe25022af7ade525f1134f9897
-realizedSpecHash: ded116a0e46fb8f26a5e13a4909d5f99871d15edd621cf47afef5b9c91249c0f
+realizedSpecHash: 4f52c4152a9b96fb197773df7033c15f9a569bbb328b57ab643a7a74c148a84b
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: $Input, $InputBody, $Message, $Output, $OutputBody, $Params'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual

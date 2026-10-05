@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+The package exists so that every TypeScript consumer in atproto-market — clients, gateways, compute workers, policy hosts — shares one generated, manifest-pinned projection of the market, fedproxy, relay and attestation lexicons instead of hand-writing request and response shapes or inlining NSID literals. It centralizes the vocabulary that crosses service boundaries: the NSID constants and their legacy *_LXM aliases, the per-role default service ids used for proxying and association lookups, and the attestation inline type, so a record-shape change is made once in the lexicon sources and regenerated into every binding rather than edited in a caller.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

@@ -9,5 +9,19 @@ spec:
   fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
   toCommit: 05fe29612a62a645d70273560238ecc3180414d2
 status:
-  phase: Running
-  message: the agent is summarizing lib-common-market-lexicons
+  phase: Succeeded
+  agentLog: 'This context is the shared lexicon binding package for atproto-market,
+    rooted at lib/common/market-lexicons. It holds the generated TypeScript projections
+    of the com.atproto, com.fedproxy, com.publicdomainrelay and network.attested lexicons
+    under the com/ and network/ trees: each *.defs.ts module projects its descriptor
+    objects into exported $Params, $Input, $InputBody, $Output, $OutputBody and $Message
+    types through the @atproto/lex inference helpers, and each sibling module re-exports
+    those definitions as a value object. mod.ts is the single entrypoint, re-exporting
+    the com namespace barrel, the network namespace barrel and nsids.ts; nsids.ts
+    declares every shared NSID as an exported string constant plus the legacy *_LXM
+    aliases that equal them, the DEFAULT_*_SERVICE_ID defaults, and ATTESTATION_INLINE_TYPE.
+    deno.json names the package @publicdomainrelay/market-lexicons under the Unlicense,
+    points exports at ./mod.ts, and pins @atproto/lex as the sole import. Every file
+    under the generated trees carries the generated-file header and is produced from
+    the repository-root lexicons/ JSON sources.'
+  message: wrote 11 requirement(s) and 6 interface(s) for lib-common-market-lexicons
