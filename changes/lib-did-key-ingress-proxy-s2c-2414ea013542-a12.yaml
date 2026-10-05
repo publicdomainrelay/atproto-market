@@ -15,12 +15,73 @@ spec:
     requirements:
     - +r.control-plane-and-report-route
 status:
-  phase: Running
-  message: the agent is realizing lib-did-key-ingress-proxy
+  phase: Succeeded
+  branch: spec/lib-did-key-ingress-proxy/2414ea01
+  agentLog: |-
+    ...→ assigned from handle after registration | `:44,71` |
+    | `ingressUrl` / `ingressHost` getters strip `did:web:` | `:45-46` |
+    | `onServe` wraps fetch via `createSubscriberFactory` → `handleRequest` | `:49` |
+    | log `xrpc-relay connecting` then `createSubscriber` (label, keypair, `getServiceAuthToken`, host, tls, handleRequest, wsTarget, directSubscriptionHandler) | `:58-69` |
+    | store handle, log `xrpc-relay registered` w/ subdomain+ingressRef | `:71-77` |
+    | `close()` → `subscriber?.close()` (no-op before serve) | `:80-82` |
+    | `getServiceAuthToken`: `hostnameToDid` aud + `signServiceAuth` | `:51-54` |
+    | separable `signer` vs `keypair` | `:11-12` + usage |
+    | dead `hostnameOnly` binding (MAY) | `:56` — spec documents it "as written", kept |
+    | r.control-plane-and-report-route | satisfied by caller wiring: `serve.app.route("/", app)` + `serve.addRelay(relay)` (`lib/requester-xrpc/mod.ts:581-582`, `lib/atproto-helpers/agent.ts:353,371`), so relay forwards every mounted route incl. `IROH_TICKET_ROUTE` (`lib/requester-xrpc/mod.ts:1354`); iroh default transport `DEFAULT_TRANSPORT_MODULE = "iroh"` (`:997`), tunnel kept for explicit `tunnel`/`fedproxy-ssh` selection (`:1066`), no host-side read of a guest address from the relay anywhere (`grep .subdomain` hits only the `mod.ts` log line) |
+
+    Verify gate run, exits zero:
+
+    - `deno check` — pass
+    - `deno test -A test/cloud_init_snapshot_test.ts` — 19 passed / 0 failed
+
+    Why no edit rather than the vestige cleanup the spec's MAY allows: the target spec's requirements **retain** `r.unused-hostname-binding` ("as written that binding is never read") and the doc lists no `removed:` entries — so the target code state still contains that binding. Removing it would move the file *away* from the spec it must reach; removing the otherwise-unused `hostnameOnly` import/binding is behaviour-neutral but falsifies that requirement's text. Left as-is.
+
+    Files changed: none (working tree untouched, no git run).
+
+    verify: exit 0, 319ms, 0 ok
+  message: realized lib-did-key-ingress-proxy; the agent changed nothing, the baseline
+    moved
   attempt: 12
   retryReason: the acceptance gate is green now (atproto-market ffe23fa); r.control-plane-and-report-route
     is realized by the unchanged wrapper, so re-run the episode to record it
   retryBy: johnandersen777
+  acceptance:
+  - name: acceptance
+    exitCode: 0
+    durationSeconds: 31.854892427
+    passed: true
+    outputTail: "...k3dbpexg4mbonfzg62bonruw42zof4aqayltuyk6rzicaeakyeiaapuokaq\",\"proxyCmd\":\"/tmp/dumbpipe-4b6e7e12123e1ac2/dumbpipe
+      connect endpointaahg3u6mlbabsz5eaiw65fspt5j27dyqmmkcdxxf7yuh4recxxpqcayaenuhi5dqom5c6l3von3tcljrfzzgk3dbpexg4m\",\"timeoutMs\":300000}\n{\"ts\":\"2026-10-05T22:08:28.843Z\",\"level\":\"info\",\"message\":\"ssh_poll_cmd\",\"prefix\":\"iroh-acceptance\",\"args\":[\"-o\",\"ProxyCommand=/tmp/dumbpipe-4b6e7e12123e1ac2/dumbpipe
+      connect endpointaahg3u6mlbabsz5eaiw65fspt5j27dyqmmkcdxxf7yuh4recxxpqcayaenuhi5dqom5c6l3von3tcljrfzzgk3dbpexg4mbonfzg62bonruw42zof4aqayltuyk6rzicaeakyeiaapuokaq\",\"-o\",\"IdentityFile=/tmp/ssh-compute-b95e7681-60871ad0199efac0/id_ed25519\",\"-o\",\"IdentitiesOnly=yes\"]}\n{\"ts\":\"2026-10-05T22:08:28.844Z\",\"level\":\"info\",\"message\":\"response\",\"prefix\":\"iroh-acceptance\",\"method\":\"POST\",\"path\":\"/iroh-ticket/eec0f90bcefd41730e412d47b4826a45\",\"status\":200,\"durationMs\":1,\"label\":\"requester\"}\n{\"ts\":\"2026-10-05T22:08:28.948Z\",\"level\":\"info\",\"message\":\"vm_ssh_ready\",\"prefix\":\"iroh-acceptance\",\"fqdn\":\"endpointaahg3u6mlbabsz5eaiw65fspt5j27dyqmmkcdxxf7yuh4recxxpqcayaenuhi5dqom5c6l3von3tcljrfzzgk3dbpexg4mbonfzg62bonruw42zof4aqayltuyk6rzicaeakyeiaapuokaq\",\"attempt\":1}\nusing
+      secret key 125300169314caa5e5a6da977568753c9548b6466937ff27a6780be623267a55\nSSH_OK_VIA_IROH\nLinux
+      dc06edf2629e 7.2.8-200.fc44.x86_64 #1 SMP PREEMPT_DYNAMIC Fri Sep 25 21:05:44
+      UTC 2026 x86_64 GNU/Linux\n{\"ts\":\"2026-10-05T22:08:29.051Z\",\"level\":\"info\",\"message\":\"vm_ssh_session_exit\",\"prefix\":\"iroh-acceptance\",\"vmFqdn\":\"endpointaahg3u6mlbabsz5eaiw65fspt5j27dyqmmkcdxxf7yuh4recxxpqcayaenuhi5dqom5c6l3von3tcljrfzzgk3dbpexg4mbonfzg62bonruw42zof4aqayltuyk6rzicaeakyeiaapuokaq\",\"code\":0}\n{\"ts\":\"2026-10-05T22:08:29.051Z\",\"level\":\"info\",\"message\":\"vm_delete_skipped\",\"prefix\":\"iroh-acceptance\",\"reason\":\"--keep-vm\"}\n{\"ts\":\"2026-10-05T22:08:29.051Z\",\"level\":\"info\",\"message\":\"contract_result\",\"prefix\":\"iroh-acceptance\",\"receiptOk\":true,\"sshReady\":true,\"sshExitCode\":0,\"sshProxyCommand\":\"/tmp/dumbpipe-4b6e7e12123e1ac2/dumbpipe
+      connect endpointaahg3u6mlbabsz5eaiw65fspt5j27dyqmmkcdxxf7yuh4recxxpqcayaenuhi5dqom5c6l3von3tcljrfzzgk3dbpexg4mbonfzg62bonruw42zof4aqayltuyk6rzicaeakyeiaapuokaq\"}\n{\"ts\":\"2026-10-05T22:08:29.053Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shywcticg2kvmcdh4cbfmav7wpoyazovevvx4cufcecgiv\"}\n{\"ts\":\"2026-10-05T22:08:29.053Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shuebhhvn9qkp1lxsv1rgmcvvybsmtuy5gkujrgq7c967g\"}\n{\"ts\":\"2026-10-05T22:08:29.053Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shixbglxhnvsoh3ybcsrsmnu6pcpopbrkpfbojwugacrqj\"}\n{\"ts\":\"2026-10-05T22:08:29.053Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shmaykybwcnidrwwzkiw21kmvn3onizygndgjmiecygjyr\"}\n{\"ts\":\"2026-10-05T22:08:29.053Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":1005,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T22:08:29.054Z\",\"level\":\"error\",\"message\":\"ws_error\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"error\":\"[object
+      ErrorEvent]\"}\n{\"ts\":\"2026-10-05T22:08:29.054Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":0,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T22:08:29.054Z\",\"level\":\"info\",\"message\":\"ws_reconnect_scheduled\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"delayMs\":1000,\"attempt\":1}\n{\"ts\":\"2026-10-05T22:08:29.054Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":1005,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T22:08:29.054Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"requester\",\"code\":1005,\"reason\":\"\"}\n\e[0m\e[38;5;245m-----
+      output end -----\e[0m\n[acceptance] iroh: RFP -> bid -> accept -> SSH over the
+      guest's own ticket ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(29s)\e[0m\n\n\e[0m\e[32mok\e[0m
+      | 1 passed | 0 failed \e[0m\e[38;5;245m(29s)\e[0m"
+  policy:
+    waived:
+    - policy: guest-report-driven-emission
+      constraint: guest-report-driven-onnetwork
+      enforcementAction: deny
+      severity: error
+      msg: createVmBidderCallbacks emits the vm.onNetwork event from the provisioning
+        lifecycle, not from an inbound guest report
+      object: CodeGraph default/atproto-market
+      file: lib/market-bidder-compute/mod.ts
+      line: 304
+    - policy: rfp-guest-reports-network
+      constraint: rfp-guest-reports-network
+      enforcementAction: deny
+      severity: error
+      msg: 'the host emits the network report "COMPUTE_EVENTS_VM_ONNETWORK_NSID" from
+        the provisioning lifecycle, not from the http.handle of the guest''s report:
+        lib/market-bidder-compute/mod.ts:304'
+      object: ArchitectureModel default/atproto-market
+      file: lib/market-bidder-compute/mod.ts
+      line: 304
 superseded:
 - name: lib-did-key-ingress-proxy-s2c-2414ea013542-a11
   phase: Failed

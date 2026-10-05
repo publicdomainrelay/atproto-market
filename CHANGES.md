@@ -262,7 +262,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-did-key-ingress-proxy-s2c-2414ea013542 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | lib-did-key-ingress-proxy-s2c-2414ea013542-a10 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | lib-did-key-ingress-proxy-s2c-2414ea013542-a11 | SpecToCode | Failed |  | 0 | - | - |
-| lib-did-key-ingress-proxy-s2c-2414ea013542-a12 | SpecToCode | Running |  | 0 | - | - |
+| lib-did-key-ingress-proxy-s2c-2414ea013542-a12 | SpecToCode | Succeeded |  | 0 | acceptance passed | - |
 | lib-did-key-ingress-proxy-s2c-2414ea013542-a2 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | lib-did-key-ingress-proxy-s2c-2414ea013542-a3 | SpecToCode | Failed |  | 0 | - | - |
 | lib-did-key-ingress-proxy-s2c-2414ea013542-a4 | SpecToCode | Failed |  | 0 | - | - |
