@@ -428,8 +428,27 @@ system_contexts:
   upstream: self
   depends_on:
   - sc.atproto-market
+  requirements:
+  - id: r.delegated-trust-contract
+    level: MUST
+  - id: r.every-method-is-async
+    level: MUST
+  - id: r.interfaces-are-independent
+    level: SHOULD
+  - id: r.no-concrete-trust-logic
+    level: MUST
+  - id: r.operator-discovery-contract
+    level: MUST
+  - id: r.single-export-entrypoint
+    level: MUST
+  - id: r.vouch-resolver-contract
+    level: MUST
   codeRefIndex:
+  - file:lib/abc/trust-graph/deno.json deno.json@lib/abc/trust-graph/deno.json
   - file:lib/abc/trust-graph/mod.ts mod.ts@lib/abc/trust-graph/mod.ts
+  - interface:38a3bf6bf78442c7b5b45b6d9bf4808a DelegatedTrustResolver@lib/abc/trust-graph/mod.ts:10
+  - interface:b2933b2ab4555371bb0e5ec335ba619e VouchResolver@lib/abc/trust-graph/mod.ts:1
+  - interface:f67ff70cf97f5034470e6129668b747a OperatorDiscovery@lib/abc/trust-graph/mod.ts:6
 - id: sc.lib-atproto-attestation-port
   name: lib-atproto-attestation-port
   spec: specs/lib-atproto-attestation-port.yaml

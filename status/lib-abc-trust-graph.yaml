@@ -1,10 +1,11 @@
 syncedFingerprint: c4474a949fb36c0f188293dac3f1a5bc5f8fac71e52316d2fcb728490b334834
-realizedSpecHash: ede1e60bb6191d33171807e6a9dfb6b97998d3eb2d8265251eb617fdb61336bc
+realizedSpecHash: 0b7c5e48a816d1a883312d55446d8ee4cd8ed651189105cc817958be4079b317
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: DelegatedTrustResolver, OperatorDiscovery, VouchResolver'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual

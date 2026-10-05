@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so that every trust source in the repository can be consumed through one small, uniform set of port interfaces rather than each consumer binding directly to a particular graph, vouch store or badge service. It fixes the shape of the questions the market bidder, the bidder-side delegated-trust resolver and other consumers may ask about trust: which DIDs a DID vouches for, whether a given vouch exists, which operators run an account, and which DIDs a self DID trusts by delegation. Because the layer holds only declarations, concrete sources stay swappable behind it and the dependency direction runs one way, from implementations and consumers into this package.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 
