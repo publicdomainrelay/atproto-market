@@ -17,8 +17,32 @@ spec:
     - +r.iroh-acceptance-plc-key-resolution
     - +r.iroh-cloud-init-fixture
 status:
-  phase: Running
-  message: the agent is realizing atproto-market in a batch of 5 led by atproto-market
+  phase: Failed
+  branch: spec/atproto-market/dcae0d4f
+  agentLog: |-
+    ...ownload_failed|downloaded|path_updated`, never throws). Default ProxyCommand now transport-derived: dotted target → websocat relay, dotless ticket → `dumbpipe connect <ticket>` (`dumbpipePath` or PATH). `createSshSessionProvider` gains `dumbpipePath`; non-interactive sessions capture program output. `runComputeContract`: transport defaults to `iroh`, bootstraps `ensureDumbpipe`/`ensureWebsocat` per transport before provisioning, mounts a per-contract unguessable ticket-report POST route on the requester's serve and passes `ctx.irohReportUrl`, accepts a dotless onNetwork address as an iroh ticket, and records `result.sshProxyCommand` + `result.sessionOutput` (keeps `vm_fqdn_discovered`/`vm_fqdn_timeout` event names).
+    - `lib/abc/requester/mod.ts` — optional `ContractFlowResult.sessionOutput`.
+    - `test/bidder_container_integration_test.ts` — rewritten as the iroh acceptance suite: no skip, no `Promise.race`/deadline, whole contract awaited, infra torn down only after it settles; asserts bid collected, registration succeeded with no 401 (via `ingressUrl`), `receiptOk`, `sshReady`, exit 0, `dumbpipe connect <dotless ticket>` (never websocat, never an address), and `SSH_OK_VIA_IROH` in captured output. Asserts run-level facts only — no resolver-internals/"did:key fast path" assertions on the fake PLC.
+    - `compute-contract-full-flow/run_full_flow.ts` — names `userData: { transport: "tunnel" }` so its websocat diagram stays true.
+    - `lib/did-key-ingress-proxy/mod.ts` — documents control-plane-only scope (SSH data plane is iroh).
+    - Tests asserting the websocket path pin `transport: "tunnel"`: bidder cross-platform/prod/ssh-relay, oauth session transfer (`--user-data-transport tunnel`), readme smoke filter widened for `dumbpipe`.
+    - `request-vm-ssh` — transport defaults to iroh, bootstraps dumbpipe, passes `dumbpipePath` to its injected provider; flag/docs say iroh.
+
+    Fixtures untouched — the six golden YAML files stay byte-identical.
+
+    verify: exit 0, 262ms, 0 ok
+  message: |-
+    ...response_error","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping","status":404,"durationMs":0,"label":"requester"}
+    {"ts":"2026-10-05T19:58:24.104Z","level":"info","message":"oidc request","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping"}
+    {"ts":"2026-10-05T19:58:24.105Z","level":"info","message":"response_error","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping","status":404,"durationMs":1,"label":"requester"}
+    {"ts":"2026-10-05T19:58:29.106Z","level":"info","message":"oidc request","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping"}
+    {"ts":"2026-10-05T19:58:29.106Z","level":"info","message":"response_error","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping","status":404,"durationMs":0,"label":"requester"}
+    {"ts":"2026-10-05T19:58:34.108Z","level":"info","message":"oidc request","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping"}
+    {"ts":"2026-10-05T19:58:34.108Z","level":"info","message":"response_error","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping","status":404,"durationMs":0,"label":"requester"}
+    {"ts":"2026-10-05T19:58:39.110Z","level":"info","message":"oidc request","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping"}
+    {"ts":"2026-10-05T19:58:39.110Z","level":"info","message":"response_error","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping","status":404,"durationMs":0,"label":"requester"}
+    {"ts":"2026-10-05T19:58:44.112Z","level":"info","message":"oidc request","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping"}
+    {"ts":"2026-10-05T19:58:44.112Z","level":"info","message":"response_error","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping","status":404,"durationMs":0,"label":"requester"}
   attempt: 5
   retryReason: 'The acceptance suite must not assert on its own test double. r.iroh-acceptance-plc-key-resolution
     is amended in the spec: the fake PLC exists only so the relay''s registration
@@ -31,6 +55,85 @@ status:
     it as the gate, do not run it yourself. The cloud-init iroh module is landed and
     installs ./dumbpipe correctly.'
   retryBy: john
+  acceptance:
+  - name: acceptance
+    exitCode: -1
+    durationSeconds: 1800.019226596
+    passed: false
+    outputTail: |-
+      ...st","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping"}
+      {"ts":"2026-10-05T19:57:54.100Z","level":"info","message":"response_error","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping","status":404,"durationMs":0,"label":"requester"}
+      {"ts":"2026-10-05T19:57:59.101Z","level":"info","message":"oidc request","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping"}
+      {"ts":"2026-10-05T19:57:59.101Z","level":"info","message":"response_error","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping","status":404,"durationMs":0,"label":"requester"}
+      {"ts":"2026-10-05T19:58:04.101Z","level":"info","message":"oidc request","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping"}
+      {"ts":"2026-10-05T19:58:04.102Z","level":"info","message":"response_error","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping","status":404,"durationMs":0,"label":"requester"}
+      {"ts":"2026-10-05T19:58:09.102Z","level":"info","message":"oidc request","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping"}
+      {"ts":"2026-10-05T19:58:09.102Z","level":"info","message":"response_error","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping","status":404,"durationMs":0,"label":"requester"}
+      {"ts":"2026-10-05T19:58:14.103Z","level":"info","message":"oidc request","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping"}
+      {"ts":"2026-10-05T19:58:14.103Z","level":"info","message":"response_error","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping","status":404,"durationMs":0,"label":"requester"}
+      {"ts":"2026-10-05T19:58:19.104Z","level":"info","message":"oidc request","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping"}
+      {"ts":"2026-10-05T19:58:19.104Z","level":"info","message":"response_error","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping","status":404,"durationMs":0,"label":"requester"}
+      {"ts":"2026-10-05T19:58:24.104Z","level":"info","message":"oidc request","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping"}
+      {"ts":"2026-10-05T19:58:24.105Z","level":"info","message":"response_error","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping","status":404,"durationMs":1,"label":"requester"}
+      {"ts":"2026-10-05T19:58:29.106Z","level":"info","message":"oidc request","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping"}
+      {"ts":"2026-10-05T19:58:29.106Z","level":"info","message":"response_error","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping","status":404,"durationMs":0,"label":"requester"}
+      {"ts":"2026-10-05T19:58:34.108Z","level":"info","message":"oidc request","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping"}
+      {"ts":"2026-10-05T19:58:34.108Z","level":"info","message":"response_error","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping","status":404,"durationMs":0,"label":"requester"}
+      {"ts":"2026-10-05T19:58:39.110Z","level":"info","message":"oidc request","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping"}
+      {"ts":"2026-10-05T19:58:39.110Z","level":"info","message":"response_error","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping","status":404,"durationMs":0,"label":"requester"}
+      {"ts":"2026-10-05T19:58:44.112Z","level":"info","message":"oidc request","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping"}
+      {"ts":"2026-10-05T19:58:44.112Z","level":"info","message":"response_error","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping","status":404,"durationMs":0,"label":"requester"}
+  policy:
+    waived:
+    - policy: guest-report-driven-emission
+      constraint: guest-report-driven-onnetwork
+      enforcementAction: deny
+      severity: error
+      msg: createVmBidderCallbacks emits the vm.onNetwork event from the provisioning
+        lifecycle, not from an inbound guest report
+      object: CodeGraph default/atproto-market
+      file: lib/market-bidder-compute/mod.ts
+      line: 304
+    - policy: rfp-guest-reports-network
+      constraint: rfp-guest-reports-network
+      enforcementAction: deny
+      severity: error
+      msg: 'the host emits the network report "COMPUTE_EVENTS_VM_ONNETWORK_NSID" from
+        the provisioning lifecycle, not from the http.handle of the guest''s report:
+        lib/market-bidder-compute/mod.ts:304'
+      object: ArchitectureModel default/atproto-market
+      file: lib/market-bidder-compute/mod.ts
+      line: 304
+  progress:
+    turns: 1
+    tools:
+    - tool: Edit
+      count: 16
+    - tool: Read
+      count: 14
+    - tool: Write
+      count: 1
+    files:
+    - compute-contract-full-flow/run_full_flow.ts
+    - lib/abc/requester/mod.ts
+    - lib/atproto-helpers/agent.ts
+    - lib/common/cloud-init-common/mod.ts
+    - lib/compute-contract-gateway-xrpc/mod.ts
+    - lib/did-key-ingress-proxy/mod.ts
+    - lib/guest-capability-secrets/mod.ts
+    - lib/requester-xrpc/mod.ts
+    - request-vm-ssh/README.md
+    - request-vm-ssh/cli-args-env.ts
+    - request-vm-ssh/mod.ts
+    - test/bidder_container_integration_test.ts
+    - test/bidder_cross_platform_integration_test.ts
+    - test/bidder_prod_integration_test.ts
+    - test/bidder_ssh_relay_test.ts
+    - test/gateway_readme_smoke_test.ts
+    - test/oauth_session_transfer_test.ts
+    notes: 2
+    first: "2026-10-05T19:21:30Z"
+    last: "2026-10-05T19:28:22Z"
 superseded:
 - name: atproto-market-s2c-dcae0d4f6037-a4
   phase: Failed
