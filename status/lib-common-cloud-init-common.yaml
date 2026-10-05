@@ -1,7 +1,7 @@
-observedCommit: 924781f0e5da1820ab6215181ae5358ff5a8a149
-syncedCommit: 924781f0e5da1820ab6215181ae5358ff5a8a149
-syncedFingerprint: bcef53d23ecafce5effae498723bb00587b233fe3792d06e5210ed270ffa5c69
-realizedSpecHash: 980697081a9d94f9872c2c041f7b662d36ef9756b4036d014fd96a44fb35fa75
+observedCommit: ffe23fab64479bde13589e29ceef8ad39674da78
+syncedCommit: ffe23fab64479bde13589e29ceef8ad39674da78
+syncedFingerprint: 261ce20d436808e2d0a3a8c688d28ec7bfc5228b4395e1d6c12ecf0c08c4b3fa
+realizedSpecHash: 38c3c116ef523f3166a712b9199994ebf5af8ff0319411876b8183fa90e300cc
 conditions:
 - type: CodeSynced
   status: "True"
@@ -101,18 +101,18 @@ observed:
     kind: function
     signature: '(ctx: CloudInitContext): string'
     file: lib/common/cloud-init-common/mod.ts
-    line: 1189
-    codegraphId: function:b9178b5c08f45793aabf9968ae96a12b
+    line: 1194
+    codegraphId: function:3a913c06b2dd78bfb3e8642f2e1f8c31
   - name: buildTunnelUserData
     kind: function
     signature: '(ctx: TunnelCloudInitContext): string'
     file: lib/common/cloud-init-common/mod.ts
-    line: 1197
-    codegraphId: function:e943569d450022d848868aace40826b9
+    line: 1202
+    codegraphId: function:1ae77de0a27ff635b77ee641b100a401
   - name: injectJsrUrl
     kind: function
     signature: '(userData: string, jsrUrl: string): string'
     file: lib/common/cloud-init-common/mod.ts
-    line: 1202
-    codegraphId: function:a48ef14391165fd66d547881a7105798
-  fingerprint: bcef53d23ecafce5effae498723bb00587b233fe3792d06e5210ed270ffa5c69
+    line: 1207
+    codegraphId: function:9a6d8bf0faabdaa51874431c3858d7b2
+  fingerprint: 261ce20d436808e2d0a3a8c688d28ec7bfc5228b4395e1d6c12ecf0c08c4b3fa

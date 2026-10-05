@@ -1,0 +1,16 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-abc-requester-c2s-8b36a2bfe627-ffe23fab6447
+  namespace: default
+spec:
+  systemContext: lib-abc-requester
+  direction: CodeToSpec
+  fromCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
+  toCommit: ffe23fab64479bde13589e29ceef8ad39674da78
+  delta:
+    counts:
+      changed: 14
+status:
+  phase: Running
+  message: the agent is summarizing lib-abc-requester

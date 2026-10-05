@@ -72,8 +72,8 @@ spec:
       and tunnel respectively, so existing callers keep compiling for one release.
     codeRefs:
     - function:0b425646d5c4f56b16038e9c4dba15af
-    - function:b9178b5c08f45793aabf9968ae96a12b
-    - function:e943569d450022d848868aace40826b9
+    - function:1ae77de0a27ff635b77ee641b100a401
+    - function:3a913c06b2dd78bfb3e8642f2e1f8c31
     - interface:092f68e9c67b840eb4354be94b83c64f
   - id: r.flatten-label-parity
     level: MUST
@@ -88,7 +88,7 @@ spec:
       the ExecStart line of the tunnel-subscriber systemd unit inside already-rendered
       cloud-init YAML, redirecting the guest's Deno registry to a local hono-jsr instance.
     codeRefs:
-    - function:a48ef14391165fd66d547881a7105798
+    - function:9a6d8bf0faabdaa51874431c3858d7b2
   - id: r.iroh-context-fields
     level: MUST
     text: 'CloudInitContext gains two optional fields the iroh transport module reads:
@@ -242,7 +242,7 @@ spec:
       and hostAliases optional, so callers written against the old buildTunnelUserData
       signature still type-check.
     codeRefs:
-    - function:e943569d450022d848868aace40826b9
+    - function:1ae77de0a27ff635b77ee641b100a401
     - interface:092f68e9c67b840eb4354be94b83c64f
   - id: r.tunnel-module-defaults
     level: MUST
@@ -251,7 +251,7 @@ spec:
       matching `^[\w.:-]+\s+[\w.-]+$` as idempotent `/etc/hosts` bootcmd appends.
     codeRefs:
     - function:0b425646d5c4f56b16038e9c4dba15af
-    - function:e943569d450022d848868aace40826b9
+    - function:1ae77de0a27ff635b77ee641b100a401
     - interface:0bccaee64ad56c10f80842c828570d30
   interfaces:
   - name: CloudInitContext
@@ -329,13 +329,13 @@ codeRefIndex:
 - file:lib/common/cloud-init-common/deno.json deno.json@lib/common/cloud-init-common/deno.json
 - file:lib/common/cloud-init-common/mod.ts mod.ts@lib/common/cloud-init-common/mod.ts
 - function:0b425646d5c4f56b16038e9c4dba15af buildUserData@lib/common/cloud-init-common/mod.ts:206
+- function:1ae77de0a27ff635b77ee641b100a401 buildTunnelUserData@lib/common/cloud-init-common/mod.ts:1202
+- function:3a913c06b2dd78bfb3e8642f2e1f8c31 buildDefaultUserData@lib/common/cloud-init-common/mod.ts:1194
 - function:5652e750fb9115e1fadb54fd2a5896ff acceptBundleModule@lib/common/cloud-init-common/mod.ts:226
 - function:9907051b938352ee02de9174900cda83 getUserDataModules@lib/common/cloud-init-common/mod.ts:124
-- function:a48ef14391165fd66d547881a7105798 injectJsrUrl@lib/common/cloud-init-common/mod.ts:1202
-- function:b9178b5c08f45793aabf9968ae96a12b buildDefaultUserData@lib/common/cloud-init-common/mod.ts:1189
+- function:9a6d8bf0faabdaa51874431c3858d7b2 injectJsrUrl@lib/common/cloud-init-common/mod.ts:1207
 - function:bda226a178d322d23787826edd956b36 listUserDataModules@lib/common/cloud-init-common/mod.ts:133
 - function:bf7affdf70f1bc3f8c62c8326c1440e6 flattenLabel@lib/common/cloud-init-common/mod.ts:108
-- function:e943569d450022d848868aace40826b9 buildTunnelUserData@lib/common/cloud-init-common/mod.ts:1197
 - function:ffebae3212819883df36122271ebabe6 registerUserDataModule@lib/common/cloud-init-common/mod.ts:119
 - interface:092f68e9c67b840eb4354be94b83c64f TunnelCloudInitContext@lib/common/cloud-init-common/mod.ts:68
 - interface:0bccaee64ad56c10f80842c828570d30 CloudInitContext@lib/common/cloud-init-common/mod.ts:16

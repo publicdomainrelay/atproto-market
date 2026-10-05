@@ -232,6 +232,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | atproto-market-s2c-f3075524231b-a6 | SpecToCode | Failed |  | 0 | - | - |
 | compute-contract-full-flow-c2s-8b36a2bfe627-8b36a2bfe627 | CodeToSpec | Succeeded |  | 0 | - | - |
 | hono-plc-c2s-8b36a2bfe627-8b36a2bfe627 | CodeToSpec | Succeeded |  | 0 | - | - |
+| lib-abc-requester-c2s-8b36a2bfe627-ffe23fab6447 | CodeToSpec | Running |  | 0 | - | - |
 | lib-abc-requester-s2c-a24b0558524f | SpecToCode | Succeeded | 8b36a2bf | 0 | acceptance passed | 1 of 4 missing |
 | lib-common-cloud-init-common-s2c-902a26c3bbfc | SpecToCode | Succeeded | 924781f0 | 0 | acceptance passed | 1 implemented |
 | lib-common-cloud-init-common-s2c-94ec68de1a7b | SpecToCode | Failed |  | 0 | acceptance failed | - |

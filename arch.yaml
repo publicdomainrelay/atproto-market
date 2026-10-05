@@ -550,26 +550,26 @@ system_contexts:
   - id: r.ssh-session-provider
     level: MUST
   codeRefIndex:
-  - class:d57e883e006876b805c05d8d04f3c70d BidCollector@lib/abc/requester/mod.ts:280
+  - class:0caf82f6baf10676e7268b04ab17ca14 BidCollector@lib/abc/requester/mod.ts:292
   - file:lib/abc/requester/deno.json deno.json@lib/abc/requester/deno.json
   - file:lib/abc/requester/mod.ts mod.ts@lib/abc/requester/mod.ts
-  - function:24f8ac1d96de6ca5018e544cac052e84 bidCost@lib/abc/requester/mod.ts:252
-  - function:69339ecd22627b6da61ee16603023f6c bidPayloadNsid@lib/abc/requester/mod.ts:245
-  - function:7daa86a6f9e8695a5c71ac805fdf133f selectWinner@lib/abc/requester/mod.ts:257
-  - interface:2bf4e4013748280889dd472657b64d28 ConsoleBuffer@lib/abc/requester/mod.ts:240
+  - function:20a451f4e1377ecae548f81cfe46a0cc bidCost@lib/abc/requester/mod.ts:264
+  - function:bb6fa4e319eabdb96cf1bcf9588b6e66 bidPayloadNsid@lib/abc/requester/mod.ts:257
+  - function:ed8dff4b5cdb3292029aac87a83f2c1a selectWinner@lib/abc/requester/mod.ts:269
+  - interface:07656388c821ba6af3e6f01deebf7dff ConsoleBuffer@lib/abc/requester/mod.ts:252
   - interface:380dfb7fe1bd2c55f157a6b95bd59bd0 RequesterPDS@lib/abc/requester/mod.ts:144
+  - interface:747f4e8ee217aaf65deeda3d92575495 ContractFlowResult@lib/abc/requester/mod.ts:219
   - interface:7701e7d56c70ba5cf00215557461ee48 PDSOptions@lib/abc/requester/mod.ts:133
   - interface:7fb903e1181ae51a3d69c0a40484e610 ContractFlowOptions@lib/abc/requester/mod.ts:15
   - interface:8ae67fbea354fbac2ec37b3b073691bf SshSessionProvider@lib/abc/requester/mod.ts:207
-  - interface:bbce0224c2c383325ab5878b13e89926 BidCollectorOptions@lib/abc/requester/mod.ts:262
-  - interface:d628e8817422a09b842f19f2d455731e ContractFlowResult@lib/abc/requester/mod.ts:213
+  - interface:df95093f1bbb4e60cba4564e259a3935 BidCollectorOptions@lib/abc/requester/mod.ts:274
   - interface:f25a32e8c06ef59f558fa95805408414 CollectedBid@lib/abc/requester/mod.ts:8
-  - method:075eb6ec1290d376ade2f43084aafaa7 BidCollector.isFree@lib/abc/requester/mod.ts:294
-  - method:1d57f0d392207f772e28cf364c8221e6 BidCollector.constructor@lib/abc/requester/mod.ts:288
-  - method:57342a42b93f081e405aff614b83bea6 BidCollector.addAll@lib/abc/requester/mod.ts:317
-  - method:8caf134464a48ce61f8572f957c5d489 BidCollector.add@lib/abc/requester/mod.ts:298
-  - method:a494d7a4e7ee0619038e9ac0caa89a66 BidCollector.drain@lib/abc/requester/mod.ts:326
-  - method:be9c9383827329e0d7af9662d2f6f1de BidCollector.all@lib/abc/requester/mod.ts:321
+  - method:219a8c9f6373f86e1f1a362a713754d4 BidCollector.isFree@lib/abc/requester/mod.ts:306
+  - method:5dc9e58f573cf4ead916ffb5149a57e8 BidCollector.add@lib/abc/requester/mod.ts:310
+  - method:74ee8b25406d012ad5559304d9e421cd BidCollector.all@lib/abc/requester/mod.ts:333
+  - method:97628a03e71fa7a982608e85fe501ee0 BidCollector.constructor@lib/abc/requester/mod.ts:300
+  - method:bbde52426d70d3594c43c0a15fc39cb6 BidCollector.addAll@lib/abc/requester/mod.ts:329
+  - method:d23a7b6970e40f595af441e1ed38c910 BidCollector.drain@lib/abc/requester/mod.ts:338
 - id: sc.lib-abc-trust-graph
   name: lib-abc-trust-graph
   spec: specs/lib-abc-trust-graph.yaml
@@ -947,13 +947,13 @@ system_contexts:
   - file:lib/common/cloud-init-common/deno.json deno.json@lib/common/cloud-init-common/deno.json
   - file:lib/common/cloud-init-common/mod.ts mod.ts@lib/common/cloud-init-common/mod.ts
   - function:0b425646d5c4f56b16038e9c4dba15af buildUserData@lib/common/cloud-init-common/mod.ts:206
+  - function:1ae77de0a27ff635b77ee641b100a401 buildTunnelUserData@lib/common/cloud-init-common/mod.ts:1202
+  - function:3a913c06b2dd78bfb3e8642f2e1f8c31 buildDefaultUserData@lib/common/cloud-init-common/mod.ts:1194
   - function:5652e750fb9115e1fadb54fd2a5896ff acceptBundleModule@lib/common/cloud-init-common/mod.ts:226
   - function:9907051b938352ee02de9174900cda83 getUserDataModules@lib/common/cloud-init-common/mod.ts:124
-  - function:a48ef14391165fd66d547881a7105798 injectJsrUrl@lib/common/cloud-init-common/mod.ts:1202
-  - function:b9178b5c08f45793aabf9968ae96a12b buildDefaultUserData@lib/common/cloud-init-common/mod.ts:1189
+  - function:9a6d8bf0faabdaa51874431c3858d7b2 injectJsrUrl@lib/common/cloud-init-common/mod.ts:1207
   - function:bda226a178d322d23787826edd956b36 listUserDataModules@lib/common/cloud-init-common/mod.ts:133
   - function:bf7affdf70f1bc3f8c62c8326c1440e6 flattenLabel@lib/common/cloud-init-common/mod.ts:108
-  - function:e943569d450022d848868aace40826b9 buildTunnelUserData@lib/common/cloud-init-common/mod.ts:1197
   - function:ffebae3212819883df36122271ebabe6 registerUserDataModule@lib/common/cloud-init-common/mod.ts:119
   - interface:092f68e9c67b840eb4354be94b83c64f TunnelCloudInitContext@lib/common/cloud-init-common/mod.ts:68
   - interface:0bccaee64ad56c10f80842c828570d30 CloudInitContext@lib/common/cloud-init-common/mod.ts:16
