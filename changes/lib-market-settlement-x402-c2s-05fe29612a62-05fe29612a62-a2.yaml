@@ -1,0 +1,36 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-market-settlement-x402-c2s-05fe29612a62-05fe29612a62-a2
+  namespace: default
+spec:
+  systemContext: lib-market-settlement-x402
+  direction: CodeToSpec
+  fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
+  toCommit: 05fe29612a62a645d70273560238ecc3180414d2
+status:
+  phase: Succeeded
+  agentLog: 'lib/market-settlement-x402 is the Deno/JSR package that carries the x402
+    leg of the market settlement protocol. server.ts holds the server half: parseReceiptPath
+    strips leading slashes from an incoming receipt request path, drops an optional
+    caller-supplied prefix, and splits the remainder at the last slash into an accepts
+    uri and cid, throwing X402PaymentError(400, "missing cid") when that split is
+    impossible; mintReceiptForAccepts resolves an accepts.x402 record through a RecordResolver,
+    rejects a wrong record type with X402PaymentError(400), and otherwise writes a
+    signed receipts.x402 remote proof bound to that accepts record; verifyX402Payment
+    resolves a bidder-supplied payment reference and rejects it with X402PaymentError(402)
+    when the reference is missing, the record type is wrong, the authoring DID does
+    not match the bidder, or the remote proof fails to bind to the accepts record.
+    X402PaymentError extends Error and keeps its HTTP status in a public readonly
+    field so a Hono handler can map a rejection straight onto a response code. client.ts
+    holds the client half: settleX402Payment checks the target url against an egress
+    policy, signs and creates an accepts.x402 record from a bid and a bid payload,
+    builds the receipt URL from the returned strongRef, GETs it under an abort timeout,
+    and returns the receipts.x402 strongRef parsed out of the JSON body. mod.ts re-exports
+    both halves so the package presents a single export surface.'
+  message: wrote 9 requirement(s) and 7 interface(s) for lib-market-settlement-x402;
+    the spec already said this
+superseded:
+- name: lib-market-settlement-x402-c2s-05fe29612a62-05fe29612a62
+  phase: Succeeded
+  message: wrote 9 requirement(s) and 7 interface(s) for lib-market-settlement-x402
