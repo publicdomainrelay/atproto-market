@@ -116,6 +116,18 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - changed `r.memory-store` (codeRefs): "MemoryPlcStore implements PlcStore over an in-process Map keyed by DID: getCurrentOps filters out entries flagged nullified, getAuditLog returns the stored list unchanged, getOpByCid finds an entry by CID or returns null, insertOp appends and creates the DID's list on first write, nullifyOps marks every entry whose CID is in the requested set, and exportLogs gathers entries from every DID, skips those whose createdAt is at or before an after cutoff, sorts by createdAt string order and slices to count when count is given."
 - changed `r.store-contract` (codeRefs): "PlcStore is the persistence contract the directory runs against: per DID it yields the current, non-nullified operations through getCurrentOps and the full log including nullified entries through getAuditLog, looks up a single entry by CID through getOpByCid, appends an entry through insertOp, marks a set of CIDs nullified through nullifyOps, and exports entries across all DIDs in ascending createdAt order through exportLogs while applying an optional after cutoff and truncating to an optional count."
 
+### lib-hono-factory-did-plc-directory-storage
+
+- intent: "" -> "The context exists so that the surrounding PLC directory factory, its handlers, and its mod wiring depend on an abstract PlcStore port rather than on a concrete backend, and can be given an in-memory implementation (MemoryPlcStore) for tests and single-process use. Its methods back the DID resolution, log, audit, and export endpoints: getCurrentOps feeds resolution and log reads, getAuditLog feeds the audit endpoint, getOpByCid supports single-operation retrieval, insertOp and nullifyOps service writes, and exportLogs serves global log paging."
+- added `r.audit-log-retains-nullified` (MUST): "getAuditLog must return every entry recorded for the DID, including entries nullified by nullifyOps, and must return an empty array for an unknown DID so the audit trail is never narrowed by later writes."
+- added `r.current-ops-exclude-nullified` (MUST): "getCurrentOps must return only the entries for the given DID whose nullified flag is falsy, and must return an empty array for an unknown DID rather than null or a throw."
+- added `r.export-logs-ordering-and-paging` (MUST): "exportLogs must scan the logs of all DIDs, skip entries whose createdAt is at or before the optional after date, sort the remainder ascending by createdAt, and, when count is supplied, return only the first count entries; with no arguments it returns every entry across every DID."
+- added `r.insert-op-appends` (MUST): "insertOp must append the entry to the log of the DID named by the entry itself, creating that DID's array when it does not yet exist, and must preserve insertion order so later reads see entries in the order they arrived."
+- added `r.memory-implements-port` (MUST): "MemoryPlcStore must implement PlcStore, holding operation logs in an in-memory map keyed by DID whose values are ordered arrays of LogEntry records."
+- added `r.nullify-marks-in-place` (MUST): "nullifyOps must set the nullified flag on every entry of the DID whose CID appears in the supplied list, leaving entries with other CIDs untouched, and must return without error when the DID is unknown."
+- added `r.op-by-cid-lookup` (MUST): "getOpByCid must return the first entry recorded for the DID whose cid equals the requested CID, regardless of whether that entry is nullified, and must return null when the DID is unknown or no entry matches."
+- added `r.store-port` (MUST): "PlcStore must declare exactly six asynchronous operations over per-DID operation logs — getCurrentOps, getAuditLog, getOpByCid, insertOp, nullifyOps, and exportLogs — all delivering LogEntry values, so that consumers depend on the port and not on a concrete backend."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance | coverage |
@@ -140,7 +152,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-did-plc-generated-client-c2s-8b36a2bfe627-8b36a2bfe627 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-did-plc-generated-core-c2s-8b36a2bfe627-8b36a2bfe627 | CodeToSpec | Running |  | 0 | - | - |
 | lib-hono-factory-did-plc-directory-c2s-05fe29612a62-8b36a2bfe627 | CodeToSpec | Succeeded |  | 0 | - | - |
-| lib-hono-factory-did-plc-directory-storage-c2s-8b36a2bfe627-8b36a2bfe627 | CodeToSpec | Running |  | 0 | - | - |
+| lib-hono-factory-did-plc-directory-storage-c2s-8b36a2bfe627-8b36a2bfe627 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-market-settlement-x402-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-requester-xrpc-s2c-0c605032289f | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | lib-requester-xrpc-s2c-0c605032289f-a2 | SpecToCode | Failed |  | 0 | acceptance failed | - |

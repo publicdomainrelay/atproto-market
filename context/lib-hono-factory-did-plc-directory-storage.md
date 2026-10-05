@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+The context exists so that the surrounding PLC directory factory, its handlers, and its mod wiring depend on an abstract PlcStore port rather than on a concrete backend, and can be given an in-memory implementation (MemoryPlcStore) for tests and single-process use. Its methods back the DID resolution, log, audit, and export endpoints: getCurrentOps feeds resolution and log reads, getAuditLog feeds the audit endpoint, getOpByCid supports single-operation retrieval, insertOp and nullifyOps service writes, and exportLogs serves global log paging.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

@@ -8,5 +8,119 @@ spec:
   upstream: self
   dependsOn:
   - sc.lib-did-plc
+  intent: 'The context exists so that the surrounding PLC directory factory, its handlers,
+    and its mod wiring depend on an abstract PlcStore port rather than on a concrete
+    backend, and can be given an in-memory implementation (MemoryPlcStore) for tests
+    and single-process use. Its methods back the DID resolution, log, audit, and export
+    endpoints: getCurrentOps feeds resolution and log reads, getAuditLog feeds the
+    audit endpoint, getOpByCid supports single-operation retrieval, insertOp and nullifyOps
+    service writes, and exportLogs serves global log paging.'
+  requirements:
+  - id: r.audit-log-retains-nullified
+    level: MUST
+    text: getAuditLog must return every entry recorded for the DID, including entries
+      nullified by nullifyOps, and must return an empty array for an unknown DID so
+      the audit trail is never narrowed by later writes.
+    codeRefs:
+    - file:lib/hono-factory-did-plc-directory/storage/plc-store.ts
+    - method:5effb1ba90cc09ca38b9facc67e0e5e5
+  - id: r.current-ops-exclude-nullified
+    level: MUST
+    text: getCurrentOps must return only the entries for the given DID whose nullified
+      flag is falsy, and must return an empty array for an unknown DID rather than
+      null or a throw.
+    codeRefs:
+    - file:lib/hono-factory-did-plc-directory/storage/plc-store.ts
+    - method:f3ed83fb406ac57043fa578dc7d44e12
+  - id: r.export-logs-ordering-and-paging
+    level: MUST
+    text: exportLogs must scan the logs of all DIDs, skip entries whose createdAt
+      is at or before the optional after date, sort the remainder ascending by createdAt,
+      and, when count is supplied, return only the first count entries; with no arguments
+      it returns every entry across every DID.
+    codeRefs:
+    - file:lib/hono-factory-did-plc-directory/storage/plc-store.ts
+    - method:b8ee53ece42a3057f7a82bf6033b7ab5
+  - id: r.insert-op-appends
+    level: MUST
+    text: insertOp must append the entry to the log of the DID named by the entry
+      itself, creating that DID's array when it does not yet exist, and must preserve
+      insertion order so later reads see entries in the order they arrived.
+    codeRefs:
+    - file:lib/hono-factory-did-plc-directory/storage/plc-store.ts
+    - method:b796dec3c2dab2f5c026e954e2799299
+  - id: r.memory-implements-port
+    level: MUST
+    text: MemoryPlcStore must implement PlcStore, holding operation logs in an in-memory
+      map keyed by DID whose values are ordered arrays of LogEntry records.
+    codeRefs:
+    - class:6dc897b2ad83f3474c8cc21fa651b5f0
+    - interface:86a4aca923e87a6278f374fd01ce9547
+  - id: r.nullify-marks-in-place
+    level: MUST
+    text: nullifyOps must set the nullified flag on every entry of the DID whose CID
+      appears in the supplied list, leaving entries with other CIDs untouched, and
+      must return without error when the DID is unknown.
+    codeRefs:
+    - file:lib/hono-factory-did-plc-directory/storage/plc-store.ts
+    - method:8b706b26d2ae998889c6d053a48c7fe3
+  - id: r.op-by-cid-lookup
+    level: MUST
+    text: getOpByCid must return the first entry recorded for the DID whose cid equals
+      the requested CID, regardless of whether that entry is nullified, and must return
+      null when the DID is unknown or no entry matches.
+    codeRefs:
+    - file:lib/hono-factory-did-plc-directory/storage/plc-store.ts
+    - method:b7635d15869a1ecb4b58b9cef42809a8
+  - id: r.store-port
+    level: MUST
+    text: PlcStore must declare exactly six asynchronous operations over per-DID operation
+      logs — getCurrentOps, getAuditLog, getOpByCid, insertOp, nullifyOps, and exportLogs
+      — all delivering LogEntry values, so that consumers depend on the port and not
+      on a concrete backend.
+    codeRefs:
+    - file:lib/hono-factory-did-plc-directory/storage/plc-store.ts
+    - interface:86a4aca923e87a6278f374fd01ce9547
+  interfaces:
+  - name: MemoryPlcStore
+    kind: class
+    signature: MemoryPlcStore ()
+    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
+  - name: MemoryPlcStore.exportLogs
+    kind: method
+    signature: 'exportLogs(after?: Date, count?: number): Promise<LogEntry[]>'
+    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
+  - name: MemoryPlcStore.getAuditLog
+    kind: method
+    signature: 'getAuditLog(did: string): Promise<LogEntry[]>'
+    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
+  - name: MemoryPlcStore.getCurrentOps
+    kind: method
+    signature: 'getCurrentOps(did: string): Promise<LogEntry[]>'
+    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
+  - name: MemoryPlcStore.getOpByCid
+    kind: method
+    signature: 'getOpByCid(did: string, cid: string): Promise<LogEntry | null>'
+    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
+  - name: MemoryPlcStore.insertOp
+    kind: method
+    signature: 'insertOp(entry: LogEntry): Promise<void>'
+    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
+  - name: MemoryPlcStore.nullifyOps
+    kind: method
+    signature: 'nullifyOps(did: string, cids: string[]): Promise<void>'
+    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
+  - name: PlcStore
+    kind: interface
+    signature: PlcStore ()
+    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
 codeRefIndex:
+- class:6dc897b2ad83f3474c8cc21fa651b5f0 MemoryPlcStore@lib/hono-factory-did-plc-directory/storage/plc-store.ts:17
 - file:lib/hono-factory-did-plc-directory/storage/plc-store.ts plc-store.ts@lib/hono-factory-did-plc-directory/storage/plc-store.ts
+- interface:86a4aca923e87a6278f374fd01ce9547 PlcStore@lib/hono-factory-did-plc-directory/storage/plc-store.ts:3
+- method:5effb1ba90cc09ca38b9facc67e0e5e5 MemoryPlcStore.getAuditLog@lib/hono-factory-did-plc-directory/storage/plc-store.ts:26
+- method:8b706b26d2ae998889c6d053a48c7fe3 MemoryPlcStore.nullifyOps@lib/hono-factory-did-plc-directory/storage/plc-store.ts:45
+- method:b7635d15869a1ecb4b58b9cef42809a8 MemoryPlcStore.getOpByCid@lib/hono-factory-did-plc-directory/storage/plc-store.ts:30
+- method:b796dec3c2dab2f5c026e954e2799299 MemoryPlcStore.insertOp@lib/hono-factory-did-plc-directory/storage/plc-store.ts:36
+- method:b8ee53ece42a3057f7a82bf6033b7ab5 MemoryPlcStore.exportLogs@lib/hono-factory-did-plc-directory/storage/plc-store.ts:56
+- method:f3ed83fb406ac57043fa578dc7d44e12 MemoryPlcStore.getCurrentOps@lib/hono-factory-did-plc-directory/storage/plc-store.ts:20

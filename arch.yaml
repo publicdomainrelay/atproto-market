@@ -1840,8 +1840,33 @@ system_contexts:
   upstream: self
   depends_on:
   - sc.lib-did-plc
+  requirements:
+  - id: r.audit-log-retains-nullified
+    level: MUST
+  - id: r.current-ops-exclude-nullified
+    level: MUST
+  - id: r.export-logs-ordering-and-paging
+    level: MUST
+  - id: r.insert-op-appends
+    level: MUST
+  - id: r.memory-implements-port
+    level: MUST
+  - id: r.nullify-marks-in-place
+    level: MUST
+  - id: r.op-by-cid-lookup
+    level: MUST
+  - id: r.store-port
+    level: MUST
   codeRefIndex:
+  - class:6dc897b2ad83f3474c8cc21fa651b5f0 MemoryPlcStore@lib/hono-factory-did-plc-directory/storage/plc-store.ts:17
   - file:lib/hono-factory-did-plc-directory/storage/plc-store.ts plc-store.ts@lib/hono-factory-did-plc-directory/storage/plc-store.ts
+  - interface:86a4aca923e87a6278f374fd01ce9547 PlcStore@lib/hono-factory-did-plc-directory/storage/plc-store.ts:3
+  - method:5effb1ba90cc09ca38b9facc67e0e5e5 MemoryPlcStore.getAuditLog@lib/hono-factory-did-plc-directory/storage/plc-store.ts:26
+  - method:8b706b26d2ae998889c6d053a48c7fe3 MemoryPlcStore.nullifyOps@lib/hono-factory-did-plc-directory/storage/plc-store.ts:45
+  - method:b7635d15869a1ecb4b58b9cef42809a8 MemoryPlcStore.getOpByCid@lib/hono-factory-did-plc-directory/storage/plc-store.ts:30
+  - method:b796dec3c2dab2f5c026e954e2799299 MemoryPlcStore.insertOp@lib/hono-factory-did-plc-directory/storage/plc-store.ts:36
+  - method:b8ee53ece42a3057f7a82bf6033b7ab5 MemoryPlcStore.exportLogs@lib/hono-factory-did-plc-directory/storage/plc-store.ts:56
+  - method:f3ed83fb406ac57043fa578dc7d44e12 MemoryPlcStore.getCurrentOps@lib/hono-factory-did-plc-directory/storage/plc-store.ts:20
 - id: sc.lib-hono-factory-market-atproto
   name: lib-hono-factory-market-atproto
   spec: specs/lib-hono-factory-market-atproto.yaml
