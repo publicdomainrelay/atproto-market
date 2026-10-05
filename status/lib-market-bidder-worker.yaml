@@ -2,14 +2,14 @@ syncedFingerprint: 3b647450ab559d1f441945e474e994bf24717f8f3832f05b8b18b6802c843
 realizedSpecHash: fd3a529ac9a6c98366b6def9fd70b94f4a718ac28443a85283cbeaa0e6f80fc0
 conditions:
 - type: CodeSynced
-  status: "True"
-  reason: InterfacesObserved
-  message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
+  status: "False"
+  reason: InterfacesMissing
+  message: 'undeclared: CreateComputeProviderDenoWorkerOpts, WorkerBidderDeps, WorkerProvider,
+    createComputeProviderDenoWorker, createWorkerBidderCallbacks, createWorkerProviderHooks'
 - type: Drifted
   status: "False"
-  reason: NotSyncedYet
-  message: no synced fingerprint has been recorded yet
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed

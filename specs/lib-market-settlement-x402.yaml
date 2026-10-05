@@ -1,0 +1,18 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SystemContext
+metadata:
+  name: lib-market-settlement-x402
+  namespace: default
+spec:
+  repository: atproto-market
+  upstream: self
+  dependsOn:
+  - sc.atproto-market
+  - sc.lib-abc-market
+  - sc.lib-common-market-common
+  - sc.lib-common-market-lexicons
+  - sc.lib-market-atproto
+codeRefIndex:
+- file:lib/market-settlement-x402/client.ts client.ts@lib/market-settlement-x402/client.ts
+- file:lib/market-settlement-x402/mod.ts mod.ts@lib/market-settlement-x402/mod.ts
+- file:lib/market-settlement-x402/server.ts server.ts@lib/market-settlement-x402/server.ts

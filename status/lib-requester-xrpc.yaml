@@ -1,0 +1,256 @@
+syncedFingerprint: 501674c6c22c41f9f64261c6fd696f06ae5a0061a96af985f205b26e8a3d86f9
+realizedSpecHash: f77f584c968e86dd778c0066f8cab9062ea82d64ff7c24a26863488db7623c00
+conditions:
+- type: CodeSynced
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
+  status: "True"
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed:
+  files:
+  - lib/requester-xrpc/mod.ts
+  treeFiles:
+  - lib/requester-xrpc/deno.json
+  interfaces:
+  - name: RequesterPDSImpl
+    kind: interface
+    file: lib/requester-xrpc/mod.ts
+    line: 91
+    codegraphId: interface:66b06e1611350a7f4fb4602342352a5f
+  - name: discoverBiddersFromRelay
+    kind: function
+    signature: |-
+      (opts: {
+        relayUrl: string;
+        collection: string;
+        log?: LoggerInterface;
+        timeoutMs?: number;
+      }): Promise<string[]>
+    file: lib/requester-xrpc/mod.ts
+    line: 102
+    codegraphId: function:9a74e04d247f63426fdb4ddc23b98a81
+  - name: discoverBiddersFromRelays
+    kind: function
+    signature: |-
+      (opts: {
+        relayUrls: string[];
+        collection: string;
+        log?: LoggerInterface;
+        timeoutMs?: number;
+      }): Promise<string[]>
+    file: lib/requester-xrpc/mod.ts
+    line: 131
+    codegraphId: function:742fa0bee0972eced0864f0199608e68
+  - name: RelayVisibilityResult
+    kind: interface
+    file: lib/requester-xrpc/mod.ts
+    line: 150
+    codegraphId: interface:9abcf87c406c455d60dfaf993419e8b9
+  - name: verifyRelayVisibility
+    kind: function
+    signature: |-
+      (opts: {
+        relayUrls: string[];
+        bidderDid: string;
+        collection: string;
+        log?: LoggerInterface;
+        pollTimeoutMs?: number;
+        pollIntervalMs?: number;
+      }): Promise<RelayVisibilityResult>
+    file: lib/requester-xrpc/mod.ts
+    line: 170
+    codegraphId: function:0bad0cf5b6751fd238881270b5c9c907
+  - name: autoDiscoverRelayUrls
+    kind: function
+    signature: |-
+      (opts: {
+        atprotoDid?: string;
+        log?: LoggerInterface;
+      }): Promise<string[]>
+    file: lib/requester-xrpc/mod.ts
+    line: 245
+    codegraphId: function:90e261d66d34a637786e137d0c260cd8
+  - name: createRequesterPDS
+    kind: function
+    signature: |-
+      (
+        opts: PDSOptions,
+      ): Promise<RequesterPDSImpl>
+    file: lib/requester-xrpc/mod.ts
+    line: 288
+    codegraphId: function:38c66a944431c997d72ac28acfa2b8b3
+  - name: ContractState
+    kind: interface
+    file: lib/requester-xrpc/mod.ts
+    line: 373
+    codegraphId: interface:4ae0e758bc6af355e90d5d253a84727f
+  - name: createRepoRecord
+    kind: function
+    signature: |-
+      (
+          collection: string,
+          record: Record<string, unknown>,
+        ): Promise<{ uri: string; cid: string }>
+    file: lib/requester-xrpc/mod.ts
+    line: 581
+    codegraphId: function:648c5a9b93c008d11e933bd9cc3d0499
+  - name: createSignedRepoRecord
+    kind: function
+    signature: |-
+      (
+          collection: string,
+          record: Record<string, unknown>,
+          aKp: { did(): string; privateKey: { bytes: Uint8Array; toBytes?(): Uint8Array } },
+          issuer?: string,
+        ): Promise<{ uri: string; cid: string }>
+    file: lib/requester-xrpc/mod.ts
+    line: 591
+    codegraphId: function:ae343b3d98725ad4c6c44cc7d268c9a2
+  - name: resolveBidderEndpoint
+    kind: function
+    signature: |-
+      (
+          endpointUrl: string,
+        ): Promise<{ targetUrl: string; audDid: string } | null>
+    file: lib/requester-xrpc/mod.ts
+    line: 606
+    codegraphId: function:75123cd6c2ecd9939caeaeff2ac9f403
+  - name: callBidder
+    kind: function
+    signature: |-
+      (
+          targetBase: string,
+          nsid: string,
+          lxm: string,
+          audDid: string,
+          body: Record<string, unknown>,
+        ): Promise<{ status: number; ok: boolean; body: unknown }>
+    file: lib/requester-xrpc/mod.ts
+    line: 636
+    codegraphId: function:d85e8ad86a56d4300135fb091e4bfe65
+  - name: tunnelWsUrl
+    kind: function
+    signature: '(fqdn: string): string'
+    file: lib/requester-xrpc/mod.ts
+    line: 698
+    codegraphId: function:962522e8fb20541868ff3b3934e3b3e5
+  - name: sshTunnelArgs
+    kind: function
+    signature: |-
+      (
+        privateKeyPath: string,
+        fqdn: string,
+        proxyCmdOverride?: string,
+      ): string[]
+    file: lib/requester-xrpc/mod.ts
+    line: 703
+    codegraphId: function:cc3275d83d779e08c41a10fded40e3d6
+  - name: createSshSessionProvider
+    kind: function
+    signature: |-
+      (
+        logger?: StructuredLoggerInterface,
+        opts?: { proxyCommandFn?: (fqdn: string) => string },
+      ): SshSessionProvider
+    file: lib/requester-xrpc/mod.ts
+    line: 718
+    codegraphId: function:504104de944999687ef7f977cf1a877e
+  - name: generateKeypair
+    kind: function
+    signature: |-
+      (
+          vmName: string,
+        ): Promise<{ publicKey: string; privateKeyPath: string }>
+    file: lib/requester-xrpc/mod.ts
+    line: 724
+    codegraphId: function:9b364db7648609d2fe412033f27b13de
+  - name: pollReady
+    kind: function
+    signature: |-
+      (
+          privateKeyPath: string,
+          fqdn: string,
+          timeoutMs: number,
+        ): Promise<boolean>
+    file: lib/requester-xrpc/mod.ts
+    line: 742
+    codegraphId: function:ef9dc35948925beeecf54c12a5fd9ee1
+  - name: runSession
+    kind: function
+    signature: |-
+      (
+          privateKeyPath: string,
+          fqdn: string,
+          program: string,
+        ): Promise<number>
+    file: lib/requester-xrpc/mod.ts
+    line: 781
+    codegraphId: function:fbac4e60f3f0951146764aaa7623d831
+  - name: ensureWebsocat
+    kind: function
+    signature: '(logger?: StructuredLoggerInterface): Promise<void>'
+    file: lib/requester-xrpc/mod.ts
+    line: 807
+    codegraphId: function:24cd5e86c9d21bc8fab0490f83ce6950
+  - name: runComputeContract
+    kind: function
+    signature: |-
+      (
+        pds: RequesterPDS,
+        opts: ContractFlowOptions & {
+          sshProvider?: SshSessionProvider;
+          relayUrls?: string[];
+          relayUrl?: string; // deprecated: use relayUrls
+          signer?: Signer;
+          offeringWatcherDids?: () => string[];
+          logger?: StructuredLoggerInterface;
+          payloadFactory?: () => Promise<{ uri: string; cid: string }>;
+          /** ATProto event streams client for cross-party firehose event discovery. */
+          eventStreams?: import("@publicdomainrelay/atproto-event-streams-client").ATProtoEventStreamsClient;
+        } = {},
+      ): Promise<ContractFlowResult>
+    file: lib/requester-xrpc/mod.ts
+    line: 866
+    codegraphId: function:df478a6e7b5f0870c41a1822b1442ea5
+  - name: OAuthRequesterHandle
+    kind: interface
+    file: lib/requester-xrpc/mod.ts
+    line: 1870
+    codegraphId: interface:50f477ac838492f2bd615735976c685e
+  - name: CreateOAuthRequesterOpts
+    kind: interface
+    file: lib/requester-xrpc/mod.ts
+    line: 1877
+    codegraphId: interface:183e44891c1f0a54e056e43ec047be13
+  - name: applyOAuthAgentToRequesterPDS
+    kind: function
+    signature: |-
+      (
+        pds: RequesterPDS,
+        agent: AtprotoAgentLike & { sessionData: { userDid: string }; getServiceAuth?: (aud: string, lxm?: string) => Promise<string> },
+        opts?: { log?: (event: string, data: Record<string, unknown>) => void },
+      ): void
+    file: lib/requester-xrpc/mod.ts
+    line: 1908
+    codegraphId: function:f6c7b7f574083e9a9c42bbd6a843c416
+  - name: createOAuthRequester
+    kind: function
+    signature: '(opts: CreateOAuthRequesterOpts): Promise<OAuthRequesterHandle>'
+    file: lib/requester-xrpc/mod.ts
+    line: 1967
+    codegraphId: function:95447d450ff2f97655147e5dd97a5f89
+  - name: getSession
+    kind: function
+    signature: ()
+    file: lib/requester-xrpc/mod.ts
+    line: 2001
+    codegraphId: function:64cfc2d9d837801a774327163a75249d
+  fingerprint: 501674c6c22c41f9f64261c6fd696f06ae5a0061a96af985f205b26e8a3d86f9

@@ -1,0 +1,14 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SystemContext
+metadata:
+  name: lib-operator-discovery-badge-blue-keys
+  namespace: default
+spec:
+  repository: atproto-market
+  upstream: self
+  dependsOn:
+  - sc.atproto-market
+  - sc.lib-abc-trust-graph
+  - sc.lib-common-market-lexicons
+codeRefIndex:
+- file:lib/operator-discovery-badge-blue-keys/mod.ts mod.ts@lib/operator-discovery-badge-blue-keys/mod.ts

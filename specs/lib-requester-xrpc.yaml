@@ -1,0 +1,27 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SystemContext
+metadata:
+  name: lib-requester-xrpc
+  namespace: default
+spec:
+  repository: atproto-market
+  upstream: self
+  dependsOn:
+  - sc.atproto-market
+  - sc.lib-abc-guest-capability
+  - sc.lib-abc-market
+  - sc.lib-abc-requester
+  - sc.lib-atproto-helpers
+  - sc.lib-atproto-oauth-helpers
+  - sc.lib-common-cloud-init-common
+  - sc.lib-common-fedproxy-rbac-common
+  - sc.lib-common-market-common
+  - sc.lib-common-market-lexicons
+  - sc.lib-delegated-trust-badge-blue-keys
+  - sc.lib-did-key-ingress-proxy
+  - sc.lib-did-plc
+  - sc.lib-market-atproto
+  - sc.lib-operator-discovery-badge-blue-keys
+  - sc.lib-trust-graph-tangled-graph
+codeRefIndex:
+- file:lib/requester-xrpc/mod.ts mod.ts@lib/requester-xrpc/mod.ts
