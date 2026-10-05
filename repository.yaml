@@ -7,8 +7,17 @@ spec:
   source: {}
   branch: spec/iroh-dumbpipe-policy2-20261005
   verify:
-  - deno
-  - test
+  - bash
+  - -lc
+  - deno check && deno test -A test/cloud_init_snapshot_test.ts
+  acceptance:
+  - name: acceptance
+    command:
+    - bash
+    - -lc
+    - deno test --allow-all test/bidder_container_integration_test.ts
+    timeoutSeconds: 1800
+    gate: true
   populate:
     partition: package
     summarize: true
