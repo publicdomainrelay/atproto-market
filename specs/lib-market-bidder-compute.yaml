@@ -13,5 +13,221 @@ spec:
   - sc.lib-atproto-attestation-port
   - sc.lib-common-market-common
   - sc.lib-market-atproto
+  intent: 'This context exists so that a compute provider -- a service that can actually
+    spin up a VM -- can take part in the atproto-market bidding protocol without reimplementing
+    the bidder state machine. The bidder dispatcher (lib-abc-market-bidder) wants
+    callback maps keyed by NSID and lxm; the compute provider wants to expose only
+    createBidConfig, injectAcceptBundle, provision and teardown. This module is the
+    adapter between the two, and it also owns the parts of the lifecycle that are
+    specific to a guest VM: refusing to provision when the accept bundle would be
+    incomplete, tracking providerIdPromise and receipt state in the shared activeContracts
+    map, emitting vm.onNetwork through the firehose rather than only through submitEvent,
+    and deciding who is allowed to delete a running VM.'
+  requirements:
+  - id: r.accept-bidconfig-required
+    level: MUST
+    text: 'Provisioning must be aborted, leaving providerIdPromise undefined, when
+      the bid''s bidConfig ref cannot be resolved, because an incomplete accept bundle
+      makes fedproxy-client fatal-exit inside the guest; the resolve failure must
+      be logged with both the failing step ("bid" or "config") and that step''s uri
+      and cid, since "getRecord failed: 400" alone does not say which ref was unresolvable.'
+    codeRefs:
+    - file:lib/market-bidder-compute/mod.ts
+    - function:5ec21894bcf015b3164a07db128adf72
+  - id: r.accept-bundle-injection
+    level: MUST
+    text: The provisioned VM must be built by resolving the RFP payload, assembling
+      an accept bundle of the accept, rfp, bid, bid_config and vm refs and passing
+      it through computeProvider.injectAcceptBundle appended to the VM's existing
+      user_data, with _uri and _cid stamped from the resolved payload, before handing
+      the VM plus the accept issuerDid to computeProvider.provision.
+    codeRefs:
+    - file:lib/market-bidder-compute/mod.ts
+    - function:5ec21894bcf015b3164a07db128adf72
+  - id: r.accept-provisioning-timeout
+    level: MUST
+    text: On accept, when the accept carries an RFP ref, provisioning must be raced
+      against a 600000 ms (10 minute) timeout and any provisioning error or timeout
+      must be logged and folded into providerIdPromise resolving to undefined, so
+      the accept handler still issues the receipt rather than throwing.
+    codeRefs:
+    - file:lib/market-bidder-compute/mod.ts
+    - function:5ec21894bcf015b3164a07db128adf72
+  - id: r.callback-factory-shape
+    level: MUST
+    text: 'createVmBidderCallbacks must take a single VmBidderDeps bundle and return
+      an object with exactly three callback maps: rfp keyed by NSID and then lxm holding
+      SubmitRfpCallback handlers, the single accept SubmitAcceptCallback, and event
+      keyed by NSID and then lxm whose handlers take an EventDispatchContext and resolve
+      to an optional { status, body } response or nothing.'
+    codeRefs:
+    - file:lib/market-bidder-compute/mod.ts
+    - function:5ec21894bcf015b3164a07db128adf72
+    - interface:462aac25716496197891c11616e37b58
+  - id: r.contract-mirroring
+    level: SHOULD
+    text: When deps.acceptToContract is provided the accept ref must be mirrored into
+      it keyed by refKey of the accept uri and cid, carrying receiptKey, receiptUri,
+      receiptCid and the accept's submitEvent URL, so a guest event endpoint can look
+      the contract up from an accept.
+    codeRefs:
+    - file:lib/market-bidder-compute/mod.ts
+    - function:5ec21894bcf015b3164a07db128adf72
+    - interface:462aac25716496197891c11616e37b58
+  - id: r.deps-bundle-contents
+    level: MUST
+    text: VmBidderDeps must carry the required wiring a handler needs -- did, attestationKp,
+      a signer exposing did() and sign(), idResolver, relay.ingressRef and relay.ingressUrl,
+      computeProvider, log, the shared activeContracts map, createRepoRecord, createSignedRepoRecord,
+      callService, resolve, and the evaluator with evaluatePolicies -- while policyExec,
+      getVouchedDids, resolveOperatorDid, onContractChange and acceptToContract stay
+      optional fields.
+    codeRefs:
+    - file:lib/market-bidder-compute/mod.ts
+    - interface:462aac25716496197891c11616e37b58
+  - id: r.deps-optional-policy-hooks
+    level: MAY
+    text: When resolveOperatorDid or getVouchedDids are absent the policy context
+      must substitute the inert stand-ins -- a resolver returning null and a vouch
+      lookup returning an empty set -- so policy evaluation still runs for an RFP
+      that carries policies instead of throwing on an undefined hook.
+    codeRefs:
+    - file:lib/market-bidder-compute/mod.ts
+    - function:5ec21894bcf015b3164a07db128adf72
+    - interface:462aac25716496197891c11616e37b58
+  - id: r.provider-ref-callback-delegation
+    level: MUST
+    text: The returned ref's buildCallbacks must forward every CallbackFactoryDeps
+      field into createVmBidderCallbacks, substituting the hook's own provider for
+      computeProvider, and translate the returned maps into the CallbackSet shape
+      { rfpCallbacks, onAccept, eventCallbacks }.
+    codeRefs:
+    - file:lib/market-bidder-compute/mod.ts
+    - function:5ec21894bcf015b3164a07db128adf72
+    - function:aed470efa09431ae131407c08a4b3c37
+  - id: r.provider-ref-identity
+    level: MUST
+    text: createComputeProviderHooks must return a MarketBidderProviderRef declaring
+      serviceId "pdr_temp_market" and appliesTo ["com.publicdomainrelay.temp.compute.vm"],
+      with its setup and teardown bound to the supplied provider.
+    codeRefs:
+    - file:lib/market-bidder-compute/mod.ts
+    - function:aed470efa09431ae131407c08a4b3c37
+  - id: r.receipt-lookup-by-uri-fallback
+    level: MUST
+    text: Contract lookup for a vm.delete event must try the refKey of the receipt
+      ref first and then fall back to scanning activeContracts for an entry whose
+      receiptUri matches the event's receipt uri, because the receipt record is rewritten
+      after the remote proof so its current CID no longer matches the key recorded
+      at creation; the URI identifies the contract, not the CID, and a match found
+      this way must be logged.
+    codeRefs:
+    - file:lib/market-bidder-compute/mod.ts
+    - function:5ec21894bcf015b3164a07db128adf72
+  - id: r.receipt-registration
+    level: MUST
+    text: Each accept must produce a signed receipt record whose cid is an attestation
+      CID binding the accept body with _uri/_cid stripped, the receipt metadata (rfp,
+      bid, accept and null payload strongRefs, relay.ingressUrl as submitEvent, createdAt)
+      and the issuer DID, and must register that receipt in the shared activeContracts
+      map under refKey({ uri, cid }) together with providerIdPromise, acceptAuthor,
+      receiptUri, receiptCid and acceptedAt, notify onContractChange with an "accepted"
+      event carrying the key, and return the receipt rkey as id plus uri, cid and
+      relay.ingressUrl to the caller.
+    codeRefs:
+    - file:lib/market-bidder-compute/mod.ts
+    - function:5ec21894bcf015b3164a07db128adf72
+    - interface:462aac25716496197891c11616e37b58
+  - id: r.rfp-bid-construction
+    level: MUST
+    text: 'After policies pass the handler must create a bid config through computeProvider.createBidConfig(nowIso),
+      write a zero-cost payload record of type com.publicdomainrelay.temp.market.bids.free
+      via createRepoRecord, assemble a bid record carrying strongRefs to the RFP,
+      payload and bidConfig plus relay.ingressUrl as submitAccept, sign it through
+      createSignedRepoRecord, and best-effort POST it to the RFP''s submitBid URL
+      through callService when that URL is present; a submission failure must be logged
+      and must not fail the handler, which returns { ok: true, bidUri, bidCid }.'
+    codeRefs:
+    - file:lib/market-bidder-compute/mod.ts
+    - function:5ec21894bcf015b3164a07db128adf72
+  - id: r.rfp-policy-evaluation
+    level: MUST
+    text: 'On receiving an RFP the handler must evaluate each strongRef in rfp.policies
+      individually through deps.evaluator.evaluatePolicies with perspective "bidder",
+      selfDid and subjectDid set to the bidder DID and rootRequesterDid and counterpartyDid
+      set to the RFP issuerDid, passing a demand built from the RFP ref and the RFP
+      payload ref when one is present; the first result whose allow is false must
+      short-circuit with body { ok: false, error: "policy rejected", violations },
+      and an absent or empty policies array imposes no restriction.'
+    codeRefs:
+    - file:lib/market-bidder-compute/mod.ts
+    - function:5ec21894bcf015b3164a07db128adf72
+  - id: r.vm-delete-authority
+    level: MUST
+    text: 'A vm.delete event carrying no receipt ref must answer 400 with body { error:
+      "InvalidRequest", message: "missing receipt in event" }, an unresolvable receipt
+      must answer 400 with message "unknown receipt", and an event whose issuerDid
+      differs from the matched contract''s acceptAuthor must answer 403 Forbidden,
+      so that only the accept author can delete the VM.'
+    codeRefs:
+    - file:lib/market-bidder-compute/mod.ts
+    - function:5ec21894bcf015b3164a07db128adf72
+  - id: r.vm-onnetwork-emission
+    level: MUST
+    text: Once providerIdPromise resolves truthy and the receipt key has not already
+      been registered, a vm.onNetwork compute event record must be written to the
+      bidder's own PDS with address set to the IP captured from the provisioning result
+      metadata and wrapped in a signed market event referencing the receipt, so the
+      firehose distributes it; the emission must be deduplicated per receipt key through
+      the registered set, must not be gated on an ingress submitEvent URL being present,
+      and the providerIdPromise.then block must report the provisioned or provisioning-failed
+      contract-change event either way.
+    codeRefs:
+    - file:lib/market-bidder-compute/mod.ts
+    - function:5ec21894bcf015b3164a07db128adf72
+  - id: r.vm-onnetwork-submit-event
+    level: MAY
+    text: As a best-effort supplement to the firehose write, the vm.onNetwork event
+      may also be pushed to the accept's submitEvent URL through callService with
+      the event uri, cid and record, with failures logged rather than propagated.
+    codeRefs:
+    - file:lib/market-bidder-compute/mod.ts
+    - function:5ec21894bcf015b3164a07db128adf72
+  interfaces:
+  - name: VmBidderDeps
+    kind: interface
+    signature: 'interface VmBidderDeps { policyExec?: { onlyRemote?: boolean; allowUntrusted?:
+      boolean }; getVouchedDids?: (did: string) => Promise<Set<string>>; resolveOperatorDid?:
+      (bidderDid: string) => Promise<string | null>; evaluator: { evaluatePolicies(input:
+      { refs: Array<{ uri: string; cid: string }>; ctx: PolicyEvalCtx }): Promise<PolicyResult>
+      }; did: string; attestationKp: AttestationKeypair; signer: { did(): string;
+      sign(bytes: Uint8Array): Promise<Uint8Array> }; idResolver: IdResolver; relay:
+      { ingressRef: string; ingressUrl: string }; computeProvider: ComputeProvider;
+      log: Logger; activeContracts: Map<string, ActiveContract>; onContractChange?:
+      (event: ContractEvent) => void; createRepoRecord: (collection: string, record:
+      Record<string, unknown>) => Promise<{ uri: string; cid: string }>; createSignedRepoRecord:
+      (collection: string, record: Record<string, unknown>, issuer?: string) => Promise<{
+      uri: string; cid: string; record: Record<string, unknown> }>; callService: (endpointUrl:
+      string, nsid: string, lxm: string, body: Record<string, unknown>) => Promise<{
+      status: number; ok: boolean; body: unknown }>; resolve: RecordResolver; acceptToContract?:
+      Map<string, import("@publicdomainrelay/market-bidder-abc").GuestContractEntry>
+      }'
+    file: lib/market-bidder-compute/mod.ts
+  - name: createComputeProviderHooks
+    kind: function
+    signature: '(opts: { provider: ComputeProvider }): MarketBidderProviderRef'
+    file: lib/market-bidder-compute/mod.ts
+  - name: createVmBidderCallbacks
+    kind: function
+    signature: |-
+      (deps: VmBidderDeps): {
+        rfp: Record<string, Record<string, SubmitRfpCallback>>;
+        accept: SubmitAcceptCallback;
+        event: Record<string, Record<string, (ctx: EventDispatchContext) => Promise<{ status?: number; body?: unknown } | void>>>;
+      }
+    file: lib/market-bidder-compute/mod.ts
 codeRefIndex:
 - file:lib/market-bidder-compute/mod.ts mod.ts@lib/market-bidder-compute/mod.ts
+- function:5ec21894bcf015b3164a07db128adf72 createVmBidderCallbacks@lib/market-bidder-compute/mod.ts:78
+- function:aed470efa09431ae131407c08a4b3c37 createComputeProviderHooks@lib/market-bidder-compute/mod.ts:446
+- interface:462aac25716496197891c11616e37b58 VmBidderDeps@lib/market-bidder-compute/mod.ts:44

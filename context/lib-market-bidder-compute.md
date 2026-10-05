@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so that a compute provider -- a service that can actually spin up a VM -- can take part in the atproto-market bidding protocol without reimplementing the bidder state machine. The bidder dispatcher (lib-abc-market-bidder) wants callback maps keyed by NSID and lxm; the compute provider wants to expose only createBidConfig, injectAcceptBundle, provision and teardown. This module is the adapter between the two, and it also owns the parts of the lifecycle that are specific to a guest VM: refusing to provision when the accept bundle would be incomplete, tracking providerIdPromise and receipt state in the shared activeContracts map, emitting vm.onNetwork through the firehose rather than only through submitEvent, and deciding who is allowed to delete a running VM.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

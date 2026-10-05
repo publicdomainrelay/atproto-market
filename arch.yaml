@@ -2158,8 +2158,44 @@ system_contexts:
   - sc.lib-atproto-attestation-port
   - sc.lib-common-market-common
   - sc.lib-market-atproto
+  requirements:
+  - id: r.accept-bidconfig-required
+    level: MUST
+  - id: r.accept-bundle-injection
+    level: MUST
+  - id: r.accept-provisioning-timeout
+    level: MUST
+  - id: r.callback-factory-shape
+    level: MUST
+  - id: r.contract-mirroring
+    level: SHOULD
+  - id: r.deps-bundle-contents
+    level: MUST
+  - id: r.deps-optional-policy-hooks
+    level: MAY
+  - id: r.provider-ref-callback-delegation
+    level: MUST
+  - id: r.provider-ref-identity
+    level: MUST
+  - id: r.receipt-lookup-by-uri-fallback
+    level: MUST
+  - id: r.receipt-registration
+    level: MUST
+  - id: r.rfp-bid-construction
+    level: MUST
+  - id: r.rfp-policy-evaluation
+    level: MUST
+  - id: r.vm-delete-authority
+    level: MUST
+  - id: r.vm-onnetwork-emission
+    level: MUST
+  - id: r.vm-onnetwork-submit-event
+    level: MAY
   codeRefIndex:
   - file:lib/market-bidder-compute/mod.ts mod.ts@lib/market-bidder-compute/mod.ts
+  - function:5ec21894bcf015b3164a07db128adf72 createVmBidderCallbacks@lib/market-bidder-compute/mod.ts:78
+  - function:aed470efa09431ae131407c08a4b3c37 createComputeProviderHooks@lib/market-bidder-compute/mod.ts:446
+  - interface:462aac25716496197891c11616e37b58 VmBidderDeps@lib/market-bidder-compute/mod.ts:44
 - id: sc.lib-market-bidder-worker
   name: lib-market-bidder-worker
   spec: specs/lib-market-bidder-worker.yaml

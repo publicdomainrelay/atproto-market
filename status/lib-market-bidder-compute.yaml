@@ -1,10 +1,11 @@
 syncedFingerprint: 272e7bd6958cea514a397fba8c0e76ad44a4f7fbc808bde82f5cd1e7f013aaf7
-realizedSpecHash: fbf3a39043480d78c8f5be91309b8789f0afe9d45998d2eb60bdb52dc2a81ad5
+realizedSpecHash: 5494c8dca65c84669026585210106d26762ccf33fc44dce97779d63e2a0a70e8
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: VmBidderDeps, createComputeProviderHooks, createVmBidderCallbacks'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual

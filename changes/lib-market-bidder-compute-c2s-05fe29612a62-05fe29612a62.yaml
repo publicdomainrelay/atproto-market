@@ -9,5 +9,20 @@ spec:
   fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
   toCommit: 05fe29612a62a645d70273560238ecc3180414d2
 status:
-  phase: Running
-  message: the agent is summarizing lib-market-bidder-compute
+  phase: Succeeded
+  agentLog: 'lib/market-bidder-compute/mod.ts is the seam that lets a ComputeProvider
+    act as an atproto-market bidder. VmBidderDeps bundles everything a bidder run
+    needs -- the bidder DID, attestation keypair, signer, id resolver, relay ingressRef
+    and ingressUrl, the compute provider, a logger, the shared activeContracts map,
+    repo-record and XRPC helpers, a record resolver and the policy evaluator -- with
+    policyExec, getVouchedDids, resolveOperatorDid, onContractChange and acceptToContract
+    optional. createVmBidderCallbacks turns that bundle into the three callback maps
+    the bidder dispatcher wants: rfp keyed by NSID then lxm, a single accept callback,
+    and event keyed by NSID then lxm. It implements policy-checked bid construction
+    and submission, accept-to-receipt provisioning with an accept bundle injected
+    into the VM user_data under a ten minute race, contract tracking and vm.onNetwork
+    emission, and vm.delete authority checks. createComputeProviderHooks wraps a bare
+    provider into the MarketBidderProviderRef shape with serviceId pdr_temp_market
+    over the temp compute VM collection, forwarding dispatcher deps into createVmBidderCallbacks
+    with the hook''s own provider substituted.'
+  message: wrote 16 requirement(s) and 3 interface(s) for lib-market-bidder-compute
