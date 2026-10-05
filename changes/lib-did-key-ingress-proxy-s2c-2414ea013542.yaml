@@ -15,4 +15,6 @@ spec:
     requirements:
     - +r.control-plane-and-report-route
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is realizing lib-did-key-ingress-proxy in a batch of 4 led by
+    atproto-market

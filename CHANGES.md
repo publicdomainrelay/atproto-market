@@ -42,19 +42,25 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - intent: "This context exists so a local XRPC app can be reached from outside without owning a routable address: createIngress bundles subscriber registration, per-method service-auth minting, WebSocket target resolution and shutdown behind one IngressRef, letting a dispatcher publish an ingress identity on an ingress proxy host and hand inbound relay requests back into its own fetch handler. The options record keeps the two signing identities separable and leaves TLS, the lazily resolved loopback target and the in-process direct subscription handler as opt-in knobs, so the same factory serves a TLS-terminated public dispatcher and a test process with an in-memory firehose source." -> "This context exists so a local XRPC app can be reached from outside without owning a routable address: createIngress bundles subscriber registration, per-method service-auth minting, WebSocket target resolution and shutdown behind one IngressRef, letting a dispatcher publish an ingress identity on an ingress proxy host and hand inbound relay requests back into its own fetch handler. The options record keeps the two signing identities separable and leaves TLS, the lazily resolved loopback target and the in-process direct subscription handler as opt-in knobs, so the same factory serves a TLS-terminated public dispatcher and a test process with an in-memory firehose source. It is the requester's control plane only: the market XRPC calls, the requester's own mounted routes and the websocket tunnel stay here, while the SSH data plane to a provisioned guest is carried by iroh and no longer routes through this package."
 - added `r.control-plane-and-report-route` (MUST): "createIngress is the requester's control plane and its only public face: the relay carries the market XRPC calls (submitBid, submitEvent, associateConfirm) and every route the requester mounts on its own app, so a route mounted on the requester's serve is reachable at the relay's ingress URL even though the requester owns no routable address — which is what makes the inbound route a provisioned guest POSTs its transport address to reachable. The websocket tunnel target (localWsTarget and the subscriber tunnel) stays available and unchanged for callers that explicitly select the tunnel or fedproxy-ssh transport, but the SSH data plane no longer depends on this package: an iroh guest is reached by ticket through dumbpipe, never through the subscriber tunnel, and nothing host-side reads the guest's address out of the relay."
 
+### lib-hono-factory-did-plc-directory
+
+- changed `r.export-pagination` (codeRefs): "The export handler reads the after and count query parameters, rejecting an after that does not parse as a date with 400 'Invalid Query Parameter: after' and a count that is non-numeric or negative with 400 'Invalid Query Parameter: count', clamping an accepted count to at most 1000, and answers with the entries returned by store.exportLogs(after, count)."
+- changed `r.memory-store` (codeRefs): "MemoryPlcStore implements PlcStore over an in-process Map keyed by DID: getCurrentOps filters out entries flagged nullified, getAuditLog returns the stored list unchanged, getOpByCid finds an entry by CID or returns null, insertOp appends and creates the DID's list on first write, nullifyOps marks every entry whose CID is in the requested set, and exportLogs gathers entries from every DID, skips those whose createdAt is at or before an after cutoff, sorts by createdAt string order and slices to count when count is given."
+- changed `r.store-contract` (codeRefs): "PlcStore is the persistence contract the directory runs against: per DID it yields the current, non-nullified operations through getCurrentOps and the full log including nullified entries through getAuditLog, looks up a single entry by CID through getOpByCid, appends an entry through insertOp, marks a set of CIDs nullified through nullifyOps, and exports entries across all DIDs in ascending createdAt order through exportLogs while applying an optional after cutoff and truncating to an optional count."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance | coverage |
 | --- | --- | --- | --- | --- | --- | --- |
-| atproto-market-s2c-dcae0d4f6037 | SpecToCode | Pending |  | 0 | - | - |
-| atproto-market-s2c-e34ce8f9f34c | SpecToCode | Pending |  | 0 | - | - |
+| atproto-market-s2c-dcae0d4f6037 | SpecToCode | Running |  | 0 | - | - |
+| atproto-market-s2c-e34ce8f9f34c | SpecToCode | Failed |  | 0 | - | - |
 | lib-abc-requester-s2c-a24b0558524f | SpecToCode | Succeeded | 8b36a2bf | 0 | acceptance passed | 1 of 4 missing |
 | lib-compute-contract-gateway-xrpc-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Failed |  | 0 | - | - |
-| lib-did-key-ingress-proxy-s2c-2414ea013542 | SpecToCode | Pending |  | 0 | - | - |
+| lib-did-key-ingress-proxy-s2c-2414ea013542 | SpecToCode | Running |  | 0 | - | - |
 | lib-did-plc-c2s-05fe29612a62-8b36a2bfe627 | CodeToSpec | Running |  | 0 | - | - |
-| lib-hono-factory-did-plc-directory-c2s-05fe29612a62-8b36a2bfe627 | CodeToSpec | Running |  | 0 | - | - |
+| lib-hono-factory-did-plc-directory-c2s-05fe29612a62-8b36a2bfe627 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-market-settlement-x402-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
-| lib-requester-xrpc-s2c-0c605032289f | SpecToCode | Pending |  | 0 | - | - |
+| lib-requester-xrpc-s2c-0c605032289f | SpecToCode | Running |  | 0 | - | - |
 
 ## Unimplemented requirements
 

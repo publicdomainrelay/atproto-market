@@ -17,4 +17,15 @@ spec:
     - +r.iroh-acceptance-plc-key-resolution
     - +r.iroh-cloud-init-fixture
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is realizing atproto-market in a batch of 4 led by atproto-market
+  progress:
+    tools:
+    - tool: Read
+      count: 3
+    files:
+    - test/bidder_container_integration_test.ts
+    - test/cloud_init_snapshot_test.ts
+    - test/fetch-interceptor.ts
+    first: "2026-10-05T18:01:43Z"
+    last: "2026-10-05T18:01:43Z"

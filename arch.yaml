@@ -1705,12 +1705,10 @@ system_contexts:
   - id: r.structure-validation
     level: MUST
   codeRefIndex:
-  - class:6dc897b2ad83f3474c8cc21fa651b5f0 MemoryPlcStore@lib/hono-factory-did-plc-directory/storage/plc-store.ts:17
   - file:lib/hono-factory-did-plc-directory/did-resolution.ts did-resolution.ts@lib/hono-factory-did-plc-directory/did-resolution.ts
   - file:lib/hono-factory-did-plc-directory/factory.ts factory.ts@lib/hono-factory-did-plc-directory/factory.ts
   - file:lib/hono-factory-did-plc-directory/handlers.ts handlers.ts@lib/hono-factory-did-plc-directory/handlers.ts
   - file:lib/hono-factory-did-plc-directory/mod.ts mod.ts@lib/hono-factory-did-plc-directory/mod.ts
-  - file:lib/hono-factory-did-plc-directory/storage/plc-store.ts plc-store.ts@lib/hono-factory-did-plc-directory/storage/plc-store.ts
   - file:lib/hono-factory-did-plc-directory/validation.ts validation.ts@lib/hono-factory-did-plc-directory/validation.ts
   - function:3179a5fa554e021c00aadca31e4500e6 createPlcDirectoryFactory@lib/hono-factory-did-plc-directory/factory.ts:19
   - function:3cdeb3d911d0b80c2f67f10b8b825205 validateRotationKeyAuth@lib/hono-factory-did-plc-directory/validation.ts:99
@@ -1721,15 +1719,8 @@ system_contexts:
   - function:cee54877382c117e060715b89d4affa0 computeOperationCid@lib/hono-factory-did-plc-directory/validation.ts:25
   - function:d29a8b70510a2a66739855a818989601 verifyOperationSignature@lib/hono-factory-did-plc-directory/validation.ts:70
   - interface:5a96ae66f70475a99ec34b51ef860a0b PlcDirectoryOptions@lib/hono-factory-did-plc-directory/factory.ts:6
-  - interface:86a4aca923e87a6278f374fd01ce9547 PlcStore@lib/hono-factory-did-plc-directory/storage/plc-store.ts:3
   - interface:cc3d4161f433917a2f2ac397219b72d6 HandlerDeps@lib/hono-factory-did-plc-directory/handlers.ts:14
   - interface:ebd7cb20d08759e13cef8d018c871479 PlcDirectoryFactory@lib/hono-factory-did-plc-directory/factory.ts:12
-  - method:5effb1ba90cc09ca38b9facc67e0e5e5 MemoryPlcStore.getAuditLog@lib/hono-factory-did-plc-directory/storage/plc-store.ts:26
-  - method:8b706b26d2ae998889c6d053a48c7fe3 MemoryPlcStore.nullifyOps@lib/hono-factory-did-plc-directory/storage/plc-store.ts:45
-  - method:b7635d15869a1ecb4b58b9cef42809a8 MemoryPlcStore.getOpByCid@lib/hono-factory-did-plc-directory/storage/plc-store.ts:30
-  - method:b796dec3c2dab2f5c026e954e2799299 MemoryPlcStore.insertOp@lib/hono-factory-did-plc-directory/storage/plc-store.ts:36
-  - method:b8ee53ece42a3057f7a82bf6033b7ab5 MemoryPlcStore.exportLogs@lib/hono-factory-did-plc-directory/storage/plc-store.ts:56
-  - method:f3ed83fb406ac57043fa578dc7d44e12 MemoryPlcStore.getCurrentOps@lib/hono-factory-did-plc-directory/storage/plc-store.ts:20
 - id: sc.lib-hono-factory-did-plc-directory-storage
   name: lib-hono-factory-did-plc-directory-storage
   spec: specs/lib-hono-factory-did-plc-directory-storage.yaml
