@@ -513,3 +513,4 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 | lib-hono-factory-did-plc-directory-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-hono-factory-market-atproto-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-hono-factory-market-settlement-free-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
+| lib-hono-factory-market-settlement-x402-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
