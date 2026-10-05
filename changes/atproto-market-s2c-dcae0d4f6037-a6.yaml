@@ -17,8 +17,37 @@ spec:
     - +r.iroh-acceptance-plc-key-resolution
     - +r.iroh-cloud-init-fixture
 status:
-  phase: Running
-  message: the agent is realizing atproto-market in a batch of 4 led by atproto-market
+  phase: Failed
+  branch: spec/atproto-market/dcae0d4f
+  agentLog: |-
+    ...ionProvider(logger?, { proxyCommandFn?: (target) => string; dumbpipePath?: string })`; non-interactive `runSession` captures stdout+stderr into `lastSessionOutput`.
+      - `runComputeContract`: transport defaults to `iroh`; mounts per-contract unguessable `POST /iroh-ticket/<token>` on the requester's serve and passes `ctx.irohReportUrl`; a dotless, non-IPv4 onNetwork address is accepted as a ticket through the same one-ticket handler; bootstraps `ensureDumbpipe` (iroh) or `ensureWebsocat` (tunnel/fedproxy-ssh) before polling; passes `dumbpipePath` to the provider and records `result.sshProxyCommand` / `result.sessionOutput`. Kept `vm_fqdn_discovered` / `vm_fqdn_timeout`.
+    - `lib/abc/requester/mod.ts` — optional `ContractFlowResult.sessionOutput`.
+    - `lib/did-key-ingress-proxy/mod.ts` — header doc: control plane only; SSH data plane is iroh, none of it read out of the relay.
+
+    **tests / scripts**
+    - `test/bidder_container_integration_test.ts` rewritten as the iroh acceptance suite: no skip, no `Promise.race`/deadline, whole contract awaited, teardown only after it settles; asserts bid collected, live `ingressUrl` (did:plc → atproto key, so no 401), `receiptOk`, `sshReady`, exit 0, `(…/)dumbpipe connect <dotless ticket>` (never websocat, never an address), `SSH_OK_VIA_IROH` in captured output. No host-side container exec.
+    - `compute-contract-full-flow/run_full_flow.ts` — selects `userData.transport: "tunnel"` + `ensureWebsocat`, so the printed websocat diagram stays true.
+    - Websocket-topology suites pin the tunnel transport: bidder cross-platform, bidder prod, bidder ssh-relay, oauth session transfer (`--user-data-transport tunnel`).
+    - `request-vm-ssh` — transport defaults to iroh, bootstraps dumbpipe (websocat only for tunnel/fedproxy-ssh), passes `dumbpipePath`; flag text updated.
+
+    `bash -lc 'deno check && deno test -A test/cloud_init_snapshot_test.ts'` → exit 0, 19 passed / 0 failed; the six existing fixtures are byte-identical.
+
+    verify: exit 0, 275ms, 0 ok
+  message: "...eqvnnbm7uobz6zzpfc9yaa9pzoeouwkee6jcnx8q\"}\n{\"ts\":\"2026-10-05T20:31:07.257Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":1005,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T20:31:07.257Z\",\"level\":\"error\",\"message\":\"ws_error\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"error\":\"[object
+    ErrorEvent]\"}\n{\"ts\":\"2026-10-05T20:31:07.257Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":0,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T20:31:07.257Z\",\"level\":\"info\",\"message\":\"ws_reconnect_scheduled\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"delayMs\":1000,\"attempt\":1}\n{\"ts\":\"2026-10-05T20:31:07.257Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":1005,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T20:31:07.257Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"requester\",\"code\":1005,\"reason\":\"\"}\n\e[0m\e[38;5;245m-----
+    output end -----\e[0m\n[integration] iroh guest is reached by ticket: the RFP's
+    own cloud-init, end to end ... \e[0m\e[31mFAILED\e[0m \e[0m\e[38;5;245m(10m1s)\e[0m\n\n\e[0m\e[1m\e[37m\e[41m
+    ERRORS \e[0m\n\n[integration] iroh guest is reached by ticket: the RFP's own cloud-init,
+    end to end \e[0m\e[38;5;245m=> ./test/bidder_container_integration_test.ts:106:6\e[0m\n\e[0m\e[1m\e[31merror\e[0m:
+    AssertionError: guest sshd never became reachable over the iroh transport\n    throw
+    new AssertionError(msg);\n\e[0m\e[31m          ^\e[0m\n    at \e[0m\e[1m\e[3massert\e[0m
+    (\e[0m\e[36mhttps://jsr.io/@std/assert/1.0.19/assert.ts\e[0m:\e[0m\e[33m22\e[0m:\e[0m\e[33m11\e[0m)\n
+    \   at \e[0m\e[2m\e[38;5;245mfile:///tmp/specd-worktree-556868798/atproto-market/\e[0m\e[0m\e[36mtest/bidder_container_integration_test.ts\e[0m:\e[0m\e[33m276\e[0m:\e[0m\e[33m5\e[0m\n\n\e[0m\e[1m\e[37m\e[41m
+    FAILURES \e[0m\n\n[integration] iroh guest is reached by ticket: the RFP's own
+    cloud-init, end to end \e[0m\e[38;5;245m=> ./test/bidder_container_integration_test.ts:106:6\e[0m\n\n\e[0m\e[31mFAILED\e[0m
+    | 0 passed | 1 failed \e[0m\e[38;5;245m(10m1s)\e[0m\n\n\e[0m\e[1m\e[31merror\e[0m:
+    Test failed"
   attempt: 6
   retryReason: 'The acceptance hangs before the RFP is ever submitted: ensureDumbpipe
     never resolves. Reproduced standalone in this worktree: deno run -A ''await ensureDumbpipe()''
@@ -34,6 +63,80 @@ status:
     with AbortSignal.timeout(60000) so a stuck download fails the suite instead of
     hanging it. Keep everything else.'
   retryBy: john
+  acceptance:
+  - name: acceptance
+    exitCode: 1
+    durationSeconds: 604.076175245
+    passed: false
+    outputTail: "...se_error\",\"prefix\":\"it\",\"method\":\"GET\",\"path\":\"/xrpc/com.publicdomainrelay.temp.keepalive.ping\",\"status\":404,\"durationMs\":0,\"label\":\"requester\"}\n{\"ts\":\"2026-10-05T20:30:55.667Z\",\"level\":\"info\",\"message\":\"oidc
+      request\",\"prefix\":\"it\",\"method\":\"GET\",\"path\":\"/xrpc/com.publicdomainrelay.temp.keepalive.ping\"}\n{\"ts\":\"2026-10-05T20:31:00.648Z\",\"level\":\"info\",\"message\":\"response_error\",\"prefix\":\"it\",\"method\":\"GET\",\"path\":\"/xrpc/com.publicdomainrelay.temp.keepalive.ping\",\"status\":404,\"durationMs\":0,\"label\":\"requester\"}\n{\"ts\":\"2026-10-05T20:31:00.668Z\",\"level\":\"info\",\"message\":\"oidc
+      request\",\"prefix\":\"it\",\"method\":\"GET\",\"path\":\"/xrpc/com.publicdomainrelay.temp.keepalive.ping\"}\n{\"ts\":\"2026-10-05T20:31:05.649Z\",\"level\":\"info\",\"message\":\"response_error\",\"prefix\":\"it\",\"method\":\"GET\",\"path\":\"/xrpc/com.publicdomainrelay.temp.keepalive.ping\",\"status\":404,\"durationMs\":0,\"label\":\"requester\"}\n{\"ts\":\"2026-10-05T20:31:05.669Z\",\"level\":\"info\",\"message\":\"oidc
+      request\",\"prefix\":\"it\",\"method\":\"GET\",\"path\":\"/xrpc/com.publicdomainrelay.temp.keepalive.ping\"}\n{\"ts\":\"2026-10-05T20:31:07.255Z\",\"level\":\"info\",\"message\":\"vm_fqdn_timeout\",\"prefix\":\"it\",\"timeoutSec\":600}\n{\"ts\":\"2026-10-05T20:31:07.255Z\",\"level\":\"info\",\"message\":\"vm_delete_skipped\",\"prefix\":\"it\",\"reason\":\"--keep-vm\"}\n{\"ts\":\"2026-10-05T20:31:07.256Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shrjbm1z1skdmgmb39akktndlqjb1wvn6ikhbrajmsvej9\"}\n{\"ts\":\"2026-10-05T20:31:07.257Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shgobxbbdfz5my3gja1utuyseox94xnxufjtep2q8r2b9u\"}\n{\"ts\":\"2026-10-05T20:31:07.257Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shal3ycrtlfceczhmy6dndfghvdgf1q9yn2kupucumwyby\"}\n{\"ts\":\"2026-10-05T20:31:07.257Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shwmgpeqvnnbm7uobz6zzpfc9yaa9pzoeouwkee6jcnx8q\"}\n{\"ts\":\"2026-10-05T20:31:07.257Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":1005,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T20:31:07.257Z\",\"level\":\"error\",\"message\":\"ws_error\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"error\":\"[object
+      ErrorEvent]\"}\n{\"ts\":\"2026-10-05T20:31:07.257Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":0,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T20:31:07.257Z\",\"level\":\"info\",\"message\":\"ws_reconnect_scheduled\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"delayMs\":1000,\"attempt\":1}\n{\"ts\":\"2026-10-05T20:31:07.257Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":1005,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T20:31:07.257Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"requester\",\"code\":1005,\"reason\":\"\"}\n\e[0m\e[38;5;245m-----
+      output end -----\e[0m\n[integration] iroh guest is reached by ticket: the RFP's
+      own cloud-init, end to end ... \e[0m\e[31mFAILED\e[0m \e[0m\e[38;5;245m(10m1s)\e[0m\n\n\e[0m\e[1m\e[37m\e[41m
+      ERRORS \e[0m\n\n[integration] iroh guest is reached by ticket: the RFP's own
+      cloud-init, end to end \e[0m\e[38;5;245m=> ./test/bidder_container_integration_test.ts:106:6\e[0m\n\e[0m\e[1m\e[31merror\e[0m:
+      AssertionError: guest sshd never became reachable over the iroh transport\n
+      \   throw new AssertionError(msg);\n\e[0m\e[31m          ^\e[0m\n    at \e[0m\e[1m\e[3massert\e[0m
+      (\e[0m\e[36mhttps://jsr.io/@std/assert/1.0.19/assert.ts\e[0m:\e[0m\e[33m22\e[0m:\e[0m\e[33m11\e[0m)\n
+      \   at \e[0m\e[2m\e[38;5;245mfile:///tmp/specd-worktree-556868798/atproto-market/\e[0m\e[0m\e[36mtest/bidder_container_integration_test.ts\e[0m:\e[0m\e[33m276\e[0m:\e[0m\e[33m5\e[0m\n\n\e[0m\e[1m\e[37m\e[41m
+      FAILURES \e[0m\n\n[integration] iroh guest is reached by ticket: the RFP's own
+      cloud-init, end to end \e[0m\e[38;5;245m=> ./test/bidder_container_integration_test.ts:106:6\e[0m\n\n\e[0m\e[31mFAILED\e[0m
+      | 0 passed | 1 failed \e[0m\e[38;5;245m(10m1s)\e[0m\n\n\e[0m\e[1m\e[31merror\e[0m:
+      Test failed"
+  policy:
+    waived:
+    - policy: guest-report-driven-emission
+      constraint: guest-report-driven-onnetwork
+      enforcementAction: deny
+      severity: error
+      msg: createVmBidderCallbacks emits the vm.onNetwork event from the provisioning
+        lifecycle, not from an inbound guest report
+      object: CodeGraph default/atproto-market
+      file: lib/market-bidder-compute/mod.ts
+      line: 304
+    - policy: rfp-guest-reports-network
+      constraint: rfp-guest-reports-network
+      enforcementAction: deny
+      severity: error
+      msg: 'the host emits the network report "COMPUTE_EVENTS_VM_ONNETWORK_NSID" from
+        the provisioning lifecycle, not from the http.handle of the guest''s report:
+        lib/market-bidder-compute/mod.ts:304'
+      object: ArchitectureModel default/atproto-market
+      file: lib/market-bidder-compute/mod.ts
+      line: 304
+  progress:
+    turns: 1
+    tools:
+    - tool: Edit
+      count: 13
+    - tool: Read
+      count: 20
+    - tool: Write
+      count: 1
+    files:
+    - compute-contract-full-flow/run_full_flow.ts
+    - lib/abc/requester/mod.ts
+    - lib/common/cloud-init-common/mod.ts
+    - lib/did-key-ingress-proxy/mod.ts
+    - lib/guest-capability-secrets/mod.ts
+    - lib/requester-xrpc/mod.ts
+    - request-vm-ssh/cli-args-env.ts
+    - request-vm-ssh/mod.ts
+    - test/bidder_container_integration_test.ts
+    - test/bidder_cross_platform_integration_test.ts
+    - test/bidder_policy_only_me_integration_test.ts
+    - test/bidder_prod_integration_test.ts
+    - test/bidder_ssh_relay_test.ts
+    - test/cloud_init_snapshot_test.ts
+    - test/fetch-interceptor.ts
+    - test/gateway_readme_smoke_test.ts
+    - test/gateway_request_vm_integration_test.ts
+    - test/oauth_session_transfer_test.ts
+    notes: 2
+    first: "2026-10-05T20:14:37Z"
+    last: "2026-10-05T20:20:38Z"
 superseded:
 - name: atproto-market-s2c-dcae0d4f6037-a5
   phase: Failed

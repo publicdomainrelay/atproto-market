@@ -200,7 +200,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | atproto-market-s2c-dcae0d4f6037-a3 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | atproto-market-s2c-dcae0d4f6037-a4 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | atproto-market-s2c-dcae0d4f6037-a5 | SpecToCode | Failed |  | 0 | acceptance failed | - |
-| atproto-market-s2c-dcae0d4f6037-a6 | SpecToCode | Running |  | 0 | - | - |
+| atproto-market-s2c-dcae0d4f6037-a6 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | atproto-market-s2c-e34ce8f9f34c | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | atproto-market-s2c-e34ce8f9f34c-a2 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | atproto-market-s2c-e34ce8f9f34c-a3 | SpecToCode | Failed |  | 0 | - | - |
@@ -208,7 +208,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | atproto-market-s2c-e34ce8f9f34c-a5 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | atproto-market-s2c-e34ce8f9f34c-a6 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | atproto-market-s2c-e34ce8f9f34c-a7 | SpecToCode | Failed |  | 0 | acceptance failed | - |
-| atproto-market-s2c-e34ce8f9f34c-a8 | SpecToCode | Failed |  | 0 | - | - |
+| atproto-market-s2c-e34ce8f9f34c-a8 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | atproto-market-s2c-f3075524231b | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | atproto-market-s2c-f3075524231b-a2 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | atproto-market-s2c-f3075524231b-a3 | SpecToCode | Failed |  | 0 | - | - |
@@ -224,7 +224,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-did-key-ingress-proxy-s2c-2414ea013542-a5 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | lib-did-key-ingress-proxy-s2c-2414ea013542-a6 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | lib-did-key-ingress-proxy-s2c-2414ea013542-a7 | SpecToCode | Failed |  | 0 | acceptance failed | - |
-| lib-did-key-ingress-proxy-s2c-2414ea013542-a8 | SpecToCode | Running |  | 0 | - | - |
+| lib-did-key-ingress-proxy-s2c-2414ea013542-a8 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | lib-did-plc-c2s-05fe29612a62-8b36a2bfe627 | CodeToSpec | Failed |  | 0 | - | - |
 | lib-did-plc-c2s-05fe29612a62-8b36a2bfe627-a2 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-did-plc-generated-c2s-8b36a2bfe627-8b36a2bfe627 | CodeToSpec | Succeeded |  | 0 | - | - |
@@ -240,7 +240,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-requester-xrpc-s2c-0c605032289f-a5 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | lib-requester-xrpc-s2c-0c605032289f-a6 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | lib-requester-xrpc-s2c-0c605032289f-a7 | SpecToCode | Failed |  | 0 | acceptance failed | - |
-| lib-requester-xrpc-s2c-0c605032289f-a8 | SpecToCode | Running |  | 0 | - | - |
+| lib-requester-xrpc-s2c-0c605032289f-a8 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | test-c2s-8b36a2bfe627-8b36a2bfe627 | CodeToSpec | Succeeded |  | 0 | - | - |
 | test-fixtures-cloud-init-c2s-8b36a2bfe627-8b36a2bfe627 | CodeToSpec | Failed |  | 0 | - | - |
 | test-fixtures-cloud-init-c2s-8b36a2bfe627-8b36a2bfe627-a2 | CodeToSpec | Failed |  | 0 | - | - |
