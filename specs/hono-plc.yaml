@@ -1,0 +1,12 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SystemContext
+metadata:
+  name: hono-plc
+  namespace: default
+spec:
+  repository: atproto-market
+  upstream: self
+  dependsOn:
+  - sc.lib-hono-factory-did-plc-directory
+codeRefIndex:
+- file:hono-plc/mod.ts mod.ts@hono-plc/mod.ts

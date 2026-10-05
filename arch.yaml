@@ -56,6 +56,8 @@ system_contexts:
     level: MUST
   - id: r.iroh-cloud-init-fixture
     level: MUST
+  - id: r.iroh-full-flow-harness
+    level: SHOULD
   - id: r.localhost-port-rewrite
     level: MUST
   - id: r.plc-directory-factory
@@ -97,6 +99,20 @@ system_contexts:
   - file:test/registry_discovery_test.ts registry_discovery_test.ts@test/registry_discovery_test.ts
   - file:test/secrets_capability_test.ts secrets_capability_test.ts@test/secrets_capability_test.ts
   - function:c6f81957f952317eb0e87d2454b5add3 installFetchInterceptor@test/fetch-interceptor.ts:7
+- id: sc.compute-contract-full-flow
+  name: compute-contract-full-flow
+  spec: specs/compute-contract-full-flow.yaml
+  upstream: self
+  depends_on:
+  - sc.lib-atproto-helpers
+  - sc.lib-did-key-ingress-proxy
+  - sc.lib-did-plc
+  - sc.lib-market-atproto
+  - sc.lib-market-bidder
+  - sc.lib-market-bidder-compute
+  - sc.lib-requester-xrpc
+  codeRefIndex:
+  - file:compute-contract-full-flow/run_full_flow.ts run_full_flow.ts@compute-contract-full-flow/run_full_flow.ts
 - id: sc.hono-bidder
   name: hono-bidder
   spec: specs/hono-bidder.yaml
@@ -224,6 +240,14 @@ system_contexts:
   codeRefIndex:
   - file:hono-market/deno.json deno.json@hono-market/deno.json
   - file:hono-market/mod.ts mod.ts@hono-market/mod.ts
+- id: sc.hono-plc
+  name: hono-plc
+  spec: specs/hono-plc.yaml
+  upstream: self
+  depends_on:
+  - sc.lib-hono-factory-did-plc-directory
+  codeRefIndex:
+  - file:hono-plc/mod.ts mod.ts@hono-plc/mod.ts
 - id: sc.lib-abc-compute-contract-gateway
   name: lib-abc-compute-contract-gateway
   spec: specs/lib-abc-compute-contract-gateway.yaml
@@ -479,26 +503,26 @@ system_contexts:
   - id: r.ssh-session-provider
     level: MUST
   codeRefIndex:
-  - class:16d39bb38a118fc0fb3fe14223562247 BidCollector@lib/abc/requester/mod.ts:259
+  - class:d57e883e006876b805c05d8d04f3c70d BidCollector@lib/abc/requester/mod.ts:280
   - file:lib/abc/requester/deno.json deno.json@lib/abc/requester/deno.json
   - file:lib/abc/requester/mod.ts mod.ts@lib/abc/requester/mod.ts
-  - function:3c8d8d8546ff4701fb29d8fbe9795d8c selectWinner@lib/abc/requester/mod.ts:236
-  - function:3d3875fa8240403acfc320be5e313f3a bidPayloadNsid@lib/abc/requester/mod.ts:224
-  - function:66b7603e9bf193b0f4990c9418718750 bidCost@lib/abc/requester/mod.ts:231
-  - interface:330c2d6e1bc25d27c1db597ccfc31a6e BidCollectorOptions@lib/abc/requester/mod.ts:241
-  - interface:494d188099d646e00135e8028183de2b PDSOptions@lib/abc/requester/mod.ts:127
-  - interface:6e1c7583bbdd18e7a9136c0da721214c RequesterPDS@lib/abc/requester/mod.ts:138
-  - interface:780ccb6e208a6173bf860193cc9dc0b2 SshSessionProvider@lib/abc/requester/mod.ts:192
+  - function:24f8ac1d96de6ca5018e544cac052e84 bidCost@lib/abc/requester/mod.ts:252
+  - function:69339ecd22627b6da61ee16603023f6c bidPayloadNsid@lib/abc/requester/mod.ts:245
+  - function:7daa86a6f9e8695a5c71ac805fdf133f selectWinner@lib/abc/requester/mod.ts:257
+  - interface:2bf4e4013748280889dd472657b64d28 ConsoleBuffer@lib/abc/requester/mod.ts:240
+  - interface:380dfb7fe1bd2c55f157a6b95bd59bd0 RequesterPDS@lib/abc/requester/mod.ts:144
+  - interface:7701e7d56c70ba5cf00215557461ee48 PDSOptions@lib/abc/requester/mod.ts:133
   - interface:7fb903e1181ae51a3d69c0a40484e610 ContractFlowOptions@lib/abc/requester/mod.ts:15
-  - interface:91c57701082294b94623335812685327 ConsoleBuffer@lib/abc/requester/mod.ts:219
-  - interface:e7d2504efcd0625ee0843e6ca37af80e ContractFlowResult@lib/abc/requester/mod.ts:198
+  - interface:8ae67fbea354fbac2ec37b3b073691bf SshSessionProvider@lib/abc/requester/mod.ts:207
+  - interface:bbce0224c2c383325ab5878b13e89926 BidCollectorOptions@lib/abc/requester/mod.ts:262
+  - interface:d628e8817422a09b842f19f2d455731e ContractFlowResult@lib/abc/requester/mod.ts:213
   - interface:f25a32e8c06ef59f558fa95805408414 CollectedBid@lib/abc/requester/mod.ts:8
-  - method:234812e0614aaa8d9ef21f3bf4032910 BidCollector.add@lib/abc/requester/mod.ts:277
-  - method:8471dcc6f8e0b25bd63a74706b5003cd BidCollector.drain@lib/abc/requester/mod.ts:305
-  - method:8beccf740102cdc12505e185d8271765 BidCollector.addAll@lib/abc/requester/mod.ts:296
-  - method:a375d27196d03a11f471e5c9e2bc799a BidCollector.all@lib/abc/requester/mod.ts:300
-  - method:cce3fb92bff243280237741351ec0705 BidCollector.constructor@lib/abc/requester/mod.ts:267
-  - method:f0e93b3ced1b767ab92656b6071e05ea BidCollector.isFree@lib/abc/requester/mod.ts:273
+  - method:075eb6ec1290d376ade2f43084aafaa7 BidCollector.isFree@lib/abc/requester/mod.ts:294
+  - method:1d57f0d392207f772e28cf364c8221e6 BidCollector.constructor@lib/abc/requester/mod.ts:288
+  - method:57342a42b93f081e405aff614b83bea6 BidCollector.addAll@lib/abc/requester/mod.ts:317
+  - method:8caf134464a48ce61f8572f957c5d489 BidCollector.add@lib/abc/requester/mod.ts:298
+  - method:a494d7a4e7ee0619038e9ac0caa89a66 BidCollector.drain@lib/abc/requester/mod.ts:326
+  - method:be9c9383827329e0d7af9662d2f6f1de BidCollector.all@lib/abc/requester/mod.ts:321
 - id: sc.lib-abc-trust-graph
   name: lib-abc-trust-graph
   spec: specs/lib-abc-trust-graph.yaml

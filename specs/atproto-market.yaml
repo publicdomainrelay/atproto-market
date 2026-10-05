@@ -160,6 +160,7 @@ spec:
       rather than an assertion on the exit code alone, and this test must not be skipped:
       it is the acceptance suite.'
     codeRefs:
+    - file:compute-contract-full-flow/run_full_flow.ts
     - file:test/bidder_container_integration_test.ts
   - id: r.iroh-acceptance-plc-key-resolution
     level: MUST
@@ -190,6 +191,18 @@ spec:
     codeRefs:
     - file:test/cloud_init_snapshot_test.ts
     - file:test/fixtures/cloud-init/iroh.yaml
+  - id: r.iroh-full-flow-harness
+    level: SHOULD
+    text: compute-contract-full-flow/run_full_flow.ts must keep running under the
+      new default. Because it calls runComputeContract with skipSsh false, it must
+      either let the iroh default compose the guest and reach it by ticket (bootstrapping
+      the dumbpipe helper the session provider needs) or select the tunnel transport
+      explicitly and keep the websocat topology. Its header diagram and progress lines
+      must describe the transport the script actually uses, so the printed topology
+      cannot still claim a websocat ProxyCommand after the default changed, and it
+      must not import or call a helper the change removed.
+    codeRefs:
+    - file:compute-contract-full-flow/run_full_flow.ts
   - id: r.localhost-port-rewrite
     level: MUST
     text: For https URLs whose host is exactly localhost, ends with .localhost, or

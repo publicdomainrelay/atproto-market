@@ -23,10 +23,8 @@ spec:
     summarize: true
     root: true
 status:
-  headCommit: 05fe29612a62a645d70273560238ecc3180414d2
-  indexedCommit: 05fe29612a62a645d70273560238ecc3180414d2
-  observedCommit: 05fe29612a62a645d70273560238ecc3180414d2
-  syncedCommit: 05fe29612a62a645d70273560238ecc3180414d2
+  headCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
+  indexedCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
   phase: Populated
   contexts:
     total: 46

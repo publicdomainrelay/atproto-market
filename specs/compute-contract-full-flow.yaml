@@ -1,0 +1,18 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SystemContext
+metadata:
+  name: compute-contract-full-flow
+  namespace: default
+spec:
+  repository: atproto-market
+  upstream: self
+  dependsOn:
+  - sc.lib-atproto-helpers
+  - sc.lib-did-key-ingress-proxy
+  - sc.lib-did-plc
+  - sc.lib-market-atproto
+  - sc.lib-market-bidder
+  - sc.lib-market-bidder-compute
+  - sc.lib-requester-xrpc
+codeRefIndex:
+- file:compute-contract-full-flow/run_full_flow.ts run_full_flow.ts@compute-contract-full-flow/run_full_flow.ts
