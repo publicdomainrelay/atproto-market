@@ -1450,8 +1450,32 @@ system_contexts:
   - sc.lib-did-key-ingress-proxy
   - sc.lib-hono-factory-secrets-oidc
   - sc.lib-secrets-oidc
+  requirements:
+  - id: r.capability-identity
+    level: MUST
+  - id: r.exports-create-secrets-capability
+    level: MUST
+  - id: r.oncontract-installs-grant
+    level: MUST
+  - id: r.option-defaults
+    level: MUST
+  - id: r.options-shape
+    level: MUST
+  - id: r.prepare-mounts-secrets-app
+    level: MUST
+  - id: r.prepare-returns-context
+    level: MUST
+  - id: r.prepare-starts-ingress-and-server
+    level: MUST
+  - id: r.revoke-and-dispose
+    level: MUST
+  - id: r.single-module-package
+    level: SHOULD
   codeRefIndex:
+  - file:lib/guest-capability-secrets/deno.json deno.json@lib/guest-capability-secrets/deno.json
   - file:lib/guest-capability-secrets/mod.ts mod.ts@lib/guest-capability-secrets/mod.ts
+  - function:0d24cd5f66964dd094175db073cc3baf createSecretsCapability@lib/guest-capability-secrets/mod.ts:37
+  - interface:0c769a67d709c48b40d3f1032540989a CreateSecretsCapabilityOpts@lib/guest-capability-secrets/mod.ts:23
 - id: sc.lib-hono-factory-compute-contract-gateway-xrpc
   name: lib-hono-factory-compute-contract-gateway-xrpc
   spec: specs/lib-hono-factory-compute-contract-gateway-xrpc.yaml
