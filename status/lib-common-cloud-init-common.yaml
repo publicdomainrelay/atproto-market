@@ -1,4 +1,4 @@
-observedCommit: 0a87f24ea18623b5b5bbe386dc317350144c9ffd
+observedCommit: 26307737e859bee951a621bfdf44cfef947350e1
 syncedCommit: a15d9cdab92c38dfb523398231ab0344f6d06909
 syncedFingerprint: f1df3e4b14bbd7ffaab569337e29facbb2d496946eca2de28568c72e2e310342
 realizedSpecHash: 0c1bd2c5dcde6bfcb503dac4cb3d700db7ab6a4cd1e2fbc63e300251371773c4
@@ -10,9 +10,9 @@ conditions:
     r.deprecated-wrappers: function:46c9fd0cecf9645ba56294190be1600c, r.inject-jsr-url:
     function:4466755423490bdd6cd4a58e579cc002'
 - type: Drifted
-  status: "False"
-  reason: FingerprintEqual
-  message: observed facts match the synced fingerprint
+  status: "True"
+  reason: FingerprintChanged
+  message: observed facts changed since the spec was last synced
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed
@@ -98,18 +98,18 @@ observed:
     kind: function
     signature: '(ctx: CloudInitContext): string'
     file: lib/common/cloud-init-common/mod.ts
-    line: 1074
-    codegraphId: function:bf09d2a1b8445d2bd46dad4edba1e783
+    line: 1102
+    codegraphId: function:a163e1b3e27755329d8ec1eb9d02596c
   - name: buildTunnelUserData
     kind: function
     signature: '(ctx: TunnelCloudInitContext): string'
     file: lib/common/cloud-init-common/mod.ts
-    line: 1082
-    codegraphId: function:41c63d48d669bfcfa64e81ffdc519b94
+    line: 1110
+    codegraphId: function:16c8235c08b8afb442734ae197b1d61e
   - name: injectJsrUrl
     kind: function
     signature: '(userData: string, jsrUrl: string): string'
     file: lib/common/cloud-init-common/mod.ts
-    line: 1087
-    codegraphId: function:53bf485b8d6c0e9c01d9d55d93d51dfa
-  fingerprint: f1df3e4b14bbd7ffaab569337e29facbb2d496946eca2de28568c72e2e310342
+    line: 1115
+    codegraphId: function:1a8e70c2c7c4bc322d99b9c2c3633d8b
+  fingerprint: d0f255cb29cabeeb06f084bf3f675ad3999dbd14036e9eb1947df9eeac19a79d

@@ -1,0 +1,16 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-common-cloud-init-common-c2s-a15d9cdab92c-26307737e859
+  namespace: default
+spec:
+  systemContext: lib-common-cloud-init-common
+  direction: CodeToSpec
+  fromCommit: a15d9cdab92c38dfb523398231ab0344f6d06909
+  toCommit: 26307737e859bee951a621bfdf44cfef947350e1
+  delta:
+    counts:
+      changed: 4
+status:
+  phase: Running
+  message: the agent is summarizing lib-common-cloud-init-common
