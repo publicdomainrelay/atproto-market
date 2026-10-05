@@ -13,7 +13,8 @@ spec:
       removed: 122
       changed: 2
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is summarizing lib-did-plc
 superseded:
 - name: lib-did-plc-c2s-05fe29612a62-8b36a2bfe627
   phase: Failed
