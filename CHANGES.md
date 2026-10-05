@@ -202,7 +202,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | change | direction | phase | commit | verify | acceptance | coverage |
 | --- | --- | --- | --- | --- | --- | --- |
 | atproto-market-s2c-2e99f31da43f | SpecToCode | Running |  | 0 | - | - |
-| atproto-market-s2c-3da5509b141c | SpecToCode | Running |  | 0 | - | - |
+| atproto-market-s2c-3da5509b141c | SpecToCode | Failed |  | 0 | - | - |
 | atproto-market-s2c-dcae0d4f6037 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | atproto-market-s2c-dcae0d4f6037-a2 | SpecToCode | Failed |  | 0 | - | - |
 | atproto-market-s2c-dcae0d4f6037-a3 | SpecToCode | Failed |  | 0 | acceptance failed | - |
