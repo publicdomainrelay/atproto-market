@@ -1,0 +1,25 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SystemContext
+metadata:
+  name: lib-market-atproto
+  namespace: default
+spec:
+  repository: atproto-market
+  upstream: self
+  dependsOn:
+  - sc.atproto-market
+  - sc.lib-abc-market
+  - sc.lib-atproto-attestation-port
+  - sc.lib-common-market-common
+  - sc.lib-common-market-lexicons
+codeRefIndex:
+- file:lib/market-atproto/attest.ts attest.ts@lib/market-atproto/attest.ts
+- file:lib/market-atproto/auth.ts auth.ts@lib/market-atproto/auth.ts
+- file:lib/market-atproto/badge-blue-keys.ts badge-blue-keys.ts@lib/market-atproto/badge-blue-keys.ts
+- file:lib/market-atproto/bid.ts bid.ts@lib/market-atproto/bid.ts
+- file:lib/market-atproto/client.ts client.ts@lib/market-atproto/client.ts
+- file:lib/market-atproto/contract.ts contract.ts@lib/market-atproto/contract.ts
+- file:lib/market-atproto/mod.ts mod.ts@lib/market-atproto/mod.ts
+- file:lib/market-atproto/records.ts records.ts@lib/market-atproto/records.ts
+- file:lib/market-atproto/server.ts server.ts@lib/market-atproto/server.ts
+- file:lib/market-atproto/signing.ts signing.ts@lib/market-atproto/signing.ts

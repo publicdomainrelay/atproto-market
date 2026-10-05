@@ -602,3 +602,56 @@ system_contexts:
   - sc.lib-market-settlement-free
   codeRefIndex:
   - file:lib/hono-factory-market-settlement-free/mod.ts mod.ts@lib/hono-factory-market-settlement-free/mod.ts
+- id: sc.lib-hono-factory-market-settlement-x402
+  name: lib-hono-factory-market-settlement-x402
+  spec: specs/lib-hono-factory-market-settlement-x402.yaml
+  upstream: self
+  depends_on:
+  - sc.atproto-market
+  - sc.lib-abc-market
+  - sc.lib-common-market-common
+  - sc.lib-market-atproto
+  - sc.lib-market-settlement-x402
+  codeRefIndex:
+  - file:lib/hono-factory-market-settlement-x402/mod.ts mod.ts@lib/hono-factory-market-settlement-x402/mod.ts
+- id: sc.lib-hono-factory-requester-xrpc
+  name: lib-hono-factory-requester-xrpc
+  spec: specs/lib-hono-factory-requester-xrpc.yaml
+  upstream: self
+  depends_on:
+  - sc.atproto-market
+  - sc.lib-common-market-common
+  - sc.lib-market-atproto
+  codeRefIndex:
+  - file:lib/hono-factory-requester-xrpc/mod.ts mod.ts@lib/hono-factory-requester-xrpc/mod.ts
+- id: sc.lib-hono-factory-secrets-oidc
+  name: lib-hono-factory-secrets-oidc
+  spec: specs/lib-hono-factory-secrets-oidc.yaml
+  upstream: self
+  depends_on:
+  - sc.atproto-market
+  - sc.lib-common-secrets-common
+  - sc.lib-secrets-oidc
+  codeRefIndex:
+  - file:lib/hono-factory-secrets-oidc/mod.ts mod.ts@lib/hono-factory-secrets-oidc/mod.ts
+- id: sc.lib-market-atproto
+  name: lib-market-atproto
+  spec: specs/lib-market-atproto.yaml
+  upstream: self
+  depends_on:
+  - sc.atproto-market
+  - sc.lib-abc-market
+  - sc.lib-atproto-attestation-port
+  - sc.lib-common-market-common
+  - sc.lib-common-market-lexicons
+  codeRefIndex:
+  - file:lib/market-atproto/attest.ts attest.ts@lib/market-atproto/attest.ts
+  - file:lib/market-atproto/auth.ts auth.ts@lib/market-atproto/auth.ts
+  - file:lib/market-atproto/badge-blue-keys.ts badge-blue-keys.ts@lib/market-atproto/badge-blue-keys.ts
+  - file:lib/market-atproto/bid.ts bid.ts@lib/market-atproto/bid.ts
+  - file:lib/market-atproto/client.ts client.ts@lib/market-atproto/client.ts
+  - file:lib/market-atproto/contract.ts contract.ts@lib/market-atproto/contract.ts
+  - file:lib/market-atproto/mod.ts mod.ts@lib/market-atproto/mod.ts
+  - file:lib/market-atproto/records.ts records.ts@lib/market-atproto/records.ts
+  - file:lib/market-atproto/server.ts server.ts@lib/market-atproto/server.ts
+  - file:lib/market-atproto/signing.ts signing.ts@lib/market-atproto/signing.ts

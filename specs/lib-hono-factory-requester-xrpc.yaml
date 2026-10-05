@@ -1,0 +1,14 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SystemContext
+metadata:
+  name: lib-hono-factory-requester-xrpc
+  namespace: default
+spec:
+  repository: atproto-market
+  upstream: self
+  dependsOn:
+  - sc.atproto-market
+  - sc.lib-common-market-common
+  - sc.lib-market-atproto
+codeRefIndex:
+- file:lib/hono-factory-requester-xrpc/mod.ts mod.ts@lib/hono-factory-requester-xrpc/mod.ts

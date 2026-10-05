@@ -1,0 +1,585 @@
+syncedFingerprint: 275503b01b63b599b8c0cf32be01e45a03ce2b5a1df16f6203e6466ab7fd201b
+realizedSpecHash: 4922db8571bc8aa127342194acf0e60fb34f4cf0fe7ad3584a50ba091e138167
+conditions:
+- type: CodeSynced
+  status: "False"
+  reason: InterfacesMissing
+  message: 'undeclared: BidFactoryDeps, BidSettlementDeps, ContractGraph, ContractGraphError,
+    ContractGraphError.constructor, DispatchRfpInput, KeysForDid, ListedRecord, MarketClient,
+    MarketClient.constructor, MarketClient.create, MarketClient.ensureSigner, MarketClient.submitAccept,
+    MarketClient.submitBid, MarketClient.submitEvent, MarketClient.submitRfp, MarketClientOptions,
+    MarketServerDeps, OfferingRefreshHandle, ReceiptRefs, ReceiptSubject, RecordSigner,
+    RemoteProofSubject, ServiceAuthResult, Signed, SignedRecord, Submission, SubmitAcceptHandlerConfig,
+    SubmitAcceptResult, SubmitBidHandlerConfig, SubmitEventHandlerConfig, SubmitRfpHandlerConfig,
+    SubmitRfpResult, VerifyHandlerDeps, VerifyInlineOptions, VerifyMarketServiceAuthOptions,
+    VerifyRecordSignaturesOptions, VerifyRemoteProofOptions, VerifyServiceAuthOptions,
+    XrpcService, attestationFor, attestationVerificationMethod, badgeBlueKeysRkey,
+    base58btcEncode, createAndSubmitBid, createBadgeBlueKeysRecord, createBadgeBlueSigner,
+    createBidFactory, createDidKeyResolver, createKeyBoundByBadgeBlueKey, createMarketClient,
+    createReceiptRecord, createRecord, createRecordResolver, createRemoteProofRecord,
+    createRfpDispatcher, createSignedRecord, createSubmitAcceptHandler, createSubmitBidHandler,
+    createSubmitEventHandler, createSubmitRfpHandler, createVerifyHandler, deleteRecord,
+    extractBearer, fetchRecord, inlineEntries, keyBoundByBadgeBlueKey, listRecordsAll,
+    listRecordsPublic, loadOrGenerateKeypair, normalizeSignature, pdsForDid, resolveContractGraph,
+    resolvePds, serviceDidForHost, startOfferingRefresh, toStorableEntry, verifyInlineAttestation,
+    verifyMarketServiceAuth, verifyRecordSignatures, verifyRemoteProof'
+- type: Drifted
+  status: "False"
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
+- type: SpecValid
+  status: "True"
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed:
+  files:
+  - lib/market-atproto/attest.ts
+  - lib/market-atproto/auth.ts
+  - lib/market-atproto/badge-blue-keys.ts
+  - lib/market-atproto/bid.ts
+  - lib/market-atproto/client.ts
+  - lib/market-atproto/contract.ts
+  - lib/market-atproto/mod.ts
+  - lib/market-atproto/records.ts
+  - lib/market-atproto/server.ts
+  - lib/market-atproto/signing.ts
+  treeFiles:
+  - lib/market-atproto/deno.json
+  interfaces:
+  - name: normalizeSignature
+    kind: function
+    signature: '(value: unknown): Uint8Array | undefined'
+    file: lib/market-atproto/attest.ts
+    line: 59
+    codegraphId: function:dd9dba3c37b4e3b9f52bdef5f65e1d72
+  - name: toStorableEntry
+    kind: function
+    signature: '(entry: InlineAttestation): Record<string, unknown>'
+    file: lib/market-atproto/attest.ts
+    line: 72
+    codegraphId: function:068238ff7263642ac7b90ebbfc5ddca3
+  - name: loadOrGenerateKeypair
+    kind: function
+    signature: '(privKeyHex?: string): Promise<AttestationKeypair>'
+    file: lib/market-atproto/attest.ts
+    line: 87
+    codegraphId: function:eec1501b10e44ae978048272c4e9cced
+  - name: createBadgeBlueSigner
+    kind: function
+    signature: '(opts: { privateKeyHex: string }): Promise<AttestationKeypair>'
+    file: lib/market-atproto/attest.ts
+    line: 106
+    codegraphId: function:adf545411098c5c92e62813b4283dc45
+  - name: attestationFor
+    kind: function
+    signature: '(keypair: AttestationKeypair, issuer?: string): Attestation'
+    file: lib/market-atproto/attest.ts
+    line: 111
+    codegraphId: function:4523e9fa3db0d8713e70eb71ea17cdb5
+  - name: attestationVerificationMethod
+    kind: function
+    signature: |-
+      (
+        controller: string,
+        keypairDid: string,
+        fragment = "attestation",
+      ): { id: string; type: "Multikey"; controller: string; publicKeyMultibase: string }
+    file: lib/market-atproto/attest.ts
+    line: 120
+    codegraphId: function:d086dbd2a94bb08f4868d4e1a36886d9
+  - name: KeysForDid
+    kind: type_alias
+    file: lib/market-atproto/attest.ts
+    line: 141
+    codegraphId: type_alias:328bae5301fa305891c325db61c46469
+  - name: createDidKeyResolver
+    kind: function
+    signature: '(opts?: { plcUrl?: string; timeout?: number }): KeysForDid'
+    file: lib/market-atproto/attest.ts
+    line: 150
+    codegraphId: function:777e711d211dc51cbd2e0d75a82e0d5b
+  - name: inlineEntries
+    kind: function
+    signature: '(record: Record<string, unknown>): InlineAttestation[]'
+    file: lib/market-atproto/attest.ts
+    line: 181
+    codegraphId: function:a1c9d31ffef200b9bfd10ae485037f4c
+  - name: VerifyInlineOptions
+    kind: interface
+    file: lib/market-atproto/attest.ts
+    line: 186
+    codegraphId: interface:ff01c799dc7cac3a6c8a4ee77fb85202
+  - name: verifyInlineAttestation
+    kind: function
+    signature: '(opts: VerifyInlineOptions): Promise<boolean>'
+    file: lib/market-atproto/attest.ts
+    line: 201
+    codegraphId: function:985b4184227ce0a11d4eea568402dfce
+  - name: VerifyRemoteProofOptions
+    kind: interface
+    file: lib/market-atproto/attest.ts
+    line: 215
+    codegraphId: interface:e48c155afb36e23092258ba5e83a372d
+  - name: verifyRemoteProof
+    kind: function
+    signature: '(opts: VerifyRemoteProofOptions): boolean'
+    file: lib/market-atproto/attest.ts
+    line: 230
+    codegraphId: function:102ed3d4f37a62e09488394627bb14ba
+  - name: extractBearer
+    kind: function
+    signature: '(header: string | undefined | null): string'
+    file: lib/market-atproto/auth.ts
+    line: 14
+    codegraphId: function:87b92ea5f5717bb556617a2c1fa92cf8
+  - name: serviceDidForHost
+    kind: function
+    signature: '(hostname: string): string'
+    file: lib/market-atproto/auth.ts
+    line: 21
+    codegraphId: function:98363f480e900827243e69ef1e48679b
+  - name: ServiceAuthResult
+    kind: type_alias
+    file: lib/market-atproto/auth.ts
+    line: 25
+    codegraphId: type_alias:c5125342bf372413de697892aa5b2a46
+  - name: VerifyMarketServiceAuthOptions
+    kind: type_alias
+    file: lib/market-atproto/auth.ts
+    line: 37
+    codegraphId: type_alias:07fd46a41bb1c9e9be4323c963b3e633
+  - name: verifyMarketServiceAuth
+    kind: function
+    signature: |-
+      (
+        opts: VerifyMarketServiceAuthOptions,
+      ): Promise<ServiceAuthResult>
+    file: lib/market-atproto/auth.ts
+    line: 71
+    codegraphId: function:97a396ee1219f7d9074d254be6aedd52
+  - name: VerifyServiceAuthOptions
+    kind: type_alias
+    file: lib/market-atproto/auth.ts
+    line: 104
+    codegraphId: type_alias:69e9d4e152de0d940d35bb2ea3fa5e21
+  - name: base58btcEncode
+    kind: function
+    signature: '(bytes: Uint8Array): string'
+    file: lib/market-atproto/badge-blue-keys.ts
+    line: 17
+    codegraphId: function:c01f943b04487ed6765417f89402e2c2
+  - name: badgeBlueKeysRkey
+    kind: function
+    signature: '(did: string, keyId: string): Promise<string>'
+    file: lib/market-atproto/badge-blue-keys.ts
+    line: 37
+    codegraphId: function:565917e19429b690f77d038a1771cb93
+  - name: keyBoundByBadgeBlueKey
+    kind: function
+    signature: |-
+      (
+        idResolver: IdResolver,
+        did: string,
+        key: string,
+      ): Promise<boolean>
+    file: lib/market-atproto/badge-blue-keys.ts
+    line: 49
+    codegraphId: function:e5c728d6a9759280b70b480547592bd5
+  - name: createKeyBoundByBadgeBlueKey
+    kind: function
+    signature: '(idResolver: IdResolver): (did: string, key: string) => Promise<boolean>'
+    file: lib/market-atproto/badge-blue-keys.ts
+    line: 77
+    codegraphId: function:10d883640e8a5a7f9d0b724d937133d1
+  - name: createBadgeBlueKeysRecord
+    kind: function
+    signature: |-
+      (opts: {
+        did: string;
+        keyId: string;
+        service: string;
+        writeRecord(
+          did: string,
+          collection: string,
+          rkey: string,
+          record: Record<string, unknown>,
+        ): Promise<{ uri: string; cid: string }>;
+      }): Promise<{ uri: string; cid: string }>
+    file: lib/market-atproto/badge-blue-keys.ts
+    line: 94
+    codegraphId: function:bfb74ae8c3c5764aa8fec8a08b8a6dcd
+  - name: BidFactoryDeps
+    kind: interface
+    file: lib/market-atproto/bid.ts
+    line: 12
+    codegraphId: interface:6e79b7b8c9ce2b70f4e3986aff5f0d77
+  - name: BidSettlementDeps
+    kind: interface
+    file: lib/market-atproto/bid.ts
+    line: 25
+    codegraphId: interface:0c2d4165b40cf28c14348ceb91db6d93
+  - name: createBidFactory
+    kind: function
+    signature: '(deps: BidFactoryDeps)'
+    file: lib/market-atproto/bid.ts
+    line: 36
+    codegraphId: function:a8e295376e37dbcc8d8027ffbc143b2e
+  - name: createAndSubmitBid
+    kind: function
+    signature: |-
+      (
+          rfpUri: string,
+          rfpCid: string,
+          rfpRecord: RFP,
+          settlement: BidSettlementDeps,
+          reqUrl: string,
+        ): Promise<{ bidUri: string; bidCid: string }>
+    file: lib/market-atproto/bid.ts
+    line: 39
+    codegraphId: function:72525a51e6418b0a9341975a977fd7f7
+  - name: XrpcService
+    kind: type_alias
+    file: lib/market-atproto/client.ts
+    line: 53
+    codegraphId: type_alias:d1516ebc54626f302d7a51f379e48688
+  - name: SubmitRfpResult
+    kind: interface
+    file: lib/market-atproto/client.ts
+    line: 55
+    codegraphId: interface:21b9ba62b8752cd4fa4dec80859724a8
+  - name: SubmitAcceptResult
+    kind: interface
+    file: lib/market-atproto/client.ts
+    line: 61
+    codegraphId: interface:7825f59d94db4727d77f7cfefff9bab1
+  - name: Submission
+    kind: interface
+    file: lib/market-atproto/client.ts
+    line: 78
+    codegraphId: interface:8e9dba8570d46d454d9b6044ae801936
+  - name: MarketClientOptions
+    kind: interface
+    file: lib/market-atproto/client.ts
+    line: 94
+    codegraphId: interface:06b7f3d949eb2428955dc829ff88bd32
+  - name: MarketClient
+    kind: class
+    file: lib/market-atproto/client.ts
+    line: 117
+    codegraphId: class:b264115331e7de1c849ce526bb95a46d
+  - name: MarketClient.constructor
+    kind: method
+    signature: '(service: XrpcService, opts: MarketClientOptions = {})'
+    file: lib/market-atproto/client.ts
+    line: 125
+    codegraphId: method:3f23849d9cc7d92eb90b7038057f828d
+  - name: MarketClient.create
+    kind: method
+    signature: '(collection: string, record: T): Promise<SignedRecord<T>>'
+    file: lib/market-atproto/client.ts
+    line: 140
+    codegraphId: method:c68ce766697e07e3588237b46e812d30
+  - name: MarketClient.ensureSigner
+    kind: method
+    signature: '(): Promise<RecordSigner>'
+    file: lib/market-atproto/client.ts
+    line: 151
+    codegraphId: method:460e2c9722d4f592de1c2ba79e06993e
+  - name: MarketClient.submitRfp
+    kind: method
+    signature: '(target: string, input: { rfpUri: string; rfpCid: string }): Promise<SubmitRfpResult>'
+    file: lib/market-atproto/client.ts
+    line: 175
+    codegraphId: method:75948ea3fb693dc4b0e4e92c7a6cc06a
+  - name: MarketClient.submitBid
+    kind: method
+    signature: '(target: string, bid: T): Promise<Submission<T>>'
+    file: lib/market-atproto/client.ts
+    line: 188
+    codegraphId: method:29c46de8762f2cda28ea9f42945ec2aa
+  - name: MarketClient.submitAccept
+    kind: method
+    signature: '(target: string, input: { acceptUri: string; acceptCid: string }):
+      Promise<SubmitAcceptResult>'
+    file: lib/market-atproto/client.ts
+    line: 198
+    codegraphId: method:5e00b55cb39a80b1b67ad87180a3b6ba
+  - name: MarketClient.submitEvent
+    kind: method
+    signature: '(target: string, event: T): Promise<Submission<T>>'
+    file: lib/market-atproto/client.ts
+    line: 209
+    codegraphId: method:5a7c89ac703d88b59f76fd56a381a91f
+  - name: createMarketClient
+    kind: function
+    signature: '(service: XrpcService, opts: MarketClientOptions = {}): MarketClient'
+    file: lib/market-atproto/client.ts
+    line: 240
+    codegraphId: function:a4a549b19eff8b40c325d4759430ac84
+  - name: ContractGraphError
+    kind: class
+    file: lib/market-atproto/contract.ts
+    line: 24
+    codegraphId: class:088ab0f90fba416f3035887f3f6abcf1
+  - name: ContractGraphError.constructor
+    kind: method
+    signature: '(message: string)'
+    file: lib/market-atproto/contract.ts
+    line: 26
+    codegraphId: method:407b0c921496346755f27d2c95775484
+  - name: ContractGraph
+    kind: interface
+    file: lib/market-atproto/contract.ts
+    line: 33
+    codegraphId: interface:9f98899afaebca0e8500df067ae28b03
+  - name: resolveContractGraph
+    kind: function
+    signature: |-
+      (
+        accept: Accept,
+        resolve: RecordResolver,
+        opts: { verifySignatures?: boolean; keysForDid?: KeysForDid } = {},
+      ): Promise<ContractGraph>
+    file: lib/market-atproto/contract.ts
+    line: 57
+    codegraphId: function:d7be7fb39bc4e2f86fd9985e13241b85
+  - name: createRecord
+    kind: function
+    signature: |-
+      (
+        agent: Agent,
+        collection: string,
+        record: Record<string, unknown>,
+      ): Promise<StrongRef>
+    file: lib/market-atproto/records.ts
+    line: 13
+    codegraphId: function:9a8248f51f025f8b6e32b4e8e299f71a
+  - name: ReceiptRefs
+    kind: interface
+    file: lib/market-atproto/records.ts
+    line: 27
+    codegraphId: interface:4479a9b41ebd3caed12b255aa2081366
+  - name: ReceiptSubject
+    kind: interface
+    file: lib/market-atproto/records.ts
+    line: 38
+    codegraphId: interface:3c712b587b45e111a5a8a12db9b7a950
+  - name: createReceiptRecord
+    kind: function
+    signature: |-
+      (
+        agent: Agent,
+        refs: ReceiptRefs,
+        subject: ReceiptSubject,
+        signer: RecordSigner,
+      ): Promise<StrongRef>
+    file: lib/market-atproto/records.ts
+    line: 52
+    codegraphId: function:4d0d3b3b20bd7fc36774859f10ac13dc
+  - name: deleteRecord
+    kind: function
+    signature: '(agent: Agent, ref: { uri: string }): Promise<void>'
+    file: lib/market-atproto/records.ts
+    line: 76
+    codegraphId: function:16fad6b2b6420af853fbdd73759716b6
+  - name: ListedRecord
+    kind: type_alias
+    file: lib/market-atproto/records.ts
+    line: 82
+    codegraphId: type_alias:d50b5da61960bf0467d63a21148b6499
+  - name: listRecordsAll
+    kind: function
+    signature: |-
+      (
+        pdsUrl: string,
+        repo: string,
+        collection: string,
+        opts: { limit?: number; timeoutMs?: number } = {},
+      ): Promise<ListedRecord[]>
+    file: lib/market-atproto/records.ts
+    line: 90
+    codegraphId: function:3f8629004305c464a50d8b1bacae6b4b
+  - name: resolvePds
+    kind: function
+    signature: '(idResolver: IdResolver, did: string): Promise<string>'
+    file: lib/market-atproto/records.ts
+    line: 119
+    codegraphId: function:6ba98cc82d098583236519c1e8e764f1
+  - name: listRecordsPublic
+    kind: function
+    signature: |-
+      (
+        idResolver: IdResolver,
+        repo: string,
+        collection: string,
+        opts?: { limit?: number; timeoutMs?: number },
+      ): Promise<ListedRecord[]>
+    file: lib/market-atproto/records.ts
+    line: 128
+    codegraphId: function:e21dfce0e403ec8cbf782a0e996930be
+  - name: OfferingRefreshHandle
+    kind: interface
+    file: lib/market-atproto/records.ts
+    line: 138
+    codegraphId: interface:a1fd6134e58d1be9a02ec1816d47d3d6
+  - name: startOfferingRefresh
+    kind: function
+    signature: |-
+      (opts: {
+        intervalMs: number;
+        refresh: () => Promise<void>;
+        log?: Logger;
+      }): OfferingRefreshHandle
+    file: lib/market-atproto/records.ts
+    line: 148
+    codegraphId: function:3717d81ed40faf5d4dad599c4a466c88
+  - name: createRecordResolver
+    kind: function
+    signature: '(idResolver: IdResolver): RecordResolver'
+    file: lib/market-atproto/records.ts
+    line: 161
+    codegraphId: function:d4ce49ecbfee113afc4127141aa82940
+  - name: MarketServerDeps
+    kind: interface
+    file: lib/market-atproto/server.ts
+    line: 69
+    codegraphId: interface:a2aebdfd88748624278922bae605823b
+  - name: SubmitRfpHandlerConfig
+    kind: interface
+    file: lib/market-atproto/server.ts
+    line: 200
+    codegraphId: interface:e541c8eefb5b202a2d456d94a6b15630
+  - name: DispatchRfpInput
+    kind: interface
+    file: lib/market-atproto/server.ts
+    line: 218
+    codegraphId: interface:a6d9838f8e5a8a01a178792680c729c8
+  - name: createRfpDispatcher
+    kind: function
+    signature: '(cfg: SubmitRfpHandlerConfig): (input: DispatchRfpInput) => Promise<Response>'
+    file: lib/market-atproto/server.ts
+    line: 234
+    codegraphId: function:6977507cc804dcb71b651b9629300054
+  - name: createSubmitRfpHandler
+    kind: function
+    signature: '(cfg: SubmitRfpHandlerConfig): Handler'
+    file: lib/market-atproto/server.ts
+    line: 281
+    codegraphId: function:b42bd4e8e8a7b5c513c75339ddb940c2
+  - name: SubmitBidHandlerConfig
+    kind: interface
+    file: lib/market-atproto/server.ts
+    line: 311
+    codegraphId: interface:9818e51eff36d0dded39af95803f0796
+  - name: createSubmitBidHandler
+    kind: function
+    signature: '(cfg: SubmitBidHandlerConfig): Handler'
+    file: lib/market-atproto/server.ts
+    line: 321
+    codegraphId: function:13fec5a02eca908bbeb919368a29e6dc
+  - name: SubmitAcceptHandlerConfig
+    kind: interface
+    file: lib/market-atproto/server.ts
+    line: 356
+    codegraphId: interface:3a2dd68df5868be740b032a4a37e0c7d
+  - name: createSubmitAcceptHandler
+    kind: function
+    signature: '(cfg: SubmitAcceptHandlerConfig): Handler'
+    file: lib/market-atproto/server.ts
+    line: 367
+    codegraphId: function:0f913e33cc210dafda22aef7e2cdc7b1
+  - name: SubmitEventHandlerConfig
+    kind: interface
+    file: lib/market-atproto/server.ts
+    line: 403
+    codegraphId: interface:3a99f2c2c67c123dd075fad5f70e5001
+  - name: createSubmitEventHandler
+    kind: function
+    signature: '(cfg: SubmitEventHandlerConfig): Handler'
+    file: lib/market-atproto/server.ts
+    line: 421
+    codegraphId: function:ea2b23f33739df4fc8dc7ed4efaefea8
+  - name: VerifyHandlerDeps
+    kind: interface
+    file: lib/market-atproto/server.ts
+    line: 492
+    codegraphId: interface:3c3e311a12ad5dfe3195b5aaac36af7d
+  - name: createVerifyHandler
+    kind: function
+    signature: '(deps: VerifyHandlerDeps): Handler'
+    file: lib/market-atproto/server.ts
+    line: 525
+    codegraphId: function:fb68d4609e3ad9dcb35fa9dc0cfb9a51
+  - name: pdsForDid
+    kind: function
+    signature: '(did: string): Promise<string>'
+    file: lib/market-atproto/server.ts
+    line: 529
+    codegraphId: function:3f161e971ad1f5274100575fc3b91d09
+  - name: fetchRecord
+    kind: function
+    signature: '(uri: string, cid?: string): Promise<{ value: Record<string, unknown>;
+      cid: string }>'
+    file: lib/market-atproto/server.ts
+    line: 540
+    codegraphId: function:6e2cdf7b076fec814b99568afd576756
+  - name: RecordSigner
+    kind: interface
+    file: lib/market-atproto/signing.ts
+    line: 30
+    codegraphId: interface:90db8b9ee170a9798bba0b80f26f7874
+  - name: Signed
+    kind: type_alias
+    file: lib/market-atproto/signing.ts
+    line: 48
+    codegraphId: type_alias:d1103ff61d586b58f801f7823020dd04
+  - name: SignedRecord
+    kind: interface
+    file: lib/market-atproto/signing.ts
+    line: 61
+    codegraphId: interface:b22f1c63755c22cbfbce3e7a1b8098b7
+  - name: createSignedRecord
+    kind: function
+    signature: |-
+      (
+        agent: Agent,
+        collection: string,
+        record: T,
+        signer: RecordSigner,
+      ): Promise<SignedRecord<T>>
+    file: lib/market-atproto/signing.ts
+    line: 82
+    codegraphId: function:62506aa5278c714b78058eb4ffa8fdd4
+  - name: RemoteProofSubject
+    kind: interface
+    file: lib/market-atproto/signing.ts
+    line: 100
+    codegraphId: interface:6fe3d0938f2e2498697e840d96caf911
+  - name: createRemoteProofRecord
+    kind: function
+    signature: |-
+      (
+        agent: Agent,
+        collection: string,
+        metadata: Record<string, unknown> & { $type: string },
+        subject: RemoteProofSubject,
+        signer: RecordSigner,
+      ): Promise<StrongRef>
+    file: lib/market-atproto/signing.ts
+    line: 112
+    codegraphId: function:2dec0113615801ddc5fff8420d814147
+  - name: VerifyRecordSignaturesOptions
+    kind: interface
+    file: lib/market-atproto/signing.ts
+    line: 133
+    codegraphId: interface:76a72b652b31091b4242c7e9e449f123
+  - name: verifyRecordSignatures
+    kind: function
+    signature: |-
+      (
+        opts: VerifyRecordSignaturesOptions,
+      ): Promise<boolean>
+    file: lib/market-atproto/signing.ts
+    line: 164
+    codegraphId: function:8667f4a02873405e91188462d922e2fe
+  fingerprint: 275503b01b63b599b8c0cf32be01e45a03ce2b5a1df16f6203e6466ab7fd201b

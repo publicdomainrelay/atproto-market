@@ -1,0 +1,16 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SystemContext
+metadata:
+  name: lib-hono-factory-market-settlement-x402
+  namespace: default
+spec:
+  repository: atproto-market
+  upstream: self
+  dependsOn:
+  - sc.atproto-market
+  - sc.lib-abc-market
+  - sc.lib-common-market-common
+  - sc.lib-market-atproto
+  - sc.lib-market-settlement-x402
+codeRefIndex:
+- file:lib/hono-factory-market-settlement-x402/mod.ts mod.ts@lib/hono-factory-market-settlement-x402/mod.ts
