@@ -1,0 +1,58 @@
+observedCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
+syncedCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
+syncedFingerprint: 8c9c52fea6506c0af3661082b3717eed37a8afa15529316c5f345f8b6b2c997d
+realizedSpecHash: 900a836e8800d24c719863dbb7bacc4827fa9659d6fd5ae0b0d21127c421ed8b
+conditions:
+- type: CodeSynced
+  status: "False"
+  reason: InterfacesMissing
+  message: 'undeclared: installFetchInterceptor'
+- type: Drifted
+  status: "False"
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
+- type: SpecValid
+  status: "True"
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed:
+  files:
+  - test/badge_blue_keys_binding_test.ts
+  - test/bid_collector_test.ts
+  - test/bidder_container_integration_test.ts
+  - test/bidder_cross_platform_integration_test.ts
+  - test/bidder_policy_only_me_integration_test.ts
+  - test/bidder_prod_integration_test.ts
+  - test/bidder_ssh_relay_test.ts
+  - test/cloud_init_k3s_test.ts
+  - test/cloud_init_snapshot_test.ts
+  - test/defect1_gateway_did_test.ts
+  - test/defect4_qr_session_test.ts
+  - test/fetch-interceptor.ts
+  - test/firehose_watcher_test.ts
+  - test/gateway_caller_rbac_integration_test.ts
+  - test/gateway_readme_smoke_test.ts
+  - test/gateway_request_vm_integration_test.ts
+  - test/gateway_ssh_integration_test.ts
+  - test/gateway_worker_integration_test.ts
+  - test/oauth_session_transfer_test.ts
+  - test/offering_refresh_test.ts
+  - test/registry_discovery_test.ts
+  - test/secrets_capability_test.ts
+  interfaces:
+  - name: installFetchInterceptor
+    kind: function
+    signature: |-
+      (opts: {
+        realFetch: typeof globalThis.fetch;
+        plcDirectoryUrl: string;
+        dispPort: number;
+        /** Self-signed CA PEM. When set, *.localhost URLs keep HTTPS (no downgrade)
+         * and are fetched with an HttpClient that trusts this CA. PLC redirects
+         * are unaffected (local PLC serves plain HTTP). */
+        caCertPem?: string;
+      }): () => void
+    file: test/fetch-interceptor.ts
+    line: 7
+    codegraphId: function:c6f81957f952317eb0e87d2454b5add3
+  fingerprint: 8c9c52fea6506c0af3661082b3717eed37a8afa15529316c5f345f8b6b2c997d
