@@ -16,8 +16,25 @@ spec:
     - +ensureDumbpipe
     - ~createSshSessionProvider
 status:
-  phase: Running
-  message: the agent is realizing lib-requester-xrpc in a batch of 4 led by atproto-market
+  phase: Failed
+  branch: spec/atproto-market/dcae0d4f
+  agentLog: |-
+    ...-contract unguessable `/iroh-report/<token>` route before cloud-config and feeds its absolute URL in as `ctx.irohReportUrl`, accepts a ticket from that POST or a dotless/non-IPv4 `vm.onNetwork` address, records `result.sshProxyCommand`.
+    - `test/bidder_container_integration_test.ts` — rewritten as the iroh acceptance suite: awaits the whole contract (no `Promise.race`, no deadline), asserts did:plc→did:key via `getKey`/`IdResolver` plus the did:key fast path, subscriber registration (`requester.ingressRef`), `receiptOk`, `sshReady`, exit 0, `dumbpipe connect <ticket>` ProxyCommand (never websocat, no address), ticket reported through the mounted route, and `SSH_OK_VIA_IROH` in captured guest output. No host-side side channel; teardown only after the promise settles.
+    - `compute-contract-full-flow/run_full_flow.ts` + `SUMMARY.md` — bootstrap `ensureDumbpipe`, pass `dumbpipePath`, header/progress lines and topology now describe iroh (no websocat claim).
+    - `request-vm-ssh/{mod.ts,cli-args-env.ts}` — bootstrap helper by selected transport (default iroh), pass `dumbpipePath`, flag description updated.
+    - `test/{bidder_ssh_relay,bidder_prod_integration,bidder_cross_platform_integration}_test.ts` — relay/websocat suites explicitly select `userData: { transport: "tunnel" }`.
+    - `lib/did-key-ingress-proxy/mod.ts` — unchanged; already satisfies `r.control-plane-and-report-route`.
+
+    Not executed here (need Docker + a real dumbpipe download): the container acceptance suite and the relay suites — they typecheck under `deno check` but I could not run them.
+
+    The change failed the policy gate. Fix these before trying again:
+    - rfp-relay-only-guest-ssh: ssh from test reaches the guest directly: test/bidder_container_integration_test.ts:251; a guest is reached only through a relay, so give the ssh a ProxyCommand that goes through any transport -- the org relay, fedproxy, websocat, iroh, dumbpipe, cloudflared or an unnamed tunnel (test/bidder_container_integration_test.ts:251)
+  message: 'PolicyDenied: rfp-relay-only-guest-ssh: ssh from test reaches the guest
+    directly: test/bidder_container_integration_test.ts:251; a guest is reached only
+    through a relay, so give the ssh a ProxyCommand that goes through any transport
+    -- the org relay, fedproxy, websocat, iroh, dumbpipe, cloudflared or an unnamed
+    tunnel'
   attempt: 4
   retryReason: 'The acceptance suite fails at the live guest: the dumbpipe install
     loops forever. Live container log of the kept guest (--keep-vm): curl -sfL https://github.com/n0-computer/dumbpipe/releases/download/v0.39.0/dumbpipe-v0.39.0-linux-x86_64.tar.gz
@@ -29,6 +46,40 @@ status:
     few attempts instead of retrying forever, and do not run the 5-minute acceptance
     suite yourself while iterating: it is the gate and specd runs it.'
   retryBy: john
+  policy:
+    denied:
+    - policy: rfp-relay-only-guest-ssh
+      constraint: rfp-relay-only-guest-ssh
+      enforcementAction: deny
+      severity: error
+      msg: 'ssh from test reaches the guest directly: test/bidder_container_integration_test.ts:251;
+        a guest is reached only through a relay, so give the ssh a ProxyCommand that
+        goes through any transport -- the org relay, fedproxy, websocat, iroh, dumbpipe,
+        cloudflared or an unnamed tunnel'
+      object: ArchitectureModel default/atproto-market
+      file: test/bidder_container_integration_test.ts
+      line: 251
+    inherited:
+    - policy: guest-report-driven-emission
+      constraint: guest-report-driven-onnetwork
+      enforcementAction: warn
+      severity: error
+      msg: createVmBidderCallbacks emits the vm.onNetwork event from the provisioning
+        lifecycle, not from an inbound guest report
+      object: CodeGraph default/atproto-market
+      file: lib/market-bidder-compute/mod.ts
+      line: 304
+    - policy: rfp-guest-reports-network
+      constraint: rfp-guest-reports-network
+      enforcementAction: warn
+      severity: error
+      msg: 'the host emits the network report "COMPUTE_EVENTS_VM_ONNETWORK_NSID" from
+        the provisioning lifecycle, not from the http.handle of the guest''s report:
+        lib/market-bidder-compute/mod.ts:304'
+      object: ArchitectureModel default/atproto-market
+      file: lib/market-bidder-compute/mod.ts
+      line: 304
+    message: 1 deny violation(s)
 superseded:
 - name: lib-requester-xrpc-s2c-0c605032289f-a3
   phase: Failed
