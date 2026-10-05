@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so the requester side of the market's submitBid XRPC endpoint can be mounted onto an app the caller already owns, without the package owning the server lifecycle. It centralizes the defaulting policy — self-did first in the audience set, the pdr_temp_market default service id, the host-header hostname extractor, the no-op logger fallback — in one factory so every requester deployment verifies inbound service-auth tokens the same way while remaining free to override any single option.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

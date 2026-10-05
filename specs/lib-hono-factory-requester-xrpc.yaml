@@ -10,5 +10,126 @@ spec:
   - sc.atproto-market
   - sc.lib-common-market-common
   - sc.lib-market-atproto
+  intent: This context exists so the requester side of the market's submitBid XRPC
+    endpoint can be mounted onto an app the caller already owns, without the package
+    owning the server lifecycle. It centralizes the defaulting policy — self-did first
+    in the audience set, the pdr_temp_market default service id, the host-header hostname
+    extractor, the no-op logger fallback — in one factory so every requester deployment
+    verifies inbound service-auth tokens the same way while remaining free to override
+    any single option.
+  requirements:
+  - id: r.audience-dids-include-self
+    level: MUST
+    text: The factory must build the inbound service-auth audience set with this requester's
+      own did as the first element and any caller-supplied audienceDids appended after
+      it, so tokens minted for the requester itself and for every extra audience both
+      verify; when audienceDids is omitted the set is exactly [did].
+    codeRefs:
+    - file:lib/hono-factory-requester-xrpc/mod.ts
+    - function:4adb00e3e75b63bbad98d6f295adf81c
+  - id: r.create-requester-factory-entrypoint
+    level: MUST
+    text: 'createRequesterFactory must accept exactly one RequesterFactoryOptions
+      argument and be async, resolving to a handle object of shape { stop: () => void
+      }, so that route registration on the caller''s app has completed before the
+      caller continues.'
+    codeRefs:
+    - file:lib/hono-factory-requester-xrpc/mod.ts
+    - function:4adb00e3e75b63bbad98d6f295adf81c
+  - id: r.default-hostname-extractor
+    level: MUST
+    text: When hostname is omitted the factory must substitute an extractor that reads
+      the request's host header, treats a missing header as the empty string, and
+      strips any port by taking the substring before the first colon; a caller-supplied
+      hostname must be used verbatim instead.
+    codeRefs:
+    - file:lib/hono-factory-requester-xrpc/mod.ts
+    - function:4adb00e3e75b63bbad98d6f295adf81c
+  - id: r.default-service-ids
+    level: MUST
+    text: When serviceIds is omitted the factory must fall back to the single-element
+      list ["pdr_temp_market"], and the resolved list must be forwarded to createSubmitBidHandler
+      so submitBid routing accepts that service; a caller-supplied list must be used
+      unchanged.
+    codeRefs:
+    - file:lib/hono-factory-requester-xrpc/mod.ts
+    - function:4adb00e3e75b63bbad98d6f295adf81c
+  - id: r.export-requester-factory-options
+    level: MUST
+    text: 'The module must export RequesterFactoryOptions as the single options bag
+      createRequesterFactory accepts: required members app (an object exposing post(path,
+      handler) whose handler takes a HonoContext and returns a Response or a promise
+      of one), idResolver (the DID resolver for service-auth audience verification),
+      did (this requester''s did:plc) and onBid (the SubmitBidCallback invoked when
+      a bid is received); optional members hostname, audienceDids, serviceIds and
+      log carry the overrides.'
+    codeRefs:
+    - file:lib/hono-factory-requester-xrpc/mod.ts
+    - interface:24e3920dde2766781bd325714476a696
+  - id: r.handler-deps-wiring
+    level: MUST
+    text: The factory must construct the submitBid handler via createSubmitBidHandler
+      with deps containing the resolved hostname, the caller's idResolver, a record
+      resolver built by createRecordResolver from that same idResolver, the resolved
+      audienceDids and the normalized log, alongside the resolved serviceIds and the
+      caller's onBid callback, so one resolver instance serves both audience verification
+      and record resolution.
+    codeRefs:
+    - file:lib/hono-factory-requester-xrpc/mod.ts
+    - function:4adb00e3e75b63bbad98d6f295adf81c
+  - id: r.logger-normalization
+    level: MUST
+    text: 'When log is supplied the factory must normalize it to the callable Logger
+      the market-atproto handlers expect: a function-valued logger passes through
+      unchanged, while an object LoggerInterface is wrapped in a function that dispatches
+      each (level, message, fields) call to the method named by level and silently
+      does nothing when no such method exists; when log is omitted the handler deps
+      carry no logger, leaving createSubmitBidHandler to fall back to its own no-op
+      logger.'
+    codeRefs:
+    - file:lib/hono-factory-requester-xrpc/mod.ts
+    - function:4adb00e3e75b63bbad98d6f295adf81c
+  - id: r.package-layout
+    level: SHOULD
+    text: The package should remain a single-entrypoint module, with lib/hono-factory-requester-xrpc/mod.ts
+      as its only code file and its own Deno configuration alongside it at lib/hono-factory-requester-xrpc/deno.json.
+    codeRefs:
+    - file:lib/hono-factory-requester-xrpc/deno.json
+    - file:lib/hono-factory-requester-xrpc/mod.ts
+  - id: r.register-submitbid-route
+    level: MUST
+    text: createRequesterFactory must register exactly one route by calling app.post
+      with the path formed as `/xrpc/${SUBMIT_BID_NSID}`, and the registered handler
+      must translate the Hono context into the raw fetch Request via c.req.raw before
+      handing it to the submitBid handler, so the handler sees an unmodified Request
+      rather than a Hono-wrapped one.
+    codeRefs:
+    - file:lib/hono-factory-requester-xrpc/mod.ts
+    - function:4adb00e3e75b63bbad98d6f295adf81c
+  - id: r.return-inert-stop-handle
+    level: MUST
+    text: 'createRequesterFactory must return a handle exposing a stop function, and
+      that stop function is deliberately a no-op: the route is already registered
+      on the caller''s app and the module performs no unregistration, so the handle
+      signals shutdown intent only.'
+    codeRefs:
+    - file:lib/hono-factory-requester-xrpc/mod.ts
+    - function:4adb00e3e75b63bbad98d6f295adf81c
+  interfaces:
+  - name: RequesterFactoryOptions
+    kind: interface
+    signature: 'interface RequesterFactoryOptions { app: { post(path: string, handler:
+      (c: HonoContext) => Response | Promise<Response>): void }; idResolver: IdResolver;
+      did: string; hostname?: (req: Request) => string; audienceDids?: string[]; serviceIds?:
+      string[]; onBid: SubmitBidCallback; log?: Logger | LoggerInterface }'
+    file: lib/hono-factory-requester-xrpc/mod.ts
+  - name: createRequesterFactory
+    kind: function
+    signature: 'createRequesterFactory(opts: RequesterFactoryOptions): Promise<{ stop:
+      () => void }>'
+    file: lib/hono-factory-requester-xrpc/mod.ts
 codeRefIndex:
+- file:lib/hono-factory-requester-xrpc/deno.json deno.json@lib/hono-factory-requester-xrpc/deno.json
 - file:lib/hono-factory-requester-xrpc/mod.ts mod.ts@lib/hono-factory-requester-xrpc/mod.ts
+- function:4adb00e3e75b63bbad98d6f295adf81c createRequesterFactory@lib/hono-factory-requester-xrpc/mod.ts:57
+- interface:24e3920dde2766781bd325714476a696 RequesterFactoryOptions@lib/hono-factory-requester-xrpc/mod.ts:17

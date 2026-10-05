@@ -1779,8 +1779,32 @@ system_contexts:
   - sc.atproto-market
   - sc.lib-common-market-common
   - sc.lib-market-atproto
+  requirements:
+  - id: r.audience-dids-include-self
+    level: MUST
+  - id: r.create-requester-factory-entrypoint
+    level: MUST
+  - id: r.default-hostname-extractor
+    level: MUST
+  - id: r.default-service-ids
+    level: MUST
+  - id: r.export-requester-factory-options
+    level: MUST
+  - id: r.handler-deps-wiring
+    level: MUST
+  - id: r.logger-normalization
+    level: MUST
+  - id: r.package-layout
+    level: SHOULD
+  - id: r.register-submitbid-route
+    level: MUST
+  - id: r.return-inert-stop-handle
+    level: MUST
   codeRefIndex:
+  - file:lib/hono-factory-requester-xrpc/deno.json deno.json@lib/hono-factory-requester-xrpc/deno.json
   - file:lib/hono-factory-requester-xrpc/mod.ts mod.ts@lib/hono-factory-requester-xrpc/mod.ts
+  - function:4adb00e3e75b63bbad98d6f295adf81c createRequesterFactory@lib/hono-factory-requester-xrpc/mod.ts:57
+  - interface:24e3920dde2766781bd325714476a696 RequesterFactoryOptions@lib/hono-factory-requester-xrpc/mod.ts:17
 - id: sc.lib-hono-factory-secrets-oidc
   name: lib-hono-factory-secrets-oidc
   spec: specs/lib-hono-factory-secrets-oidc.yaml
@@ -1789,8 +1813,28 @@ system_contexts:
   - sc.atproto-market
   - sc.lib-common-secrets-common
   - sc.lib-secrets-oidc
+  requirements:
+  - id: r.bearer-token-then-authorize
+    level: MUST
+  - id: r.create-app-registers-get-route
+    level: MUST
+  - id: r.delegate-auth-to-authorizer
+    level: SHOULD
+  - id: r.extract-bearer-lenient
+    level: MUST
+  - id: r.log-optional-noop
+    level: MUST
+  - id: r.options-carry-authorizer-and-secrets
+    level: MUST
+  - id: r.success-serves-secrets-as-json
+    level: MUST
+  - id: r.unauthorized-maps-to-401
+    level: MUST
   codeRefIndex:
   - file:lib/hono-factory-secrets-oidc/mod.ts mod.ts@lib/hono-factory-secrets-oidc/mod.ts
+  - function:9217ff283324c4a352117c8801e75b4a createSecretsApp@lib/hono-factory-secrets-oidc/mod.ts:19
+  - function:d93e06a7dd7538ef41434823de865c6e extractBearer@lib/hono-factory-secrets-oidc/mod.ts:13
+  - interface:7e777067ac67ae39e4b4da5c05ea6802 SecretsFactoryOptions@lib/hono-factory-secrets-oidc/mod.ts:6
 - id: sc.lib-market-atproto
   name: lib-market-atproto
   spec: specs/lib-market-atproto.yaml

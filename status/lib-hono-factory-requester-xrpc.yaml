@@ -1,10 +1,11 @@
 syncedFingerprint: f0becfeadc3d2372da177a4b9e8342ec9f2ba1d78585787d6f03e7032924544d
-realizedSpecHash: 5e47b3ac2159d85f362e9ea9fda876762a09fb7bf32e918ede8f717633fce273
+realizedSpecHash: 028f9177c89e5a9e42694957bdd38d219483a61a42340000d97238c92705f70d
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: RequesterFactoryOptions, createRequesterFactory'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual

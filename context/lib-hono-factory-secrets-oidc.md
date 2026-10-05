@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context pins down what the hono-factory-secrets-oidc package guarantees to its callers: the shape of the injection options, the lenient bearer-parsing contract, and the exact HTTP behaviour of the single GET route it registers, so that consumers such as guest-capability-secrets can swap in their own authorizer and secret source without the factory owning any atproto service-auth policy. It exists to keep the factory layer a thin transport adapter, mapping authorization outcomes onto JSON responses and log events rather than resolving tokens itself.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 
