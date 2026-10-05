@@ -544,11 +544,95 @@ system_contexts:
   - sc.lib-did-key-ingress-proxy
   - sc.lib-did-plc
   - sc.lib-market-atproto
+  requirements:
+  - id: r.agent-contract
+    level: MUST
+  - id: r.at-uri-parsing
+    level: MUST
+  - id: r.atproto-facade
+    level: MUST
+  - id: r.call-service
+    level: MUST
+  - id: r.create-record
+    level: MUST
+  - id: r.delete-record
+    level: MUST
+  - id: r.did-web-helper
+    level: MUST
+  - id: r.identity-resolution
+    level: MUST
+  - id: r.local-pds-agent
+    level: MUST
+  - id: r.misc-login
+    level: MUST
+  - id: r.oauth-agent
+    level: MUST
+  - id: r.oauth-agent-from-session
+    level: MUST
+  - id: r.oauth-qr-persistence
+    level: MUST
+  - id: r.oauth-refresh-policy
+    level: SHOULD
+  - id: r.package-entrypoint
+    level: MUST
+  - id: r.poll-oauth-session
+    level: MUST
+  - id: r.record-fetch
+    level: MUST
+  - id: r.relay-integration
+    level: MUST
+  - id: r.remote-agent
+    level: MUST
+  - id: r.repo-record
+    level: MUST
+  - id: r.session-expiry
+    level: MUST
+  - id: r.session-guards
+    level: MAY
+  - id: r.update-record
+    level: MUST
   codeRefIndex:
+  - class:1566ce3568946d393c5b85eaa61b269a OAuthSessionExpiredError@lib/atproto-helpers/agent.ts:685
   - file:lib/atproto-helpers/agent.ts agent.ts@lib/atproto-helpers/agent.ts
   - file:lib/atproto-helpers/misc.ts misc.ts@lib/atproto-helpers/misc.ts
   - file:lib/atproto-helpers/mod.ts mod.ts@lib/atproto-helpers/mod.ts
   - file:lib/atproto-helpers/oauth-qr-session.ts oauth-qr-session.ts@lib/atproto-helpers/oauth-qr-session.ts
+  - function:08d6aae41cdb39780531e4b0b9970c5d resolveAs@lib/atproto-helpers/misc.ts:57
+  - function:09f008e00ce5312275207c9bb985bf56 listReposByCollection@lib/atproto-helpers/agent.ts:213
+  - function:15a0f1aaab7e86455d8bc1c608b812b2 tryRestoreOAuthQRSession@lib/atproto-helpers/oauth-qr-session.ts:33
+  - function:1d90901125c6e1d8dfd922e2ed845766 createLocalPDSAgent@lib/atproto-helpers/agent.ts:276
+  - function:2939f2ecc3f558571114fcb90118a88f getSession@lib/atproto-helpers/agent.ts:560
+  - function:31c65f0f185060332167efd7fc6e6d7c createATProto@lib/atproto-helpers/agent.ts:76
+  - function:37176259ad0bf8cca398f47d8181537d deleteRecord@lib/atproto-helpers/agent.ts:151
+  - function:3caa35e6f44a7b681959c9df2a5753fa callService@lib/atproto-helpers/agent.ts:155
+  - function:3e90f5dbb5111b07df987d91fcdeaf1c createRecord@lib/atproto-helpers/agent.ts:83
+  - function:5e05dbc129e7d20330a96f2b8b371acc parseAtUri@lib/atproto-helpers/misc.ts:36
+  - function:61e36407a3a21d0845f4433419538d37 createOAuthAgentFromSession@lib/atproto-helpers/agent.ts:958
+  - function:664162a0c26c952691307bc83f9e48a6 pollForOAuthSession@lib/atproto-helpers/agent.ts:706
+  - function:66ccdff293ab5a09aac5708669d6cef4 refreshTokens@lib/atproto-helpers/agent.ts:988
+  - function:6a0c4068be3b125828b666d263cc18ea updateRecord@lib/atproto-helpers/agent.ts:101
+  - function:6b6cc11628f77edf2c2c12e68f5a75c4 requestCrawl@lib/atproto-helpers/agent.ts:193
+  - function:7e251839adec5d1acb7a20677dc42d17 atUriAuthority@lib/atproto-helpers/misc.ts:14
+  - function:86f938ce1d76c8a1f32a886fb2fb32e9 createOAuthAgent@lib/atproto-helpers/agent.ts:525
+  - function:89a524c1470f01c9a5732de495c47427 getRecord@lib/atproto-helpers/misc.ts:49
+  - function:9bec0d16cfa15fbf75d6c2c9d9ce955f createRemoteAgent@lib/atproto-helpers/agent.ts:441
+  - function:a3ab0f133ae10b069bf4b6a4f08b7db5 pdsForDid@lib/atproto-helpers/misc.ts:41
+  - function:a907c5bbc24af7160b7fa45b125f67f5 loginAgent@lib/atproto-helpers/misc.ts:18
+  - function:c81124baa930594366258e2c4bec56be createRepoRecord@lib/atproto-helpers/agent.ts:119
+  - function:d6435492681cef08f5a89f2c4ae353d5 ownServiceDidWeb@lib/atproto-helpers/misc.ts:10
+  - function:ddc69e012263bed7b2e6796376ba8bb5 saveOAuthQRSession@lib/atproto-helpers/oauth-qr-session.ts:103
+  - function:e3db23bd44e56bd354195ad1232a79a5 checkSession@lib/atproto-helpers/agent.ts:977
+  - function:ee9ae97184cfe644c817bf83f01cc4e5 createSignedRepoRecord@lib/atproto-helpers/agent.ts:133
+  - interface:21b8d823b481d84d8026709425577f6a OAuthAgent@lib/atproto-helpers/agent.ts:518
+  - interface:3909e6cc4ffe1847476e7bebfc2b5cdd CreateOAuthAgentOpts@lib/atproto-helpers/agent.ts:507
+  - interface:4f0df49504aa975e2e54a985698793b2 CreateRemoteAgentOpts@lib/atproto-helpers/agent.ts:435
+  - interface:58f1e081030b997d8b6d09a946945b14 OAuthSessionData@lib/atproto-helpers/agent.ts:692
+  - interface:807e9a2852208ca9fa9c3f3dc245262f ATProto@lib/atproto-helpers/agent.ts:46
+  - interface:b317984f729313aa3263448156dc7422 LocalPDSAgent@lib/atproto-helpers/agent.ts:262
+  - interface:c01302c11785b2aad10f98ef090f5ab9 CreateLocalPDSAgentOpts@lib/atproto-helpers/agent.ts:249
+  - interface:e0ab4ec3b2df74288a9ef13801013959 AtprotoAgentLike@lib/atproto-helpers/agent.ts:27
+  - interface:f7ce7dfac1fcdf268e6ed934d41a6b29 CreateATProtoOpts@lib/atproto-helpers/agent.ts:39
+  - method:185b959a4bfe59388a3e65533b314ec1 OAuthSessionExpiredError.constructor@lib/atproto-helpers/agent.ts:686
 - id: sc.lib-atproto-oauth-helpers
   name: lib-atproto-oauth-helpers
   spec: specs/lib-atproto-oauth-helpers.yaml

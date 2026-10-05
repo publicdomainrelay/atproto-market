@@ -1,17 +1,11 @@
 syncedFingerprint: 5da371618bc2da6204f3c3864546db71b0147c029fd3c9f7c78b28ca51f86a13
-realizedSpecHash: 6b9c967edc92e4198a168b8a610142b7ce0f9984e0c12f316666821bb90c3c8c
+realizedSpecHash: ff7885a8ca4f43b221f71f533e1aed2ec24729b7cf1bfafb398e671566aea70f
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: ATProto, AtprotoAgentLike, CreateATProtoOpts, CreateLocalPDSAgentOpts,
-    CreateOAuthAgentOpts, CreateRemoteAgentOpts, LocalPDSAgent, OAuthAgent, OAuthSessionData,
-    OAuthSessionExpiredError, OAuthSessionExpiredError.constructor, atUriAuthority,
-    callService, checkSession, createATProto, createLocalPDSAgent, createOAuthAgent,
-    createOAuthAgentFromSession, createRecord, createRemoteAgent, createRepoRecord,
-    createSignedRepoRecord, deleteRecord, getRecord, getSession, listReposByCollection,
-    loginAgent, ownServiceDidWeb, parseAtUri, pdsForDid, pollForOAuthSession, refreshTokens,
-    requestCrawl, resolveAs, saveOAuthQRSession, tryRestoreOAuthQRSession, updateRecord'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual

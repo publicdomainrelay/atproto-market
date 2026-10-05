@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so every AT Protocol consumer in atproto-market talks to one client layer instead of re-implementing agent construction, repo writes, relay queries and OAuth session handling. It fixes the AtprotoAgentLike contract that all three agent factories must satisfy, exposes an ATProto facade that adds attestation keys, DID resolution and PLC access on top of that contract, and owns the on-disk lifecycle of OAuth QR sessions, including proactive refresh and the OAuthSessionExpiredError raised when refresh finally fails. Small DID and AT-URI helpers live here too so callers can resolve a DID to its PDS, split an at:// URI, or fetch a record without duplicating that logic.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 
