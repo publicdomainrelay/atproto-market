@@ -6,6 +6,425 @@ metadata:
 spec:
   repository: atproto-market
   upstream: self
+  intent: 'This context exists so the generated did:plc client has one dependency-free
+    fetch core that every generated operation can share: credential resolution, body
+    encoding, argument flattening, path/query serialization, SSE streaming and URL
+    assembly all live here rather than being re-emitted per operation. It is a boundary
+    context, not a product one — the modules are machine-emitted by @hey-api/openapi-ts
+    from the did:plc OpenAPI description, so they are consumed as a stable interface
+    by the hand-written client one directory up and changed only by regenerating them.
+    Its exports are the fetch/wire vocabulary (Auth, Config, Client, HttpMethod, the
+    serializer hooks) and the small pure functions that implement the OpenAPI serialization
+    rules the spec demands.'
+  requirements:
+  - id: r.auth-descriptor-shape
+    level: MUST
+    text: The Auth interface describes where a credential travels (in, defaulting
+      to 'header', one of header, query or cookie), the header or query parameter
+      name (defaulting to 'Authorization'), an optional key that disambiguates security
+      schemes whose Auth shape would otherwise be identical, an optional scheme of
+      basic or bearer, and a required type of apiKey or http; AuthToken is the string-or-undefined
+      token value these descriptors carry.
+    codeRefs:
+    - file:lib/did-plc/generated/core/auth.gen.ts
+    - interface:77f3963c1fa0f8f2cb8e9d7a27958cb2
+    - type_alias:7735ceb25b97fac3d2d1b121e3f89176
+  - id: r.auth-token-resolution
+    level: MUST
+    text: getAuthToken accepts either a literal token or a callback that receives
+      the Auth descriptor, awaits the callback form when a function is passed, returns
+      undefined for an empty or missing token, and otherwise returns the token prefixed
+      with 'Bearer ' when scheme is bearer, prefixed with 'Basic ' followed by the
+      base64 encoding when scheme is basic, and unchanged for any other scheme, so
+      the auth descriptor alone decides the wire form.
+    codeRefs:
+    - function:726d44cabe8461d0ca02ce11929e1984
+    - interface:77f3963c1fa0f8f2cb8e9d7a27958cb2
+    - type_alias:7735ceb25b97fac3d2d1b121e3f89176
+  - id: r.body-serialization-variants
+    level: MUST
+    text: 'The bodySerializer module exposes one serializer per content type behind
+      the BodySerializer and QuerySerializer function shapes: a JSON serializer that
+      stringifies with a replacer turning bigint values into strings, a FormData serializer
+      that appends every own entry, expands array values into repeated keys and stringifies
+      values that are neither string, Blob nor Date, and a URLSearchParams serializer
+      that appends strings directly and JSON-stringifies everything else; all of them
+      skip null and undefined entries, and QuerySerializerOptions supplies the allowReserved
+      flag plus array and object style/explode settings those serializers consult.'
+    codeRefs:
+    - file:lib/did-plc/generated/core/bodySerializer.gen.ts
+    - function:9886966e31c3b2166c2973f6d894a6c9
+    - type_alias:7b083dfe3c20e80a081ae3b7540d6395
+    - type_alias:cfd18ecca404ce0fa829adfbfed5419a
+    - type_alias:dde729a96cfbf612b97b92a3c998d820
+  - id: r.client-params-flattening
+    level: MUST
+    text: buildClientParams takes the positional argument array of a generated client
+      call plus a FieldsConfig and produces a Params object, using each Field's in,
+      key and style entries to route values into the path, query, header, cookie and
+      body slots; Fields is the name-to-Field map form and FieldsConfig the form that
+      also allows an array of Fields per name, so generated operations pass ordered
+      arguments instead of hand-built objects.
+    codeRefs:
+    - function:857ac81730785f9de7bbc011af2905ee
+    - interface:86925fded451512a00e035e61ca0d84c
+    - type_alias:c6ba6174744a90575aff38757edd13d9
+    - type_alias:ed6588bd0f4545931394c9a19ffb3d2f
+  - id: r.client-types
+    level: MUST
+    text: 'types.gen.ts defines the shared vocabulary the core operates on: HttpMethod
+      as the union of the nine fetch verbs, Client as the constructed client object
+      offering setConfig and getConfig around buildUrl, buildUrlWithParams, getUrl,
+      request and the per-verb methods, Config as the resolved per-request configuration
+      carrying auth, baseUrl, bodySerializer, fetch, headers, parseAs, pathSerializer,
+      querySerializer, responseStyle and throwOnError, ClientMeta as the client''s
+      own metadata exposing getConfig and request, and OmitNever strips never-valued
+      keys so optional generated argument shapes stay usable.'
+    codeRefs:
+    - interface:9f7ce76ffc39dcee7f4408f47e8dc761
+    - interface:d7cde3b0b3197fc22f539e91215196ed
+    - type_alias:2945f346c02f778b7f7a30bb74276e1a
+    - type_alias:4666391d97cd157ecd65221851e39295
+    - type_alias:5099914286af01f9125c6a3086d0a4ac
+  - id: r.generated-not-hand-edited
+    level: MUST
+    text: Every file in this context is emitted by @hey-api/openapi-ts, so a change
+      belongs in the generator configuration or templates rather than in these modules,
+      and consumers treat the exported symbols as a stable interface rather than as
+      editable implementation.
+    codeRefs:
+    - file:lib/did-plc/generated/core/auth.gen.ts
+    - file:lib/did-plc/generated/core/bodySerializer.gen.ts
+    - file:lib/did-plc/generated/core/params.gen.ts
+    - file:lib/did-plc/generated/core/pathSerializer.gen.ts
+    - file:lib/did-plc/generated/core/queryKeySerializer.gen.ts
+    - file:lib/did-plc/generated/core/serverSentEvents.gen.ts
+    - file:lib/did-plc/generated/core/types.gen.ts
+    - file:lib/did-plc/generated/core/utils.gen.ts
+  - id: r.path-array-serialization
+    level: MUST
+    text: 'serializeArrayParam renders an array into a path or query fragment according
+      to the OpenAPI style and explode flags carried by SerializerOptions and typed
+      as ArrayStyle or ArraySeparatorStyle: exploded styles join with the style''s
+      exploded separator, non-exploded styles join with the non-exploded separator,
+      each element is emitted as its own name=value pair when the style requires it,
+      and the allowReserved flag decides whether values are percent-encoded.'
+    codeRefs:
+    - function:3aa423aa49ce15b5c281fdf674ccea83
+    - interface:1b456f0aa4a4892de795fc7cfe346405
+    - type_alias:1442602a19a8b8d826fe955ec8b35459
+    - type_alias:e1b2742b89886caca1ea4b29d97eab5c
+  - id: r.path-primitive-serialization
+    level: MUST
+    text: serializePrimitiveParam emits a single name/value path segment encoded unless
+      allowReserved is set, and serializeObjectParam renders a Record or Date into
+      a path fragment supporting exploded key/value pairs, the ObjectStyle's object
+      separator, a valueOnly mode that omits the parameter name and writes just the
+      serialized value, and the same allowReserved control over percent-encoding.
+    codeRefs:
+    - function:6b40f3b794b4bad43b14cd20458c4211
+    - function:d8a8ad4ef7229e1f081c6bf168c34b83
+    - type_alias:d4025b696fa82ef945e4ff5e7c98f3ca
+  - id: r.path-separator-tables
+    level: MUST
+    text: 'The separator helpers map each array or object style to its delimiter through
+      one table lookup: separatorArrayExplode returns one of space, dot, semicolon,
+      comma or ampersand for explode styles, separatorArrayNoExplode returns comma,
+      pipe or percent-encoded space for the non-exploded styles, and separatorObjectExplode
+      returns one of space, dot, semicolon, comma or ampersand, so no serializer hard-codes
+      a delimiter.'
+    codeRefs:
+    - function:0eec6a8b5f95850e00b60b674c319208
+    - function:52c78b83773379b2af971b52fe7d344b
+    - function:9e1e59ef39a8a3523eabbe58a707c0da
+    - type_alias:1442602a19a8b8d826fe955ec8b35459
+    - type_alias:d4025b696fa82ef945e4ff5e7c98f3ca
+  - id: r.path-template-substitution
+    level: MUST
+    text: defaultPathSerializer takes the PathSerializer record of path parameters
+      together with the URL template and substitutes each {name} placeholder with
+      the serialized value of that parameter, leaving the rest of the template intact
+      so callers only supply the values and never rebuild the path.
+    codeRefs:
+    - function:44cf0e94fd6213ef2ce23d5c6a2d1d08
+    - interface:9724358a094cfd674de35400ce1b41f5
+  - id: r.query-key-json-values
+    level: MUST
+    text: serializeQueryKeyValue normalizes an arbitrary value into a JsonValue suitable
+      for a query cache key by delegating to stringifyToJsonValue and applying queryKeyJsonReplacer,
+      so that Date, Map, Set, bigint and undefined-bearing structures collapse to
+      a deterministic JSON-safe form or to undefined when no representation exists.
+    codeRefs:
+    - function:322f298b5f2b35c454545e9e7383ed23
+    - function:e070a49e14782e2ad70106dfca6b7555
+    - function:fd2b04c364cd99e46d33fea953a519f3
+    - type_alias:73d3e5f774b282eef2fec4e0529a39f4
+  - id: r.request-body-validity
+    level: MUST
+    text: 'getValidRequestBody decides what body actually goes on the wire: it returns
+      an already serialized body as-is when one is present, applies the supplied BodySerializer
+      to the raw body when one is configured, and yields no body at all when the serializer
+      is explicitly null.'
+    codeRefs:
+    - function:6da9c83dca2343cb8d6ab89b226694e3
+    - type_alias:dde729a96cfbf612b97b92a3c998d820
+  - id: r.sse-client-retry
+    level: MUST
+    text: createSseClient opens a streaming request to the given url, parses each
+      server-sent event into a StreamEvent carrying event, data, id and retry fields,
+      invokes the response transformer and validator hooks, keeps the last event id
+      so a reconnect resumes rather than restarts, honors the server-supplied retry
+      delay clamped between sseDefaultRetryDelay and sseMaxRetryDelay, stops after
+      sseMaxRetryAttempts, and returns a ServerSentEventsResult whose stream is an
+      async generator of the events.
+    codeRefs:
+    - function:328544b37c6f5c21f27f71b2df1541fe
+    - interface:21dc1cb955f27a91202088472797c2b3
+    - type_alias:c40de77654e0d20536f33c98f3814deb
+  - id: r.sse-hooks
+    level: SHOULD
+    text: ServerSentEventsOptions lets a caller intercept the outgoing request through
+      onRequest, which receives the url and RequestInit and returns the Request to
+      send; observe failures through onSseError; observe each parsed event through
+      onSseEvent; and replace the retry sleep through sseSleepFn, with the remaining
+      RequestInit fields spread onto the underlying fetch call and method narrowed
+      to HttpMethod.
+    codeRefs:
+    - method:3e119e404dd19ce39adbd340693e853e
+    - method:5c7ca5bd02df3770e74bbdce8d0506c2
+    - method:903d25222e9da49cf170564fbcd88121
+    - method:ea065c4e19adf5aad92b1f94271d9c6b
+    - type_alias:918b65cfb156b73540784120485ddc65
+  - id: r.url-assembly
+    level: MUST
+    text: getUrl assembles the final request URL by resolving the url template against
+      an optional baseUrl, running the path parameter record through the configured
+      path serializer, appending the query record rendered through the supplied QuerySerializer,
+      and dropping entries that serialize to nothing, so every generated request leaves
+      the core as one complete URL string.
+    codeRefs:
+    - function:44cf0e94fd6213ef2ce23d5c6a2d1d08
+    - function:8a8169ef157538cd873bebae1c7e4b7c
+    - interface:9724358a094cfd674de35400ce1b41f5
+  interfaces:
+  - name: ArraySeparatorStyle
+    kind: type_alias
+    signature: export type ArraySeparatorStyle = ArrayStyle | MatrixStyle
+    file: lib/did-plc/generated/core/pathSerializer.gen.ts
+  - name: ArrayStyle
+    kind: type_alias
+    signature: export type ArrayStyle = 'form' | 'spaceDelimited' | 'pipeDelimited'
+    file: lib/did-plc/generated/core/pathSerializer.gen.ts
+  - name: Auth
+    kind: interface
+    signature: 'export interface Auth { in?: ''header'' | ''query'' | ''cookie'';
+      key?: string; name?: string; scheme?: ''basic'' | ''bearer''; type: ''apiKey''
+      | ''http'' }'
+    file: lib/did-plc/generated/core/auth.gen.ts
+  - name: AuthToken
+    kind: type_alias
+    signature: export type AuthToken = string | undefined
+    file: lib/did-plc/generated/core/auth.gen.ts
+  - name: BodySerializer
+    kind: type_alias
+    signature: 'export type BodySerializer = (body: any) => any'
+    file: lib/did-plc/generated/core/bodySerializer.gen.ts
+  - name: Client
+    kind: type_alias
+    signature: 'export type Client = { buildUrl: (options: ...) => string; buildUrlWithParams:
+      (...) => string; connect: ...; delete: ...; get: ...; getConfig: () => Config;
+      head: ...; options: ...; patch: ...; post: ...; put: ...; request: ...; setConfig:
+      (config: Config) => Config; trace: ... }'
+    file: lib/did-plc/generated/core/types.gen.ts
+  - name: ClientMeta
+    kind: interface
+    signature: 'export interface ClientMeta { getConfig: () => Config; request: <TData
+      = unknown, TError = unknown, ThrowOnError extends boolean = false>(options:
+      ...) => ... }'
+    file: lib/did-plc/generated/core/types.gen.ts
+  - name: Config
+    kind: interface
+    signature: 'export interface Config { auth?: ((auth: Auth) => Promise<AuthToken>
+      | AuthToken) | AuthToken; baseUrl?: string; bodySerializer?: BodySerializer
+      | null; fetch?: (request: Request) => Promise<Response>; headers?: HeadersOptions;
+      parseAs?: ''json'' | ''text'' | ''blob'' | ''arrayBuffer'' | ''stream'' | ''stream-per-line'';
+      pathSerializer?: (args: PathSerializer) => string; querySerializer?: QuerySerializer
+      | QuerySerializerOptions; responseStyle?: ''data'' | ''fields''; throwOnError?:
+      boolean }'
+    file: lib/did-plc/generated/core/types.gen.ts
+  - name: Field
+    kind: type_alias
+    signature: 'export type Field = { in: ''path'' | ''query'' | ''header'' | ''cookie''
+      | ''body''; key: string; style?: string }'
+    file: lib/did-plc/generated/core/params.gen.ts
+  - name: Fields
+    kind: interface
+    signature: 'export interface Fields { [name: string]: Field }'
+    file: lib/did-plc/generated/core/params.gen.ts
+  - name: FieldsConfig
+    kind: type_alias
+    signature: export type FieldsConfig = Record<string, Field | Field[]>
+    file: lib/did-plc/generated/core/params.gen.ts
+  - name: HttpMethod
+    kind: type_alias
+    signature: export type HttpMethod = 'connect' | 'delete' | 'get' | 'head' | 'options'
+      | 'patch' | 'post' | 'put' | 'trace'
+    file: lib/did-plc/generated/core/types.gen.ts
+  - name: JsonValue
+    kind: type_alias
+    signature: 'export type JsonValue = string | number | boolean | null | JsonValue[]
+      | { [key: string]: JsonValue }'
+    file: lib/did-plc/generated/core/queryKeySerializer.gen.ts
+  - name: ObjectStyle
+    kind: type_alias
+    signature: export type ObjectStyle = 'form' | 'deepObject'
+    file: lib/did-plc/generated/core/pathSerializer.gen.ts
+  - name: OmitNever
+    kind: type_alias
+    signature: 'export type OmitNever<T> = { [K in keyof T as T[K] extends never ?
+      never : K]: T[K] }'
+    file: lib/did-plc/generated/core/types.gen.ts
+  - name: PathSerializer
+    kind: interface
+    signature: 'export interface PathSerializer { path: Record<string, unknown>; url:
+      string }'
+    file: lib/did-plc/generated/core/utils.gen.ts
+  - name: QuerySerializer
+    kind: type_alias
+    signature: 'export type QuerySerializer = (query: Record<string, unknown>) =>
+      string'
+    file: lib/did-plc/generated/core/bodySerializer.gen.ts
+  - name: QuerySerializerOptions
+    kind: type_alias
+    signature: 'export type QuerySerializerOptions = { allowReserved?: boolean; array?:
+      { explode?: boolean; style?: ArraySeparatorStyle }; object?: { explode?: boolean;
+      style?: ObjectSeparatorStyle } }'
+    file: lib/did-plc/generated/core/bodySerializer.gen.ts
+  - name: SerializerOptions
+    kind: interface
+    signature: 'export interface SerializerOptions<T> { allowReserved?: boolean; explode?:
+      boolean; name: string; style: T }'
+    file: lib/did-plc/generated/core/pathSerializer.gen.ts
+  - name: ServerSentEventsOptions
+    kind: type_alias
+    signature: 'export type ServerSentEventsOptions<TData = unknown> = Omit<RequestInit,
+      ''method''> & { method?: HttpMethod; onRequest?: (url: string, init: RequestInit)
+      => Promise<Request>; onSseError?: (error: unknown) => void; onSseEvent?: (event:
+      StreamEvent<TData>) => void; responseTransformer?: (data: unknown) => Promise<TData>;
+      responseValidator?: (data: unknown) => Promise<unknown>; sseDefaultRetryDelay?:
+      number; sseMaxRetryAttempts?: number; sseMaxRetryDelay?: number; sseSleepFn?:
+      (ms: number) => Promise<void>; url: string }'
+    file: lib/did-plc/generated/core/serverSentEvents.gen.ts
+  - name: ServerSentEventsOptions.onRequest
+    kind: method
+    signature: 'onRequest?: (url: string, init: RequestInit) => Promise<Request>'
+    file: lib/did-plc/generated/core/serverSentEvents.gen.ts
+  - name: ServerSentEventsOptions.onSseError
+    kind: method
+    signature: 'onSseError?: (error: unknown) => void'
+    file: lib/did-plc/generated/core/serverSentEvents.gen.ts
+  - name: ServerSentEventsOptions.onSseEvent
+    kind: method
+    signature: 'onSseEvent?: (event: StreamEvent<TData>) => void'
+    file: lib/did-plc/generated/core/serverSentEvents.gen.ts
+  - name: ServerSentEventsOptions.sseSleepFn
+    kind: method
+    signature: 'sseSleepFn?: (ms: number) => Promise<void>'
+    file: lib/did-plc/generated/core/serverSentEvents.gen.ts
+  - name: ServerSentEventsResult
+    kind: type_alias
+    signature: 'export type ServerSentEventsResult<TData = unknown, TReturn = void>
+      = { stream: AsyncGenerator<TData extends Record<string, unknown> ? TData[keyof
+      TData] : TData, TReturn, unknown> }'
+    file: lib/did-plc/generated/core/serverSentEvents.gen.ts
+  - name: StreamEvent
+    kind: interface
+    signature: 'export interface StreamEvent<TData = unknown> { data: TData; event?:
+      string; id?: string; retry?: number }'
+    file: lib/did-plc/generated/core/serverSentEvents.gen.ts
+  - name: bodySerializer
+    kind: function
+    signature: 'export const bodySerializer = (body: unknown): FormData'
+    file: lib/did-plc/generated/core/bodySerializer.gen.ts
+  - name: buildClientParams
+    kind: function
+    signature: 'export const buildClientParams = (args: ReadonlyArray<unknown>, fields:
+      FieldsConfig): Params'
+    file: lib/did-plc/generated/core/params.gen.ts
+  - name: createSseClient
+    kind: function
+    signature: 'export const createSseClient = <TData = unknown>({ onRequest, onSseError,
+      onSseEvent, responseTransformer, responseValidator, sseDefaultRetryDelay, sseMaxRetryAttempts,
+      sseMaxRetryDelay, sseSleepFn, url, ...options }: ServerSentEventsOptions): ServerSentEventsResult<TData>'
+    file: lib/did-plc/generated/core/serverSentEvents.gen.ts
+  - name: defaultPathSerializer
+    kind: function
+    signature: 'export const defaultPathSerializer = ({ path, url: _url }: PathSerializer):
+      string'
+    file: lib/did-plc/generated/core/utils.gen.ts
+  - name: getAuthToken
+    kind: function
+    signature: 'export const getAuthToken = async (auth: Auth, callback: ((auth: Auth)
+      => Promise<AuthToken> | AuthToken) | AuthToken): Promise<string | undefined>'
+    file: lib/did-plc/generated/core/auth.gen.ts
+  - name: getUrl
+    kind: function
+    signature: 'export const getUrl = ({ baseUrl, path, query, querySerializer, url:
+      _url }: { baseUrl?: string; path?: Record<string, unknown>; query?: Record<string,
+      unknown>; querySerializer: QuerySerializer; url: string }): string'
+    file: lib/did-plc/generated/core/utils.gen.ts
+  - name: getValidRequestBody
+    kind: function
+    signature: 'export const getValidRequestBody = (options: { body?: unknown; bodySerializer?:
+      BodySerializer | null; serializedBody?: unknown }): unknown'
+    file: lib/did-plc/generated/core/utils.gen.ts
+  - name: queryKeyJsonReplacer
+    kind: function
+    signature: 'export const queryKeyJsonReplacer = (_key: string, value: unknown):
+      unknown | undefined'
+    file: lib/did-plc/generated/core/queryKeySerializer.gen.ts
+  - name: separatorArrayExplode
+    kind: function
+    signature: 'export const separatorArrayExplode = (style: ArraySeparatorStyle):
+      ''.'' | '';'' | '','' | ''&'''
+    file: lib/did-plc/generated/core/pathSerializer.gen.ts
+  - name: separatorArrayNoExplode
+    kind: function
+    signature: 'export const separatorArrayNoExplode = (style: ArraySeparatorStyle):
+      '','' | ''|'' | ''%20'''
+    file: lib/did-plc/generated/core/pathSerializer.gen.ts
+  - name: separatorObjectExplode
+    kind: function
+    signature: 'export const separatorObjectExplode = (style: ObjectSeparatorStyle):
+      ''.'' | '';'' | '','' | ''&'''
+    file: lib/did-plc/generated/core/pathSerializer.gen.ts
+  - name: serializeArrayParam
+    kind: function
+    signature: 'export const serializeArrayParam = ({ allowReserved, explode, name,
+      style, value }: SerializeOptions<ArraySeparatorStyle> & { value: unknown[] }):
+      string'
+    file: lib/did-plc/generated/core/pathSerializer.gen.ts
+  - name: serializeObjectParam
+    kind: function
+    signature: 'export const serializeObjectParam = ({ allowReserved, explode, name,
+      style, value, valueOnly }: SerializeOptions<ObjectSeparatorStyle> & { value:
+      Record<string, unknown> | Date; valueOnly?: boolean }): string'
+    file: lib/did-plc/generated/core/pathSerializer.gen.ts
+  - name: serializePrimitiveParam
+    kind: function
+    signature: 'export const serializePrimitiveParam = ({ allowReserved, name, value
+      }: SerializePrimitiveParam): string'
+    file: lib/did-plc/generated/core/pathSerializer.gen.ts
+  - name: serializeQueryKeyValue
+    kind: function
+    signature: 'export const serializeQueryKeyValue = (value: unknown): JsonValue
+      | undefined'
+    file: lib/did-plc/generated/core/queryKeySerializer.gen.ts
+  - name: stringifyToJsonValue
+    kind: function
+    signature: 'export const stringifyToJsonValue = (input: unknown): JsonValue |
+      undefined'
+    file: lib/did-plc/generated/core/queryKeySerializer.gen.ts
 codeRefIndex:
 - file:lib/did-plc/generated/core/auth.gen.ts auth.gen.ts@lib/did-plc/generated/core/auth.gen.ts
 - file:lib/did-plc/generated/core/bodySerializer.gen.ts bodySerializer.gen.ts@lib/did-plc/generated/core/bodySerializer.gen.ts
@@ -15,3 +434,45 @@ codeRefIndex:
 - file:lib/did-plc/generated/core/serverSentEvents.gen.ts serverSentEvents.gen.ts@lib/did-plc/generated/core/serverSentEvents.gen.ts
 - file:lib/did-plc/generated/core/types.gen.ts types.gen.ts@lib/did-plc/generated/core/types.gen.ts
 - file:lib/did-plc/generated/core/utils.gen.ts utils.gen.ts@lib/did-plc/generated/core/utils.gen.ts
+- function:0eec6a8b5f95850e00b60b674c319208 separatorArrayExplode@lib/did-plc/generated/core/pathSerializer.gen.ts:28
+- function:322f298b5f2b35c454545e9e7383ed23 stringifyToJsonValue@lib/did-plc/generated/core/queryKeySerializer.gen.ts:33
+- function:328544b37c6f5c21f27f71b2df1541fe createSseClient@lib/did-plc/generated/core/serverSentEvents.gen.ts:82
+- function:3aa423aa49ce15b5c281fdf674ccea83 serializeArrayParam@lib/did-plc/generated/core/pathSerializer.gen.ts:67
+- function:44cf0e94fd6213ef2ce23d5c6a2d1d08 defaultPathSerializer@lib/did-plc/generated/core/utils.gen.ts:18
+- function:52c78b83773379b2af971b52fe7d344b separatorObjectExplode@lib/did-plc/generated/core/pathSerializer.gen.ts:54
+- function:6b40f3b794b4bad43b14cd20458c4211 serializeObjectParam@lib/did-plc/generated/core/pathSerializer.gen.ts:127
+- function:6da9c83dca2343cb8d6ab89b226694e3 getValidRequestBody@lib/did-plc/generated/core/utils.gen.ts:113
+- function:726d44cabe8461d0ca02ce11929e1984 getAuthToken@lib/did-plc/generated/core/auth.gen.ts:29
+- function:857ac81730785f9de7bbc011af2905ee buildClientParams@lib/did-plc/generated/core/params.gen.ts:107
+- function:8a8169ef157538cd873bebae1c7e4b7c getUrl@lib/did-plc/generated/core/utils.gen.ts:85
+- function:9886966e31c3b2166c2973f6d894a6c9 bodySerializer@lib/did-plc/generated/core/bodySerializer.gen.ts:42
+- function:9e1e59ef39a8a3523eabbe58a707c0da separatorArrayNoExplode@lib/did-plc/generated/core/pathSerializer.gen.ts:41
+- function:d8a8ad4ef7229e1f081c6bf168c34b83 serializePrimitiveParam@lib/did-plc/generated/core/pathSerializer.gen.ts:109
+- function:e070a49e14782e2ad70106dfca6b7555 serializeQueryKeyValue@lib/did-plc/generated/core/queryKeySerializer.gen.ts:83
+- function:fd2b04c364cd99e46d33fea953a519f3 queryKeyJsonReplacer@lib/did-plc/generated/core/queryKeySerializer.gen.ts:17
+- interface:1b456f0aa4a4892de795fc7cfe346405 SerializerOptions@lib/did-plc/generated/core/pathSerializer.gen.ts:10
+- interface:21dc1cb955f27a91202088472797c2b3 StreamEvent@lib/did-plc/generated/core/serverSentEvents.gen.ts:67
+- interface:77f3963c1fa0f8f2cb8e9d7a27958cb2 Auth@lib/did-plc/generated/core/auth.gen.ts:5
+- interface:86925fded451512a00e035e61ca0d84c Fields@lib/did-plc/generated/core/params.gen.ts:38
+- interface:9724358a094cfd674de35400ce1b41f5 PathSerializer@lib/did-plc/generated/core/utils.gen.ts:11
+- interface:9f7ce76ffc39dcee7f4408f47e8dc761 ClientMeta@lib/did-plc/generated/core/types.gen.ts:98
+- interface:d7cde3b0b3197fc22f539e91215196ed Config@lib/did-plc/generated/core/types.gen.ts:35
+- method:3e119e404dd19ce39adbd340693e853e ServerSentEventsOptions.sseSleepFn@lib/did-plc/generated/core/serverSentEvents.gen.ts:63
+- method:5c7ca5bd02df3770e74bbdce8d0506c2 ServerSentEventsOptions.onSseEvent@lib/did-plc/generated/core/serverSentEvents.gen.ts:34
+- method:903d25222e9da49cf170564fbcd88121 ServerSentEventsOptions.onSseError@lib/did-plc/generated/core/serverSentEvents.gen.ts:25
+- method:ea065c4e19adf5aad92b1f94271d9c6b ServerSentEventsOptions.onRequest@lib/did-plc/generated/core/serverSentEvents.gen.ts:17
+- type_alias:1442602a19a8b8d826fe955ec8b35459 ArraySeparatorStyle@lib/did-plc/generated/core/pathSerializer.gen.ts:19
+- type_alias:2945f346c02f778b7f7a30bb74276e1a HttpMethod@lib/did-plc/generated/core/types.gen.ts:6
+- type_alias:4666391d97cd157ecd65221851e39295 Client@lib/did-plc/generated/core/types.gen.ts:17
+- type_alias:5099914286af01f9125c6a3086d0a4ac OmitNever@lib/did-plc/generated/core/types.gen.ts:108
+- type_alias:73d3e5f774b282eef2fec4e0529a39f4 JsonValue@lib/did-plc/generated/core/queryKeySerializer.gen.ts:6
+- type_alias:7735ceb25b97fac3d2d1b121e3f89176 AuthToken@lib/did-plc/generated/core/auth.gen.ts:3
+- type_alias:7b083dfe3c20e80a081ae3b7540d6395 QuerySerializer@lib/did-plc/generated/core/bodySerializer.gen.ts:5
+- type_alias:918b65cfb156b73540784120485ddc65 ServerSentEventsOptions@lib/did-plc/generated/core/serverSentEvents.gen.ts:5
+- type_alias:c40de77654e0d20536f33c98f3814deb ServerSentEventsResult@lib/did-plc/generated/core/serverSentEvents.gen.ts:74
+- type_alias:c6ba6174744a90575aff38757edd13d9 FieldsConfig@lib/did-plc/generated/core/params.gen.ts:43
+- type_alias:cfd18ecca404ce0fa829adfbfed5419a QuerySerializerOptions@lib/did-plc/generated/core/bodySerializer.gen.ts:15
+- type_alias:d4025b696fa82ef945e4ff5e7c98f3ca ObjectStyle@lib/did-plc/generated/core/pathSerializer.gen.ts:21
+- type_alias:dde729a96cfbf612b97b92a3c998d820 BodySerializer@lib/did-plc/generated/core/bodySerializer.gen.ts:7
+- type_alias:e1b2742b89886caca1ea4b29d97eab5c ArrayStyle@lib/did-plc/generated/core/pathSerializer.gen.ts:18
+- type_alias:ed6588bd0f4545931394c9a19ffb3d2f Field@lib/did-plc/generated/core/params.gen.ts:5

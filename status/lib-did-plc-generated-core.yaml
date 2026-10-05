@@ -1,20 +1,13 @@
 observedCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
 syncedCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
 syncedFingerprint: 7db345857e8b6877445aac371f185792cee3e360aba0ddeb898383ca876d5a35
-realizedSpecHash: 5d4109681174b03a68b5c6b52a0ccad194ad747bbac86926ca01ddc20a96e2a5
+realizedSpecHash: d64581ef3786ae08755f35fb8488a09c454d0c7a878eed4efc4ecf72283b6df3
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: ArraySeparatorStyle, ArrayStyle, Auth, AuthToken, BodySerializer,
-    Client, ClientMeta, Config, Field, Fields, FieldsConfig, HttpMethod, JsonValue,
-    ObjectStyle, OmitNever, PathSerializer, QuerySerializer, QuerySerializerOptions,
-    SerializerOptions, ServerSentEventsOptions, ServerSentEventsOptions.onRequest,
-    ServerSentEventsOptions.onSseError, ServerSentEventsOptions.onSseEvent, ServerSentEventsOptions.sseSleepFn,
-    ServerSentEventsResult, StreamEvent, bodySerializer, buildClientParams, createSseClient,
-    defaultPathSerializer, getAuthToken, getUrl, getValidRequestBody, queryKeyJsonReplacer,
-    separatorArrayExplode, separatorArrayNoExplode, separatorObjectExplode, serializeArrayParam,
-    serializeObjectParam, serializePrimitiveParam, serializeQueryKeyValue, stringifyToJsonValue'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual

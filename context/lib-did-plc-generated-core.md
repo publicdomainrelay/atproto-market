@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so the generated did:plc client has one dependency-free fetch core that every generated operation can share: credential resolution, body encoding, argument flattening, path/query serialization, SSE streaming and URL assembly all live here rather than being re-emitted per operation. It is a boundary context, not a product one — the modules are machine-emitted by @hey-api/openapi-ts from the did:plc OpenAPI description, so they are consumed as a stable interface by the hand-written client one directory up and changed only by regenerating them. Its exports are the fetch/wire vocabulary (Auth, Config, Client, HttpMethod, the serializer hooks) and the small pure functions that implement the OpenAPI serialization rules the spec demands.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 
