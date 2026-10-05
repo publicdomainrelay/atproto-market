@@ -1,0 +1,12 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SystemContext
+metadata:
+  name: lib-abc-trust-graph
+  namespace: default
+spec:
+  repository: atproto-market
+  upstream: self
+  dependsOn:
+  - sc.atproto-market
+codeRefIndex:
+- file:lib/abc/trust-graph/mod.ts mod.ts@lib/abc/trust-graph/mod.ts

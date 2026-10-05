@@ -1,0 +1,14 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SystemContext
+metadata:
+  name: lib-common-compute-contract-gateway-common
+  namespace: default
+spec:
+  repository: atproto-market
+  upstream: self
+  dependsOn:
+  - sc.atproto-market
+codeRefIndex:
+- file:lib/common/compute-contract-gateway-common/mod.ts mod.ts@lib/common/compute-contract-gateway-common/mod.ts
+- file:lib/common/compute-contract-gateway-common/nsids.ts nsids.ts@lib/common/compute-contract-gateway-common/nsids.ts
+- file:lib/common/compute-contract-gateway-common/types.ts types.ts@lib/common/compute-contract-gateway-common/types.ts

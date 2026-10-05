@@ -1,0 +1,27 @@
+syncedFingerprint: 3ace54d94a28605fd535e1685d355c9b5b2f7456a18aee9347b6e44991572b24
+realizedSpecHash: 9ba02a35c145d7b8637b43d87398e56481bd81ae734a804c6cba642f5320faaa
+conditions:
+- type: CodeSynced
+  status: "False"
+  reason: InterfacesMissing
+  message: 'undeclared: ComputeContractGateway'
+- type: Drifted
+  status: "False"
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
+- type: SpecValid
+  status: "True"
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed:
+  files:
+  - lib/abc/compute-contract-gateway/mod.ts
+  treeFiles:
+  - lib/abc/compute-contract-gateway/deno.json
+  interfaces:
+  - name: ComputeContractGateway
+    kind: interface
+    file: lib/abc/compute-contract-gateway/mod.ts
+    line: 8
+    codegraphId: interface:686284d942a70c576d3538a0ee80e825
+  fingerprint: 3ace54d94a28605fd535e1685d355c9b5b2f7456a18aee9347b6e44991572b24

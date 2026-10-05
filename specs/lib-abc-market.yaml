@@ -1,0 +1,19 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SystemContext
+metadata:
+  name: lib-abc-market
+  namespace: default
+spec:
+  repository: atproto-market
+  upstream: self
+  dependsOn:
+  - sc.atproto-market
+  - sc.lib-atproto-attestation-port
+  - sc.lib-common-market-common
+codeRefIndex:
+- file:lib/abc/market/attestation.ts attestation.ts@lib/abc/market/attestation.ts
+- file:lib/abc/market/callbacks.ts callbacks.ts@lib/abc/market/callbacks.ts
+- file:lib/abc/market/contract.ts contract.ts@lib/abc/market/contract.ts
+- file:lib/abc/market/mod.ts mod.ts@lib/abc/market/mod.ts
+- file:lib/abc/market/resolve.ts resolve.ts@lib/abc/market/resolve.ts
+- file:lib/abc/market/settlement.ts settlement.ts@lib/abc/market/settlement.ts

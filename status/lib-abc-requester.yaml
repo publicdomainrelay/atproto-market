@@ -1,0 +1,124 @@
+syncedFingerprint: c0fea03ad716578ee865037043a5b0cf1df4e63f0c62c531d3c4b600f681aeff
+realizedSpecHash: a3f2ee44fe90b9009e4a7270526d2cfa753c18593a1c789aa731b0ac227779c3
+conditions:
+- type: CodeSynced
+  status: "False"
+  reason: InterfacesMissing
+  message: 'undeclared: BidCollector, BidCollector.add, BidCollector.addAll, BidCollector.all,
+    BidCollector.constructor, BidCollector.drain, BidCollector.isFree, BidCollectorOptions,
+    CollectedBid, ConsoleBuffer, ContractFlowOptions, ContractFlowResult, PDSOptions,
+    RequesterPDS, SshSessionProvider, bidCost, bidPayloadNsid, selectWinner'
+- type: Drifted
+  status: "False"
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
+- type: SpecValid
+  status: "True"
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed:
+  files:
+  - lib/abc/requester/mod.ts
+  treeFiles:
+  - lib/abc/requester/deno.json
+  interfaces:
+  - name: CollectedBid
+    kind: interface
+    file: lib/abc/requester/mod.ts
+    line: 8
+    codegraphId: interface:f25a32e8c06ef59f558fa95805408414
+  - name: ContractFlowOptions
+    kind: interface
+    file: lib/abc/requester/mod.ts
+    line: 15
+    codegraphId: interface:7fb903e1181ae51a3d69c0a40484e610
+  - name: PDSOptions
+    kind: interface
+    file: lib/abc/requester/mod.ts
+    line: 127
+    codegraphId: interface:494d188099d646e00135e8028183de2b
+  - name: RequesterPDS
+    kind: interface
+    file: lib/abc/requester/mod.ts
+    line: 138
+    codegraphId: interface:6e1c7583bbdd18e7a9136c0da721214c
+  - name: SshSessionProvider
+    kind: interface
+    file: lib/abc/requester/mod.ts
+    line: 192
+    codegraphId: interface:780ccb6e208a6173bf860193cc9dc0b2
+  - name: ContractFlowResult
+    kind: interface
+    file: lib/abc/requester/mod.ts
+    line: 198
+    codegraphId: interface:e7d2504efcd0625ee0843e6ca37af80e
+  - name: ConsoleBuffer
+    kind: interface
+    file: lib/abc/requester/mod.ts
+    line: 219
+    codegraphId: interface:91c57701082294b94623335812685327
+  - name: bidPayloadNsid
+    kind: function
+    signature: '(bid: CollectedBid): string'
+    file: lib/abc/requester/mod.ts
+    line: 224
+    codegraphId: function:3d3875fa8240403acfc320be5e313f3a
+  - name: bidCost
+    kind: function
+    signature: '(bid: CollectedBid): number'
+    file: lib/abc/requester/mod.ts
+    line: 231
+    codegraphId: function:66b7603e9bf193b0f4990c9418718750
+  - name: selectWinner
+    kind: function
+    signature: '(bids: CollectedBid[]): CollectedBid | undefined'
+    file: lib/abc/requester/mod.ts
+    line: 236
+    codegraphId: function:3c8d8d8546ff4701fb29d8fbe9795d8c
+  - name: BidCollectorOptions
+    kind: interface
+    file: lib/abc/requester/mod.ts
+    line: 241
+    codegraphId: interface:330c2d6e1bc25d27c1db597ccfc31a6e
+  - name: BidCollector
+    kind: class
+    file: lib/abc/requester/mod.ts
+    line: 259
+    codegraphId: class:16d39bb38a118fc0fb3fe14223562247
+  - name: BidCollector.constructor
+    kind: method
+    signature: '(readonly opts: BidCollectorOptions)'
+    file: lib/abc/requester/mod.ts
+    line: 267
+    codegraphId: method:cce3fb92bff243280237741351ec0705
+  - name: BidCollector.isFree
+    kind: method
+    signature: '(bid: CollectedBid): boolean'
+    file: lib/abc/requester/mod.ts
+    line: 273
+    codegraphId: method:f0e93b3ced1b767ab92656b6071e05ea
+  - name: BidCollector.add
+    kind: method
+    signature: '(bid: CollectedBid): void'
+    file: lib/abc/requester/mod.ts
+    line: 277
+    codegraphId: method:234812e0614aaa8d9ef21f3bf4032910
+  - name: BidCollector.addAll
+    kind: method
+    signature: '(bids: CollectedBid[]): void'
+    file: lib/abc/requester/mod.ts
+    line: 296
+    codegraphId: method:8beccf740102cdc12505e185d8271765
+  - name: BidCollector.all
+    kind: method
+    signature: '(): CollectedBid[]'
+    file: lib/abc/requester/mod.ts
+    line: 300
+    codegraphId: method:a375d27196d03a11f471e5c9e2bc799a
+  - name: BidCollector.drain
+    kind: method
+    signature: '(): Promise<void>'
+    file: lib/abc/requester/mod.ts
+    line: 305
+    codegraphId: method:8471dcc6f8e0b25bd63a74706b5003cd
+  fingerprint: c0fea03ad716578ee865037043a5b0cf1df4e63f0c62c531d3c4b600f681aeff

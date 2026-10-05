@@ -1,0 +1,125 @@
+syncedFingerprint: 8c74a6d83646ccfa9bc3bc627fd09ee186e058a5fd9b6b7b12956afed0be615a
+realizedSpecHash: 49b0be137706b272149d1c5107c3610e9aafd5599b1c154592a6988204105469
+conditions:
+- type: CodeSynced
+  status: "False"
+  reason: InterfacesMissing
+  message: 'undeclared: installFetchInterceptor'
+- type: Drifted
+  status: "False"
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
+- type: SpecValid
+  status: "True"
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed:
+  files:
+  - compute-contract-full-flow/run_full_flow.ts
+  - hono-plc/mod.ts
+  - test/badge_blue_keys_binding_test.ts
+  - test/bid_collector_test.ts
+  - test/bidder_container_integration_test.ts
+  - test/bidder_cross_platform_integration_test.ts
+  - test/bidder_policy_only_me_integration_test.ts
+  - test/bidder_prod_integration_test.ts
+  - test/bidder_ssh_relay_test.ts
+  - test/cloud_init_k3s_test.ts
+  - test/cloud_init_snapshot_test.ts
+  - test/defect1_gateway_did_test.ts
+  - test/defect4_qr_session_test.ts
+  - test/fetch-interceptor.ts
+  - test/firehose_watcher_test.ts
+  - test/fixtures/cloud-init/fedproxy-ssh.yaml
+  - test/fixtures/cloud-init/fedproxy-web-wootty.yaml
+  - test/fixtures/cloud-init/k3s.yaml
+  - test/fixtures/cloud-init/tunnel-k3s.yaml
+  - test/fixtures/cloud-init/tunnel-secrets.yaml
+  - test/fixtures/cloud-init/tunnel.yaml
+  - test/gateway_caller_rbac_integration_test.ts
+  - test/gateway_readme_smoke_test.ts
+  - test/gateway_request_vm_integration_test.ts
+  - test/gateway_ssh_integration_test.ts
+  - test/gateway_worker_integration_test.ts
+  - test/oauth_session_transfer_test.ts
+  - test/offering_refresh_test.ts
+  - test/registry_discovery_test.ts
+  - test/secrets_capability_test.ts
+  treeFiles:
+  - .gitignore
+  - LEXICONS.md
+  - compute-contract-full-flow/SUMMARY.md
+  - compute-contract-full-flow/atproto-records.json
+  - compute-contract-full-flow/full-flow.log
+  - deno.json
+  - deno.lock
+  - hono-plc/cli-args-env.json
+  - hono-plc/config.json
+  - lexicons/com/atproto/repo/strongRef.json
+  - lexicons/com/fedproxy/rbac.json
+  - lexicons/com/fedproxy/sshPublicKey.json
+  - lexicons/com/fedproxy/temp/xrpc/getRegistrationNonce.json
+  - lexicons/com/fedproxy/temp/xrpc/registration.json
+  - lexicons/com/fedproxy/temp/xrpc/subscribe.json
+  - lexicons/com/publicdomainrelay/temp/agent/class.json
+  - lexicons/com/publicdomainrelay/temp/agent/skill.json
+  - lexicons/com/publicdomainrelay/temp/auth/allowlist/rbacDid.json
+  - lexicons/com/publicdomainrelay/temp/badgeBlueKeys.json
+  - lexicons/com/publicdomainrelay/temp/compute/config/wif/simple.json
+  - lexicons/com/publicdomainrelay/temp/compute/events/vm/delete.json
+  - lexicons/com/publicdomainrelay/temp/compute/events/vm/onNetwork.json
+  - lexicons/com/publicdomainrelay/temp/compute/events/vm/started.json
+  - lexicons/com/publicdomainrelay/temp/compute/vm.json
+  - lexicons/com/publicdomainrelay/temp/gateway/deleteCompute.json
+  - lexicons/com/publicdomainrelay/temp/gateway/requestComputeVM.json
+  - lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerEphemeral.json
+  - lexicons/com/publicdomainrelay/temp/gateway/requestComputeWorkerPersistent.json
+  - lexicons/com/publicdomainrelay/temp/gateway/subscribeComputeEvents.json
+  - lexicons/com/publicdomainrelay/temp/market/accept.json
+  - lexicons/com/publicdomainrelay/temp/market/accepts/free.json
+  - lexicons/com/publicdomainrelay/temp/market/accepts/x402.json
+  - lexicons/com/publicdomainrelay/temp/market/badgeBlueKey.json
+  - lexicons/com/publicdomainrelay/temp/market/bid.json
+  - lexicons/com/publicdomainrelay/temp/market/bidderAssociation.json
+  - lexicons/com/publicdomainrelay/temp/market/bidderDiscovery.json
+  - lexicons/com/publicdomainrelay/temp/market/bidderRegistration.json
+  - lexicons/com/publicdomainrelay/temp/market/bids/free.json
+  - lexicons/com/publicdomainrelay/temp/market/bids/x402.json
+  - lexicons/com/publicdomainrelay/temp/market/event.json
+  - lexicons/com/publicdomainrelay/temp/market/listBidders.json
+  - lexicons/com/publicdomainrelay/temp/market/offering.json
+  - lexicons/com/publicdomainrelay/temp/market/policies/builtin.json
+  - lexicons/com/publicdomainrelay/temp/market/policies/denoWorker.json
+  - lexicons/com/publicdomainrelay/temp/market/policies/service.json
+  - lexicons/com/publicdomainrelay/temp/market/receipt.json
+  - lexicons/com/publicdomainrelay/temp/market/receipts/free.json
+  - lexicons/com/publicdomainrelay/temp/market/receipts/x402.json
+  - lexicons/com/publicdomainrelay/temp/market/registerBidder.json
+  - lexicons/com/publicdomainrelay/temp/market/relays.json
+  - lexicons/com/publicdomainrelay/temp/market/rfp.json
+  - lexicons/com/publicdomainrelay/temp/market/submitAccept.json
+  - lexicons/com/publicdomainrelay/temp/market/submitBid.json
+  - lexicons/com/publicdomainrelay/temp/market/submitEvent.json
+  - lexicons/com/publicdomainrelay/temp/market/submitRfp.json
+  - lexicons/com/publicdomainrelay/temp/requester/associateConfirm.json
+  - lexicons/com/publicdomainrelay/temp/tangled/spindle/trigger.json
+  - lexicons/network/attested/proof.json
+  - lexicons/network/attested/signature.json
+  - lexicons/network/attested/verify.json
+  interfaces:
+  - name: installFetchInterceptor
+    kind: function
+    signature: |-
+      (opts: {
+        realFetch: typeof globalThis.fetch;
+        plcDirectoryUrl: string;
+        dispPort: number;
+        /** Self-signed CA PEM. When set, *.localhost URLs keep HTTPS (no downgrade)
+         * and are fetched with an HttpClient that trusts this CA. PLC redirects
+         * are unaffected (local PLC serves plain HTTP). */
+        caCertPem?: string;
+      }): () => void
+    file: test/fetch-interceptor.ts
+    line: 7
+    codegraphId: function:c6f81957f952317eb0e87d2454b5add3
+  fingerprint: 8c74a6d83646ccfa9bc3bc627fd09ee186e058a5fd9b6b7b12956afed0be615a

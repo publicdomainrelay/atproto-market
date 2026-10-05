@@ -1,0 +1,14 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SystemContext
+metadata:
+  name: hono-compute-contract-gateway
+  namespace: default
+spec:
+  repository: atproto-market
+  upstream: self
+  dependsOn:
+  - sc.atproto-market
+  - sc.lib-compute-contract-gateway-xrpc
+  - sc.lib-hono-factory-compute-contract-gateway-xrpc
+codeRefIndex:
+- file:hono-compute-contract-gateway/mod.ts mod.ts@hono-compute-contract-gateway/mod.ts
