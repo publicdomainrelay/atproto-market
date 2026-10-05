@@ -173,13 +173,22 @@ spec:
     - interface:0bccaee64ad56c10f80842c828570d30
   - id: r.iroh-ticket-report
     level: MUST
-    text: 'When ctx.irohReportUrl is set the iroh module also writes a report script,
+    text: When ctx.irohReportUrl is set the iroh module also writes a report script,
       a oneshot systemd unit for it and a path unit on /run/guest-iroh-ticket that
-      re-arms it, and the script POSTs the guest''s own ticket outbound to that URL
+      re-arms it, and the script POSTs the guest's own ticket outbound to that URL
       as the JSON body {"ticket":"<ticket>"} until curl succeeds; when irohReportUrl
       is absent neither the script nor the units are written. The guest announces
-      its own reachability: nothing host-side may read the ticket out of the guest,
-      and the report carries no key material, no provider path and no accept bundle.'
+      its own reachability -- nothing host-side may read the ticket out of the guest,
+      and the report carries no key material, no provider path and no accept bundle.
+      The report URL the caller bakes into the context must be one the guest can actually
+      reach. It names the host the guest already resolves for the rest of the run,
+      the same host its other https addresses use, which the container backend maps
+      to the host gateway, and it carries that listener's port explicitly, so the
+      script never dials the default 443. When the URL is https the guest must also
+      trust the requester's certificate, so the caller supplies the CA and the module
+      installs it before the reporter runs. The script fails fast and loudly when
+      the POST is refused, with a bounded number of attempts and then a non-zero exit,
+      instead of retrying for minutes.
     codeRefs:
     - file:lib/common/cloud-init-common/mod.ts
   - id: r.list-registered-ids
