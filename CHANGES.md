@@ -54,6 +54,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | --- | --- | --- | --- | --- | --- | --- |
 | atproto-market-s2c-dcae0d4f6037 | SpecToCode | Running |  | 0 | - | - |
 | atproto-market-s2c-e34ce8f9f34c | SpecToCode | Failed |  | 0 | - | - |
+| atproto-market-s2c-e34ce8f9f34c-a2 | SpecToCode | Pending |  | 0 | - | - |
 | lib-abc-requester-s2c-a24b0558524f | SpecToCode | Succeeded | 8b36a2bf | 0 | acceptance passed | 1 of 4 missing |
 | lib-compute-contract-gateway-xrpc-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Failed |  | 0 | - | - |
 | lib-did-key-ingress-proxy-s2c-2414ea013542 | SpecToCode | Running |  | 0 | - | - |

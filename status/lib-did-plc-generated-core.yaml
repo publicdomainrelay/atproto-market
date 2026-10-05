@@ -19,6 +19,10 @@ conditions:
   status: "False"
   reason: FingerprintEqual
   message: observed facts match the synced fingerprint
+- type: PolicyCompliant
+  status: "True"
+  reason: PolicyCompliant
+  message: no deny or warn violation names this context
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed
