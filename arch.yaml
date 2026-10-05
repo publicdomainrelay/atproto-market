@@ -420,8 +420,74 @@ system_contexts:
   upstream: self
   depends_on:
   - sc.atproto-market
+  requirements:
+  - id: r.bid-collector-dedupe
+    level: MUST
+  - id: r.bid-collector-drain
+    level: MUST
+  - id: r.bid-collector-early-winner
+    level: MUST
+  - id: r.bid-collector-early-winner-once
+    level: MUST
+  - id: r.bid-collector-options
+    level: MUST
+  - id: r.bid-cost
+    level: MUST
+  - id: r.bid-payload-nsid
+    level: MUST
+  - id: r.collected-bid-shape
+    level: MUST
+  - id: r.console-buffer
+    level: MUST
+  - id: r.contract-flow-defaults
+    level: SHOULD
+  - id: r.contract-flow-hold-mode
+    level: MUST
+  - id: r.contract-flow-options-surface
+    level: MUST
+  - id: r.contract-flow-result
+    level: MUST
+  - id: r.deno-json
+    level: SHOULD
+  - id: r.pds-options
+    level: MUST
+  - id: r.pure-interface-only
+    level: MUST
+  - id: r.requester-pds-association
+    level: MUST
+  - id: r.requester-pds-bidder-calls
+    level: MUST
+  - id: r.requester-pds-ingress-lifecycle
+    level: MUST
+  - id: r.requester-pds-optional-handles
+    level: MUST
+  - id: r.requester-pds-records
+    level: MUST
+  - id: r.select-winner-cheapest
+    level: MUST
+  - id: r.ssh-session-provider
+    level: MUST
   codeRefIndex:
+  - class:16d39bb38a118fc0fb3fe14223562247 BidCollector@lib/abc/requester/mod.ts:259
+  - file:lib/abc/requester/deno.json deno.json@lib/abc/requester/deno.json
   - file:lib/abc/requester/mod.ts mod.ts@lib/abc/requester/mod.ts
+  - function:3c8d8d8546ff4701fb29d8fbe9795d8c selectWinner@lib/abc/requester/mod.ts:236
+  - function:3d3875fa8240403acfc320be5e313f3a bidPayloadNsid@lib/abc/requester/mod.ts:224
+  - function:66b7603e9bf193b0f4990c9418718750 bidCost@lib/abc/requester/mod.ts:231
+  - interface:330c2d6e1bc25d27c1db597ccfc31a6e BidCollectorOptions@lib/abc/requester/mod.ts:241
+  - interface:494d188099d646e00135e8028183de2b PDSOptions@lib/abc/requester/mod.ts:127
+  - interface:6e1c7583bbdd18e7a9136c0da721214c RequesterPDS@lib/abc/requester/mod.ts:138
+  - interface:780ccb6e208a6173bf860193cc9dc0b2 SshSessionProvider@lib/abc/requester/mod.ts:192
+  - interface:7fb903e1181ae51a3d69c0a40484e610 ContractFlowOptions@lib/abc/requester/mod.ts:15
+  - interface:91c57701082294b94623335812685327 ConsoleBuffer@lib/abc/requester/mod.ts:219
+  - interface:e7d2504efcd0625ee0843e6ca37af80e ContractFlowResult@lib/abc/requester/mod.ts:198
+  - interface:f25a32e8c06ef59f558fa95805408414 CollectedBid@lib/abc/requester/mod.ts:8
+  - method:234812e0614aaa8d9ef21f3bf4032910 BidCollector.add@lib/abc/requester/mod.ts:277
+  - method:8471dcc6f8e0b25bd63a74706b5003cd BidCollector.drain@lib/abc/requester/mod.ts:305
+  - method:8beccf740102cdc12505e185d8271765 BidCollector.addAll@lib/abc/requester/mod.ts:296
+  - method:a375d27196d03a11f471e5c9e2bc799a BidCollector.all@lib/abc/requester/mod.ts:300
+  - method:cce3fb92bff243280237741351ec0705 BidCollector.constructor@lib/abc/requester/mod.ts:267
+  - method:f0e93b3ced1b767ab92656b6071e05ea BidCollector.isFree@lib/abc/requester/mod.ts:273
 - id: sc.lib-abc-trust-graph
   name: lib-abc-trust-graph
   spec: specs/lib-abc-trust-graph.yaml

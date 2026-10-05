@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so the atproto-market requester's ABC layer — the bid collection and winner-selection rules, the requester PDS surface, the contract flow's option and result bags, and the SSH session provider contract — can be specified once and depended on by the implementation, the CLI and the hermetic test fakes without any of them re-deriving the shapes. It is a pure declaration file: no I/O, no runtime globals, only the types and pure helpers that the transport layers below it must satisfy.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

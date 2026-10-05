@@ -1,13 +1,11 @@
 syncedFingerprint: c0fea03ad716578ee865037043a5b0cf1df4e63f0c62c531d3c4b600f681aeff
-realizedSpecHash: a3f2ee44fe90b9009e4a7270526d2cfa753c18593a1c789aa731b0ac227779c3
+realizedSpecHash: 77ac62b316bfad6313c959abcb5533886259cb6e48c07313cf60c6e981a81374
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: BidCollector, BidCollector.add, BidCollector.addAll, BidCollector.all,
-    BidCollector.constructor, BidCollector.drain, BidCollector.isFree, BidCollectorOptions,
-    CollectedBid, ConsoleBuffer, ContractFlowOptions, ContractFlowResult, PDSOptions,
-    RequesterPDS, SshSessionProvider, bidCost, bidPayloadNsid, selectWinner'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual
