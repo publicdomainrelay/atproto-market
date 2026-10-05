@@ -151,3 +151,4 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 | lib-abc-market-bidder-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-abc-market-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-abc-requester-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
+| lib-abc-trust-graph-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
