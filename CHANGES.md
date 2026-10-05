@@ -201,8 +201,9 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 
 | change | direction | phase | commit | verify | acceptance | coverage |
 | --- | --- | --- | --- | --- | --- | --- |
-| atproto-market-s2c-2e99f31da43f | SpecToCode | Running |  | 0 | - | - |
-| atproto-market-s2c-3da5509b141c | SpecToCode | Failed |  | 0 | - | - |
+| atproto-market-s2c-2e99f31da43f | SpecToCode | Failed |  | 0 | acceptance failed | - |
+| atproto-market-s2c-2e99f31da43f-a2 | SpecToCode | Pending |  | 0 | - | - |
+| atproto-market-s2c-3da5509b141c | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | atproto-market-s2c-dcae0d4f6037 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | atproto-market-s2c-dcae0d4f6037-a2 | SpecToCode | Failed |  | 0 | - | - |
 | atproto-market-s2c-dcae0d4f6037-a3 | SpecToCode | Failed |  | 0 | acceptance failed | - |
@@ -233,8 +234,9 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | hono-plc-c2s-8b36a2bfe627-8b36a2bfe627 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-abc-requester-s2c-a24b0558524f | SpecToCode | Succeeded | 8b36a2bf | 0 | acceptance passed | 1 of 4 missing |
 | lib-common-cloud-init-common-s2c-902a26c3bbfc | SpecToCode | Succeeded | 924781f0 | 0 | acceptance passed | 1 implemented |
-| lib-common-cloud-init-common-s2c-94ec68de1a7b | SpecToCode | Running |  | 0 | - | - |
-| lib-common-cloud-init-common-s2c-aa1b61659dac | SpecToCode | Failed |  | 0 | - | - |
+| lib-common-cloud-init-common-s2c-94ec68de1a7b | SpecToCode | Failed |  | 0 | acceptance failed | - |
+| lib-common-cloud-init-common-s2c-aa1b61659dac | SpecToCode | Failed |  | 0 | acceptance failed | - |
+| lib-common-cloud-init-common-s2c-aa1b61659dac-a2 | SpecToCode | Pending |  | 0 | - | - |
 | lib-compute-contract-gateway-xrpc-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Failed |  | 0 | - | - |
 | lib-did-key-ingress-proxy-s2c-2414ea013542 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | lib-did-key-ingress-proxy-s2c-2414ea013542-a10 | SpecToCode | Failed |  | 0 | acceptance failed | - |
@@ -266,7 +268,8 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-requester-xrpc-s2c-0c605032289f-a7 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | lib-requester-xrpc-s2c-0c605032289f-a8 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | lib-requester-xrpc-s2c-0c605032289f-a9 | SpecToCode | Failed |  | 0 | - | - |
-| lib-requester-xrpc-s2c-6e6207d757fb | SpecToCode | Running |  | 0 | - | - |
+| lib-requester-xrpc-s2c-6e6207d757fb | SpecToCode | Failed |  | 0 | acceptance failed | - |
+| lib-requester-xrpc-s2c-6e6207d757fb-a2 | SpecToCode | Pending |  | 0 | - | - |
 | test-c2s-8b36a2bfe627-8b36a2bfe627 | CodeToSpec | Succeeded |  | 0 | - | - |
 | test-fixtures-cloud-init-c2s-8b36a2bfe627-8b36a2bfe627 | CodeToSpec | Failed |  | 0 | - | - |
 | test-fixtures-cloud-init-c2s-8b36a2bfe627-8b36a2bfe627-a2 | CodeToSpec | Failed |  | 0 | - | - |

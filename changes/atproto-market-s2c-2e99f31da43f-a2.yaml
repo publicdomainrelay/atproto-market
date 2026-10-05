@@ -1,0 +1,39 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: atproto-market-s2c-2e99f31da43f-a2
+  namespace: default
+spec:
+  systemContext: atproto-market
+  direction: SpecToCode
+  fromSpecHash: f67957227b5c419b9f74c4edbfea0ea54caf8a643990c7bec310952d90535644
+  toSpecHash: 2e99f31da43f763d8a068a51e310dcb3173ea94169cacf35c7d268f5017b3376
+  delta:
+    counts:
+      added: 5
+      changed: 1
+    requirements:
+    - +r.iroh-acceptance-flow
+    - +r.iroh-acceptance-guest-reachable-report
+    - +r.iroh-acceptance-plc-key-resolution
+    - +r.iroh-cloud-init-fixture
+    - +r.iroh-full-flow-harness
+status:
+  phase: Pending
+superseded:
+- name: atproto-market-s2c-2e99f31da43f
+  phase: Failed
+  message: "...46:45.520Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":0,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T21:46:45.520Z\",\"level\":\"info\",\"message\":\"ws_reconnect_scheduled\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"delayMs\":1000,\"attempt\":1}\n{\"ts\":\"2026-10-05T21:46:45.520Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":1005,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T21:46:45.520Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"requester\",\"code\":1005,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T21:46:45.520Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":1005,\"reason\":\"\"}\n\e[0m\e[38;5;245m-----
+    output end -----\e[0m\n[integration] contract completes over iroh: dumbpipe ProxyCommand
+    + guest marker ... \e[0m\e[31mFAILED\e[0m \e[0m\e[38;5;245m(29s)\e[0m\n\n\e[0m\e[1m\e[37m\e[41m
+    ERRORS \e[0m\n\n[integration] contract completes over iroh: dumbpipe ProxyCommand
+    + guest marker \e[0m\e[38;5;245m=> ./test/bidder_container_integration_test.ts:157:6\e[0m\n\e[0m\e[1m\e[31merror\e[0m:
+    AssertionError: ProxyCommand must be the dumbpipe connect command for the reported
+    ticket, got /tmp/dumbpipe-77d4bf0800688bb8/dumbpipe connect endpointadeqvbey5dstpoqjgw42qaqyh4x6w7izgzucyr3eswrcwv3mpcl6uayaenuhi5dqom5c6l3von3tcljrfzzgk3dbpexg4mbonfzg62bonruw42zof4aqayltuyk2xjqdaeakyeiaaov2may\n
+    \   throw new AssertionError(msg);\n\e[0m\e[31m          ^\e[0m\n    at \e[0m\e[1m\e[3massert\e[0m
+    (\e[0m\e[36mhttps://jsr.io/@std/assert/1.0.19/assert.ts\e[0m:\e[0m\e[33m22\e[0m:\e[0m\e[33m11\e[0m)\n
+    \   at \e[0m\e[2m\e[38;5;245mfile:///tmp/specd-worktree-214655058/atproto-market/\e[0m\e[0m\e[36mtest/bidder_container_integration_test.ts\e[0m:\e[0m\e[33m345\e[0m:\e[0m\e[33m5\e[0m\n\n\e[0m\e[1m\e[37m\e[41m
+    FAILURES \e[0m\n\n[integration] contract completes over iroh: dumbpipe ProxyCommand
+    + guest marker \e[0m\e[38;5;245m=> ./test/bidder_container_integration_test.ts:157:6\e[0m\n\n\e[0m\e[31mFAILED\e[0m
+    | 0 passed | 1 failed \e[0m\e[38;5;245m(29s)\e[0m\n\n\e[0m\e[1m\e[31merror\e[0m:
+    Test failed"

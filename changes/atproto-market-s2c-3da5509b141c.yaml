@@ -20,4 +20,75 @@ spec:
     - +r.iroh-full-flow-harness
 status:
   phase: Failed
-  message: 'admission: another change of atproto-market is already running'
+  branch: spec/lib-common-cloud-init-common/94ec68de
+  agentLog: |-
+    ...?: (target) => string; dumbpipePath?: string })`; one builder picks `dumbpipe connect <ticket>` for a dotless target, websocat for a dotted one
+      - default transport is now `iroh`; the flow bootstraps the selected transport's helper and passes `dumbpipePath` into the provider
+      - ticket-report route mounted on the requester's own serve under an unguessable per-contract token; `ctx.irohReportUrl` = `https://<relay ingress host>/iroh-ticket/<token>` (no invented host/port)
+      - one `resolveGuestAddress` handler feeds the ticket report, submitEvent and both firehose onNetwork paths; IPv4 literals skipped, tickets/FQDNs accepted; `vm_fqdn_discovered` / `vm_fqdn_timeout` kept
+      - `result.sshProxyCommand` recorded; guest stdout captured onto the result (`sshOutput`) and still echoed
+    - `test/bidder_container_integration_test.ts` — rewritten as the acceptance suite: dispatcher on `relay.localhost` plain + TLS (`generateLocalhostTlsCert` with `*.relay.localhost`), fetch interceptor on the TLS port with `caCertPem`, provider with `caCertPem`/`guestTlsPort`, contract awaited with no race, assertions on `receiptOk`, no-401, `sshReady`, `sshExitCode 0`, `dumbpipe connect <reported ticket>`, and the `SSH_OK_VIA_IROH` marker
+    - `compute-contract-full-flow/run_full_flow.ts` — selects `transport: "tunnel"` explicitly, calls `ensureWebsocat`, diagrams/progress describe the websocat topology
+    - `request-vm-ssh` — bootstraps dumbpipe for the iroh default (websocat when a websocket transport is named); flag description updated
+    - `lib/compute-contract-gateway-xrpc` and `test/bidder_{ssh_relay,prod,cross_platform}_integration_test.ts` — name `transport: "tunnel"` so their websocat/relay topologies survive the new default
+
+    `lib/common/cloud-init-common` needed no change: the iroh module, `iroh.yaml` fixture and snapshot/semantic/registry cases already match the refined `r.iroh-ticket-report` (report script + oneshot + path unit, no CA material of its own).
+
+    verify: exit 0, 268ms, 0 ok
+  message: "...46:45.520Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":0,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T21:46:45.520Z\",\"level\":\"info\",\"message\":\"ws_reconnect_scheduled\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"delayMs\":1000,\"attempt\":1}\n{\"ts\":\"2026-10-05T21:46:45.520Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":1005,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T21:46:45.520Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"requester\",\"code\":1005,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T21:46:45.520Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":1005,\"reason\":\"\"}\n\e[0m\e[38;5;245m-----
+    output end -----\e[0m\n[integration] contract completes over iroh: dumbpipe ProxyCommand
+    + guest marker ... \e[0m\e[31mFAILED\e[0m \e[0m\e[38;5;245m(29s)\e[0m\n\n\e[0m\e[1m\e[37m\e[41m
+    ERRORS \e[0m\n\n[integration] contract completes over iroh: dumbpipe ProxyCommand
+    + guest marker \e[0m\e[38;5;245m=> ./test/bidder_container_integration_test.ts:157:6\e[0m\n\e[0m\e[1m\e[31merror\e[0m:
+    AssertionError: ProxyCommand must be the dumbpipe connect command for the reported
+    ticket, got /tmp/dumbpipe-77d4bf0800688bb8/dumbpipe connect endpointadeqvbey5dstpoqjgw42qaqyh4x6w7izgzucyr3eswrcwv3mpcl6uayaenuhi5dqom5c6l3von3tcljrfzzgk3dbpexg4mbonfzg62bonruw42zof4aqayltuyk2xjqdaeakyeiaaov2may\n
+    \   throw new AssertionError(msg);\n\e[0m\e[31m          ^\e[0m\n    at \e[0m\e[1m\e[3massert\e[0m
+    (\e[0m\e[36mhttps://jsr.io/@std/assert/1.0.19/assert.ts\e[0m:\e[0m\e[33m22\e[0m:\e[0m\e[33m11\e[0m)\n
+    \   at \e[0m\e[2m\e[38;5;245mfile:///tmp/specd-worktree-214655058/atproto-market/\e[0m\e[0m\e[36mtest/bidder_container_integration_test.ts\e[0m:\e[0m\e[33m345\e[0m:\e[0m\e[33m5\e[0m\n\n\e[0m\e[1m\e[37m\e[41m
+    FAILURES \e[0m\n\n[integration] contract completes over iroh: dumbpipe ProxyCommand
+    + guest marker \e[0m\e[38;5;245m=> ./test/bidder_container_integration_test.ts:157:6\e[0m\n\n\e[0m\e[31mFAILED\e[0m
+    | 0 passed | 1 failed \e[0m\e[38;5;245m(29s)\e[0m\n\n\e[0m\e[1m\e[31merror\e[0m:
+    Test failed"
+  acceptance:
+  - name: acceptance
+    exitCode: 1
+    durationSeconds: 29.760753034
+    passed: false
+    outputTail: "...\"prefix\":\"it\",\"fqdn\":\"endpointadeqvbey5dstpoqjgw42qaqyh4x6w7izgzucyr3eswrcwv3mpcl6uayaenuhi5dqom5c6l3von3tcljrfzzgk3dbpexg4mbonfzg62bonruw42zof4aqayltuyk2xjqdaeakyeiaaov2may\",\"attempt\":1}\nusing
+      secret key ea4363cc1c73b6956d172400ea2d2877909dc5aa7da4e48c2355b18fd3ffce49\nSSH_OK_VIA_IROH\n{\"ts\":\"2026-10-05T21:46:45.518Z\",\"level\":\"info\",\"message\":\"vm_ssh_session_exit\",\"prefix\":\"it\",\"vmFqdn\":\"endpointadeqvbey5dstpoqjgw42qaqyh4x6w7izgzucyr3eswrcwv3mpcl6uayaenuhi5dqom5c6l3von3tcljrfzzgk3dbpexg4mbonfzg62bonruw42zof4aqayltuyk2xjqdaeakyeiaaov2may\",\"code\":0}\n{\"ts\":\"2026-10-05T21:46:45.518Z\",\"level\":\"info\",\"message\":\"vm_delete_skipped\",\"prefix\":\"it\",\"reason\":\"--keep-vm\"}\n{\"ts\":\"2026-10-05T21:46:45.518Z\",\"level\":\"info\",\"message\":\"contract_result\",\"prefix\":\"it\",\"sshReady\":true,\"sshExitCode\":0,\"sshProxyCommand\":\"/tmp/dumbpipe-77d4bf0800688bb8/dumbpipe
+      connect endpointadeqvbey5dstpoqjgw42qaqyh4x6w7izgzucyr3eswrcwv3mpcl6uayaenuhi5dqom5c6l3von3tcljrfzzgk3dbpexg4mbonfzg62bonruw42zof4aqayltuyk2xjqdaeakyeiaaov2may\",\"receiptOk\":true,\"sshOutput\":\"SSH_OK_VIA_IROH\\n\"}\n{\"ts\":\"2026-10-05T21:46:45.519Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shgyjafgm2ruejrhljmsfctegdc9nmxkdqqpctwlwpcw35\"}\n{\"ts\":\"2026-10-05T21:46:45.519Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shsf9tkohx9hphqplhhflp2efpdvqymp8m8stlqxnkzqwj\"}\n{\"ts\":\"2026-10-05T21:46:45.519Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shurxkmehhuwa7ptk6uxnqk1csjvqgszhvrhhacsitfzv7\"}\n{\"ts\":\"2026-10-05T21:46:45.520Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shmuj5b4ksgevqfdrk1k4tjgo2nnt9fy8eocz3onycwzx8\"}\n{\"ts\":\"2026-10-05T21:46:45.520Z\",\"level\":\"error\",\"message\":\"ws_error\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"error\":\"[object
+      ErrorEvent]\"}\n{\"ts\":\"2026-10-05T21:46:45.520Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":0,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T21:46:45.520Z\",\"level\":\"info\",\"message\":\"ws_reconnect_scheduled\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"delayMs\":1000,\"attempt\":1}\n{\"ts\":\"2026-10-05T21:46:45.520Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":1005,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T21:46:45.520Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"requester\",\"code\":1005,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T21:46:45.520Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":1005,\"reason\":\"\"}\n\e[0m\e[38;5;245m-----
+      output end -----\e[0m\n[integration] contract completes over iroh: dumbpipe
+      ProxyCommand + guest marker ... \e[0m\e[31mFAILED\e[0m \e[0m\e[38;5;245m(29s)\e[0m\n\n\e[0m\e[1m\e[37m\e[41m
+      ERRORS \e[0m\n\n[integration] contract completes over iroh: dumbpipe ProxyCommand
+      + guest marker \e[0m\e[38;5;245m=> ./test/bidder_container_integration_test.ts:157:6\e[0m\n\e[0m\e[1m\e[31merror\e[0m:
+      AssertionError: ProxyCommand must be the dumbpipe connect command for the reported
+      ticket, got /tmp/dumbpipe-77d4bf0800688bb8/dumbpipe connect endpointadeqvbey5dstpoqjgw42qaqyh4x6w7izgzucyr3eswrcwv3mpcl6uayaenuhi5dqom5c6l3von3tcljrfzzgk3dbpexg4mbonfzg62bonruw42zof4aqayltuyk2xjqdaeakyeiaaov2may\n
+      \   throw new AssertionError(msg);\n\e[0m\e[31m          ^\e[0m\n    at \e[0m\e[1m\e[3massert\e[0m
+      (\e[0m\e[36mhttps://jsr.io/@std/assert/1.0.19/assert.ts\e[0m:\e[0m\e[33m22\e[0m:\e[0m\e[33m11\e[0m)\n
+      \   at \e[0m\e[2m\e[38;5;245mfile:///tmp/specd-worktree-214655058/atproto-market/\e[0m\e[0m\e[36mtest/bidder_container_integration_test.ts\e[0m:\e[0m\e[33m345\e[0m:\e[0m\e[33m5\e[0m\n\n\e[0m\e[1m\e[37m\e[41m
+      FAILURES \e[0m\n\n[integration] contract completes over iroh: dumbpipe ProxyCommand
+      + guest marker \e[0m\e[38;5;245m=> ./test/bidder_container_integration_test.ts:157:6\e[0m\n\n\e[0m\e[31mFAILED\e[0m
+      | 0 passed | 1 failed \e[0m\e[38;5;245m(29s)\e[0m\n\n\e[0m\e[1m\e[31merror\e[0m:
+      Test failed"
+  policy:
+    waived:
+    - policy: guest-report-driven-emission
+      constraint: guest-report-driven-onnetwork
+      enforcementAction: deny
+      severity: error
+      msg: createVmBidderCallbacks emits the vm.onNetwork event from the provisioning
+        lifecycle, not from an inbound guest report
+      object: CodeGraph default/atproto-market
+      file: lib/market-bidder-compute/mod.ts
+      line: 304
+    - policy: rfp-guest-reports-network
+      constraint: rfp-guest-reports-network
+      enforcementAction: deny
+      severity: error
+      msg: 'the host emits the network report "COMPUTE_EVENTS_VM_ONNETWORK_NSID" from
+        the provisioning lifecycle, not from the http.handle of the guest''s report:
+        lib/market-bidder-compute/mod.ts:304'
+      object: ArchitectureModel default/atproto-market
+      file: lib/market-bidder-compute/mod.ts
+      line: 304
