@@ -1,7 +1,7 @@
 observedCommit: 924781f0e5da1820ab6215181ae5358ff5a8a149
-syncedCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
-syncedFingerprint: a63b3678e75f3bf379e55f7a84221bbd924d36ffeef50adaeeb6d7e13bff6f8b
-realizedSpecHash: 4244522a792bcaa817cef969918c9000890285d09b5e210856179d175d0b7b66
+syncedCommit: 924781f0e5da1820ab6215181ae5358ff5a8a149
+syncedFingerprint: 664d02fff5936125c7cbc8306148f0e72047d02bdfa55b26bd7d54d1e85c4050
+realizedSpecHash: 06d5ff34ac3ba03e35cf54f6164af55ed186481446c2a89bde22c7c9cf58b7da
 conditions:
 - type: CodeSynced
   status: "True"
@@ -9,9 +9,9 @@ conditions:
   message: every declared interface is observed, nothing undeclared is exported and
     every requirement code ref resolves
 - type: Drifted
-  status: "True"
-  reason: FingerprintChanged
-  message: observed facts changed since the spec was last synced
+  status: "False"
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: PolicyCompliant
   status: "True"
   reason: PolicyCompliant

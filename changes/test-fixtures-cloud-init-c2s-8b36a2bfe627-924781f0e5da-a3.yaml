@@ -13,8 +13,24 @@ spec:
       added: 1
       changed: 1
 status:
-  phase: Running
-  message: the agent is summarizing test-fixtures-cloud-init
+  phase: Succeeded
+  agentLog: 'This context is the set of cloud-init user-data fixtures under test/fixtures/cloud-init/
+    in atproto-market. Seven YAML documents — fedproxy-ssh.yaml, fedproxy-web-wootty.yaml,
+    iroh.yaml, k3s.yaml, tunnel.yaml, tunnel-k3s.yaml and tunnel-secrets.yaml — are
+    the static inputs for the cloud-init rendering tests, read through fixture(name)
+    helpers in test/cloud_init_k3s_test.ts and test/cloud_init_snapshot_test.ts, which
+    resolve test/fixtures/cloud-init/<name> relative to the test module. Because the
+    tests read them by name, the file names and their locations are a contract: each
+    file is simultaneously a sample UserDataModule input and a committed artifact.
+    The values the fixtures carry line up with the CloudInitContext fields exported
+    by lib/common/cloud-init-common/mod.ts — vmName, didPlc, relayHost and sshAuthorizedKey
+    for the fedproxy-ssh path; sshHandle, listenPort and woottyDistUrl for the fedproxy-web/wootty
+    terminal path; ingressProxyHost, audHost, targetPort, hostAliases and jsrUrl for
+    the tunnel path. k3s.yaml and tunnel-k3s.yaml pair the k3s UserDataModule with
+    those transports, and tunnel-secrets.yaml carries the secret-bearing variant.'
+  message: wrote 9 requirement(s) and 0 interface(s) for test-fixtures-cloud-init;
+    dropped 5 unresolved code ref(s); interface CloudInitContext is not in the observed
+    facts; dropped
 superseded:
 - name: test-fixtures-cloud-init-c2s-8b36a2bfe627-924781f0e5da-a2
   phase: Failed

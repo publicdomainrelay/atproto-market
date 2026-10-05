@@ -6,9 +6,99 @@ metadata:
 spec:
   repository: atproto-market
   upstream: self
+  intent: This context exists so the cloud-init rendering pipeline has committed,
+    reviewable inputs and so every transport shape the project supports stays pinned
+    as a fixture instead of being rebuilt ad hoc inside each test. One file names
+    one deployment shape — fedproxy over SSH, fedproxy-web with a wootty terminal,
+    an iroh transport, the k3s UserDataModule alone or combined with the tunnel transport,
+    and a secrets-bearing tunnel variant — and the test harness loads them by name,
+    so the fixture set doubles as the agreed list of supported shapes and as the diff-visible
+    record when a shape changes.
+  requirements:
+  - id: r.fedproxy-ssh-transport
+    level: MUST
+    text: 'fedproxy-ssh.yaml exercises the fedproxy SSH transport: it is the fixture
+      for the CloudInitContext fields vmName, didPlc, relayHost and sshAuthorizedKey,
+      which drive the fedproxy SERVICE name, the fedproxy HANDLE, the ATPRP_URL built
+      from the relay host, and the OpenSSH public key added to root''s authorized_keys.'
+    codeRefs:
+    - file:test/fixtures/cloud-init/fedproxy-ssh.yaml
+  - id: r.fedproxy-web-wootty-transport
+    level: MUST
+    text: 'fedproxy-web-wootty.yaml covers the fedproxy-web terminal shape, carrying
+      the CloudInitContext fields the terminal path needs: sshHandle as the short
+      did:plc identity fedproxy-client uses as its SSH username, listenPort as the
+      port the terminal/ingress service listens on with 8080 as the default when absent,
+      and woottyDistUrl as the origin serving the wootty-web tarball.'
+    codeRefs:
+    - file:test/fixtures/cloud-init/fedproxy-web-wootty.yaml
+  - id: r.fixture-directory-and-loading
+    level: MUST
+    text: 'Cloud-init fixtures live under test/fixtures/cloud-init/ and are loaded
+      by name: the fixture(name) helpers in the cloud-init tests read test/fixtures/cloud-init/<name>,
+      so a fixture''s file name and directory are the contract the tests depend on,
+      and renaming or moving one breaks the tests that read it.'
+    codeRefs:
+    - file:test/fixtures/cloud-init/tunnel.yaml
+  - id: r.fixtures-are-valid-user-data
+    level: MUST
+    text: Every file in the fixture set is a valid cloud-init user-data document that
+      the UserDataModule pipeline and the snapshot tests can consume directly, so
+      a fixture that fails to parse or render is a test failure and not a silently
+      skipped case.
+    codeRefs:
+    - file:test/fixtures/cloud-init/fedproxy-ssh.yaml
+    - file:test/fixtures/cloud-init/fedproxy-web-wootty.yaml
+    - file:test/fixtures/cloud-init/iroh.yaml
+    - file:test/fixtures/cloud-init/k3s.yaml
+    - file:test/fixtures/cloud-init/tunnel-k3s.yaml
+    - file:test/fixtures/cloud-init/tunnel-secrets.yaml
+    - file:test/fixtures/cloud-init/tunnel.yaml
+  - id: r.iroh-transport
+    level: SHOULD
+    text: iroh.yaml pins the iroh transport shape as its own fixture, so that transport
+      is represented in the fixture set alongside the fedproxy and tunnel shapes rather
+      than being exercised only through ad hoc test input.
+    codeRefs:
+    - file:test/fixtures/cloud-init/iroh.yaml
+  - id: r.k3s-standalone
+    level: MUST
+    text: k3s.yaml is the standalone fixture for the k3s UserDataModule, giving the
+      module a renderable input of its own that is independent of whichever transport
+      fixture is combined with it.
+    codeRefs:
+    - file:test/fixtures/cloud-init/k3s.yaml
+  - id: r.tunnel-k3s-combination
+    level: MUST
+    text: tunnel-k3s.yaml is the combined fixture that renders the k3s UserDataModule
+      together with the tunnel transport, so the k3s shape is covered both alone (k3s.yaml)
+      and alongside the ingress proxy configuration.
+    codeRefs:
+    - file:test/fixtures/cloud-init/k3s.yaml
+    - file:test/fixtures/cloud-init/tunnel-k3s.yaml
+  - id: r.tunnel-secrets-variant
+    level: MUST
+    text: tunnel-secrets.yaml is kept as a separate fixture from tunnel.yaml so the
+      secret-bearing variant of the tunnel shape can be rendered and snapshotted without
+      putting key material into the fixture used for the non-secret case.
+    codeRefs:
+    - file:test/fixtures/cloud-init/tunnel-secrets.yaml
+    - file:test/fixtures/cloud-init/tunnel.yaml
+  - id: r.tunnel-transport
+    level: MUST
+    text: 'tunnel.yaml covers the outbound tunnel transport, carrying the CloudInitContext
+      fields that path needs: ingressProxyHost as the host:port the guest dials outbound
+      to reach the relay dispatcher, audHost as the relay hostname used for the service-auth
+      audience, targetPort as the local TCP port the subscriber bridges tunnel bytes
+      to with 22 as the default, hostAliases as extra /etc/hosts entries letting the
+      guest dial the dispatcher by name, and jsrUrl as the optional local hono-jsr
+      registry that sets Deno''s JSR_URL.'
+    codeRefs:
+    - file:test/fixtures/cloud-init/tunnel.yaml
 codeRefIndex:
 - file:test/fixtures/cloud-init/fedproxy-ssh.yaml fedproxy-ssh.yaml@test/fixtures/cloud-init/fedproxy-ssh.yaml
 - file:test/fixtures/cloud-init/fedproxy-web-wootty.yaml fedproxy-web-wootty.yaml@test/fixtures/cloud-init/fedproxy-web-wootty.yaml
+- file:test/fixtures/cloud-init/iroh.yaml iroh.yaml@test/fixtures/cloud-init/iroh.yaml
 - file:test/fixtures/cloud-init/k3s.yaml k3s.yaml@test/fixtures/cloud-init/k3s.yaml
 - file:test/fixtures/cloud-init/tunnel-k3s.yaml tunnel-k3s.yaml@test/fixtures/cloud-init/tunnel-k3s.yaml
 - file:test/fixtures/cloud-init/tunnel-secrets.yaml tunnel-secrets.yaml@test/fixtures/cloud-init/tunnel-secrets.yaml

@@ -2975,6 +2975,25 @@ system_contexts:
   name: test-fixtures-cloud-init
   spec: specs/test-fixtures-cloud-init.yaml
   upstream: self
+  requirements:
+  - id: r.fedproxy-ssh-transport
+    level: MUST
+  - id: r.fedproxy-web-wootty-transport
+    level: MUST
+  - id: r.fixture-directory-and-loading
+    level: MUST
+  - id: r.fixtures-are-valid-user-data
+    level: MUST
+  - id: r.iroh-transport
+    level: SHOULD
+  - id: r.k3s-standalone
+    level: MUST
+  - id: r.tunnel-k3s-combination
+    level: MUST
+  - id: r.tunnel-secrets-variant
+    level: MUST
+  - id: r.tunnel-transport
+    level: MUST
   codeRefIndex:
   - file:test/fixtures/cloud-init/fedproxy-ssh.yaml fedproxy-ssh.yaml@test/fixtures/cloud-init/fedproxy-ssh.yaml
   - file:test/fixtures/cloud-init/fedproxy-web-wootty.yaml fedproxy-web-wootty.yaml@test/fixtures/cloud-init/fedproxy-web-wootty.yaml

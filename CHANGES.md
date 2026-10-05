@@ -178,6 +178,19 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 - added `r.teardown-restores-fetch` (MUST): "installFetchInterceptor must return a disposable closure that reassigns globalThis.fetch back to the original realFetch and closes the Deno HttpClient it created, so a test that installs the interceptor leaves no patched global or leaked connection pool behind for later tests in the same process."
 - added `r.unit-suite-coverage` (SHOULD): "The suite must retain focused tests for each non-intercepted subsystem: badge blue key binding, bid collection, the bidder policy restricted to only-me, the production bidder, bidder SSH relay, cloud-init snapshot rendering, firehose watching, offering refresh, registry discovery, and secrets capability."
 
+### test-fixtures-cloud-init
+
+- intent: "" -> "This context exists so the cloud-init rendering pipeline has committed, reviewable inputs and so every transport shape the project supports stays pinned as a fixture instead of being rebuilt ad hoc inside each test. One file names one deployment shape — fedproxy over SSH, fedproxy-web with a wootty terminal, an iroh transport, the k3s UserDataModule alone or combined with the tunnel transport, and a secrets-bearing tunnel variant — and the test harness loads them by name, so the fixture set doubles as the agreed list of supported shapes and as the diff-visible record when a shape changes."
+- added `r.fedproxy-ssh-transport` (MUST): "fedproxy-ssh.yaml exercises the fedproxy SSH transport: it is the fixture for the CloudInitContext fields vmName, didPlc, relayHost and sshAuthorizedKey, which drive the fedproxy SERVICE name, the fedproxy HANDLE, the ATPRP_URL built from the relay host, and the OpenSSH public key added to root's authorized_keys."
+- added `r.fedproxy-web-wootty-transport` (MUST): "fedproxy-web-wootty.yaml covers the fedproxy-web terminal shape, carrying the CloudInitContext fields the terminal path needs: sshHandle as the short did:plc identity fedproxy-client uses as its SSH username, listenPort as the port the terminal/ingress service listens on with 8080 as the default when absent, and woottyDistUrl as the origin serving the wootty-web tarball."
+- added `r.fixture-directory-and-loading` (MUST): "Cloud-init fixtures live under test/fixtures/cloud-init/ and are loaded by name: the fixture(name) helpers in the cloud-init tests read test/fixtures/cloud-init/<name>, so a fixture's file name and directory are the contract the tests depend on, and renaming or moving one breaks the tests that read it."
+- added `r.fixtures-are-valid-user-data` (MUST): "Every file in the fixture set is a valid cloud-init user-data document that the UserDataModule pipeline and the snapshot tests can consume directly, so a fixture that fails to parse or render is a test failure and not a silently skipped case."
+- added `r.iroh-transport` (SHOULD): "iroh.yaml pins the iroh transport shape as its own fixture, so that transport is represented in the fixture set alongside the fedproxy and tunnel shapes rather than being exercised only through ad hoc test input."
+- added `r.k3s-standalone` (MUST): "k3s.yaml is the standalone fixture for the k3s UserDataModule, giving the module a renderable input of its own that is independent of whichever transport fixture is combined with it."
+- added `r.tunnel-k3s-combination` (MUST): "tunnel-k3s.yaml is the combined fixture that renders the k3s UserDataModule together with the tunnel transport, so the k3s shape is covered both alone (k3s.yaml) and alongside the ingress proxy configuration."
+- added `r.tunnel-secrets-variant` (MUST): "tunnel-secrets.yaml is kept as a separate fixture from tunnel.yaml so the secret-bearing variant of the tunnel shape can be rendered and snapshotted without putting key material into the fixture used for the non-secret case."
+- added `r.tunnel-transport` (MUST): "tunnel.yaml covers the outbound tunnel transport, carrying the CloudInitContext fields that path needs: ingressProxyHost as the host:port the guest dials outbound to reach the relay dispatcher, audHost as the relay hostname used for the service-auth audience, targetPort as the local TCP port the subscriber bridges tunnel bytes to with 22 as the default, hostAliases as extra /etc/hosts entries letting the guest dial the dispatcher by name, and jsrUrl as the optional local hono-jsr registry that sets Deno's JSR_URL."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance | coverage |
@@ -222,7 +235,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | test-fixtures-cloud-init-c2s-8b36a2bfe627-8b36a2bfe627-a2 | CodeToSpec | Failed |  | 0 | - | - |
 | test-fixtures-cloud-init-c2s-8b36a2bfe627-924781f0e5da | CodeToSpec | Failed |  | 0 | - | - |
 | test-fixtures-cloud-init-c2s-8b36a2bfe627-924781f0e5da-a2 | CodeToSpec | Failed |  | 0 | - | - |
-| test-fixtures-cloud-init-c2s-8b36a2bfe627-924781f0e5da-a3 | CodeToSpec | Running |  | 0 | - | - |
+| test-fixtures-cloud-init-c2s-8b36a2bfe627-924781f0e5da-a3 | CodeToSpec | Succeeded |  | 0 | - | - |
 
 ## Unimplemented requirements
 

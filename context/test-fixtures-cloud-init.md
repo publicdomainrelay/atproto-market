@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so the cloud-init rendering pipeline has committed, reviewable inputs and so every transport shape the project supports stays pinned as a fixture instead of being rebuilt ad hoc inside each test. One file names one deployment shape — fedproxy over SSH, fedproxy-web with a wootty terminal, an iroh transport, the k3s UserDataModule alone or combined with the tunnel transport, and a secrets-bearing tunnel variant — and the test harness loads them by name, so the fixture set doubles as the agreed list of supported shapes and as the diff-visible record when a shape changes.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 
