@@ -17,8 +17,35 @@ spec:
     - +r.iroh-acceptance-plc-key-resolution
     - +r.iroh-cloud-init-fixture
 status:
-  phase: Running
-  message: the agent is realizing atproto-market in a batch of 4 led by atproto-market
+  phase: Failed
+  branch: spec/atproto-market/dcae0d4f
+  agentLog: |-
+    ...vider` takes `{ proxyCommandFn?: (target) => string; dumbpipePath? }`; `defaultProxyCommand` picks `dumbpipe connect <ticket>` for dotless targets and websocat for dotted ones; default transport is `iroh` with helper bootstrap; per-contract unguessable ticket-report route mounted on the requester's serve and fed to cloud-init as `ctx.irohReportUrl`; non-IPv4 onNetwork addresses accepted as tickets; `sessionOutput` capture; `sshProxyCommand` recorded.
+    - `lib/abc/requester/mod.ts` — optional `ContractFlowResult.sessionOutput`.
+    - `test/bidder_container_integration_test.ts` — rewritten as the iroh acceptance suite: no skip path, no `Promise.race`/deadline, awaits the whole contract, tears infra down only after it settles, asserts did:plc→did:key through `IdResolver` + the market's did:key fast path, subscriber registration, `receiptOk`, `sshReady`, exit 0, `dumbpipe connect <reported ticket>` ProxyCommand (never websocat/address), and `SSH_OK_VIA_IROH` in captured output. No ssh invocation and no container exec — every SSH byte goes through the transport ProxyCommand.
+    - `test/fixtures/cloud-init/iroh.yaml` + `test/cloud_init_snapshot_test.ts` — new byte-exact golden fixture and its snapshot + semantic tests; six existing fixtures untouched.
+    - `compute-contract-full-flow/run_full_flow.ts` — selects the tunnel transport explicitly (websocat topology the header documents). `request-vm-ssh/*` and the relay/oauth suites bootstrap per selected transport. `lib/did-key-ingress-proxy/mod.ts` documents it as control-plane only.
+
+    **Gate fix**: the previous attempt had ssh reaching the guest directly at `test/bidder_container_integration_test.ts:251`; the suite now contains no ssh invocation at all — the guest is reached only through `dumbpipe connect <ticket>` built by the flow, and the marker is captured from the session the flow itself runs.
+
+    `bash -lc "deno check && deno test -A test/cloud_init_snapshot_test.ts"` → exit 0, 19 passed.
+
+    verify: exit 0, 253ms, 0 ok
+  message: "...t\":\"localhost:45709\"}\n{\"ts\":\"2026-10-05T18:55:58.942Z\",\"level\":\"info\",\"message\":\"xrpc-relay
+    registered\",\"prefix\":\"iroh-acceptance\",\"subdomain\":\"did-key-zq3shw86r71pshd7vvmkgrw1zyvjktmnsorgtjdygs7ldx2lo\",\"ingressRef\":\"did:web:did-key-zq3shw86r71pshd7vvmkgrw1zyvjktmnsorgtjdygs7ldx2lo.localhost\"}\n{\"ts\":\"2026-10-05T18:55:58.944Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shw86r71pshd7vvmkgrw1zyvjktmnsorgtjdygs7ldx2lo\"}\n{\"ts\":\"2026-10-05T18:55:58.944Z\",\"level\":\"error\",\"message\":\"ws_error\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"error\":\"[object
+    ErrorEvent]\"}\n{\"ts\":\"2026-10-05T18:55:58.944Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":0,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T18:55:58.944Z\",\"level\":\"info\",\"message\":\"ws_reconnect_scheduled\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"delayMs\":1000,\"attempt\":1}\n\e[0m\e[38;5;245m-----
+    output end -----\e[0m\n[acceptance] iroh: RFP -> bid -> accept -> cloud-init ->
+    ssh by ticket ... \e[0m\e[31mFAILED\e[0m \e[0m\e[38;5;245m(282ms)\e[0m\n\n\e[0m\e[1m\e[37m\e[41m
+    ERRORS \e[0m\n\n[acceptance] iroh: RFP -> bid -> accept -> cloud-init -> ssh by
+    ticket \e[0m\e[38;5;245m=> ./test/bidder_container_integration_test.ts:104:6\e[0m\n\e[0m\e[1m\e[31merror\e[0m:
+    AssertionError: the did:key fast path resolves the key without a PLC round trip\n
+    \   throw new AssertionError(msg);\n\e[0m\e[31m          ^\e[0m\n    at \e[0m\e[1m\e[3massert\e[0m
+    (\e[0m\e[36mhttps://jsr.io/@std/assert/1.0.19/assert.ts\e[0m:\e[0m\e[33m22\e[0m:\e[0m\e[33m11\e[0m)\n
+    \   at \e[0m\e[2m\e[38;5;245mfile:///tmp/specd-worktree-3255465641/atproto-market/\e[0m\e[0m\e[36mtest/bidder_container_integration_test.ts\e[0m:\e[0m\e[33m213\e[0m:\e[0m\e[33m5\e[0m\n\n\e[0m\e[1m\e[37m\e[41m
+    FAILURES \e[0m\n\n[acceptance] iroh: RFP -> bid -> accept -> cloud-init -> ssh
+    by ticket \e[0m\e[38;5;245m=> ./test/bidder_container_integration_test.ts:104:6\e[0m\n\n\e[0m\e[31mFAILED\e[0m
+    | 0 passed | 1 failed \e[0m\e[38;5;245m(291ms)\e[0m\n\n\e[0m\e[1m\e[31merror\e[0m:
+    Test failed"
   attempt: 3
   retryReason: 'The realize gate denied this change and that denial is the requirement:
     PolicyDenied: rfp-relay-only-guest-ssh: ssh from test reaches the guest directly:
@@ -30,6 +57,75 @@ status:
     ssh, Deno.connect or curl a guest address directly from a test. Keep the rest
     of the previous attempt, including the ./dumbpipe extraction fix.'
   retryBy: john
+  acceptance:
+  - name: acceptance
+    exitCode: 1
+    durationSeconds: 2.961702914
+    passed: false
+    outputTail: "\e[0m\e[32mCheck\e[0m test/bidder_container_integration_test.ts\n\e[0m\e[38;5;245mrunning
+      1 test from ./test/bidder_container_integration_test.ts\e[0m\n[acceptance] iroh:
+      RFP -> bid -> accept -> cloud-init -> ssh by ticket ...\n\e[0m\e[38;5;245m-------
+      output -------\e[0m\n{\"ts\":\"2026-10-05T18:55:58.924Z\",\"level\":\"info\",\"message\":\"localPDS
+      plc registering\",\"prefix\":\"iroh-acceptance\",\"did\":\"did:plc:rkcesxg26gb57bl6xl3s7rrh\"}\n{\"ts\":\"2026-10-05T18:55:58.929Z\",\"level\":\"info\",\"message\":\"localPDS
+      plc registered\",\"prefix\":\"iroh-acceptance\",\"did\":\"did:plc:rkcesxg26gb57bl6xl3s7rrh\"}\n{\"ts\":\"2026-10-05T18:55:58.930Z\",\"level\":\"info\",\"message\":\"xrpc-relay
+      connecting\",\"prefix\":\"iroh-acceptance\",\"ingressProxyHost\":\"localhost:45709\"}\n{\"ts\":\"2026-10-05T18:55:58.932Z\",\"level\":\"info\",\"message\":\"request\",\"prefix\":\"relay\",\"component\":\"relay\",\"method\":\"POST\",\"path\":\"/xrpc/com.fedproxy.temp.xrpc.getRegistrationNonce\"}\n{\"ts\":\"2026-10-05T18:55:58.936Z\",\"level\":\"info\",\"message\":\"nonce_issued\",\"prefix\":\"relay\",\"component\":\"relay\",\"key\":\"did:key:zQ3shW86r71psHD7VvMkGrW1zyvJKtmNsorgTJdYGs7LDX2Lo\"}\n{\"ts\":\"2026-10-05T18:55:58.938Z\",\"level\":\"info\",\"message\":\"request\",\"prefix\":\"relay\",\"component\":\"relay\",\"method\":\"GET\",\"path\":\"/xrpc/com.fedproxy.temp.xrpc.subscribe\"}\n{\"ts\":\"2026-10-05T18:55:58.942Z\",\"level\":\"info\",\"message\":\"subscriber_connected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shw86r71pshd7vvmkgrw1zyvjktmnsorgtjdygs7ldx2lo\",\"key\":\"did:key:zQ3shW86r71psHD7VvMkGrW1zyvJKtmNsorgTJdYGs7LDX2Lo\"}\n{\"ts\":\"2026-10-05T18:55:58.942Z\",\"level\":\"info\",\"message\":\"ws_open\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"host\":\"localhost:45709\"}\n{\"ts\":\"2026-10-05T18:55:58.942Z\",\"level\":\"info\",\"message\":\"xrpc-relay
+      registered\",\"prefix\":\"iroh-acceptance\",\"subdomain\":\"did-key-zq3shw86r71pshd7vvmkgrw1zyvjktmnsorgtjdygs7ldx2lo\",\"ingressRef\":\"did:web:did-key-zq3shw86r71pshd7vvmkgrw1zyvjktmnsorgtjdygs7ldx2lo.localhost\"}\n{\"ts\":\"2026-10-05T18:55:58.944Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shw86r71pshd7vvmkgrw1zyvjktmnsorgtjdygs7ldx2lo\"}\n{\"ts\":\"2026-10-05T18:55:58.944Z\",\"level\":\"error\",\"message\":\"ws_error\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"error\":\"[object
+      ErrorEvent]\"}\n{\"ts\":\"2026-10-05T18:55:58.944Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":0,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T18:55:58.944Z\",\"level\":\"info\",\"message\":\"ws_reconnect_scheduled\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"delayMs\":1000,\"attempt\":1}\n\e[0m\e[38;5;245m-----
+      output end -----\e[0m\n[acceptance] iroh: RFP -> bid -> accept -> cloud-init
+      -> ssh by ticket ... \e[0m\e[31mFAILED\e[0m \e[0m\e[38;5;245m(282ms)\e[0m\n\n\e[0m\e[1m\e[37m\e[41m
+      ERRORS \e[0m\n\n[acceptance] iroh: RFP -> bid -> accept -> cloud-init -> ssh
+      by ticket \e[0m\e[38;5;245m=> ./test/bidder_container_integration_test.ts:104:6\e[0m\n\e[0m\e[1m\e[31merror\e[0m:
+      AssertionError: the did:key fast path resolves the key without a PLC round trip\n
+      \   throw new AssertionError(msg);\n\e[0m\e[31m          ^\e[0m\n    at \e[0m\e[1m\e[3massert\e[0m
+      (\e[0m\e[36mhttps://jsr.io/@std/assert/1.0.19/assert.ts\e[0m:\e[0m\e[33m22\e[0m:\e[0m\e[33m11\e[0m)\n
+      \   at \e[0m\e[2m\e[38;5;245mfile:///tmp/specd-worktree-3255465641/atproto-market/\e[0m\e[0m\e[36mtest/bidder_container_integration_test.ts\e[0m:\e[0m\e[33m213\e[0m:\e[0m\e[33m5\e[0m\n\n\e[0m\e[1m\e[37m\e[41m
+      FAILURES \e[0m\n\n[acceptance] iroh: RFP -> bid -> accept -> cloud-init -> ssh
+      by ticket \e[0m\e[38;5;245m=> ./test/bidder_container_integration_test.ts:104:6\e[0m\n\n\e[0m\e[31mFAILED\e[0m
+      | 0 passed | 1 failed \e[0m\e[38;5;245m(291ms)\e[0m\n\n\e[0m\e[1m\e[31merror\e[0m:
+      Test failed"
+  policy:
+    waived:
+    - policy: guest-report-driven-emission
+      constraint: guest-report-driven-onnetwork
+      enforcementAction: deny
+      severity: error
+      msg: createVmBidderCallbacks emits the vm.onNetwork event from the provisioning
+        lifecycle, not from an inbound guest report
+      object: CodeGraph default/atproto-market
+      file: lib/market-bidder-compute/mod.ts
+      line: 304
+    - policy: rfp-guest-reports-network
+      constraint: rfp-guest-reports-network
+      enforcementAction: deny
+      severity: error
+      msg: 'the host emits the network report "COMPUTE_EVENTS_VM_ONNETWORK_NSID" from
+        the provisioning lifecycle, not from the http.handle of the guest''s report:
+        lib/market-bidder-compute/mod.ts:304'
+      object: ArchitectureModel default/atproto-market
+      file: lib/market-bidder-compute/mod.ts
+      line: 304
+  progress:
+    turns: 1
+    tools:
+    - tool: Edit
+      count: 8
+    - tool: Read
+      count: 17
+    - tool: Write
+      count: 1
+    files:
+    - compute-contract-full-flow/run_full_flow.ts
+    - lib/abc/requester/mod.ts
+    - lib/common/cloud-init-common/mod.ts
+    - lib/did-key-ingress-proxy/mod.ts
+    - lib/requester-xrpc/mod.ts
+    - test/bidder_container_integration_test.ts
+    - test/bidder_ssh_relay_test.ts
+    - test/cloud_init_k3s_test.ts
+    - test/cloud_init_snapshot_test.ts
+    notes: 2
+    first: "2026-10-05T18:47:29Z"
+    last: "2026-10-05T18:55:32Z"
 superseded:
 - name: atproto-market-s2c-dcae0d4f6037-a2
   phase: Failed
