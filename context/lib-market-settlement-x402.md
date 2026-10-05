@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists to specify the x402 settlement package shared between the market client and server: one module that both mints and verifies on-chain payment receipts against atproto records, and one that drives a payment from the bidder side. It is defined here so the Hono factory that mounts the receipt endpoint, and the bidder flow that settles a bid, can depend on a single contract for path parsing, record validation, remote-proof binding, egress safety and the HTTP status codes carried by X402PaymentError.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

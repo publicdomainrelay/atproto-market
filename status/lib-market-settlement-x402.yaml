@@ -1,11 +1,11 @@
 syncedFingerprint: 3dfea414cf72ae476d8b1a12059db92550e1cecdff85df709b21948550da4fbb
-realizedSpecHash: 0a3589af98d483b8912297c36eafe7c85106dade1685f9595fb5f881716e625a
+realizedSpecHash: 1bb3643b82e8665d86afdd8ca8db1bf2baad5f6de32547f9f9eb9ad7ab9b77eb
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: SettleX402Options, X402PaymentError, X402PaymentError.constructor,
-    mintReceiptForAccepts, parseReceiptPath, settleX402Payment, verifyX402Payment'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual

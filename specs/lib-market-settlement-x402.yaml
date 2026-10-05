@@ -12,7 +12,154 @@ spec:
   - sc.lib-common-market-common
   - sc.lib-common-market-lexicons
   - sc.lib-market-atproto
+  intent: 'This context exists to specify the x402 settlement package shared between
+    the market client and server: one module that both mints and verifies on-chain
+    payment receipts against atproto records, and one that drives a payment from the
+    bidder side. It is defined here so the Hono factory that mounts the receipt endpoint,
+    and the bidder flow that settles a bid, can depend on a single contract for path
+    parsing, record validation, remote-proof binding, egress safety and the HTTP status
+    codes carried by X402PaymentError.'
+  requirements:
+  - id: r.mint-receipt-validates-accepts-and-writes-proof
+    level: MUST
+    text: mintReceiptForAccepts must resolve acceptsUri at acceptsCid through the
+      supplied RecordResolver, reject with X402PaymentError status 400 when the resolved
+      value carries a $type other than the accepts.x402 NSID, and otherwise write
+      a signed receipts.x402 remote-proof record whose accept field is a strongRef
+      to that accepts record and whose proof binds the accepts record content and
+      the DID authority of acceptsUri, returning the new record's StrongRef.
+    codeRefs:
+    - class:d9cae8acb5befdb69053a678528cf3a0
+    - file:lib/market-settlement-x402/server.ts
+    - function:72d054e2b58c2f3913d7a9482387f0b2
+  - id: r.package-carries-deno-manifest
+    level: MAY
+    text: The package may carry a deno.json manifest at its root so it can be published
+      and imported under its own package name by both halves and by the Hono factory
+      that mounts the receipt endpoint.
+    codeRefs:
+    - file:lib/market-settlement-x402/deno.json
+  - id: r.package-entrypoint-reexports-both-halves
+    level: MUST
+    text: mod.ts must star-re-export the client and server modules together so the
+      package's single export surface exposes settleX402Payment and SettleX402Options
+      from client.ts alongside parseReceiptPath, mintReceiptForAccepts, verifyX402Payment
+      and X402PaymentError from server.ts.
+    codeRefs:
+    - file:lib/market-settlement-x402/client.ts
+    - file:lib/market-settlement-x402/mod.ts
+    - file:lib/market-settlement-x402/server.ts
+  - id: r.parse-receipt-path-splits-uri-and-cid
+    level: MUST
+    text: parseReceiptPath must strip leading slashes from the request path, drop
+      a caller-supplied prefix when the remainder starts with it, and split what is
+      left at the last slash into acceptsUri (everything before it) and acceptsCid
+      (everything after it); when that last slash is at index 0 or absent it must
+      throw an X402PaymentError with status 400 and the message "missing cid".
+    codeRefs:
+    - class:d9cae8acb5befdb69053a678528cf3a0
+    - file:lib/market-settlement-x402/server.ts
+    - function:bf43ae046d865cd951a7121f188a1ba0
+  - id: r.payment-error-carries-http-status
+    level: MUST
+    text: X402PaymentError must extend Error, take the HTTP status as its first constructor
+      argument and store it as a public readonly field on the instance so a caller
+      can map a rejection to a response code, and set its name to "X402PaymentError"
+      so it stays distinguishable from a plain Error.
+    codeRefs:
+    - class:d9cae8acb5befdb69053a678528cf3a0
+    - file:lib/market-settlement-x402/server.ts
+    - method:164471847987d5ac0028bee41736e5ab
+  - id: r.settle-options-surface
+    level: MUST
+    text: SettleX402Options must require agent, signer, bid, bidPayload and url, and
+      must accept optional egress, fetch, timeoutMs and log overrides so a caller
+      can inject an egress policy, a fetch implementation, a timeout and a logger;
+      settleX402Payment defaults the logger to a no-op, the fetch to the global fetch,
+      and the timeout to 30000 ms when an override is absent.
+    codeRefs:
+    - file:lib/market-settlement-x402/client.ts
+    - function:400c91a8c6a70894daf46da876572ee6
+    - interface:79bc0568c0c3d466282e33574ce3067e
+  - id: r.settle-payment-enforces-safe-egress
+    level: MUST
+    text: settleX402Payment must check the target url against the caller-supplied
+      egress options before it signs the accepts record or issues any fetch, so an
+      unsafe destination is rejected before a record is written or a network call
+      is made.
+    codeRefs:
+    - file:lib/market-settlement-x402/client.ts
+    - function:400c91a8c6a70894daf46da876572ee6
+  - id: r.settle-payment-signs-accepts-and-returns-receipt-ref
+    level: MUST
+    text: settleX402Payment must create a signed accepts.x402 record holding the bid,
+      the bidPayload and a createdAt timestamp, build the receipt URL by stripping
+      trailing slashes from the configured url and appending the accepts uri and cid
+      as two path segments, GET that URL with an abort signal bounded by timeoutMs,
+      and return the uri and cid from the JSON body as a StrongRef; a non-ok response
+      and a body missing uri or cid must each raise a plain Error carrying the status
+      and body text.
+    codeRefs:
+    - file:lib/market-settlement-x402/client.ts
+    - function:400c91a8c6a70894daf46da876572ee6
+    - interface:79bc0568c0c3d466282e33574ce3067e
+  - id: r.verify-payment-checks-type-author-and-binding
+    level: MUST
+    text: verifyX402Payment must throw X402PaymentError with status 402 when the payment
+      reference is undefined, when the receipt's type (its $type, falling back to
+      the NSID of the payment uri) is not the receipts.x402 NSID, or when the DID
+      authority of the payment uri differs from bidderDid; when the receipt carries
+      an accept uri and cid it must additionally resolve that accepts.x402 record
+      and run remote-proof verification against it, throwing status 402 when the proof
+      does not bind, and on success return the resolved receipt.
+    codeRefs:
+    - class:d9cae8acb5befdb69053a678528cf3a0
+    - file:lib/market-settlement-x402/server.ts
+    - function:b47d0322129cbcac24381eeb837e0eb5
+  interfaces:
+  - name: SettleX402Options
+    kind: interface
+    signature: 'interface SettleX402Options { agent: Agent; signer: RecordSigner;
+      bid: StrongRef; bidPayload: StrongRef; url: string; egress?: EgressOptions;
+      fetch?: typeof fetch; timeoutMs?: number; log?: Logger }'
+    file: lib/market-settlement-x402/client.ts
+  - name: X402PaymentError
+    kind: class
+    signature: class X402PaymentError extends Error
+    file: lib/market-settlement-x402/server.ts
+  - name: X402PaymentError.constructor
+    kind: method
+    signature: 'X402PaymentError.constructor(public readonly status: number, message:
+      string)'
+    file: lib/market-settlement-x402/server.ts
+  - name: mintReceiptForAccepts
+    kind: function
+    signature: 'mintReceiptForAccepts(opts: { agent: Agent; resolve: RecordResolver;
+      acceptsUri: string; acceptsCid: string; signer: RecordSigner }): Promise<StrongRef>'
+    file: lib/market-settlement-x402/server.ts
+  - name: parseReceiptPath
+    kind: function
+    signature: 'parseReceiptPath(path: string, prefix = ""): { acceptsUri: string;
+      acceptsCid: string }'
+    file: lib/market-settlement-x402/server.ts
+  - name: settleX402Payment
+    kind: function
+    signature: 'settleX402Payment(opts: SettleX402Options): Promise<StrongRef>'
+    file: lib/market-settlement-x402/client.ts
+  - name: verifyX402Payment
+    kind: function
+    signature: 'verifyX402Payment(opts: { payment: StrongRef | undefined; resolve:
+      RecordResolver; bidderDid: string }): Promise<Resolved<ReceiptsX402>>'
+    file: lib/market-settlement-x402/server.ts
 codeRefIndex:
+- class:d9cae8acb5befdb69053a678528cf3a0 X402PaymentError@lib/market-settlement-x402/server.ts:23
 - file:lib/market-settlement-x402/client.ts client.ts@lib/market-settlement-x402/client.ts
+- file:lib/market-settlement-x402/deno.json deno.json@lib/market-settlement-x402/deno.json
 - file:lib/market-settlement-x402/mod.ts mod.ts@lib/market-settlement-x402/mod.ts
 - file:lib/market-settlement-x402/server.ts server.ts@lib/market-settlement-x402/server.ts
+- function:400c91a8c6a70894daf46da876572ee6 settleX402Payment@lib/market-settlement-x402/client.ts:25
+- function:72d054e2b58c2f3913d7a9482387f0b2 mintReceiptForAccepts@lib/market-settlement-x402/server.ts:38
+- function:b47d0322129cbcac24381eeb837e0eb5 verifyX402Payment@lib/market-settlement-x402/server.ts:66
+- function:bf43ae046d865cd951a7121f188a1ba0 parseReceiptPath@lib/market-settlement-x402/server.ts:30
+- interface:79bc0568c0c3d466282e33574ce3067e SettleX402Options@lib/market-settlement-x402/client.ts:13
+- method:164471847987d5ac0028bee41736e5ab X402PaymentError.constructor@lib/market-settlement-x402/server.ts:24
