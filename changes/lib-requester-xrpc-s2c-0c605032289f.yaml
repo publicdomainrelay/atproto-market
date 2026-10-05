@@ -1,0 +1,19 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-requester-xrpc-s2c-0c605032289f
+  namespace: default
+spec:
+  systemContext: lib-requester-xrpc
+  direction: SpecToCode
+  fromSpecHash: 3611abcafbcbd420fecb6cf4a6f008a2baae868bc12af924c04e35c75422f641
+  toSpecHash: 0c605032289f77268681864d9212fb3f7e614b5a94c43c24543f55b2f8619fac
+  delta:
+    counts:
+      added: 1
+      changed: 1
+    interfaces:
+    - +ensureDumbpipe
+    - ~createSshSessionProvider
+status:
+  phase: Pending

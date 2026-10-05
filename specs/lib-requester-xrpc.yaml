@@ -344,7 +344,8 @@ spec:
   - name: createSshSessionProvider
     kind: function
     signature: 'function createSshSessionProvider(logger?: StructuredLoggerInterface,
-      opts?: { proxyCommandFn?: (fqdn: string) => string }): SshSessionProvider'
+      opts?: { proxyCommandFn?: (target: string) => string; dumbpipePath?: string
+      }): SshSessionProvider'
     file: lib/requester-xrpc/mod.ts
   - name: discoverBiddersFromRelay
     kind: function
@@ -355,6 +356,10 @@ spec:
     kind: function
     signature: 'function discoverBiddersFromRelays(opts: { relayUrls: string[]; collection:
       string; log?: LoggerInterface; timeoutMs?: number }): Promise<string[]>'
+    file: lib/requester-xrpc/mod.ts
+  - name: ensureDumbpipe
+    kind: function
+    signature: 'function ensureDumbpipe(logger?: StructuredLoggerInterface): Promise<string>'
     file: lib/requester-xrpc/mod.ts
   - name: ensureWebsocat
     kind: function

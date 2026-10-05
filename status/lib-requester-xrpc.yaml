@@ -2,10 +2,9 @@ syncedFingerprint: 501674c6c22c41f9f64261c6fd696f06ae5a0061a96af985f205b26e8a3d8
 realizedSpecHash: 3611abcafbcbd420fecb6cf4a6f008a2baae868bc12af924c04e35c75422f641
 conditions:
 - type: CodeSynced
-  status: "True"
-  reason: InterfacesObserved
-  message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
+  status: "False"
+  reason: InterfacesMissing
+  message: 'missing: ensureDumbpipe'
 - type: Drifted
   status: "False"
   reason: FingerprintEqual
