@@ -17,8 +17,30 @@ spec:
     - +r.iroh-acceptance-plc-key-resolution
     - +r.iroh-cloud-init-fixture
 status:
-  phase: Running
-  message: the agent is realizing atproto-market in a batch of 5 led by atproto-market
+  phase: Failed
+  branch: spec/atproto-market/dcae0d4f
+  agentLog: |-
+    ...unsupported,downloading,download_failed,downloaded,path_updated}`; never throws.
+      - `createSshSessionProvider(logger?, { proxyCommandFn?: (target) => string; dumbpipePath?: string })` — default ProxyCommand is `dumbpipe connect <ticket>` for a dotless target (iroh ticket) and `websocat --binary wss://…` for a dotted hostname; non-interactive `runSession` captures stdout+stderr onto the provider.
+      - `runComputeContract` — transport defaults to `iroh`; mounts a per-contract unguessable ticket-report route on the requester serve and feeds `ctx.irohReportUrl` into cloud-init; accepts an onNetwork/ticket address that is neither IPv4 literal nor dotted hostname (ticket) while skipping the bidder-side IP; ensures `ensureDumbpipe`/`ensureWebsocat` per transport before polling; records `result.sshProxyCommand`, `sshReady`, `sshExitCode`, `sshOutput`.
+    - `lib/abc/requester/mod.ts` — `ContractFlowResult.sshOutput?: string`.
+    - `test/bidder_container_integration_test.ts` — acceptance suite rewritten: awaits the whole contract promise (no `Promise.race`, no deadline), teardown only after it settles, asserts no 401 + `receiptOk`, `sshReady`, exit 0, `sshProxyCommand` == `dumbpipe connect <ticket>` (no websocat, ticket shape), and `SSH_OK_VIA_IROH` in `sshOutput`. Fake PLC keeps deriving did:plc docs from genesis ops; no mock-internals assertions.
+    - `compute-contract-full-flow/run_full_flow.ts` — drops explicit provider so the iroh default bootstraps dumbpipe; header diagram/SSH section/log lines now describe the iroh ticket topology.
+    - `test/bidder_ssh_relay_test.ts`, `test/bidder_prod_integration_test.ts`, `test/bidder_cross_platform_integration_test.ts` — select `userData: { transport: "tunnel" }` explicitly to keep their websocat relay topology under the new default.
+
+    `lib/did-key-ingress-proxy/mod.ts` needed no code change — its control-plane surface (`localWsTarget`, tunnel, mounted routes) already matches the updated requirement.
+
+    verify: exit 0, 255ms, 0 ok
+  message: "...1m\e[37m\e[41m ERRORS \e[0m\n\n[integration] bidder (container mode)
+    wins bid and the guest is reached over iroh \e[0m\e[38;5;245m=> ./test/bidder_container_integration_test.ts:96:6\e[0m\n\e[0m\e[1m\e[31merror\e[0m:
+    AssertionError: guest must become reachable; result={\"event\":\"compute_request_complete\",\"vmUri\":\"at://did:plc:dhebqko52iwjzxlho2ide5tw/com.publicdomainrelay.temp.compute.vm/3mx5scca2es2c\",\"vmCid\":\"bafyreig2wx6ley4pw4wfx5ro5chagx25pjehyjgkgefb4gzbbzvnsmszxe\",\"rfpUri\":\"at://did:plc:dhebqko52iwjzxlho2ide5tw/com.publicdomainrelay.temp.market.rfp/3mx5scca4dc2c\",\"rfpCid\":\"bafyreig6cjownlzotqalki753pdnt6gp2ehyqe7cr656xyg36qufhlzz5q\",\"acceptUri\":\"at://did:plc:dhebqko52iwjzxlho2ide5tw/com.publicdomainrelay.temp.market.accept/3mx5scdf4vk2c\",\"acceptCid\":\"bafyreicanlp6jj6qkwysscltju3h653dj6argoxymixigswgcnpwjz4wda\",\"bidUri\":\"at://did:plc:fctabq55nw6rjg6dak74zpmu/com.publicdomainrelay.temp.market.bid/3mx5sccqwg22c\",\"bidCid\":\"bafyreieohjqivkviugmautefku76sabsbfjblknqemcbexto3eh53mwx2y\",\"winnerDid\":\"did:plc:fctabq55nw6rjg6dak74zpmu\",\"receiptUri\":\"at://did:plc:fctabq55nw6rjg6dak74zpmu/com.publicdomainrelay.temp.market.receipt/3mx5scdfdqc2c\",\"receiptCid\":\"bafyreicue7aaexgwug7wepxnptvoqsttr2kyztmybbsdpntzwh36czaju4\",\"submitEventRef\":\"https://did-key-zq3shvxmzsbh8nexdjvub3wgna2xjtnf3yodrmmgvoyusjpn8.localhost\",\"receiptOk\":true,\"bids\":1,\"sshReady\":false}\n
+    \   throw new AssertionError(msg);\n\e[0m\e[31m          ^\e[0m\n    at \e[0m\e[1m\e[3massert\e[0m
+    (\e[0m\e[36mhttps://jsr.io/@std/assert/1.0.19/assert.ts\e[0m:\e[0m\e[33m22\e[0m:\e[0m\e[33m11\e[0m)\n
+    \   at \e[0m\e[2m\e[38;5;245mfile:///tmp/specd-worktree-1497145867/atproto-market/\e[0m\e[0m\e[36mtest/bidder_container_integration_test.ts\e[0m:\e[0m\e[33m256\e[0m:\e[0m\e[33m5\e[0m\n\n\e[0m\e[1m\e[37m\e[41m
+    FAILURES \e[0m\n\n[integration] bidder (container mode) wins bid and the guest
+    is reached over iroh \e[0m\e[38;5;245m=> ./test/bidder_container_integration_test.ts:96:6\e[0m\n\n\e[0m\e[31mFAILED\e[0m
+    | 0 passed | 1 failed \e[0m\e[38;5;245m(5m1s)\e[0m\n\n\e[0m\e[1m\e[31merror\e[0m:
+    Test failed"
   attempt: 8
   retryReason: 'The guest''s report never lands, so the requester never receives the
     ticket and ssh never becomes ready: the container''s /usr/local/bin/report-iroh-ticket.sh
@@ -38,6 +60,73 @@ status:
     no longer hangs. Be economical: change only what this needs and do not run the
     acceptance suite yourself.'
   retryBy: john
+  acceptance:
+  - name: acceptance
+    exitCode: 1
+    durationSeconds: 304.700615981
+    passed: false
+    outputTail: "...y\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shd57d5ij48bax7pqkc2j9wxgngzvui9pt6q7rpcmohx18\"}\n{\"ts\":\"2026-10-05T20:57:49.345Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shmxtgqiuwfuif48mvdv76p6qez2tumjsfgkjefksbvax7\"}\n{\"ts\":\"2026-10-05T20:57:49.345Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shvxmzsbh8nexdjvub3wgna2xjtnf3yodrmmgvoyusjpn8\"}\n{\"ts\":\"2026-10-05T20:57:49.345Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shthbz9hyqcvddbqa8t3kflnfuxbc3ey7sjytjh2fdr2ua\"}\n{\"ts\":\"2026-10-05T20:57:49.345Z\",\"level\":\"error\",\"message\":\"ws_error\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"error\":\"[object
+      ErrorEvent]\"}\n{\"ts\":\"2026-10-05T20:57:49.345Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":0,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T20:57:49.345Z\",\"level\":\"info\",\"message\":\"ws_reconnect_scheduled\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"delayMs\":1000,\"attempt\":1}\n{\"ts\":\"2026-10-05T20:57:49.345Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"requester\",\"code\":1005,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T20:57:49.345Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":1005,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T20:57:49.345Z\",\"level\":\"error\",\"message\":\"ws_error\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"error\":\"[object
+      ErrorEvent]\"}\n{\"ts\":\"2026-10-05T20:57:49.345Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":0,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T20:57:49.345Z\",\"level\":\"info\",\"message\":\"ws_reconnect_scheduled\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"delayMs\":1000,\"attempt\":1}\n\e[0m\e[38;5;245m-----
+      output end -----\e[0m\n[integration] bidder (container mode) wins bid and the
+      guest is reached over iroh ... \e[0m\e[31mFAILED\e[0m \e[0m\e[38;5;245m(5m1s)\e[0m\n\n\e[0m\e[1m\e[37m\e[41m
+      ERRORS \e[0m\n\n[integration] bidder (container mode) wins bid and the guest
+      is reached over iroh \e[0m\e[38;5;245m=> ./test/bidder_container_integration_test.ts:96:6\e[0m\n\e[0m\e[1m\e[31merror\e[0m:
+      AssertionError: guest must become reachable; result={\"event\":\"compute_request_complete\",\"vmUri\":\"at://did:plc:dhebqko52iwjzxlho2ide5tw/com.publicdomainrelay.temp.compute.vm/3mx5scca2es2c\",\"vmCid\":\"bafyreig2wx6ley4pw4wfx5ro5chagx25pjehyjgkgefb4gzbbzvnsmszxe\",\"rfpUri\":\"at://did:plc:dhebqko52iwjzxlho2ide5tw/com.publicdomainrelay.temp.market.rfp/3mx5scca4dc2c\",\"rfpCid\":\"bafyreig6cjownlzotqalki753pdnt6gp2ehyqe7cr656xyg36qufhlzz5q\",\"acceptUri\":\"at://did:plc:dhebqko52iwjzxlho2ide5tw/com.publicdomainrelay.temp.market.accept/3mx5scdf4vk2c\",\"acceptCid\":\"bafyreicanlp6jj6qkwysscltju3h653dj6argoxymixigswgcnpwjz4wda\",\"bidUri\":\"at://did:plc:fctabq55nw6rjg6dak74zpmu/com.publicdomainrelay.temp.market.bid/3mx5sccqwg22c\",\"bidCid\":\"bafyreieohjqivkviugmautefku76sabsbfjblknqemcbexto3eh53mwx2y\",\"winnerDid\":\"did:plc:fctabq55nw6rjg6dak74zpmu\",\"receiptUri\":\"at://did:plc:fctabq55nw6rjg6dak74zpmu/com.publicdomainrelay.temp.market.receipt/3mx5scdfdqc2c\",\"receiptCid\":\"bafyreicue7aaexgwug7wepxnptvoqsttr2kyztmybbsdpntzwh36czaju4\",\"submitEventRef\":\"https://did-key-zq3shvxmzsbh8nexdjvub3wgna2xjtnf3yodrmmgvoyusjpn8.localhost\",\"receiptOk\":true,\"bids\":1,\"sshReady\":false}\n
+      \   throw new AssertionError(msg);\n\e[0m\e[31m          ^\e[0m\n    at \e[0m\e[1m\e[3massert\e[0m
+      (\e[0m\e[36mhttps://jsr.io/@std/assert/1.0.19/assert.ts\e[0m:\e[0m\e[33m22\e[0m:\e[0m\e[33m11\e[0m)\n
+      \   at \e[0m\e[2m\e[38;5;245mfile:///tmp/specd-worktree-1497145867/atproto-market/\e[0m\e[0m\e[36mtest/bidder_container_integration_test.ts\e[0m:\e[0m\e[33m256\e[0m:\e[0m\e[33m5\e[0m\n\n\e[0m\e[1m\e[37m\e[41m
+      FAILURES \e[0m\n\n[integration] bidder (container mode) wins bid and the guest
+      is reached over iroh \e[0m\e[38;5;245m=> ./test/bidder_container_integration_test.ts:96:6\e[0m\n\n\e[0m\e[31mFAILED\e[0m
+      | 0 passed | 1 failed \e[0m\e[38;5;245m(5m1s)\e[0m\n\n\e[0m\e[1m\e[31merror\e[0m:
+      Test failed"
+  policy:
+    waived:
+    - policy: guest-report-driven-emission
+      constraint: guest-report-driven-onnetwork
+      enforcementAction: deny
+      severity: error
+      msg: createVmBidderCallbacks emits the vm.onNetwork event from the provisioning
+        lifecycle, not from an inbound guest report
+      object: CodeGraph default/atproto-market
+      file: lib/market-bidder-compute/mod.ts
+      line: 304
+    - policy: rfp-guest-reports-network
+      constraint: rfp-guest-reports-network
+      enforcementAction: deny
+      severity: error
+      msg: 'the host emits the network report "COMPUTE_EVENTS_VM_ONNETWORK_NSID" from
+        the provisioning lifecycle, not from the http.handle of the guest''s report:
+        lib/market-bidder-compute/mod.ts:304'
+      object: ArchitectureModel default/atproto-market
+      file: lib/market-bidder-compute/mod.ts
+      line: 304
+  progress:
+    turns: 1
+    tools:
+    - tool: Edit
+      count: 8
+    - tool: Read
+      count: 14
+    - tool: Write
+      count: 1
+    files:
+    - compute-contract-full-flow/run_full_flow.ts
+    - lib/abc/requester/mod.ts
+    - lib/atproto-helpers/agent.ts
+    - lib/did-key-ingress-proxy/mod.ts
+    - lib/guest-capability-secrets/mod.ts
+    - lib/market-bidder/mod.ts
+    - lib/requester-xrpc/mod.ts
+    - test/bidder_container_integration_test.ts
+    - test/bidder_cross_platform_integration_test.ts
+    - test/bidder_prod_integration_test.ts
+    - test/bidder_ssh_relay_test.ts
+    - test/cloud_init_snapshot_test.ts
+    - test/fetch-interceptor.ts
+    notes: 2
+    first: "2026-10-05T20:47:51Z"
+    last: "2026-10-05T20:52:21Z"
 superseded:
 - name: atproto-market-s2c-dcae0d4f6037-a7
   phase: Failed
