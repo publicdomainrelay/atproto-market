@@ -2978,6 +2978,7 @@ system_contexts:
   codeRefIndex:
   - file:test/fixtures/cloud-init/fedproxy-ssh.yaml fedproxy-ssh.yaml@test/fixtures/cloud-init/fedproxy-ssh.yaml
   - file:test/fixtures/cloud-init/fedproxy-web-wootty.yaml fedproxy-web-wootty.yaml@test/fixtures/cloud-init/fedproxy-web-wootty.yaml
+  - file:test/fixtures/cloud-init/iroh.yaml iroh.yaml@test/fixtures/cloud-init/iroh.yaml
   - file:test/fixtures/cloud-init/k3s.yaml k3s.yaml@test/fixtures/cloud-init/k3s.yaml
   - file:test/fixtures/cloud-init/tunnel-k3s.yaml tunnel-k3s.yaml@test/fixtures/cloud-init/tunnel-k3s.yaml
   - file:test/fixtures/cloud-init/tunnel-secrets.yaml tunnel-secrets.yaml@test/fixtures/cloud-init/tunnel-secrets.yaml

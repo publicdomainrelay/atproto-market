@@ -1,0 +1,17 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: test-fixtures-cloud-init-c2s-8b36a2bfe627-924781f0e5da
+  namespace: default
+spec:
+  systemContext: test-fixtures-cloud-init
+  direction: CodeToSpec
+  fromCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
+  toCommit: 924781f0e5da1820ab6215181ae5358ff5a8a149
+  delta:
+    counts:
+      added: 1
+      changed: 1
+status:
+  phase: Running
+  message: the agent is summarizing test-fixtures-cloud-init
