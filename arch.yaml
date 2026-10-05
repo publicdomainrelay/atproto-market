@@ -1267,8 +1267,41 @@ system_contexts:
   upstream: self
   depends_on:
   - sc.atproto-market
+  requirements:
+  - id: r.exports-secrets-surface-constants
+    level: MUST
+  - id: r.exports-shapes
+    level: MUST
+  - id: r.invalid-secrets-file-error
+    level: MUST
+  - id: r.module-pure-no-io
+    level: SHOULD
+  - id: r.parse-secrets-file-rejects-duplicate-paths
+    level: MUST
+  - id: r.parse-secrets-file-stringifies-values
+    level: MUST
+  - id: r.parse-secrets-file-validates-entries
+    level: MUST
+  - id: r.parse-secrets-file-validates-json
+    level: MUST
+  - id: r.rbac-record-defaults
+    level: MUST
+  - id: r.rbac-record-grants-one-capability
+    level: MUST
+  - id: r.rbac-record-shape
+    level: MUST
   codeRefIndex:
+  - class:d2916f8a4fa70fb60b7c6a8af50dc206 InvalidSecretsFileError@lib/common/secrets-common/mod.ts:42
   - file:lib/common/secrets-common/mod.ts mod.ts@lib/common/secrets-common/mod.ts
+  - function:6f7a9521a0c32f2f991f030c6b149cdb parseSecretsFile@lib/common/secrets-common/mod.ts:51
+  - function:bbd14d354b9d1c3aae2765a9447d1c79 buildSecretsRbacRecord@lib/common/secrets-common/mod.ts:118
+  - interface:1b0cf0f1cd64a3fb0c747b50f12fe6d0 SecretEntry@lib/common/secrets-common/mod.ts:7
+  - interface:3a4058c69bc810fa3f1d318c05426b08 RbacRoleShape@lib/common/secrets-common/mod.ts:24
+  - interface:7253e0f353e49b3a4e231426d24dc4ec SecretsRbacContext@lib/common/secrets-common/mod.ts:103
+  - interface:9f03721d29e2b3898e0b29ad30cb348a RbacPolicyShape@lib/common/secrets-common/mod.ts:19
+  - interface:b63e86d96de3a2cd62373c61fb39feb4 RbacProtectsShape@lib/common/secrets-common/mod.ts:29
+  - interface:ba32adcf332104a7ef22a672b35989fa RbacSchemaShape@lib/common/secrets-common/mod.ts:12
+  - interface:fe7c741a681050cfb5430927cbdf4551 RbacRecordShape@lib/common/secrets-common/mod.ts:34
 - id: sc.lib-compute-contract-gateway-xrpc
   name: lib-compute-contract-gateway-xrpc
   spec: specs/lib-compute-contract-gateway-xrpc.yaml

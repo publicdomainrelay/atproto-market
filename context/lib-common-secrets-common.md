@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists to fix one authoritative spelling of the secrets wire format and of the secrets RBAC grant, so that the producer of a secrets file and the four consumers (lib-guest-capability-secrets, lib-hono-factory-secrets-oidc, lib-secrets-oidc, request-vm-ssh) cannot drift on the XRPC route, the OIDC scope, the RBAC record type or the record's nested policy/role/protects shapes. It is a leaf-ward common-layer package: it depends only on the repository context, defines no behaviour beyond validation and record construction, and is depended on by every secrets-speaking package above it. Both entry points are deliberately pure so the parsing rules and the exact grant can be tested without a server, a file system or a network.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 
