@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so that services in atproto-market can talk to a PLC directory without each one re-implementing the HTTP surface: it centralises the DID-document and operation-log reads, operation submission, export/pagination and health checks behind one typed PlcClient, gives a typed error taxonomy (PlcNotFoundError, PlcTombstonedError, PlcInvalidOperationError, all carrying the HTTP status) so callers can distinguish missing, tombstoned and invalid-operation failures, derives DID verification keys from resolved documents for signing, and pins the wire format to the upstream OpenAPI document through a generated client plus a fixup step so the generated code stays usable.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 
