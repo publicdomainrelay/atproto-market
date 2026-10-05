@@ -1,0 +1,22 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: test-fixtures-cloud-init-s2c-a254ccec79c4-a2
+  namespace: default
+spec:
+  systemContext: test-fixtures-cloud-init
+  direction: SpecToCode
+  fromSpecHash: 3469ff76fae9b24f84d7b407fadb6ac41dbee439dd2e367996651ec35f7a7913
+  toSpecHash: a254ccec79c41fcd5bed08466f8d837c664d128c4b56606ec1f398cda87e93ea
+  delta:
+    counts:
+      changed: 1
+    requirements:
+    - ~r.iroh-fixture
+status:
+  phase: Pending
+superseded:
+- name: test-fixtures-cloud-init-s2c-a254ccec79c4
+  phase: Failed
+  message: 'claudecli: realize test-fixtures-cloud-init: the model did not answer
+    within 15m0s'
