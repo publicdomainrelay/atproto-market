@@ -349,3 +349,4 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 | lib-common-fedproxy-rbac-common-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-common-market-common-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-common-market-lexicons-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
+| lib-common-secrets-common-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
