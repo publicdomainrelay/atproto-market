@@ -3,6 +3,7 @@
 // All I/O lives here: fetch, Deno.Command, Deno.makeTempDir, WebSocket, crypto.
 
 import { Secp256k1Keypair } from "@atproto/crypto";
+import * as jose from "jose";
 import { IdResolver } from "@atproto/identity";
 import { TID } from "@atproto/common";
 import { getPdsEndpoint } from "@atproto/common-web";
@@ -112,15 +113,29 @@ export interface RequesterPDSImpl extends RequesterPDS {
 // only registers and drops a per-contract entry on it. One requester serves
 // several contracts at once, so the handler matches the posted accept ref
 // against each live contract's own ref and accepts exactly one report per
-// contract. No credential is baked into the cloud-config: the composed
-// user_data is published inside the compute.vm record, so a bearer token there
-// would be public and would only appear to protect the endpoint.
+// contract. The accept ref is public, so it is not a credential: the handler
+// also authenticates the reporter with the guest workload-identity token the
+// provider mints at boot, and answers 401 when that token does not verify
+// against the winning bid's bid_config. No credential is baked into the
+// cloud-config: the composed user_data is published inside the compute.vm
+// record, so a bearer token there would be public and would only appear to
+// protect the endpoint.
 
 export interface OnNetworkReportEntry {
   /** The contract's current accept ref; empty until the accept is written. */
   accept(): { uri: string; cid: string };
   /** Called with the reported ticket the first time this contract reports. */
   onTicket(ticket: string): void;
+  /**
+   * Verify the reporting guest's workload-identity bearer token before the
+   * ticket settles the SSH wait. The guest mints it at boot: it exchanges the
+   * provider-provisioned token, named by the accept bundle's bid_config, at the
+   * provider's `/v1/oidc/issue`, and the result must carry this contract's
+   * issuer, audience and provider tag-derived subject. The public accept ref is
+   * not a credential -- without this check a reader of the contract records
+   * could race the real guest with an iroh endpoint of its own.
+   */
+  authorize(token: string): Promise<boolean>;
 }
 
 const REPORT_PATH = "/v1/on-network";
@@ -129,14 +144,91 @@ const REPORT_PATH = "/v1/on-network";
 const onNetworkReportEntries = new WeakMap<object, Map<OnNetworkReportEntry, boolean>>();
 
 /**
+ * Extract the bearer token from an Authorization header. Empty when the header
+ * is missing or is not a Bearer credential -- the caller fails closed.
+ */
+function bearerToken(header: string | undefined | null): string {
+  if (!header) return "";
+  const m = /^Bearer\s+(.+)$/i.exec(header.trim());
+  return m ? m[1].trim() : "";
+}
+
+/**
+ * Resolve the issuer's published signing keys and verify a workload-identity
+ * token through them. Discovery and the JWKS go through globalThis.fetch,
+ * resolved at call time, so a local dispatcher or a test fetch interceptor is
+ * honoured -- the same reason createSecretsAuthorizer takes a fetch. The
+ * token must be issued by the provider named in the winning bid's bid_config,
+ * carry the audience this contract requested, and name this contract's
+ * provider tag-derived subject.
+ */
+export async function verifyWorkloadIdentityToken(
+  token: string,
+  expected: { issuerUri: string; expectedAud: string; expectedSub: string },
+  opts: { fetch?: typeof fetch; clockToleranceSec?: number } = {},
+): Promise<boolean> {
+  if (!token) return false;
+  const doFetch = opts.fetch ?? globalThis.fetch;
+  const clockTolerance = opts.clockToleranceSec ?? 5;
+  try {
+    const unverified = jose.decodeJwt(token);
+    const aud = Array.isArray(unverified.aud) ? unverified.aud[0] : unverified.aud;
+    if (aud !== expected.expectedAud) return false;
+    const verifyWith = async (jwks: jose.JWTVerifyGetKey) =>
+      (await jose.jwtVerify(token, jwks, {
+        issuer: expected.issuerUri,
+        audience: expected.expectedAud,
+        clockTolerance,
+      })).payload;
+    let payload: jose.JWTPayload;
+    try {
+      payload = await verifyWith(await reportIssuerJwks(expected.issuerUri, doFetch));
+    } catch (err) {
+      // A key we have never seen means the issuer rotated; reload once before
+      // treating the token as invalid.
+      if (!(err instanceof jose.errors.JWKSNoMatchingKey)) return false;
+      payload = await verifyWith(await reportIssuerJwks(expected.issuerUri, doFetch, true));
+    }
+    return payload.sub === expected.expectedSub;
+  } catch {
+    return false;
+  }
+}
+
+const reportJwksCache = new Map<string, jose.JWTVerifyGetKey>();
+
+/** Fetch (and cache) an issuer's JWKS as a local key set, through doFetch. */
+async function reportIssuerJwks(
+  issuerUri: string,
+  doFetch: typeof fetch,
+  reload = false,
+): Promise<jose.JWTVerifyGetKey> {
+  if (!reload) {
+    const cached = reportJwksCache.get(issuerUri);
+    if (cached) return cached;
+  }
+  const base = issuerUri.replace(/\/$/, "");
+  const confRes = await doFetch(`${base}/.well-known/openid-configuration`);
+  if (!confRes.ok) throw new Error(`issuer discovery failed: ${confRes.status}`);
+  const conf = await confRes.json() as { jwks_uri?: string };
+  if (!conf.jwks_uri) throw new Error(`issuer ${issuerUri} published no jwks_uri`);
+  const jwksRes = await doFetch(conf.jwks_uri);
+  if (!jwksRes.ok) throw new Error(`jwks fetch failed: ${jwksRes.status}`);
+  const set = jose.createLocalJWKSet(await jwksRes.json() as jose.JSONWebKeySet);
+  reportJwksCache.set(issuerUri, set);
+  return set;
+}
+
+/**
  * Mount POST /v1/on-network on the repo app. createRequesterPDS calls this
  * while it builds the PDS, before serve.app.route("/", app) copies the repo
  * app's routes into the app the ingress serves; Hono throws when a route is
  * added to an app that has already served, so this route is mounted exactly
  * once and never added, removed or rebuilt afterwards. The handler is mounted
- * once per app; a posted accept ref that matches no live contract answers 409,
- * and a second report for a contract that already settled answers 409 without
- * replacing the ticket.
+ * once per app; it answers 401 unless the reporter presents a bearer token
+ * this contract's entry authorizes, 409 for a posted accept ref that matches no
+ * live contract or a second report for a contract that already settled, and it
+ * never replaces a settled ticket.
  */
 export function mountOnNetworkReportHandler(app: HonoApp): void {
   if (onNetworkReportEntries.has(app as object)) return;
@@ -161,6 +253,13 @@ export function mountOnNetworkReportHandler(app: HonoApp): void {
     }
     if (!match) return c.json({ error: "accept ref mismatch" }, 409);
     if (entries.get(match)) return c.json({ error: "already settled" }, 409);
+    // Fail closed on the reporter's workload identity: no valid token means no
+    // settlement, and a settled ticket is never replaced by an unauthenticated
+    // report.
+    const token = bearerToken(c.req.header("authorization"));
+    if (!token || !(await match.authorize(token))) {
+      return c.json({ error: "unauthorized" }, 401);
+    }
     if (!body.address) return c.json({ error: "missing address" }, 400);
     entries.set(match, true);
     match.onTicket(String(body.address));
@@ -1323,9 +1422,15 @@ export async function runComputeContract(
   const vmFqdnReady = Promise.withResolvers<string>();
   // The contract's current accept ref, read by the report endpoint so a posted
   // report only settles the contract whose accept ref it names. The ref is
-  // public -- the endpoint carries no credential, because its URL is published
-  // inside the compute.vm record.
+  // public, so it is not a credential: the report must also carry the guest's
+  // workload-identity token, verified against the identity below.
   let acceptRef: { uri: string; cid: string } = { uri: "", cid: "" };
+  // The workload identity the reporting guest must present, derived from the
+  // winning bid's bid_config once it is resolved and the accept is written.
+  // Undefined until then, so an early report cannot settle the wait.
+  let reportIdentity:
+    | { issuerUri: string; expectedAud: string; expectedSub: string }
+    | undefined;
 
   // Per-contract private report channel (iroh). The route lives on the repo app
   // createRequesterPDS built and mounted under the serve app, before the
@@ -1342,6 +1447,19 @@ export async function runComputeContract(
   const reportEntry = reportRegistered
     ? {
       accept: () => acceptRef,
+      // Fail closed until the winning bid's identity is known: the public
+      // accept ref alone must not be able to point this contract at an
+      // attacker's iroh endpoint.
+      authorize: async (token: string) => {
+        const expected = reportIdentity;
+        if (!expected) {
+          log("iroh_report_unauthorized", { reason: "identity not resolved" });
+          return false;
+        }
+        const ok = await verifyWorkloadIdentityToken(token, expected);
+        if (!ok) log("iroh_report_unauthorized", { reason: "token did not verify" });
+        return ok;
+      },
       onTicket: (ticket: string) => {
         // The ticket is the SSH transport target under iroh: settle the wait
         // with it (the endpoint already bound it to this contract's accept ref
@@ -1804,7 +1922,11 @@ runcmd:
   // every guest capability derive their authorization from.
   const serviceName = vmName.trim() || "compute";
   let wifConfig: WifSimpleConfig | undefined;
-  if ((opts.rbac && !skipSsh) || capabilities.length > 0) {
+  // The report endpoint needs the winner's bid_config too, even when the
+  // contract runs without rbac and without capabilities: that config names the
+  // issuer the guest's report token is minted by, so the reporter can be
+  // authenticated instead of trusting the public accept ref.
+  if ((opts.rbac && !skipSsh) || capabilities.length > 0 || reportRegistered) {
     const bidConfigRef = (winner.record.config ?? winner.record.bidConfig) as { uri?: string; cid?: string } | undefined;
     if (bidConfigRef?.uri && bidConfigRef?.cid) {
       try {
@@ -1905,6 +2027,26 @@ runcmd:
   }, pds.attestationKp, pds.did);
   // The report endpoint answers 409 until the accept ref matches this value.
   acceptRef = { uri: acceptUri, cid: acceptCid };
+  // The guest mints its report token from the provider-provisioned token, for
+  // the audience it reads out of this accept record's own authority and with
+  // the subject the provider tagged it with. Derive the same three values here,
+  // exactly the way the secrets grant is derived, so only this contract's real
+  // guest can settle the SSH wait.
+  if (wifConfig) {
+    const reportVars = deriveGrantVars({
+      cfg: wifConfig,
+      subjectDid: atUriAuthority(rfpUri),
+      audienceDid: atUriAuthority(acceptUri),
+      role: serviceName,
+    });
+    reportIdentity = {
+      issuerUri: reportVars.issuerUri,
+      expectedAud: reportVars.expectedAud,
+      expectedSub: reportVars.subject,
+    };
+  } else if (reportRegistered) {
+    log("iroh_report_identity_unavailable", { reason: "no usable bidConfig" });
+  }
   log("accept_created", { uri: acceptUri, cid: acceptCid });
 
   // 8. Submit accept to winning bidder.

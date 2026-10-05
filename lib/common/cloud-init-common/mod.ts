@@ -330,7 +330,9 @@ const DEFAULT_ACCEPT_PATH = "/root/secrets/publicdomainrelay.com/market/accept.j
  * StandardOutput=append: redirect and implements no ExecStartPost: the script
  * sources the persisted iroh identity in-process, owns the listener log through
  * its own redirection, starts the ticket reporter in the background and then
- * execs dumbpipe. The reporter re-extracts the ticket into
+ * execs dumbpipe. The unit also declares the identity EnvironmentFile and an
+ * ExecStartPre that prepares it, which real systemd uses; the script repeats
+ * both jobs for the shim. The reporter re-extracts the ticket into
  * /root/secrets/iroh-node-id (a local convenience only) and reports it to the
  * requester's own per-contract endpoint (ctx.irohReportUrl) -- never to a public
  * record -- authenticating with a bearer token it mints at boot from the
@@ -424,7 +426,17 @@ const irohModule: UserDataModule = (ctx) => {
       "_aud=\"api://ATProto?actx=${_requester}\"",
       "_wid_token=$(cat \"$_token_path\" 2>/dev/null || true)",
       "_issuer=$(cat \"$_url_path\" 2>/dev/null || true)",
-      "_sub=$(printf '%s' \"$_wid_token\" | cut -d. -f2 | tr '_-' '/+' | sed -e 's/$/==/' | base64 -d 2>/dev/null | jq -r .sub 2>/dev/null || true)",
+      "# Pad the base64url payload to a multiple of four before decoding. The",
+      "# provider mints tokens whose payload length varies -- this guest's",
+      "# provisioning token is 435 chars, one pad short of a fixed '==', so a",
+      "# fixed pad fails the decode, mints no token and reports nothing at all.",
+      "_payload=$(printf '%s' \"$_wid_token\" | cut -d. -f2 | tr '_-' '/+')",
+      "case $((${#_payload} % 4)) in",
+      "  2) _payload=\"${_payload}==\" ;;",
+      "  3) _payload=\"${_payload}=\" ;;",
+      "  1) _payload=\"${_payload}===\" ;;",
+      "esac",
+      "_sub=$(printf '%s' \"$_payload\" | base64 -d 2>/dev/null | jq -r .sub 2>/dev/null || true)",
       "_created=$(date -u +%Y-%m-%dT%H:%M:%SZ)",
       "_body=$(printf '{\"acceptUri\":\"%s\",\"acceptCid\":\"%s\",\"address\":\"%s\",\"createdAt\":\"%s\"}' \"$_accept_uri\" \"$_accept_cid\" \"$TICKET\" \"$_created\")",
       "# Mint the bearer at boot: the composed user_data is published inside the",
@@ -452,6 +464,24 @@ const irohModule: UserDataModule = (ctx) => {
   }
   const reportScript = reportLines.join("\n") + "\n";
 
+  // ExecStartPre prepares the identity file and truncates the log before systemd
+  // reads EnvironmentFile. The listener script repeats both jobs, because the
+  // container-mode systemctl shim runs neither ExecStartPre nor EnvironmentFile:
+  // one unit has to satisfy real systemd and the shim at once.
+  const prepareScript = [
+    "#!/bin/sh",
+    "set -eu",
+    "install -d -m 0700 -o root -g root /root/secrets",
+    "if [ ! -s /root/secrets/iroh.env ]; then",
+    "  (umask 077 && printf 'IROH_SECRET=%s\\n' \"$(head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \\n')\" > /root/secrets/iroh.env)",
+    "  chown root:root /root/secrets/iroh.env",
+    "  chmod 0600 /root/secrets/iroh.env",
+    "fi",
+    ": > /root/secrets/iroh-dumbpipe.log",
+    "chmod 0600 /root/secrets/iroh-dumbpipe.log",
+    "",
+  ].join("\n");
+
   const writeFiles: WriteFileEntry[] = [
     {
       path: "/root/.ssh/authorized_keys",
@@ -468,6 +498,12 @@ const irohModule: UserDataModule = (ctx) => {
         "PermitRootLogin prohibit-password",
         "PasswordAuthentication no",
       ].join("\n") + "\n",
+    },
+    {
+      path: "/usr/local/bin/iroh-prepare.sh",
+      owner: "root:root",
+      permissions: "0755",
+      content: prepareScript,
     },
     {
       path: "/usr/local/bin/iroh-listen.sh",
@@ -495,9 +531,12 @@ const irohModule: UserDataModule = (ctx) => {
       "[Service]",
       "Type=simple",
       "User=root",
-      "# One bare-path ExecStart: the container-mode systemctl shim cannot run a",
-      "# quoted ExecStart, ignores a StandardOutput=append: redirect and has no",
-      "# ExecStartPost, so the script owns the identity, the log and the report.",
+      "# The unit declares the identity file and prepares it before the listener",
+      "# starts, but the listener script repeats both jobs: the container-mode",
+      "# systemctl shim runs neither ExecStartPre nor EnvironmentFile, and it",
+      "# cannot run a quoted ExecStart either, so ExecStart is one bare path.",
+      "EnvironmentFile=-/root/secrets/iroh.env",
+      "ExecStartPre=/usr/local/bin/iroh-prepare.sh",
       "ExecStart=/usr/local/bin/iroh-listen.sh",
       "Restart=always",
       "RestartSec=5",
@@ -519,7 +558,7 @@ const irohModule: UserDataModule = (ctx) => {
       ["sh", "-c", `command -v dumbpipe >/dev/null || {
   _arch=$(uname -m)
   case "$_arch" in x86_64|amd64) _arch=x86_64 ;; aarch64|arm64) _arch=aarch64 ;; esac
-  curl -fsSL "https://github.com/n0-computer/dumbpipe/releases/download/${DUMBPIPE_VERSION}/dumbpipe-${DUMBPIPE_VERSION}-linux-\${_arch}.tar.gz" | tar -xvz -C /usr/local/bin ./dumbpipe
+  curl -qfsSL "https://github.com/n0-computer/dumbpipe/releases/download/${DUMBPIPE_VERSION}/dumbpipe-${DUMBPIPE_VERSION}-linux-\${_arch}.tar.gz" | tar -xvz -C /usr/local/bin ./dumbpipe
   chmod 755 /usr/local/bin/dumbpipe
 }`],
       ["sh", "-c", "install -d -m 0700 -o root -g root /root/secrets"],

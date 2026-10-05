@@ -1944,7 +1944,8 @@
           "npm:@atproto/common-web@0.5",
           "npm:@atproto/common@0.5",
           "npm:@atproto/crypto@0.5",
-          "npm:@atproto/identity@0.5"
+          "npm:@atproto/identity@0.5",
+          "npm:jose@5"
         ]
       },
       "lib/secrets-oidc": {

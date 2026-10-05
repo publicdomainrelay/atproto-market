@@ -4,6 +4,7 @@
   "license": "Unlicense",
   "exports": "./mod.ts",
   "imports": {
+    "jose": "npm:jose@^5",
     "@atproto/common": "npm:@atproto/common@^0.5.0",
     "@atproto/common-web": "npm:@atproto/common-web@^0.5.0",
     "@atproto/crypto": "npm:@atproto/crypto@^0.5.0",

@@ -9,8 +9,11 @@
 //     already served. The handler accepts a ticket only when the posted accept
 //     ref equals a live contract's current ref and that contract has not
 //     reported yet; a ref that matches no live contract and a second report
-//     after the wait settled each answer 409. No credential is carried: the
-//     composed user_data is published in the compute.vm record.
+//     after the wait settled each answer 409. The handler also authenticates
+//     the reporter: the accept ref is public, so a report that carries no
+//     workload-identity token this contract can verify is answered 401 and
+//     settles nothing. No credential is carried in the cloud-config -- the
+//     token is minted by the provider at boot.
 // (b) The bidder never publishes a ticket: vm.onNetwork's address carries the
 //     provider's provisioned address even when the provider exposes a
 //     ticket-shaped getNodeId hook.
@@ -18,11 +21,13 @@
 // Run: deno test -A test/iroh_private_report_test.ts
 
 import { assert, assertEquals } from "@std/assert";
+import * as jose from "jose";
 import { Hono } from "@hono/hono";
 import {
   mountOnNetworkReportHandler,
   registerOnNetworkReport,
   unregisterOnNetworkReport,
+  verifyWorkloadIdentityToken,
 } from "@publicdomainrelay/requester-xrpc";
 import { createVmBidderCallbacks } from "@publicdomainrelay/market-bidder-compute";
 import type { VmBidderDeps } from "@publicdomainrelay/market-bidder-compute";
@@ -30,6 +35,9 @@ import type { VmBidderDeps } from "@publicdomainrelay/market-bidder-compute";
 const TICKET = "2n7kq3xr5vbn4mh6wqk2s7d9fz3jptc5u4ye6a2b7c8d9e0f1g2h3j4k5m";
 const ACCEPT_URI = "at://did:plc:requester/com.publicdomainrelay.temp.market.accept/a1";
 const ACCEPT_CID = "bafyreiaccept";
+// Stand-in for the workload-identity bearer the real guest mints at boot; the
+// entry's authorize is the per-contract verifier runComputeContract builds.
+const GUEST_TOKEN = "guest-workload-identity";
 
 // Mirrors createRequesterPDS exactly: the report route is mounted on the repo
 // app while the PDS is built, and only then is that repo app mounted under the
@@ -48,6 +56,7 @@ function reportHarness() {
   const { promise: wait, resolve: resolveWait } = Promise.withResolvers<string>();
   const entry = {
     accept: () => ({ uri: ACCEPT_URI, cid: ACCEPT_CID }),
+    authorize: async (token: string) => token === GUEST_TOKEN,
     onTicket: (ticket: string) => {
       settled.push(ticket);
       resolveWait(ticket);
@@ -56,10 +65,12 @@ function reportHarness() {
   return { repoApp, serveApp, entry, settled, wait };
 }
 
-async function post(app: Hono, body: unknown): Promise<Response> {
+async function post(app: Hono, body: unknown, token: string | null = GUEST_TOKEN): Promise<Response> {
+  const headers: Record<string, string> = { "content-type": "application/json" };
+  if (token) headers.authorization = `Bearer ${token}`;
   return await app.fetch(new Request("http://requester.local/v1/on-network", {
     method: "POST",
-    headers: { "content-type": "application/json" },
+    headers,
     body: JSON.stringify(body),
   }));
 }
@@ -121,8 +132,100 @@ Deno.test("a report for an ended contract answers 409 and settles nothing", asyn
   assertEquals(settled, [], "the settled ticket is unchanged");
 });
 
-// -- (b) the bidder must not publish the ticket -----------------------------
+Deno.test("a report without a valid workload-identity token is 401 and settles nothing", async () => {
+  const { repoApp, serveApp, entry, settled, wait } = reportHarness();
+  registerOnNetworkReport(repoApp, entry);
+  const body = { acceptUri: ACCEPT_URI, acceptCid: ACCEPT_CID, address: TICKET };
 
+  // The accept ref is public, so a reader of the contract records can post it.
+  // Without a valid workload-identity bearer the report must not settle the
+  // wait and must not replace a ticket.
+  const anonymous = await post(serveApp, body, null);
+  assertEquals(anonymous.status, 401, "missing bearer token fails closed");
+  const impostor = await post(serveApp, body, "not-the-guest");
+  assertEquals(impostor.status, 401, "an unverifiable token fails closed");
+  assertEquals(settled, [], "no report settles the wait");
+
+  // The real guest, with the token its provider minted, still settles it.
+  const ok = await post(serveApp, body);
+  assertEquals(ok.status, 200);
+  assertEquals(await wait, TICKET);
+  assertEquals(settled, [TICKET]);
+
+  // ...and an unauthenticated repeat cannot replace the settled ticket.
+  const again = await post(serveApp, { ...body, address: "2notherticket" }, null);
+  assertEquals(again.status, 409, "a settled contract never re-settles");
+  assertEquals(settled, [TICKET], "the settled ticket is unchanged");
+  unregisterOnNetworkReport(repoApp, entry);
+});
+
+// -- the reporter token really is verified against the provider's JWKS -------
+
+const ISSUER = "https://provider.relay.localhost:8443";
+const EXPECTED_AUD = "api://ATProto?actx=did:plc:requester";
+const EXPECTED_SUB = "actx:provider789:plc:requester:role:compute";
+
+const issuerKeys = await crypto.subtle.generateKey(
+  { name: "RSASSA-PKCS1-v1_5", modulusLength: 2048, publicExponent: new Uint8Array([1, 0, 1]), hash: "SHA-256" },
+  true,
+  ["sign", "verify"],
+) as CryptoKeyPair;
+const issuerJwk = await jose.exportJWK(issuerKeys.publicKey);
+issuerJwk.use = "sig";
+issuerJwk.alg = "RS256";
+issuerJwk.kid = await jose.calculateJwkThumbprint(issuerJwk);
+
+function stubIssuerFetch(): typeof fetch {
+  return ((input: string | URL | Request) => {
+    const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
+    if (url === `${ISSUER}/.well-known/openid-configuration`) {
+      return Promise.resolve(new Response(JSON.stringify({
+        issuer: ISSUER,
+        jwks_uri: `${ISSUER}/.well-known/jwks`,
+      }), { headers: { "content-type": "application/json" } }));
+    }
+    if (url === `${ISSUER}/.well-known/jwks`) {
+      return Promise.resolve(new Response(JSON.stringify({ keys: [issuerJwk] }), {
+        headers: { "content-type": "application/json" },
+      }));
+    }
+    return Promise.resolve(new Response("not found", { status: 404 }));
+  }) as typeof fetch;
+}
+
+async function mintGuestToken(
+  over: { sub?: string; aud?: string; iss?: string } = {},
+): Promise<string> {
+  return await new jose.SignJWT({})
+    .setProtectedHeader({ alg: "RS256", kid: issuerJwk.kid })
+    .setIssuer(over.iss ?? ISSUER)
+    .setAudience(over.aud ?? EXPECTED_AUD)
+    .setSubject(over.sub ?? EXPECTED_SUB)
+    .setIssuedAt()
+    .setExpirationTime(Math.floor(Date.now() / 1000) + 300)
+    .sign(issuerKeys.privateKey);
+}
+
+Deno.test("the reporter token verifies against the provider's published JWKS", async () => {
+  const expected = { issuerUri: ISSUER, expectedAud: EXPECTED_AUD, expectedSub: EXPECTED_SUB };
+  const opts = { fetch: stubIssuerFetch() };
+  assert(await verifyWorkloadIdentityToken(await mintGuestToken(), expected, opts), "the guest's own token verifies");
+  assert(!(await verifyWorkloadIdentityToken("", expected, opts)), "no token");
+  assert(
+    !(await verifyWorkloadIdentityToken(await mintGuestToken({ sub: "actx:other" }), expected, opts)),
+    "another guest's subject is rejected",
+  );
+  assert(
+    !(await verifyWorkloadIdentityToken(await mintGuestToken({ aud: "api://ATProto?actx=did:plc:someoneelse" }), expected, opts)),
+    "another audience is rejected",
+  );
+  assert(
+    !(await verifyWorkloadIdentityToken(await mintGuestToken({ iss: "https://evil.example" }), expected, opts)),
+    "another issuer is rejected",
+  );
+});
+
+// -- (b) the bidder must not publish the ticket -----------------------------
 const ON_NETWORK_NSID = "com.publicdomainrelay.temp.compute.events.vm.onNetwork";
 const RFP_NSID = "com.publicdomainrelay.temp.market.rfp";
 const BID_NSID = "com.publicdomainrelay.temp.market.bid";

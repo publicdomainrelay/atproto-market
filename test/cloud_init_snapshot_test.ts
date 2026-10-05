@@ -145,6 +145,9 @@ Deno.test("iroh dumbpipe listener replaces the tunnel subscriber", () => {
   // The release archive stores its member as ./dumbpipe; naming the bare
   // `dumbpipe` fails with `tar: dumbpipe: Not found in archive` (exit 2).
   assert(y.includes("./dumbpipe"), "extracts the ./dumbpipe member");
+  // curl -q first: the guest's /root/.curlrc carries the container resolver
+  // rule, and without -q it would send the github download to the gateway too.
+  assert(y.includes("curl -qfsSL"), "install ignores the guest's curl config");
   assert(y.includes("dumbpipe-listen.service"), "listener unit installed");
   assert(y.includes("listen-tcp --host 127.0.0.1:22"), "listener bridges to sshd");
   assert(y.includes("/root/secrets/iroh-node-id"), "ticket captured for the requester");
@@ -188,12 +191,21 @@ Deno.test("iroh unit is one bare-path ExecStart and mints its report token at bo
   // The container-mode systemctl shim cannot run a quoted ExecStart, ignores a
   // StandardOutput=append: redirect and implements no ExecStartPost, so the
   // unit starts one bare-path script that owns the identity, the log and the
-  // report itself.
+  // report itself. The unit still declares the EnvironmentFile the identity is
+  // read from and an ExecStartPre that prepares it, which is what real systemd
+  // uses; the script repeats both jobs, because the shim runs neither.
   assert(
     y.includes("ExecStart=/usr/local/bin/iroh-listen.sh"),
     "bare-path ExecStart",
   );
-  assert(!y.includes("ExecStartPre="), "no ExecStartPre");
+  assert(
+    y.includes("EnvironmentFile=-/root/secrets/iroh.env"),
+    "unit reads the identity through EnvironmentFile",
+  );
+  assert(
+    y.includes("ExecStartPre=/usr/local/bin/iroh-prepare.sh"),
+    "unit prepares the secret and truncates the log before starting",
+  );
   assert(!y.includes("ExecStartPost="), "no ExecStartPost");
   assert(
     !y.includes("StandardOutput=append:/root/secrets"),
@@ -216,6 +228,13 @@ Deno.test("iroh unit is one bare-path ExecStart and mints its report token at bo
   assert(y.includes(".bid_config.value // .bid_config"), "token config read from bid_config");
   assert(y.includes(".token // empty"), "bearer comes from the provider token exchange");
   assert(!/Bearer (?!\$)/.test(y), "no literal token is carried in the cloud-config");
+  // The provisioning token's base64url payload varies in length, so the
+  // subject decode pads to a multiple of four instead of appending a fixed
+  // "==" (the secrets module's fixed pad fails on this guest's 435-char token).
+  assert(y.includes("case $((${#_payload} % 4)) in"), "payload padded to a multiple of four");
+  assert(y.includes('2) _payload="${_payload}=="'), "remainder 2 takes two pads");
+  assert(y.includes('3) _payload="${_payload}="'), "remainder 3 takes one pad");
+  assert(y.includes('1) _payload="${_payload}==="'), "remainder 1 takes three pads");
 });
 
 Deno.test("iroh ticket extraction matches the connect-tcp line dumbpipe prints", () => {
