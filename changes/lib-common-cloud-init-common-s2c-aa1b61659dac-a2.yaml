@@ -14,7 +14,9 @@ spec:
     requirements:
     - ~r.iroh-ticket-report
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is realizing lib-common-cloud-init-common in a batch of 3 led
+    by lib-common-cloud-init-common
 superseded:
 - name: lib-common-cloud-init-common-s2c-aa1b61659dac
   phase: Failed
