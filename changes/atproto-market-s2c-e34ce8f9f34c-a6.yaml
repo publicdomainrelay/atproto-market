@@ -18,21 +18,8 @@ spec:
     - +r.iroh-cloud-init-fixture
     - +r.iroh-full-flow-harness
 status:
-  phase: Pending
-  message: 'attempt 6 retried by john (The acceptance run now fails before provisioning,
-    on the harness''s own test double: AssertionError: the did:key fast path resolves
-    the key without a PLC round trip, at test/bidder_container_integration_test.ts:213.
-    That assertion is about your mock, not about the transport. Delete it and every
-    other assertion about the resolver''s internals. The fake PLC only has to answer
-    a did:plc lookup with a DID document whose verification method is a did:key, so
-    the relay''s registration nonce is not 401 and the receipt verifies. Then assert
-    only the real facts: RFP -> bid -> accept -> cloud-init, the guest reports its
-    ticket over the transport the cloud-init deployed, sshReady becomes true with
-    a ProxyCommand that is ''dumbpipe connect <ticket>'' (never websocat, never a
-    bare address), and a program run inside the guest prints SSH_OK_VIA_IROH and exits
-    0. Keep the harness small and do not run it yourself -- specd runs it as the gate.
-    The cloud-init iroh module is landed and now extracts ./dumbpipe correctly with
-    a bounded retry, so the guest will listen and report.)'
+  phase: Failed
+  message: 'admission: another change of atproto-market is already running'
   attempt: 6
   retryReason: 'The acceptance run now fails before provisioning, on the harness''s
     own test double: AssertionError: the did:key fast path resolves the key without
