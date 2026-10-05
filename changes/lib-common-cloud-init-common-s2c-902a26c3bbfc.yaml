@@ -14,4 +14,5 @@ spec:
     requirements:
     - ~r.iroh-dumbpipe-install
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is realizing lib-common-cloud-init-common
