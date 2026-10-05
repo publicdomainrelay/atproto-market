@@ -14,5 +14,201 @@ spec:
   - sc.lib-atproto-helpers
   - sc.lib-common-market-common
   - sc.lib-market-atproto
+  intent: 'This context exists to specify the bidder half of the compute-worker market:
+    the module that turns an incoming worker-manifest RFP into a signed bid, and an
+    accepted bid into a running worker instance plus an attested receipt and a tracked
+    active contract. It pins down how policy evaluation, worker permission checks,
+    callback routing, provenance attestation and provider registration must behave
+    so a host can plug a WorkerProvider in and get a wired MarketBidderProviderRef
+    without reimplementing any of that logic.'
+  requirements:
+  - id: r.accept-provisioning
+    level: MUST
+    text: On a valid accept, onAccept must register the resolved manifest record with
+      deps.workerManifestStore, create a WORKER_INSTANCE_NSID record whose manifest
+      field is a strongRef to the payload manifest ref, and start the worker via deps.workerRunner.start,
+      passing a ComputeStrongRef instance built from the new record and a ComputeStrongRef
+      manifest built from the payload ref.
+    codeRefs:
+    - function:35fb7d4b902e6ad5a4f68cf585a580df
+    - interface:6588bb229d1d3f4b0851680b4a33303c
+  - id: r.accept-validation
+    level: MUST
+    text: 'onAccept must reject malformed accepts with HTTP 400 bodies of the shape
+      {error: "InvalidRequest", message} before doing any work: a missing rfp ref
+      gives "missing rfp ref in accept", a resolved RFP without a payload gives "missing
+      payload in rfp", an unresolvable payload gives "payload not found", and a payload
+      whose $type is not WORKER_MANIFEST_NSID gives "payload is not a worker manifest".'
+    codeRefs:
+    - function:35fb7d4b902e6ad5a4f68cf585a580df
+  - id: r.active-contract-tracking
+    level: MUST
+    text: 'onAccept must record the new contract in deps.activeContracts under refKey({uri:
+      receiptUri, cid: receiptCid}) with providerIdPromise resolving to the instance
+      URI and acceptAuthor set to the issuer DID, then emit onContractChange type
+      "accepted" immediately and a follow-up "provisioned" or "provisioning-failed"
+      event once providerIdPromise settles depending on whether a providerId value
+      is present, carrying key, receiptUri, receiptCid, acceptAuthor and acceptedAt
+      on each event.'
+    codeRefs:
+    - function:35fb7d4b902e6ad5a4f68cf585a580df
+    - interface:6588bb229d1d3f4b0851680b4a33303c
+  - id: r.bid-record-creation
+    level: MUST
+    text: 'On a permitted RFP, onRfp must first create a free payload record in collection
+      com.publicdomainrelay.temp.market.bids.free with $type the same NSID, cost 0
+      and a createdAt timestamp, then create and sign a bid record via createSignedRepoRecord
+      containing the BID_NSID $type, a strongRef to the RFP, a strongRef to that payload,
+      submitAccept set to relay.ingressUrl and the same createdAt, and return body
+      {ok: true, bidUri, bidCid}.'
+    codeRefs:
+    - function:35fb7d4b902e6ad5a4f68cf585a580df
+  - id: r.callback-namespace
+    level: MUST
+    text: 'createWorkerBidderCallbacks must return the callbacks keyed for dispatch
+      as rfp: { pdr_temp_market: { [WORKER_MANIFEST_NSID]: onRfp } } alongside the
+      bare accept handler, so the bidder loop routes only worker-manifest RFPs to
+      this handler.'
+    codeRefs:
+    - file:lib/market-bidder-worker/mod.ts
+    - function:35fb7d4b902e6ad5a4f68cf585a580df
+  - id: r.dep-defaults
+    level: MUST
+    text: WorkerBidderDeps.resolveOperatorDid and WorkerBidderDeps.getVouchedDids
+      are optional; when omitted, onRfp must substitute defaults that resolve to null
+      and return an empty Set respectively before handing them to the policy context,
+      so policy evaluation never fails on a missing hook. policyExec, onContractChange
+      and permissionPolicyHandler are likewise optional and may simply be absent.
+    codeRefs:
+    - function:35fb7d4b902e6ad5a4f68cf585a580df
+    - interface:6588bb229d1d3f4b0851680b4a33303c
+  - id: r.no-termination-path
+    level: MAY
+    text: Worker contracts intentionally carry no termination path, because no worker.delete
+      lexicon exists yet; this known gap is left unfixed rather than invented by adding
+      a teardown callback for accepted contracts.
+    codeRefs:
+    - file:lib/market-bidder-worker/mod.ts
+    - function:35fb7d4b902e6ad5a4f68cf585a580df
+  - id: r.policy-eval-on-rfp
+    level: MUST
+    text: 'onRfp must evaluate each strongRef in rfp.policies through deps.evaluator.evaluatePolicies
+      one ref at a time, with ctx policyName "rfp-policy", perspective "bidder", selfDid
+      and subjectDid set to the bidder DID, rootRequesterDid and counterpartyDid set
+      to the RFP issuer DID, resolve wired to the injected RecordResolver, the supplied
+      or defaulted resolveOperatorDid/getVouchedDids, a logging bridge into the callback
+      logger, and a demand field built from rfp.payload (rfpRef from rfpUri/rfpCid,
+      payloadRef, payloadNsid via nsidFromUri) or undefined when absent. The first
+      result with allow=false short-circuits the handler, logging a warning and returning
+      body {ok: false, error: "policy rejected", violations}. An absent or empty policies
+      array imposes no restriction and the RFP is open to all bidders.'
+    codeRefs:
+    - function:35fb7d4b902e6ad5a4f68cf585a580df
+    - interface:6588bb229d1d3f4b0851680b4a33303c
+  - id: r.provider-construction
+    level: MUST
+    text: 'createComputeProviderDenoWorker must accept a CreateComputeProviderDenoWorkerOpts
+      of {logger: StructuredLoggerInterface, atproto: ATProto} and resolve to a WorkerProvider,
+      so a host can build the worker provider from just a structured logger and an
+      authenticated ATProto client.'
+    codeRefs:
+    - function:0270e1f8fb0d9ba7755ac84195824cd5
+    - interface:7505aec1e654513bf40d42b074c9622b
+  - id: r.provider-ref-registration
+    level: MUST
+    text: 'createWorkerProviderHooks must return a MarketBidderProviderRef declaring
+      serviceId "pdr_temp_market" and appliesTo ["com.publicdomainrelay.temp.compute.deno.workerManifest"],
+      forwarding the provider''s setup and teardown, and its buildCallbacks must map
+      the CallbackFactoryDeps (did, attestationKp, signer, idResolver, relay, log,
+      activeContracts, onContractChange, createRepoRecord, createSignedRepoRecord,
+      callService, resolve, policyExec, getVouchedDids, resolveOperatorDid, evaluator)
+      plus the provider''s workerManifestStore/workerRunner and the optional permissionPolicyHandler
+      into createWorkerBidderCallbacks, returning {rfpCallbacks: w.rfp, onAccept:
+      w.accept}.'
+    codeRefs:
+    - function:a5248f76fd7c17fa0d03949153f13023
+    - interface:61e8bfc9bbbe2ef113ac6821edec06fc
+  - id: r.receipt-attestation
+    level: MUST
+    text: onAccept must build receipt metadata typed RECEIPT_NSID holding strongRefs
+      to the RFP and the accept with bid and payload explicitly null, submitEvent
+      of `${did}#pdr_temp_compute_event` and a createdAt, bind it to the accept record
+      with its _uri/_cid keys stripped via createAttestationCid(acceptBare, receiptMetadata,
+      issuerDid), store the resulting cid string on the record, sign it as a signed
+      repo record, and return body {id, uri, cid, submitEvent} where id is the last
+      path segment of the receipt URI and submitEvent is the same `${did}#pdr_temp_compute_event`
+      string.
+    codeRefs:
+    - function:35fb7d4b902e6ad5a4f68cf585a580df
+  - id: r.submit-bid-dispatch
+    level: SHOULD
+    text: 'When the RFP carries a submitBid URL, onRfp should push the signed bid
+      to it via deps.callService using the SUBMIT_BID_NSID and SUBMIT_BID_LXM with
+      body {uri: bidUri, cid: bidCid, record: signedBid}. A failure from that call
+      must be logged at error level and swallowed, so the bid is still reported as
+      created.'
+    codeRefs:
+    - function:35fb7d4b902e6ad5a4f68cf585a580df
+  - id: r.worker-permission-check
+    level: MUST
+    text: 'When a permissionPolicyHandler is supplied and the RFP carries a payload
+      ref with a uri, onRfp must resolve that payload, read its lock, json, bundle
+      and permissions fields (defaulting absent lock/json/bundle strings to empty),
+      and run permissionPolicyHandler.evaluate on them. A deny returns body {ok: false,
+      error: "worker permissions denied", violations}; a thrown error during resolve
+      or evaluation returns body {ok: false, error: "worker permission check failed"};
+      both are logged as warnings rather than propagating.'
+    codeRefs:
+    - function:35fb7d4b902e6ad5a4f68cf585a580df
+    - interface:6588bb229d1d3f4b0851680b4a33303c
+  interfaces:
+  - name: CreateComputeProviderDenoWorkerOpts
+    kind: interface
+    signature: 'interface CreateComputeProviderDenoWorkerOpts { logger: StructuredLoggerInterface;
+      atproto: ATProto }'
+    file: lib/market-bidder-worker/mod.ts
+  - name: WorkerBidderDeps
+    kind: interface
+    signature: 'interface WorkerBidderDeps { policyExec?: { onlyRemote?: boolean;
+      allowUntrusted?: boolean }; getVouchedDids?: (did: string) => Promise<Set<string>>;
+      resolveOperatorDid?: (bidderDid: string) => Promise<string | null>; evaluator:
+      { evaluatePolicies(input: { refs: Array<{ uri: string; cid: string }>; ctx:
+      PolicyEvalCtx }): Promise<PolicyResult> }; did: string; attestationKp: AttestationKeypair;
+      signer: { did(): string; sign(bytes: Uint8Array): Promise<Uint8Array> }; idResolver:
+      IdResolver; relay: { ingressRef: string; ingressUrl: string }; workerManifestStore:
+      WorkerManifestStore; workerRunner: WorkerInstanceRunner; log: Logger; activeContracts:
+      Map<string, ActiveContract>; onContractChange?: (event: ContractEvent) => void;
+      createRepoRecord: (collection: string, record: Record<string, unknown>) => Promise<{
+      uri: string; cid: string }>; createSignedRepoRecord: (collection: string, record:
+      Record<string, unknown>, issuer?: string) => Promise<{ uri: string; cid: string;
+      record: Record<string, unknown> }>; callService: (endpointUrl: string, nsid:
+      string, lxm: string, body: Record<string, unknown>) => Promise<{ status: number;
+      ok: boolean; body: unknown }>; resolve: RecordResolver; permissionPolicyHandler?:
+      PermissionPolicyHandler }'
+    file: lib/market-bidder-worker/mod.ts
+  - name: WorkerProvider
+    kind: interface
+    signature: interface WorkerProvider
+    file: lib/market-bidder-worker/mod.ts
+  - name: createComputeProviderDenoWorker
+    kind: function
+    signature: '(opts: CreateComputeProviderDenoWorkerOpts): Promise<WorkerProvider>'
+    file: lib/market-bidder-worker/mod.ts
+  - name: createWorkerBidderCallbacks
+    kind: function
+    signature: '(deps: WorkerBidderDeps): { rfp: Record<string, Record<string, SubmitRfpCallback>>;
+      accept: SubmitAcceptCallback }'
+    file: lib/market-bidder-worker/mod.ts
+  - name: createWorkerProviderHooks
+    kind: function
+    signature: '(opts: { provider: WorkerProvider; permissionPolicyHandler?: PermissionPolicyHandler
+      }): MarketBidderProviderRef'
+    file: lib/market-bidder-worker/mod.ts
 codeRefIndex:
 - file:lib/market-bidder-worker/mod.ts mod.ts@lib/market-bidder-worker/mod.ts
+- function:0270e1f8fb0d9ba7755ac84195824cd5 createComputeProviderDenoWorker@lib/market-bidder-worker/mod.ts:305
+- function:35fb7d4b902e6ad5a4f68cf585a580df createWorkerBidderCallbacks@lib/market-bidder-worker/mod.ts:74
+- function:a5248f76fd7c17fa0d03949153f13023 createWorkerProviderHooks@lib/market-bidder-worker/mod.ts:335
+- interface:61e8bfc9bbbe2ef113ac6821edec06fc WorkerProvider@lib/market-bidder-worker/mod.ts:297
+- interface:6588bb229d1d3f4b0851680b4a33303c WorkerBidderDeps@lib/market-bidder-worker/mod.ts:39
+- interface:7505aec1e654513bf40d42b074c9622b CreateComputeProviderDenoWorkerOpts@lib/market-bidder-worker/mod.ts:292

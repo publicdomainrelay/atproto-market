@@ -9,5 +9,29 @@ spec:
   fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
   toCommit: 05fe29612a62a645d70273560238ecc3180414d2
 status:
-  phase: Running
-  message: the agent is summarizing lib-market-bidder-worker
+  phase: Succeeded
+  agentLog: '...bidder side of the compute-worker market. Its single implementation
+    file, lib/market-bidder-worker/mod.ts (tracked alongside lib/market-bidder-worker/deno.json),
+    exports WorkerBidderDeps, WorkerProvider, CreateComputeProviderDenoWorkerOpts,
+    createWorkerBidderCallbacks, createComputeProviderDenoWorker and createWorkerProviderHooks.
+    createWorkerBidderCallbacks takes a WorkerBidderDeps bundle (bidder DID, attestation
+    keypair, signer, id resolver, relay ingress ref/url, worker manifest store, worker
+    runner, logger, activeContracts map, repo-record and service-call helpers, a RecordResolver,
+    an evaluator, and optional policyExec/getVouchedDids/resolveOperatorDid/onContractChange/permissionPolicyHandler
+    hooks) and returns { rfp, accept }. The RFP callback is registered under nsid
+    pdr_temp_market keyed by WORKER_MANIFEST_NSID; it evaluates each attached policy
+    strongRef one at a time with perspective "bidder" (first deny short-circuits with
+    an ok:false body, an absent or empty policies array leaves the RFP open to all),
+    optionally resolves the payload manifest and runs permissionPolicyHandler.evaluate
+    over its lock/json/bundle/permissions, writes a free bid payload record, signs
+    a BID_NSID record carrying strongRefs to the RFP and payload plus submitAccept
+    = relay.ingressUrl, optionally POSTs it to the RFP''s submitBid URL, and returns
+    { ok: true, bidUri, bidCid }. The accept callback validates the accept/RFP/payload
+    chain with 400 InvalidRequest bodies, registers the manifest, creates a worker
+    instance record, starts the runner, binds a receipt to the accept via createAttestationCid,
+    stores the contract in activeContracts under the receipt refKey, and emits accepted
+    then provisioned/provisioning-failed events. createWorkerProviderHooks wraps any
+    WorkerProvider into a MarketBidderProviderRef with serviceId pdr_temp_market applied
+    to the workerManifest collection, and createComputeProviderDenoWorker builds a
+    WorkerProvider from just a structured logger and an ATProto client.'
+  message: wrote 13 requirement(s) and 6 interface(s) for lib-market-bidder-worker

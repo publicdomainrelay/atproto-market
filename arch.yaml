@@ -2208,8 +2208,41 @@ system_contexts:
   - sc.lib-atproto-helpers
   - sc.lib-common-market-common
   - sc.lib-market-atproto
+  requirements:
+  - id: r.accept-provisioning
+    level: MUST
+  - id: r.accept-validation
+    level: MUST
+  - id: r.active-contract-tracking
+    level: MUST
+  - id: r.bid-record-creation
+    level: MUST
+  - id: r.callback-namespace
+    level: MUST
+  - id: r.dep-defaults
+    level: MUST
+  - id: r.no-termination-path
+    level: MAY
+  - id: r.policy-eval-on-rfp
+    level: MUST
+  - id: r.provider-construction
+    level: MUST
+  - id: r.provider-ref-registration
+    level: MUST
+  - id: r.receipt-attestation
+    level: MUST
+  - id: r.submit-bid-dispatch
+    level: SHOULD
+  - id: r.worker-permission-check
+    level: MUST
   codeRefIndex:
   - file:lib/market-bidder-worker/mod.ts mod.ts@lib/market-bidder-worker/mod.ts
+  - function:0270e1f8fb0d9ba7755ac84195824cd5 createComputeProviderDenoWorker@lib/market-bidder-worker/mod.ts:305
+  - function:35fb7d4b902e6ad5a4f68cf585a580df createWorkerBidderCallbacks@lib/market-bidder-worker/mod.ts:74
+  - function:a5248f76fd7c17fa0d03949153f13023 createWorkerProviderHooks@lib/market-bidder-worker/mod.ts:335
+  - interface:61e8bfc9bbbe2ef113ac6821edec06fc WorkerProvider@lib/market-bidder-worker/mod.ts:297
+  - interface:6588bb229d1d3f4b0851680b4a33303c WorkerBidderDeps@lib/market-bidder-worker/mod.ts:39
+  - interface:7505aec1e654513bf40d42b074c9622b CreateComputeProviderDenoWorkerOpts@lib/market-bidder-worker/mod.ts:292
 - id: sc.lib-market-settlement-free
   name: lib-market-settlement-free
   spec: specs/lib-market-settlement-free.yaml

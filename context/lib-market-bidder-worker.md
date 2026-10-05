@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists to specify the bidder half of the compute-worker market: the module that turns an incoming worker-manifest RFP into a signed bid, and an accepted bid into a running worker instance plus an attested receipt and a tracked active contract. It pins down how policy evaluation, worker permission checks, callback routing, provenance attestation and provider registration must behave so a host can plug a WorkerProvider in and get a wired MarketBidderProviderRef without reimplementing any of that logic.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 
