@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so the market's atproto-facing behavior is specified once, in one place, rather than inferred from ten modules. It captures the invariants callers outside this package depend on: how signatures are normalized between @atiproto's Uint8Array form and atproto record JSON's { $bytes } form, which key material and DID documents count as authoritative, how a record is signed and stored, how the accept graph is verified back to its RFP, and the exact shape of the server handler factories and the MarketClient methods that the bidder, requester, and settlement packages bind to. It is the boundary document for anything that speaks to a market over AT Protocol, and it is what a maintainer should read before changing wire-visible behavior.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

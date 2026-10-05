@@ -1,28 +1,11 @@
 syncedFingerprint: 275503b01b63b599b8c0cf32be01e45a03ce2b5a1df16f6203e6466ab7fd201b
-realizedSpecHash: 4922db8571bc8aa127342194acf0e60fb34f4cf0fe7ad3584a50ba091e138167
+realizedSpecHash: 0ade4d3967d6a9966c777cba0fa5bbb916fa0a2a34f28b0c99b1c5ed730abb93
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: BidFactoryDeps, BidSettlementDeps, ContractGraph, ContractGraphError,
-    ContractGraphError.constructor, DispatchRfpInput, KeysForDid, ListedRecord, MarketClient,
-    MarketClient.constructor, MarketClient.create, MarketClient.ensureSigner, MarketClient.submitAccept,
-    MarketClient.submitBid, MarketClient.submitEvent, MarketClient.submitRfp, MarketClientOptions,
-    MarketServerDeps, OfferingRefreshHandle, ReceiptRefs, ReceiptSubject, RecordSigner,
-    RemoteProofSubject, ServiceAuthResult, Signed, SignedRecord, Submission, SubmitAcceptHandlerConfig,
-    SubmitAcceptResult, SubmitBidHandlerConfig, SubmitEventHandlerConfig, SubmitRfpHandlerConfig,
-    SubmitRfpResult, VerifyHandlerDeps, VerifyInlineOptions, VerifyMarketServiceAuthOptions,
-    VerifyRecordSignaturesOptions, VerifyRemoteProofOptions, VerifyServiceAuthOptions,
-    XrpcService, attestationFor, attestationVerificationMethod, badgeBlueKeysRkey,
-    base58btcEncode, createAndSubmitBid, createBadgeBlueKeysRecord, createBadgeBlueSigner,
-    createBidFactory, createDidKeyResolver, createKeyBoundByBadgeBlueKey, createMarketClient,
-    createReceiptRecord, createRecord, createRecordResolver, createRemoteProofRecord,
-    createRfpDispatcher, createSignedRecord, createSubmitAcceptHandler, createSubmitBidHandler,
-    createSubmitEventHandler, createSubmitRfpHandler, createVerifyHandler, deleteRecord,
-    extractBearer, fetchRecord, inlineEntries, keyBoundByBadgeBlueKey, listRecordsAll,
-    listRecordsPublic, loadOrGenerateKeypair, normalizeSignature, pdsForDid, resolveContractGraph,
-    resolvePds, serviceDidForHost, startOfferingRefresh, toStorableEntry, verifyInlineAttestation,
-    verifyMarketServiceAuth, verifyRecordSignatures, verifyRemoteProof'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual
