@@ -16,17 +16,8 @@ spec:
     - +ensureDumbpipe
     - ~createSshSessionProvider
 status:
-  phase: Pending
-  message: 'attempt 11 retried by john (Spec amended: r.iroh-ticket-report now requires
-    the report URL to name the port the guest reaches and to install the CA, and the
-    reporter to fail fast. Round 10''s guest showed the failure: the URL baked into
-    cloud-init was https://did-key-<...>.localhost/iroh-ticket/<ref> with no port,
-    so curl dialled 443 where nothing listens (the guest-facing listener is on an
-    ephemeral port); the report never landed, the requester never got the ticket,
-    and the suite ended at sshReady false after 5m with receiptOk true and bids 1.
-    Append the guest-facing listener''s port to the URL and install the requester''s
-    CA in the guest, or mount the ticket-report route on the plain listener and use
-    http on its port. Keep the suite economical.)'
+  phase: Running
+  message: the agent is realizing lib-requester-xrpc in a batch of 5 led by atproto-market
   attempt: 11
   retryReason: 'Spec amended: r.iroh-ticket-report now requires the report URL to
     name the port the guest reaches and to install the CA, and the reporter to fail
