@@ -1,0 +1,97 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-did-plc-c2s-05fe29612a62-8b36a2bfe627-a2
+  namespace: default
+spec:
+  systemContext: lib-did-plc
+  direction: CodeToSpec
+  fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
+  toCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
+  delta:
+    counts:
+      removed: 122
+      changed: 2
+status:
+  phase: Pending
+superseded:
+- name: lib-did-plc-c2s-05fe29612a62-8b36a2bfe627
+  phase: Failed
+  message: |-
+    ...s",
+          "file": "lib/did-plc/generated/types.gen.ts"
+        },
+        {
+          "name": "GetLastOpError",
+          "kind": "type",
+          "signature": "type GetLastOpError",
+          "file": "lib/did-plc/generated/types.gen.ts"
+        },
+        {
+          "name": "GetLastOpResponses",
+          "kind": "type",
+          "signature": "type GetLastOpResponses",
+          "file": "lib/did-plc/generated/types.gen.ts"
+        },
+        {
+          "name": "GetLastOpResponse",
+          "kind": "type",
+          "signature": "type GetLastOpResponse",
+          "file": "lib/did-plc/generated/types.gen.ts"
+        },
+        {
+          "name": "GetPlcDataData",
+          "kind": "type",
+          "signature": "type GetPlcDataData",
+          "file": "lib/did-plc/generated/types.gen.ts"
+        },
+        {
+          "name": "GetPlcDataErrors",
+          "kind": "type",
+          "signature": "type GetPlcDataErrors",
+          "file": "lib/did-plc/generated/types.gen.ts"
+        },
+        {
+          "name": "GetPlcDataError",
+          "kind": "type",
+          "signature": "type GetPlcDataError",
+          "file": "lib/did-plc/generated/types.gen.ts"
+        },
+        {
+          "name": "GetPlcDataResponses",
+          "kind": "type",
+          "signature": "type GetPlcDataResponses",
+          "file": "lib/did-plc/generated/types.gen.ts"
+        },
+        {
+          "name": "ExportData",
+          "kind": "type",
+          "signature": "type ExportData",
+          "file": "lib/did-plc/generated/types.gen.ts"
+        },
+        {
+          "name": "ExportErrors",
+          "kind": "type",
+          "signature": "type ExportErrors",
+          "file": "lib/did-plc/generated/types.gen.ts"
+        },
+        {
+          "name": "ExportError",
+          "kind": "type",
+          "signature": "type ExportError",
+          "file": "lib/did-plc/generated/types.gen.ts"
+        },
+        {
+          "name": "ExportResponses",
+          "kind": "type",
+          "signature": "type ExportResponses",
+          "file": "lib/did-plc/generated/types.gen.ts"
+        },
+        {
+          "name": "ExportResponse",
+          "kind": "type",
+          "signature": "type ExportResponse",
+          "file": "lib/did-plc/generated/types.gen.ts"
+        }
+      ]
+    }
