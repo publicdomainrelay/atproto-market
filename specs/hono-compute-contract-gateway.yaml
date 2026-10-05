@@ -10,5 +10,145 @@ spec:
   - sc.atproto-market
   - sc.lib-compute-contract-gateway-xrpc
   - sc.lib-hono-factory-compute-contract-gateway-xrpc
+  intent: 'This context exists so the compute contract gateway can be run as a real
+    process rather than only as a library: it binds the abstract ComputeContractGateway
+    contract (lib/abc/compute-contract-gateway) and its XRPC implementation (lib/compute-contract-gateway-xrpc)
+    plus the Hono factory (lib/hono-factory-compute-contract-gateway-xrpc) into a
+    deployable Deno CLI. It owns process-level concerns the libraries do not: argument
+    and environment resolution through cli-args-env.json and config.json, key material
+    resolution from a hex string or a file path, listener and storage wiring, DID
+    and IdResolver setup, HTTP mounting, readiness logging, and graceful teardown
+    on signals. It also owns the README-driven integration contract, expressed as
+    a subprocess smoke test that proves the documented shell blocks actually work.'
+  requirements:
+  - id: r.command-entrypoint
+    level: MUST
+    text: mod.ts runs as the process entrypoint and resolves its options by constructing
+      Command("CONFIG_PATH_HONO_COMPUTE_CONTRACT_GATEWAY", cli-args-env.json, runtimeConfig).resolve(),
+      where runtimeConfig is the default export of ./config.json when that file exists
+      and is null when the import fails, so the package starts with or without a local
+      config file.
+    codeRefs:
+    - file:hono-compute-contract-gateway/cli-args-env.json
+    - file:hono-compute-contract-gateway/config.json
+    - file:hono-compute-contract-gateway/mod.ts
+  - id: r.config-surface
+    level: MUST
+    text: 'The CLI exposes exactly these options, each reading its flag or the named
+      environment variable: port (env PORT, no default, no TCP listener when unset),
+      hostname (env HOSTNAME, default localhost, also supplied by config.json), private-key-hex
+      (env PRIVATE_KEY_HEX, no default), private-key-hex-path (env REPO_PRIVATE_KEY_HEX_PATH,
+      no default), pds-state-path (env PDS_STATE_PATH, no default), plc-directory-url
+      (env PLC_DIRECTORY_URL, default https://plc.directory), ingress-proxy-host (env
+      INGRESS_PROXY_HOST, default xrpc.fedproxy.com), fedproxy-host (env FEDPROXY_HOST,
+      default fedproxy.com), relay-urls (env RELAY_URLS, no default), and storage-path
+      (env STORAGE_PATH, no default).'
+    codeRefs:
+    - file:hono-compute-contract-gateway/cli-args-env.json
+    - file:hono-compute-contract-gateway/config.json
+    - file:hono-compute-contract-gateway/mod.ts
+  - id: r.deno-package-manifest
+    level: MUST
+    text: deno.json declares the package's JSR imports for cli-args-env, compute-contract-gateway-xrpc,
+      hono-factory-compute-contract-gateway-xrpc, logger, serve and @atproto/identity,
+      and compiles cli-args-env.json and config.json into any compiled binary so the
+      config surface survives compilation.
+    codeRefs:
+    - file:hono-compute-contract-gateway/cli-args-env.json
+    - file:hono-compute-contract-gateway/config.json
+    - file:hono-compute-contract-gateway/deno.json
+  - id: r.gateway-contract-consumed
+    level: MUST
+    text: 'The CLI depends on the ComputeContractGateway contract and exposes its
+      whole surface over HTTP: a did getter, beginServe and dispose lifecycle calls,
+      and the requestComputeVM, requestComputeWorkerEphemeral, requestComputeWorkerPersistent
+      and deleteCompute operations invoked with a CallerIdentity and receipt inputs,
+      so the CLI adds no operation the contract does not define.'
+    codeRefs:
+    - file:hono-compute-contract-gateway/mod.ts
+  - id: r.gateway-startup
+    level: MUST
+    text: The gateway is built with createComputeContractGateway using the resolved
+      logger, serve instance, private key, PLC directory URL, ingress proxy host,
+      fedproxy ingress host and storage path under the fixed label compute-contract-gateway,
+      and gateway.beginServe() is awaited before the HTTP app is constructed so the
+      gateway DID exists first.
+    codeRefs:
+    - file:hono-compute-contract-gateway/mod.ts
+  - id: r.graceful-shutdown
+    level: MUST
+    text: SIGINT and SIGTERM both log gateway_shutting_down, await gateway.dispose()
+      and then call Deno.exit(0), so the gateway is torn down rather than killed mid-write.
+    codeRefs:
+    - file:hono-compute-contract-gateway/mod.ts
+  - id: r.http-mount-and-ready
+    level: MUST
+    text: The factory's Hono app is mounted at the root of the serve instance with
+      serve.app.route("/", app) and serve.beginServe() is awaited, after which a gateway_cli_ready
+      event is logged carrying the gateway DID, so readiness is observable from the
+      event stream rather than inferred from process liveness.
+    codeRefs:
+    - file:hono-compute-contract-gateway/mod.ts
+  - id: r.identity-and-audience
+    level: MUST
+    text: An IdResolver is constructed with plcUrl defaulting to https://plc.directory,
+      and the Hono factory is called with that resolver, hostname defaulting to localhost,
+      and audienceDids set to the running gateway's own DID, so service-auth tokens
+      addressed to this gateway are accepted.
+    codeRefs:
+    - file:hono-compute-contract-gateway/mod.ts
+  - id: r.private-key-resolution
+    level: MUST
+    text: The private key is taken from private-key-hex when present; only when that
+      is empty and private-key-hex-path is set does the process read that file, trim
+      its contents and log key_loaded_from_path with the path and key length, and
+      a read failure is swallowed so a missing key file still lets the gateway generate
+      a key.
+    codeRefs:
+    - file:hono-compute-contract-gateway/mod.ts
+  - id: r.readme-block-coverage
+    level: SHOULD
+    text: The README shell blocks the smoke test must exercise are the Quick Start
+      server start plus health check, the VM key generation and requestComputeVM call,
+      and the worker heredoc setup with requestComputeWorkerEphemeral and requestComputeWorkerPersistent
+      calls, each expected to exit zero with the CLI started as a real subprocess
+      against local infrastructure and no external network.
+    codeRefs:
+    - file:hono-compute-contract-gateway/GOAL.md
+    - file:hono-compute-contract-gateway/README.md
+  - id: r.readme-smoke-task
+    level: SHOULD
+    text: deno.json provides a test:readme task that runs deno test -A against test/gateway_readme_smoke_test.ts
+      using the repository root deno.json as its config, giving the README contract
+      a single reproducible command.
+    codeRefs:
+    - file:hono-compute-contract-gateway/GOAL.md
+    - file:hono-compute-contract-gateway/deno.json
+  - id: r.relay-urls-parsing
+    level: MUST
+    text: The relay-urls option is a comma-separated string that is split on commas,
+      trimmed per entry, and passed as an array, defaulting to an empty array when
+      the option is absent.
+    codeRefs:
+    - file:hono-compute-contract-gateway/mod.ts
+  - id: r.storage-path-fallback
+    level: MUST
+    text: The storage path handed to the gateway is pds-state-path when set, otherwise
+      storage-path, so the persistent PDS state location can be overridden independently
+      of general storage.
+    codeRefs:
+    - file:hono-compute-contract-gateway/mod.ts
+  - id: r.tcp-listener
+    level: MUST
+    text: The serve instance is created with a TCP listener only when port is set,
+      binding that port on hostname or 0.0.0.0 when hostname is absent; with no port
+      the serve instance carries no TCP listener.
+    codeRefs:
+    - file:hono-compute-contract-gateway/mod.ts
 codeRefIndex:
+- file:hono-compute-contract-gateway/GOAL.md GOAL.md@hono-compute-contract-gateway/GOAL.md
+- file:hono-compute-contract-gateway/README.md README.md@hono-compute-contract-gateway/README.md
+- file:hono-compute-contract-gateway/cli-args-env.json cli-args-env.json@hono-compute-contract-gateway/cli-args-env.json
+- file:hono-compute-contract-gateway/config.json config.json@hono-compute-contract-gateway/config.json
+- file:hono-compute-contract-gateway/deno.json deno.json@hono-compute-contract-gateway/deno.json
 - file:hono-compute-contract-gateway/mod.ts mod.ts@hono-compute-contract-gateway/mod.ts

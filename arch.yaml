@@ -165,7 +165,41 @@ system_contexts:
   - sc.atproto-market
   - sc.lib-compute-contract-gateway-xrpc
   - sc.lib-hono-factory-compute-contract-gateway-xrpc
+  requirements:
+  - id: r.command-entrypoint
+    level: MUST
+  - id: r.config-surface
+    level: MUST
+  - id: r.deno-package-manifest
+    level: MUST
+  - id: r.gateway-contract-consumed
+    level: MUST
+  - id: r.gateway-startup
+    level: MUST
+  - id: r.graceful-shutdown
+    level: MUST
+  - id: r.http-mount-and-ready
+    level: MUST
+  - id: r.identity-and-audience
+    level: MUST
+  - id: r.private-key-resolution
+    level: MUST
+  - id: r.readme-block-coverage
+    level: SHOULD
+  - id: r.readme-smoke-task
+    level: SHOULD
+  - id: r.relay-urls-parsing
+    level: MUST
+  - id: r.storage-path-fallback
+    level: MUST
+  - id: r.tcp-listener
+    level: MUST
   codeRefIndex:
+  - file:hono-compute-contract-gateway/GOAL.md GOAL.md@hono-compute-contract-gateway/GOAL.md
+  - file:hono-compute-contract-gateway/README.md README.md@hono-compute-contract-gateway/README.md
+  - file:hono-compute-contract-gateway/cli-args-env.json cli-args-env.json@hono-compute-contract-gateway/cli-args-env.json
+  - file:hono-compute-contract-gateway/config.json config.json@hono-compute-contract-gateway/config.json
+  - file:hono-compute-contract-gateway/deno.json deno.json@hono-compute-contract-gateway/deno.json
   - file:hono-compute-contract-gateway/mod.ts mod.ts@hono-compute-contract-gateway/mod.ts
 - id: sc.hono-market
   name: hono-market
