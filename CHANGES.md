@@ -1181,13 +1181,15 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-abc-requester-s2c-43233687cb3d | SpecToCode | Succeeded | 1e1cd3c5 | 0 | - |
 | lib-common-cloud-init-common-s2c-73bfe7993c46 | SpecToCode | Succeeded | 1e1cd3c5 | 0 | - |
 | lib-common-cloud-init-common-s2c-cdde016620fc | SpecToCode | Succeeded | a15d9cda | 0 | acceptance passed |
-| lib-common-cloud-init-common-s2c-df0f09183975 | SpecToCode | Running |  | 0 | - |
+| lib-common-cloud-init-common-s2c-df0f09183975 | SpecToCode | Failed |  | 0 | acceptance failed |
+| lib-common-cloud-init-common-s2c-df0f09183975-a2 | SpecToCode | Pending |  | 0 | - |
 | lib-common-market-lexicons-com-publicdomainrelay-temp-compute-events-vm-s2c-048ade2e6c09 | SpecToCode | Succeeded | 1e1cd3c5 | 0 | - |
 | lib-common-market-lexicons-com-publicdomainrelay-temp-gateway-s2c-001734beb074 | SpecToCode | Succeeded | 1e1cd3c5 | 0 | - |
 | lib-did-key-ingress-proxy-s2c-1b41bfbf7018 | SpecToCode | Succeeded | 1e1cd3c5 | 0 | - |
 | lib-market-bidder-compute-s2c-5807b7c34327 | SpecToCode | Succeeded | 1e1cd3c5 | 0 | - |
 | lib-requester-xrpc-s2c-2afa76446f16 | SpecToCode | Succeeded | a15d9cda | 0 | acceptance passed |
-| lib-requester-xrpc-s2c-8f789cbecc7a | SpecToCode | Running |  | 0 | - |
+| lib-requester-xrpc-s2c-8f789cbecc7a | SpecToCode | Failed |  | 0 | acceptance failed |
+| lib-requester-xrpc-s2c-8f789cbecc7a-a2 | SpecToCode | Pending |  | 0 | - |
 | lib-requester-xrpc-s2c-9ad9f3e6903b | SpecToCode | Succeeded | 0a87f24e | 0 | acceptance passed |
 | lib-requester-xrpc-s2c-e9de5d5bf233 | SpecToCode | Succeeded | 1e1cd3c5 | 0 | - |
 | request-vm-ssh-s2c-d8b5dfdb85a7 | SpecToCode | Succeeded | 1e1cd3c5 | 0 | - |
@@ -1196,4 +1198,5 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | test-s2c-360d82d5cad1 | SpecToCode | Succeeded | 1e1cd3c5 | 0 | - |
 | test-s2c-3e99a616070e | SpecToCode | Succeeded | 0a87f24e | 0 | acceptance passed |
 | test-s2c-5415d5e0921b | SpecToCode | Succeeded | a15d9cda | 0 | acceptance passed |
-| test-s2c-7a9c10a26a63 | SpecToCode | Running |  | 0 | - |
+| test-s2c-7a9c10a26a63 | SpecToCode | Failed |  | 0 | acceptance failed |
+| test-s2c-7a9c10a26a63-a2 | SpecToCode | Pending |  | 0 | - |
