@@ -815,3 +815,4 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 | lib-trust-graph-bsky-mutuals-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-trust-graph-tangled-graph-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-utils-attestation-key-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
+| request-vm-ssh-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
