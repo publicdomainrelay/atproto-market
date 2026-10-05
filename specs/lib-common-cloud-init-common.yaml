@@ -27,8 +27,8 @@ spec:
       mode 0600, and prepends a runcmd that creates the path's parent directory 0700
       owned by root, so a bidder-injected accept.json lands readable only by root.
     codeRefs:
-    - function:4b5291e8f10c0cf8f4ac044370b5d20e
-    - interface:ce3efe5cd2d89f183f1c90bd06992a98
+    - function:5652e750fb9115e1fadb54fd2a5896ff
+    - interface:37b268c30817ddb5c94b9a1a7c725935
   - id: r.builtin-module-ids-registered
     level: MUST
     text: Importing the module registers the built-in provisioning modules under the
@@ -36,7 +36,7 @@ spec:
       composition resolves without the caller importing each module function.
     codeRefs:
     - file:lib/common/cloud-init-common/mod.ts
-    - function:a68626e26bed80b6d685682d2680efdb
+    - function:ffebae3212819883df36122271ebabe6
   - id: r.compose-precedence-and-header
     level: MUST
     text: buildUserData parses the optional base cloud-config, applies each requested
@@ -44,9 +44,9 @@ spec:
       and returns the YAML serialised with line wrapping disabled behind a `#cloud-config`
       header that the composer alone owns — modules must not emit that header themselves.
     codeRefs:
-    - function:b171eb2dbd8264151491ce36f02925d2
+    - function:0b425646d5c4f56b16038e9c4dba15af
     - interface:0bccaee64ad56c10f80842c828570d30
-    - interface:a70dcded359cb8e179e375b8adc0876c
+    - interface:5b7b5c412dbe3c5faa57a3a411a9255c
   - id: r.context-shape
     level: MUST
     text: CloudInitContext carries vmName as its only required field alongside the
@@ -71,24 +71,24 @@ spec:
       wrappers that delegate to buildUserData with the single module fedproxy-ssh
       and tunnel respectively, so existing callers keep compiling for one release.
     codeRefs:
-    - function:551af720488c464d56cac19e409b8ca3
-    - function:b171eb2dbd8264151491ce36f02925d2
-    - function:c89637f348f562927cb49e741a2df2ad
-    - interface:a1ea99f0f39ad710f4f5c37a44b76b5a
+    - function:0b425646d5c4f56b16038e9c4dba15af
+    - function:b9178b5c08f45793aabf9968ae96a12b
+    - function:e943569d450022d848868aace40826b9
+    - interface:092f68e9c67b840eb4354be94b83c64f
   - id: r.flatten-label-parity
     level: MUST
     text: flattenLabel replaces every `.` and `:` with `-` and must stay byte-for-byte
       in step with the Go flattenLabel on the relay side, since the two derive the
       same DNS-safe label from a DID or handle string.
     codeRefs:
-    - function:c42fe19fa18470a330f72a65da020d2d
+    - function:bf7affdf70f1bc3f8c62c8326c1440e6
   - id: r.inject-jsr-url-into-subscriber-unit
     level: MUST
     text: injectJsrUrl splices an `Environment="JSR_URL=<url>"` line immediately before
       the ExecStart line of the tunnel-subscriber systemd unit inside already-rendered
       cloud-init YAML, redirecting the guest's Deno registry to a local hono-jsr instance.
     codeRefs:
-    - function:ef90183afd35949cd0143b7d3681b88e
+    - function:a48ef14391165fd66d547881a7105798
   - id: r.iroh-context-fields
     level: MUST
     text: 'CloudInitContext gains two optional fields the iroh transport module reads:
@@ -155,7 +155,7 @@ spec:
       tunnel-k3s.yaml all keep matching their fixtures unchanged.'
     codeRefs:
     - file:lib/common/cloud-init-common/mod.ts
-    - function:a68626e26bed80b6d685682d2680efdb
+    - function:ffebae3212819883df36122271ebabe6
   - id: r.iroh-sshd-and-key
     level: MUST
     text: The iroh module requires sshAuthorizedKey and targetPort (default 22) from
@@ -188,14 +188,14 @@ spec:
       array, giving callers a way to enumerate the available provisioning modules
       without hard-coding them.
     codeRefs:
-    - function:a852acc6663f06c9724c3272a33b42a4
+    - function:bda226a178d322d23787826edd956b36
   - id: r.malformed-base-tolerated
     level: SHOULD
     text: A missing base or a base that fails YAML parsing yields an empty object
       rather than an exception, so a bad caller-supplied base never breaks composition
       of the modules layered on top of it.
     codeRefs:
-    - function:b171eb2dbd8264151491ce36f02925d2
+    - function:0b425646d5c4f56b16038e9c4dba15af
   - id: r.module-registry-by-id
     level: MUST
     text: registerUserDataModule stores a UserDataModule under a string id in a module-level
@@ -203,8 +203,8 @@ spec:
       select provisioning behaviour by name rather than by imported function reference.
     codeRefs:
     - file:lib/common/cloud-init-common/mod.ts
-    - function:a68626e26bed80b6d685682d2680efdb
-    - type_alias:41d76c33929582b594b1d002d3176708
+    - function:ffebae3212819883df36122271ebabe6
+    - type_alias:fc5f675691011262bc14dfb789ee9919
   - id: r.patch-merge-semantics
     level: MUST
     text: 'Applying a UserDataPatch merges rather than replaces: apt maps are shallow-merged,
@@ -213,9 +213,9 @@ spec:
       entry''s position, runcmdPrepend is spliced ahead of the existing runcmd followed
       by the patch''s own runcmd, and disable_root/ssh_pwauth are last-wins scalars.'
     codeRefs:
-    - function:b171eb2dbd8264151491ce36f02925d2
-    - interface:a70dcded359cb8e179e375b8adc0876c
-    - interface:ce3efe5cd2d89f183f1c90bd06992a98
+    - function:0b425646d5c4f56b16038e9c4dba15af
+    - interface:37b268c30817ddb5c94b9a1a7c725935
+    - interface:5b7b5c412dbe3c5faa57a3a411a9255c
   - id: r.resolve-modules-or-throw
     level: MUST
     text: 'getUserDataModules passes through entries that are already UserDataModule
@@ -223,8 +223,8 @@ spec:
       user-data module: <id>` Error when an id is not registered, so a typo fails
       the build instead of silently emitting a partial cloud-config.'
     codeRefs:
-    - function:b757a298771ae8dcbe1086c37860fb1e
-    - type_alias:41d76c33929582b594b1d002d3176708
+    - function:9907051b938352ee02de9174900cda83
+    - type_alias:fc5f675691011262bc14dfb789ee9919
   - id: r.tunnel-context-shape
     level: MUST
     text: TunnelCloudInitContext keeps the historical tunnel-subscriber shape with
@@ -232,16 +232,16 @@ spec:
       and hostAliases optional, so callers written against the old buildTunnelUserData
       signature still type-check.
     codeRefs:
-    - function:551af720488c464d56cac19e409b8ca3
-    - interface:a1ea99f0f39ad710f4f5c37a44b76b5a
+    - function:e943569d450022d848868aace40826b9
+    - interface:092f68e9c67b840eb4354be94b83c64f
   - id: r.tunnel-module-defaults
     level: MUST
     text: The built-in tunnel module requires ingressProxyHost, audHost and sshAuthorizedKey
       from the context, defaults targetPort to 22, and admits only hostAliases entries
       matching `^[\w.:-]+\s+[\w.-]+$` as idempotent `/etc/hosts` bootcmd appends.
     codeRefs:
-    - function:551af720488c464d56cac19e409b8ca3
-    - function:b171eb2dbd8264151491ce36f02925d2
+    - function:0b425646d5c4f56b16038e9c4dba15af
+    - function:e943569d450022d848868aace40826b9
     - interface:0bccaee64ad56c10f80842c828570d30
   interfaces:
   - name: CloudInitContext
@@ -318,17 +318,17 @@ spec:
 codeRefIndex:
 - file:lib/common/cloud-init-common/deno.json deno.json@lib/common/cloud-init-common/deno.json
 - file:lib/common/cloud-init-common/mod.ts mod.ts@lib/common/cloud-init-common/mod.ts
-- function:4b5291e8f10c0cf8f4ac044370b5d20e acceptBundleModule@lib/common/cloud-init-common/mod.ts:220
-- function:551af720488c464d56cac19e409b8ca3 buildTunnelUserData@lib/common/cloud-init-common/mod.ts:931
-- function:a68626e26bed80b6d685682d2680efdb registerUserDataModule@lib/common/cloud-init-common/mod.ts:113
-- function:a852acc6663f06c9724c3272a33b42a4 listUserDataModules@lib/common/cloud-init-common/mod.ts:127
-- function:b171eb2dbd8264151491ce36f02925d2 buildUserData@lib/common/cloud-init-common/mod.ts:200
-- function:b757a298771ae8dcbe1086c37860fb1e getUserDataModules@lib/common/cloud-init-common/mod.ts:118
-- function:c42fe19fa18470a330f72a65da020d2d flattenLabel@lib/common/cloud-init-common/mod.ts:102
-- function:c89637f348f562927cb49e741a2df2ad buildDefaultUserData@lib/common/cloud-init-common/mod.ts:923
-- function:ef90183afd35949cd0143b7d3681b88e injectJsrUrl@lib/common/cloud-init-common/mod.ts:936
+- function:0b425646d5c4f56b16038e9c4dba15af buildUserData@lib/common/cloud-init-common/mod.ts:206
+- function:5652e750fb9115e1fadb54fd2a5896ff acceptBundleModule@lib/common/cloud-init-common/mod.ts:226
+- function:9907051b938352ee02de9174900cda83 getUserDataModules@lib/common/cloud-init-common/mod.ts:124
+- function:a48ef14391165fd66d547881a7105798 injectJsrUrl@lib/common/cloud-init-common/mod.ts:1202
+- function:b9178b5c08f45793aabf9968ae96a12b buildDefaultUserData@lib/common/cloud-init-common/mod.ts:1189
+- function:bda226a178d322d23787826edd956b36 listUserDataModules@lib/common/cloud-init-common/mod.ts:133
+- function:bf7affdf70f1bc3f8c62c8326c1440e6 flattenLabel@lib/common/cloud-init-common/mod.ts:108
+- function:e943569d450022d848868aace40826b9 buildTunnelUserData@lib/common/cloud-init-common/mod.ts:1197
+- function:ffebae3212819883df36122271ebabe6 registerUserDataModule@lib/common/cloud-init-common/mod.ts:119
+- interface:092f68e9c67b840eb4354be94b83c64f TunnelCloudInitContext@lib/common/cloud-init-common/mod.ts:68
 - interface:0bccaee64ad56c10f80842c828570d30 CloudInitContext@lib/common/cloud-init-common/mod.ts:16
-- interface:a1ea99f0f39ad710f4f5c37a44b76b5a TunnelCloudInitContext@lib/common/cloud-init-common/mod.ts:62
-- interface:a70dcded359cb8e179e375b8adc0876c UserDataPatch@lib/common/cloud-init-common/mod.ts:86
-- interface:ce3efe5cd2d89f183f1c90bd06992a98 WriteFileEntry@lib/common/cloud-init-common/mod.ts:77
-- type_alias:41d76c33929582b594b1d002d3176708 UserDataModule@lib/common/cloud-init-common/mod.ts:99
+- interface:37b268c30817ddb5c94b9a1a7c725935 WriteFileEntry@lib/common/cloud-init-common/mod.ts:83
+- interface:5b7b5c412dbe3c5faa57a3a411a9255c UserDataPatch@lib/common/cloud-init-common/mod.ts:92
+- type_alias:fc5f675691011262bc14dfb789ee9919 UserDataModule@lib/common/cloud-init-common/mod.ts:105
