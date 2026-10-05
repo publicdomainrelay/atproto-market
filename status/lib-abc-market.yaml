@@ -1,16 +1,11 @@
 syncedFingerprint: 5bd58b97bfb1cec3dfaaf335833717f321206a4b2980ea6d766d321fdc710614
-realizedSpecHash: b8ab8f67e6e7df65d8ff62a40b21abb9068f55c73e8eb84838e2ac06aa686543
+realizedSpecHash: a2f1e80cb615b8ce3fbab98bdb3dbc483e35a3eda98dc9c5eaf9249c702d9aa3
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: AtUriParts, AttestationKeypair, ContractGraph, ContractGraphError,
-    ContractGraphError.constructor, EventCallback, EventCallbacks, EventDispatchContext,
-    HandlerResult, RecordRef, RecordResolver, RecordVersionError, RecordVersionError.constructor,
-    RfpCallbacks, Settlement, SettlementCtx, SettlementMode, SubmitAcceptCallback,
-    SubmitAcceptContext, SubmitBidCallback, SubmitBidContext, SubmitRfpCallback, SubmitRfpContext,
-    atUriAuthority, nsidFromUri, parseAtUri, receiptUrlFor, refKey, refsEqual, resolvedRef,
-    stripResolved'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual

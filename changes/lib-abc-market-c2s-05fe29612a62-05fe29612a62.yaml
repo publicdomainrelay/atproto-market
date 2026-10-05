@@ -9,5 +9,22 @@ spec:
   fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
   toCommit: 05fe29612a62a645d70273560238ecc3180414d2
 status:
-  phase: Running
-  message: the agent is summarizing lib-abc-market
+  phase: Succeeded
+  agentLog: lib/abc/market is the transport-agnostic ABC interface layer for an AT
+    Protocol market. resolve.ts parses at:// URIs into repo, collection and rkey,
+    models a RecordRef of uri plus cid, declares the RecordResolver a host implements
+    to fetch and type records, and supplies the refKey, refsEqual, stripResolved and
+    resolvedRef helpers alongside a RecordVersionError for versions the layer does
+    not recognize. contract.ts names the ContractGraph of strong refs that make up
+    a market contract, with bid, rfp and rfpPayload required and bidPayload, bidConfig,
+    accept, receipt and event optional, plus a ContractGraphError carrying a status
+    that defaults to 400. callbacks.ts defines the context objects and callback signatures
+    for submitRfp, submitBid, submitAccept and market event dispatch, each callback
+    indexed by service id and payload NSID and all returning the same HandlerResult
+    of optional status and body or nothing. settlement.ts describes a settlement implementation
+    in terms of an x402-or-free mode, the bid payload NSID it writes, a receipt url
+    derived from the request, and a createBidPayload step, all over a SettlementCtx
+    supplying agent, resolver, signer, logger and base url. attestation.ts declares
+    the AttestationKeypair handed to the attestation layer, and mod.ts barrels all
+    five modules so consumers import the interface layer from one entry point.
+  message: wrote 17 requirement(s) and 31 interface(s) for lib-abc-market

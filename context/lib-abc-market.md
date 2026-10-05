@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists to fix the seam between a market server and whatever concrete transport, repository and settlement backend sit behind it. Every exported value is a type or a pure helper: a context object the host fills in, a callback signature the host implements, or a small function that converts between the layer's own reference shapes and the underlying atproto shapes. Nothing here performs IO or depends on Hono, Deno or a PDS, so bidder, requester and settlement packages can share one vocabulary of refs, graphs, callbacks and errors while swapping out the transport. mod.ts is the single entry point that makes that vocabulary importable as one unit.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

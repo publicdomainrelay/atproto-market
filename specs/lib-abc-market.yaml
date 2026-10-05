@@ -10,10 +10,350 @@ spec:
   - sc.atproto-market
   - sc.lib-atproto-attestation-port
   - sc.lib-common-market-common
+  intent: 'This context exists to fix the seam between a market server and whatever
+    concrete transport, repository and settlement backend sit behind it. Every exported
+    value is a type or a pure helper: a context object the host fills in, a callback
+    signature the host implements, or a small function that converts between the layer''s
+    own reference shapes and the underlying atproto shapes. Nothing here performs
+    IO or depends on Hono, Deno or a PDS, so bidder, requester and settlement packages
+    can share one vocabulary of refs, graphs, callbacks and errors while swapping
+    out the transport. mod.ts is the single entry point that makes that vocabulary
+    importable as one unit.'
+  requirements:
+  - id: r.at-uri-parsing
+    level: MUST
+    text: parseAtUri takes an at:// URI and returns an AtUriParts of repo, collection
+      and rkey; atUriAuthority returns just the authority segment of a URI; nsidFromUri
+      returns the collection segment, which callers treat as the record's NSID. Together
+      they let handlers derive a DID and a record type from a URI without a URI library.
+    codeRefs:
+    - function:0b5e12ce3c1c857f2c95548a731c5193
+    - function:43e20fb2680803ef7ecfd166aff58966
+    - function:e1b677a59c449d5b3a8df99e8c065aaa
+    - interface:50e55cd486d00a6d88fbbbc9513ea0be
+  - id: r.attestation-keypair
+    level: MUST
+    text: AttestationKeypair hands the attestation layer a did:key public-key reference
+      through its did method plus the private key material as privateKey, so callers
+      can sign and verify without this package depending on the attestation implementation.
+    codeRefs:
+    - file:lib/abc/market/attestation.ts
+    - interface:7c4ceebaecd03e6d27746999a54821d2
+  - id: r.bid-and-accept-callbacks
+    level: MUST
+    text: SubmitBidCallback receives a SubmitBidContext built from the bid record
+      as sent inline in the request (uri, cid, record, issuer DID, resolver, logger
+      and a mandatory request), and SubmitAcceptCallback receives a SubmitAcceptContext
+      carrying the accept uri, cid and resolved accept record with the same supporting
+      fields; both return the same HandlerResult shape as the rfp callback.
+    codeRefs:
+    - interface:2e006fab2ae9f1b1265f8f1d98886565
+    - interface:9be2bacad9b50e4fe402adc03562b2fb
+    - type_alias:072e38723584e04ddf9824fe73b8ae8d
+    - type_alias:5f2c2806cdf4c52f0324b4d29875f620
+  - id: r.contract-graph-error
+    level: MUST
+    text: ContractGraphError extends Error and carries a status field that defaults
+      to 400 when the thrower does not name one, so a malformed contract graph surfaces
+      as a client error unless a caller deliberately says otherwise.
+    codeRefs:
+    - class:d2f9b5d5998f84730325047d9db1340d
+    - method:9bca3b5354a39ba5e5a08834053af403
+  - id: r.contract-graph-shape
+    level: MUST
+    text: 'ContractGraph names the strong refs that make up a market contract: bid,
+      rfp and rfpPayload are required, while bidPayload, bidConfig, accept, receipt
+      and event are optional because they only exist once the corresponding step has
+      happened. A consumer can therefore validate a graph as soon as the rfp is issued
+      and keep filling it in as the market progresses.'
+    codeRefs:
+    - file:lib/abc/market/contract.ts
+    - interface:30de74b08ca0dfbe29306bb852e2c2f5
+  - id: r.event-callbacks
+    level: MUST
+    text: EventCallback receives an EventDispatchContext with the event's uri, cid,
+      resolved record, payload NSID and issuer DID, plus the service id the token's
+      audience matched when one did, and EventCallbacks indexes handlers by service
+      id and payload NSID the same way the rfp callbacks are indexed.
+    codeRefs:
+    - interface:783b2e7264d1c2455e923a183aa08af2
+    - type_alias:5c297d7e51972b79b3f90a4857f9f822
+    - type_alias:a5fad144b700800ee41170bd530c2038
+  - id: r.handler-result
+    level: MUST
+    text: HandlerResult is either void or an object with an optional status and an
+      optional body, so a callback can decline to shape the response and let the host
+      supply a default instead of forcing every handler to construct one.
+    codeRefs:
+    - type_alias:c2e697175930be3ef1c6b21a7b6e1472
+  - id: r.receipt-url
+    level: MUST
+    text: receiptUrlFor builds a receipt url from a base url, the incoming request
+      url and a path, so settlement can advertise where the written receipt will live
+      regardless of how the service is mounted.
+    codeRefs:
+    - function:ff7b2b644f6f0a994b9f5492fe767eb8
+  - id: r.record-ref
+    level: MUST
+    text: RecordRef is a uri plus a cid, so a record is always identified by both
+      its location and its exact version, and a consumer can hold a reference to a
+      specific version rather than to whatever currently lives at that uri.
+    codeRefs:
+    - file:lib/abc/market/resolve.ts
+    - interface:1a01cd0adebae6ece66a71a28e7e34ca
+  - id: r.record-resolver-contract
+    level: MUST
+    text: A host supplies a RecordResolver whose resolve method takes a RecordRef
+      and returns a Promise of Resolved<T>, so every callback context can fetch and
+      type records without knowing the transport or the repository it came from.
+    codeRefs:
+    - interface:46637b41730d998d7409bb094a199fbe
+  - id: r.record-version-error
+    level: MUST
+    text: RecordVersionError is the error raised for a record version the layer does
+      not recognize, and its constructor takes the offending version string so the
+      thrown error names which version was seen.
+    codeRefs:
+    - class:9828d35cfd8b58a1cd6a8a7f61cbd771
+    - method:cb5ff5f27df8f18f6f47ed0cb0207572
+  - id: r.ref-helpers
+    level: MUST
+    text: refKey renders a RecordRef as a single string suitable for use as a map
+      key, and refsEqual reports two refs equal only when both uri and cid agree,
+      so a changed cid is never mistaken for the same record version.
+    codeRefs:
+    - function:6098bf13a256d45b83e56dba75b170ba
+    - function:e01a0614b1d05394405331fc4f91dd7a
+  - id: r.resolved-helpers
+    level: MUST
+    text: stripResolved returns the wrapped record from a Resolved<T> and resolvedRef
+      returns a com.atproto.repo.strongRef built from the same value, so a resolved
+      value can be converted back to a plain record or to a strong ref without re-reading
+      the source.
+    codeRefs:
+    - function:4c0fc8eba95ff6940c69d8c957e19f82
+    - function:a0b78ea629d02463b11bee34bbee99c3
+  - id: r.settlement-mode-and-interface
+    level: MUST
+    text: SettlementMode is either x402 or free, and Settlement exposes the chosen
+      mode, the NSID of the bid payload it produces, a receiptUrl derived from the
+      request url, and createBidPayload which writes the payload for a given receipt
+      url and timestamp and returns its strong ref; SettlementCtx supplies the agent,
+      resolver, signer, logger and base url an implementation needs without this layer
+      knowing the concrete backend.
+    codeRefs:
+    - file:lib/abc/market/settlement.ts
+    - interface:463898e97d88180ba985082bf1910898
+    - interface:534292774b0efca0f35c954e05c1c3e0
+    - type_alias:15b66e1486bb1129d9a6b3136080517b
+  - id: r.single-entry-export
+    level: MUST
+    text: mod.ts re-exports resolve, settlement, contract, callbacks and attestation
+      so a consumer imports the whole interface layer from the package entry point
+      rather than reaching into individual modules.
+    codeRefs:
+    - file:lib/abc/market/mod.ts
+  - id: r.submit-rfp-callback
+    level: MUST
+    text: SubmitRfpCallback receives a SubmitRfpContext carrying the rfp's uri, cid,
+      resolved record, payload NSID and issuer DID plus the resolver and logger, and
+      may return a HandlerResult of status and body or nothing at all; RfpCallbacks
+      indexes those handlers by service id and then by payload NSID so one server
+      can host several RFP types.
+    codeRefs:
+    - interface:ff0c27330e697df5114c8bef0c21e380
+    - type_alias:32fcebe14317b9d1b49d3b48bcb3ca40
+    - type_alias:caeab7a15e595c198b75e96251bfe5d8
+  - id: r.submit-rfp-request-optional
+    level: MUST
+    text: The inbound request on SubmitRfpContext is optional, because an rfp discovered
+      by pulling the firehose has no originating HTTP request while one pushed over
+      submitRfp does; a handler that reads its url or headers must tolerate the field
+      being absent.
+    codeRefs:
+    - interface:ff0c27330e697df5114c8bef0c21e380
+  interfaces:
+  - name: AtUriParts
+    kind: interface
+    signature: 'interface AtUriParts { repo: string; collection: string; rkey: string
+      }'
+    file: lib/abc/market/resolve.ts
+  - name: AttestationKeypair
+    kind: interface
+    signature: 'interface AttestationKeypair { did(): string; privateKey: KeyData
+      }'
+    file: lib/abc/market/attestation.ts
+  - name: ContractGraph
+    kind: interface
+    signature: 'interface ContractGraph { bid: StrongRef; rfp: StrongRef; rfpPayload:
+      StrongRef; bidPayload?: StrongRef; bidConfig?: StrongRef; accept?: StrongRef;
+      receipt?: StrongRef; event?: StrongRef }'
+    file: lib/abc/market/contract.ts
+  - name: ContractGraphError
+    kind: class
+    signature: 'class ContractGraphError extends Error { status: number }'
+    file: lib/abc/market/contract.ts
+  - name: ContractGraphError.constructor
+    kind: method
+    signature: 'constructor(message: string, status = 400)'
+    file: lib/abc/market/contract.ts
+  - name: EventCallback
+    kind: type
+    signature: 'type EventCallback = (ctx: EventDispatchContext) => Promise<HandlerResult>
+      | HandlerResult'
+    file: lib/abc/market/callbacks.ts
+  - name: EventCallbacks
+    kind: type
+    signature: type EventCallbacks = Record<string, Record<string, EventCallback>>
+    file: lib/abc/market/callbacks.ts
+  - name: EventDispatchContext
+    kind: interface
+    signature: 'interface EventDispatchContext { uri: string; cid: string; event:
+      Resolved<MarketEvent & { $type?: string }>; payloadNsid: string; issuerDid:
+      string; serviceId?: string; resolve: RecordResolver; log: Logger; req: Request
+      }'
+    file: lib/abc/market/callbacks.ts
+  - name: HandlerResult
+    kind: type
+    signature: 'type HandlerResult = { status?: number; body?: unknown } | void'
+    file: lib/abc/market/callbacks.ts
+  - name: RecordRef
+    kind: interface
+    signature: 'interface RecordRef { uri: string; cid: string }'
+    file: lib/abc/market/resolve.ts
+  - name: RecordResolver
+    kind: interface
+    signature: 'interface RecordResolver { resolve<T>(ref: RecordRef): Promise<Resolved<T>>
+      }'
+    file: lib/abc/market/resolve.ts
+  - name: RecordVersionError
+    kind: class
+    signature: class RecordVersionError extends Error
+    file: lib/abc/market/resolve.ts
+  - name: RecordVersionError.constructor
+    kind: method
+    signature: 'constructor(version: string)'
+    file: lib/abc/market/resolve.ts
+  - name: RfpCallbacks
+    kind: type
+    signature: type RfpCallbacks = Record<string, Record<string, SubmitRfpCallback>>
+    file: lib/abc/market/callbacks.ts
+  - name: Settlement
+    kind: interface
+    signature: 'interface Settlement { readonly mode: SettlementMode; readonly bidPayloadNsid:
+      string; receiptUrl(reqUrl: string): string; createBidPayload(receiptUrl: string,
+      nowIso: string): Promise<StrongRef> }'
+    file: lib/abc/market/settlement.ts
+  - name: SettlementCtx
+    kind: interface
+    signature: 'interface SettlementCtx { getAgent: () => unknown; resolve: RecordResolver;
+      getSigner: () => unknown; log: Logger; baseUrl: string }'
+    file: lib/abc/market/settlement.ts
+  - name: SettlementMode
+    kind: type
+    signature: type SettlementMode = "x402" | "free"
+    file: lib/abc/market/settlement.ts
+  - name: SubmitAcceptCallback
+    kind: type
+    signature: 'type SubmitAcceptCallback = (ctx: SubmitAcceptContext) => Promise<HandlerResult>
+      | HandlerResult'
+    file: lib/abc/market/callbacks.ts
+  - name: SubmitAcceptContext
+    kind: interface
+    signature: 'interface SubmitAcceptContext { acceptUri: string; acceptCid: string;
+      accept: Resolved<Accept & { $type?: string }>; issuerDid: string; resolve: RecordResolver;
+      log: Logger; req: Request }'
+    file: lib/abc/market/callbacks.ts
+  - name: SubmitBidCallback
+    kind: type
+    signature: 'type SubmitBidCallback = (ctx: SubmitBidContext) => Promise<HandlerResult>
+      | HandlerResult'
+    file: lib/abc/market/callbacks.ts
+  - name: SubmitBidContext
+    kind: interface
+    signature: 'interface SubmitBidContext { uri: string; cid: string; record: Bid
+      & { $type?: string }; issuerDid: string; resolve: RecordResolver; log: Logger;
+      req: Request }'
+    file: lib/abc/market/callbacks.ts
+  - name: SubmitRfpCallback
+    kind: type
+    signature: 'type SubmitRfpCallback = (ctx: SubmitRfpContext) => Promise<HandlerResult>
+      | HandlerResult'
+    file: lib/abc/market/callbacks.ts
+  - name: SubmitRfpContext
+    kind: interface
+    signature: 'interface SubmitRfpContext { rfpUri: string; rfpCid: string; rfp:
+      Resolved<RFP & { $type?: string }>; payloadNsid: string; issuerDid: string;
+      resolve: RecordResolver; log: Logger; req?: Request }'
+    file: lib/abc/market/callbacks.ts
+  - name: atUriAuthority
+    kind: function
+    signature: 'function atUriAuthority(uri: string): string'
+    file: lib/abc/market/resolve.ts
+  - name: nsidFromUri
+    kind: function
+    signature: 'function nsidFromUri(uri: string): string'
+    file: lib/abc/market/resolve.ts
+  - name: parseAtUri
+    kind: function
+    signature: 'function parseAtUri(uri: string): AtUriParts'
+    file: lib/abc/market/resolve.ts
+  - name: receiptUrlFor
+    kind: function
+    signature: 'function receiptUrlFor(baseUrl: string, reqUrl: string, path: string):
+      string'
+    file: lib/abc/market/settlement.ts
+  - name: refKey
+    kind: function
+    signature: 'function refKey(ref: RecordRef): string'
+    file: lib/abc/market/resolve.ts
+  - name: refsEqual
+    kind: function
+    signature: 'function refsEqual(a: RecordRef, b: RecordRef): boolean'
+    file: lib/abc/market/resolve.ts
+  - name: resolvedRef
+    kind: function
+    signature: 'function resolvedRef<T>(resolved: Resolved<T>): StrongRef'
+    file: lib/abc/market/resolve.ts
+  - name: stripResolved
+    kind: function
+    signature: 'function stripResolved<T>(resolved: Resolved<T>): T'
+    file: lib/abc/market/resolve.ts
 codeRefIndex:
+- class:9828d35cfd8b58a1cd6a8a7f61cbd771 RecordVersionError@lib/abc/market/resolve.ts:45
+- class:d2f9b5d5998f84730325047d9db1340d ContractGraphError@lib/abc/market/contract.ts:14
 - file:lib/abc/market/attestation.ts attestation.ts@lib/abc/market/attestation.ts
 - file:lib/abc/market/callbacks.ts callbacks.ts@lib/abc/market/callbacks.ts
 - file:lib/abc/market/contract.ts contract.ts@lib/abc/market/contract.ts
 - file:lib/abc/market/mod.ts mod.ts@lib/abc/market/mod.ts
 - file:lib/abc/market/resolve.ts resolve.ts@lib/abc/market/resolve.ts
 - file:lib/abc/market/settlement.ts settlement.ts@lib/abc/market/settlement.ts
+- function:0b5e12ce3c1c857f2c95548a731c5193 parseAtUri@lib/abc/market/resolve.ts:9
+- function:43e20fb2680803ef7ecfd166aff58966 atUriAuthority@lib/abc/market/resolve.ts:14
+- function:4c0fc8eba95ff6940c69d8c957e19f82 resolvedRef@lib/abc/market/resolve.ts:41
+- function:6098bf13a256d45b83e56dba75b170ba refsEqual@lib/abc/market/resolve.ts:32
+- function:a0b78ea629d02463b11bee34bbee99c3 stripResolved@lib/abc/market/resolve.ts:36
+- function:e01a0614b1d05394405331fc4f91dd7a refKey@lib/abc/market/resolve.ts:28
+- function:e1b677a59c449d5b3a8df99e8c065aaa nsidFromUri@lib/abc/market/resolve.ts:18
+- function:ff7b2b644f6f0a994b9f5492fe767eb8 receiptUrlFor@lib/abc/market/settlement.ts:21
+- interface:1a01cd0adebae6ece66a71a28e7e34ca RecordRef@lib/abc/market/resolve.ts:23
+- interface:2e006fab2ae9f1b1265f8f1d98886565 SubmitAcceptContext@lib/abc/market/callbacks.ts:49
+- interface:30de74b08ca0dfbe29306bb852e2c2f5 ContractGraph@lib/abc/market/contract.ts:3
+- interface:463898e97d88180ba985082bf1910898 SettlementCtx@lib/abc/market/settlement.ts:6
+- interface:46637b41730d998d7409bb094a199fbe RecordResolver@lib/abc/market/resolve.ts:51
+- interface:50e55cd486d00a6d88fbbbc9513ea0be AtUriParts@lib/abc/market/resolve.ts:3
+- interface:534292774b0efca0f35c954e05c1c3e0 Settlement@lib/abc/market/settlement.ts:14
+- interface:783b2e7264d1c2455e923a183aa08af2 EventDispatchContext@lib/abc/market/callbacks.ts:62
+- interface:7c4ceebaecd03e6d27746999a54821d2 AttestationKeypair@lib/abc/market/attestation.ts:8
+- interface:9be2bacad9b50e4fe402adc03562b2fb SubmitBidContext@lib/abc/market/callbacks.ts:35
+- interface:ff0c27330e697df5114c8bef0c21e380 SubmitRfpContext@lib/abc/market/callbacks.ts:13
+- method:9bca3b5354a39ba5e5a08834053af403 ContractGraphError.constructor@lib/abc/market/contract.ts:16
+- method:cb5ff5f27df8f18f6f47ed0cb0207572 RecordVersionError.constructor@lib/abc/market/resolve.ts:46
+- type_alias:072e38723584e04ddf9824fe73b8ae8d SubmitAcceptCallback@lib/abc/market/callbacks.ts:60
+- type_alias:15b66e1486bb1129d9a6b3136080517b SettlementMode@lib/abc/market/settlement.ts:4
+- type_alias:32fcebe14317b9d1b49d3b48bcb3ca40 SubmitRfpCallback@lib/abc/market/callbacks.ts:30
+- type_alias:5c297d7e51972b79b3f90a4857f9f822 EventCallback@lib/abc/market/callbacks.ts:77
+- type_alias:5f2c2806cdf4c52f0324b4d29875f620 SubmitBidCallback@lib/abc/market/callbacks.ts:47
+- type_alias:a5fad144b700800ee41170bd530c2038 EventCallbacks@lib/abc/market/callbacks.ts:80
+- type_alias:c2e697175930be3ef1c6b21a7b6e1472 HandlerResult@lib/abc/market/callbacks.ts:11
+- type_alias:caeab7a15e595c198b75e96251bfe5d8 RfpCallbacks@lib/abc/market/callbacks.ts:33
