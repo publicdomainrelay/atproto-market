@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+The tests that drive the market, the gateway, the bidder and the PLC must not touch the real plc.directory or depend on a pre-provisioned dispatcher, so this context provides one installable fetch redirection plus the fixtures and factories those tests share. It exists to keep every integration test pointed at in-process fakes with a single, reversible patch, to keep generated cloud-init comparable to checked-in golden YAML, and to let the full-flow harness reproduce the same topology end to end on self-chosen ephemeral ports.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

@@ -9,5 +9,19 @@ spec:
   fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
   toCommit: 05fe29612a62a645d70273560238ecc3180414d2
 status:
-  phase: Running
-  message: the agent is summarizing atproto-market
+  phase: Succeeded
+  agentLog: This context is the shared substrate the atproto-market integration tests
+    and the compute-contract full-flow harness stand on. test/fetch-interceptor.ts
+    patches globalThis.fetch so DID resolution aimed at https://plc.directory/ lands
+    on a locally started fake PLC and service traffic aimed at *.localhost lands on
+    an ephemeral dispatcher, optionally keeping HTTPS when a self-signed CA PEM is
+    supplied so TLS-only paths can be exercised without downgrading; it returns a
+    teardown that restores the original fetch and closes the CA-trusting client. Alongside
+    it live the six golden cloud-init YAML fixtures under test/fixtures/cloud-init/
+    that the snapshot and k3s tests compare generated user data against, the declarative
+    Hono PLC factory in hono-plc/mod.ts configured by hono-plc/config.json and hono-plc/cli-args-env.json,
+    and the end-to-end harness compute-contract-full-flow/run_full_flow.ts, which
+    carries its own smaller non-exported copy of the interceptor that always downgrades
+    the localhost leg to http and serves both the dispatcher and the fake PLC on ephemeral
+    127.0.0.1 ports resolved through onListen callbacks.
+  message: wrote 13 requirement(s) and 1 interface(s) for atproto-market

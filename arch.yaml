@@ -31,6 +31,33 @@ system_contexts:
   - sc.lib-market-bidder-worker
   - sc.lib-requester-xrpc
   - sc.lib-secrets-oidc
+  requirements:
+  - id: r.async-watcher-tests
+    level: MAY
+  - id: r.bidder-policy-tests
+    level: SHOULD
+  - id: r.ca-trusted-https
+    level: MUST
+  - id: r.cloud-init-golden-fixtures
+    level: MUST
+  - id: r.defect-regression-tests
+    level: SHOULD
+  - id: r.fetch-interceptor-export
+    level: MUST
+  - id: r.full-flow-harness
+    level: MUST
+  - id: r.integration-tests-install-interceptor
+    level: MUST
+  - id: r.interceptor-teardown
+    level: SHOULD
+  - id: r.localhost-port-rewrite
+    level: MUST
+  - id: r.plc-directory-factory
+    level: SHOULD
+  - id: r.plc-url-redirect
+    level: MUST
+  - id: r.record-shape-lexicons
+    level: MUST
   codeRefIndex:
   - file:compute-contract-full-flow/run_full_flow.ts run_full_flow.ts@compute-contract-full-flow/run_full_flow.ts
   - file:hono-plc/mod.ts mod.ts@hono-plc/mod.ts
@@ -62,6 +89,7 @@ system_contexts:
   - file:test/offering_refresh_test.ts offering_refresh_test.ts@test/offering_refresh_test.ts
   - file:test/registry_discovery_test.ts registry_discovery_test.ts@test/registry_discovery_test.ts
   - file:test/secrets_capability_test.ts secrets_capability_test.ts@test/secrets_capability_test.ts
+  - function:c6f81957f952317eb0e87d2454b5add3 installFetchInterceptor@test/fetch-interceptor.ts:7
 - id: sc.hono-bidder
   name: hono-bidder
   spec: specs/hono-bidder.yaml

@@ -1,10 +1,11 @@
 syncedFingerprint: 8c74a6d83646ccfa9bc3bc627fd09ee186e058a5fd9b6b7b12956afed0be615a
-realizedSpecHash: 49b0be137706b272149d1c5107c3610e9aafd5599b1c154592a6988204105469
+realizedSpecHash: f67957227b5c419b9f74c4edbfea0ea54caf8a643990c7bec310952d90535644
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: installFetchInterceptor'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual
