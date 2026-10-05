@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so the atproto-market end-to-end and unit tests can exercise real local services under their production-shaped https URLs instead of hitting the public network. It provides exactly one shared piece of machinery, installFetchInterceptor, that every affected suite installs before starting its services and disposes afterwards, and it holds the suites that pin behaviour for each subsystem under test. Keeping the rewrite rules in one place is what lets dispatchers, bidders, gateways and fake PLCs bind to ephemeral localhost ports while the code under test still believes it is talking to plc.directory and to *.localhost hostnames, including TLS-terminating endpoints reached through a trusted self-signed CA.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

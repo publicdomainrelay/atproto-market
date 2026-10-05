@@ -28,6 +28,133 @@ spec:
   - sc.lib-market-bidder-worker
   - sc.lib-requester-xrpc
   - sc.lib-secrets-oidc
+  intent: This context exists so the atproto-market end-to-end and unit tests can
+    exercise real local services under their production-shaped https URLs instead
+    of hitting the public network. It provides exactly one shared piece of machinery,
+    installFetchInterceptor, that every affected suite installs before starting its
+    services and disposes afterwards, and it holds the suites that pin behaviour for
+    each subsystem under test. Keeping the rewrite rules in one place is what lets
+    dispatchers, bidders, gateways and fake PLCs bind to ephemeral localhost ports
+    while the code under test still believes it is talking to plc.directory and to
+    *.localhost hostnames, including TLS-terminating endpoints reached through a trusted
+    self-signed CA.
+  requirements:
+  - id: r.ca-cert-https-mode
+    level: SHOULD
+    text: When a caCertPem is supplied, localhost rewrites must keep the https scheme
+      and be issued through a Deno HttpClient configured with that PEM as a trusted
+      CA certificate, so TLS-terminating local services are reachable without disabling
+      verification; when no PEM is supplied the rewrite must downgrade to plain http
+      and issue the request on the default client.
+    codeRefs:
+    - file:test/fetch-interceptor.ts
+    - function:c6f81957f952317eb0e87d2454b5add3
+  - id: r.cloud-init-k3s-and-defect-regressions
+    level: SHOULD
+    text: The suite must keep regression coverage for the k3s cloud-init UserDataModule
+      and for the two named gateway defects, the gateway DID resolution defect and
+      the QR session defect, so those fixes stay pinned by executable tests.
+    codeRefs:
+    - file:test/cloud_init_k3s_test.ts
+    - file:test/defect1_gateway_did_test.ts
+    - file:test/defect4_qr_session_test.ts
+  - id: r.container-harness-proves-live-ssh-over-iroh
+    level: MUST
+    text: 'The container integration test in test/bidder_container_integration_test.ts
+      MUST prove the whole request end to end instead of the bid alone. It MUST await
+      runComputeContract with skipSsh false and a vmReadyTimeoutSec large enough for
+      a real container to provision, keep every service (dispatcher, fake PLC, requester,
+      bidder, provider) alive until that contract settles, and it MUST NOT race the
+      contract against a wall-clock timer that lets the test pass while provisioning
+      is still failing. The contract MUST carry execProgram "test -x /usr/local/bin/dumbpipe
+      && echo SSH_OK_VIA_IROH", and the test MUST fail unless the guest-side session
+      exit code is 0 and its output contains SSH_OK_VIA_IROH: that program runs through
+      the ssh session the requester opens with the ProxyCommand the contract reports,
+      which for this repository MUST be dumbpipe connect <ticket> against the guest
+      iroh listener the cloud-init iroh module installs. The harness MUST also make
+      the guest able to reach the requester: it MUST wire the listener the container
+      can dial and hand the requester that address, so the guest POST of its ticket
+      arrives and the contract learns vmFqdn before the ssh wait, and it MUST assert
+      that the contract reported a non-empty vmFqdn so a run whose guest never reported
+      fails instead of timing out. The test keeps its command deno test --allow-all
+      test/bidder_container_integration_test.ts and MUST stay green.'
+    codeRefs:
+    - file:test/bidder_container_integration_test.ts
+  - id: r.integration-suites-install-interceptor
+    level: MUST
+    text: The bidder container, bidder cross-platform, gateway caller RBAC, gateway
+      README smoke, gateway request VM, gateway SSH, gateway worker, and OAuth session
+      transfer suites must all install the shared fetch interceptor, so these end-to-end
+      tests exercise services through the local rewrite rules rather than the public
+      network.
+    codeRefs:
+    - file:test/bidder_container_integration_test.ts
+    - file:test/bidder_cross_platform_integration_test.ts
+    - file:test/gateway_caller_rbac_integration_test.ts
+    - file:test/gateway_readme_smoke_test.ts
+    - file:test/gateway_request_vm_integration_test.ts
+    - file:test/gateway_ssh_integration_test.ts
+    - file:test/gateway_worker_integration_test.ts
+    - file:test/oauth_session_transfer_test.ts
+    - function:c6f81957f952317eb0e87d2454b5add3
+  - id: r.localhost-port-rewrite
+    level: MUST
+    text: installFetchInterceptor must detect https URLs whose host is exactly localhost,
+      ends with .localhost, or contains .localhost:, and rewrite them to reach the
+      local dispatcher; when the host carries no explicit port the configured dispPort
+      is appended, and the original path and query are preserved.
+    codeRefs:
+    - file:test/fetch-interceptor.ts
+    - function:c6f81957f952317eb0e87d2454b5add3
+  - id: r.passthrough-unmatched
+    level: MUST
+    text: Requests that match neither the plc.directory prefix nor a localhost host
+      must be forwarded unchanged to the original realFetch, so an installed interceptor
+      does not silently alter traffic to any other origin.
+    codeRefs:
+    - file:test/fetch-interceptor.ts
+    - function:c6f81957f952317eb0e87d2454b5add3
+  - id: r.plc-directory-rewrite
+    level: MUST
+    text: installFetchInterceptor must rewrite any request whose URL begins with https://plc.directory/
+      onto the caller-supplied plcDirectoryUrl, preserving the remainder of the original
+      path after the https://plc.directory prefix, so tests resolve DIDs against a
+      local fake PLC rather than the public directory.
+    codeRefs:
+    - file:test/fetch-interceptor.ts
+    - function:c6f81957f952317eb0e87d2454b5add3
+  - id: r.teardown-restores-fetch
+    level: MUST
+    text: installFetchInterceptor must return a disposable closure that reassigns
+      globalThis.fetch back to the original realFetch and closes the Deno HttpClient
+      it created, so a test that installs the interceptor leaves no patched global
+      or leaked connection pool behind for later tests in the same process.
+    codeRefs:
+    - file:test/fetch-interceptor.ts
+    - function:c6f81957f952317eb0e87d2454b5add3
+  - id: r.unit-suite-coverage
+    level: SHOULD
+    text: 'The suite must retain focused tests for each non-intercepted subsystem:
+      badge blue key binding, bid collection, the bidder policy restricted to only-me,
+      the production bidder, bidder SSH relay, cloud-init snapshot rendering, firehose
+      watching, offering refresh, registry discovery, and secrets capability.'
+    codeRefs:
+    - file:test/badge_blue_keys_binding_test.ts
+    - file:test/bid_collector_test.ts
+    - file:test/bidder_policy_only_me_integration_test.ts
+    - file:test/bidder_prod_integration_test.ts
+    - file:test/bidder_ssh_relay_test.ts
+    - file:test/cloud_init_snapshot_test.ts
+    - file:test/firehose_watcher_test.ts
+    - file:test/offering_refresh_test.ts
+    - file:test/registry_discovery_test.ts
+    - file:test/secrets_capability_test.ts
+  interfaces:
+  - name: installFetchInterceptor
+    kind: function
+    signature: 'installFetchInterceptor(opts: { realFetch: typeof globalThis.fetch;
+      plcDirectoryUrl: string; dispPort: number; caCertPem?: string }): () => void'
+    file: test/fetch-interceptor.ts
 codeRefIndex:
 - file:test/badge_blue_keys_binding_test.ts badge_blue_keys_binding_test.ts@test/badge_blue_keys_binding_test.ts
 - file:test/bid_collector_test.ts bid_collector_test.ts@test/bid_collector_test.ts
@@ -51,3 +178,4 @@ codeRefIndex:
 - file:test/offering_refresh_test.ts offering_refresh_test.ts@test/offering_refresh_test.ts
 - file:test/registry_discovery_test.ts registry_discovery_test.ts@test/registry_discovery_test.ts
 - file:test/secrets_capability_test.ts secrets_capability_test.ts@test/secrets_capability_test.ts
+- function:c6f81957f952317eb0e87d2454b5add3 installFetchInterceptor@test/fetch-interceptor.ts:7

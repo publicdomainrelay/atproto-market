@@ -1,12 +1,13 @@
 observedCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
 syncedCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
 syncedFingerprint: 8c9c52fea6506c0af3661082b3717eed37a8afa15529316c5f345f8b6b2c997d
-realizedSpecHash: 900a836e8800d24c719863dbb7bacc4827fa9659d6fd5ae0b0d21127c421ed8b
+realizedSpecHash: 332872c190cab1627a1c4a4daedae94284e63cd59e06d9afd6ab0d5664a50920
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: installFetchInterceptor'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual

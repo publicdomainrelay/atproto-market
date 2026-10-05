@@ -2928,6 +2928,25 @@ system_contexts:
   - sc.lib-market-bidder-worker
   - sc.lib-requester-xrpc
   - sc.lib-secrets-oidc
+  requirements:
+  - id: r.ca-cert-https-mode
+    level: SHOULD
+  - id: r.cloud-init-k3s-and-defect-regressions
+    level: SHOULD
+  - id: r.container-harness-proves-live-ssh-over-iroh
+    level: MUST
+  - id: r.integration-suites-install-interceptor
+    level: MUST
+  - id: r.localhost-port-rewrite
+    level: MUST
+  - id: r.passthrough-unmatched
+    level: MUST
+  - id: r.plc-directory-rewrite
+    level: MUST
+  - id: r.teardown-restores-fetch
+    level: MUST
+  - id: r.unit-suite-coverage
+    level: SHOULD
   codeRefIndex:
   - file:test/badge_blue_keys_binding_test.ts badge_blue_keys_binding_test.ts@test/badge_blue_keys_binding_test.ts
   - file:test/bid_collector_test.ts bid_collector_test.ts@test/bid_collector_test.ts
@@ -2951,6 +2970,7 @@ system_contexts:
   - file:test/offering_refresh_test.ts offering_refresh_test.ts@test/offering_refresh_test.ts
   - file:test/registry_discovery_test.ts registry_discovery_test.ts@test/registry_discovery_test.ts
   - file:test/secrets_capability_test.ts secrets_capability_test.ts@test/secrets_capability_test.ts
+  - function:c6f81957f952317eb0e87d2454b5add3 installFetchInterceptor@test/fetch-interceptor.ts:7
 - id: sc.test-fixtures-cloud-init
   name: test-fixtures-cloud-init
   spec: specs/test-fixtures-cloud-init.yaml
