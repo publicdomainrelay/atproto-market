@@ -1,10 +1,11 @@
 syncedFingerprint: e28e67f6737f8c55bb366814adcf8bd94e1c9319f609707b7d811b74b5ef067c
-realizedSpecHash: 7c9d548411b8e26efacda6635deb23cacd15101ad1f347de6a851a6efb73fcbd
+realizedSpecHash: e1dfbcad244bc7ca6c9f01b5adc02db5310cbe54a7887879fd8d4f1a025dd5f6
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: CreateIngressOpts, createIngress, getServiceAuthToken'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual

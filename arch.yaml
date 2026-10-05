@@ -1379,8 +1379,34 @@ system_contexts:
   upstream: self
   depends_on:
   - sc.atproto-market
+  requirements:
+  - id: r.close-idempotent-before-serve
+    level: MUST
+  - id: r.create-ingress-factory
+    level: MUST
+  - id: r.direct-subscription-handler
+    level: SHOULD
+  - id: r.ingress-ref-projection
+    level: MUST
+  - id: r.label-default
+    level: MUST
+  - id: r.lazy-ws-target
+    level: SHOULD
+  - id: r.on-serve-registration
+    level: MUST
+  - id: r.service-auth-token
+    level: MUST
+  - id: r.signing-identities-separable
+    level: MUST
+  - id: r.tls-flag-forwarded
+    level: SHOULD
+  - id: r.unused-hostname-binding
+    level: MAY
   codeRefIndex:
   - file:lib/did-key-ingress-proxy/mod.ts mod.ts@lib/did-key-ingress-proxy/mod.ts
+  - function:720938c17d8a919da0fa9510c65cc8d1 getServiceAuthToken@lib/did-key-ingress-proxy/mod.ts:51
+  - function:ab0d43e74646836bd86d4b393d2cafa0 createIngress@lib/did-key-ingress-proxy/mod.ts:38
+  - interface:da388f002919a2fd08b59e8f65646870 CreateIngressOpts@lib/did-key-ingress-proxy/mod.ts:8
 - id: sc.lib-did-plc
   name: lib-did-plc
   spec: specs/lib-did-plc.yaml
