@@ -910,7 +910,7 @@ touch "\${STAMP}"
 });
 
 /** Pinned dumbpipe release installed by the iroh transport module. */
-const DUMBPIPE_VERSION_DEFAULT = "0.39.0";
+export const DUMBPIPE_VERSION_DEFAULT = "0.39.0";
 
 /**
  * iroh — dumbpipe listener in front of the guest's own sshd. The guest listens
@@ -1089,13 +1089,18 @@ done
 
 TICKET="$(cat "\${TICKET_FILE}")"
 
-for attempt in $(seq 1 60); do
-  if curl -sf -X POST -H 'Content-Type: application/json' \\
+# Fail fast and loudly: a refused POST returns immediately, and a bounded
+# number of attempts with a hard curl timeout means a guest whose report can
+# never land exits non-zero in under two minutes instead of retrying for
+# minutes on end.
+for attempt in $(seq 1 10); do
+  if curl -sf --connect-timeout 5 --max-time 10 -X POST \\
+      -H 'Content-Type: application/json' \\
       --data "{\\"ticket\\":\\"\${TICKET}\\"}" "${reportUrl}"; then
     exit 0
   fi
   echo "iroh ticket report failed (attempt \${attempt}); retrying" >&2
-  sleep 5
+  sleep 2
 done
 
 echo "iroh ticket report never succeeded" >&2

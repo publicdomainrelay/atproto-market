@@ -506,6 +506,9 @@ Deno.test({
       ingressProxyHost: `${gateway}:${dispPort}`,
       // audHost for JWT -- must match relay's hostname (localhost), not gateway IP
       fedingressHost: "relay.localhost",
+      // This step proves the websocket relay tunnel, so it names that transport
+      // instead of taking the iroh default the flow now composes.
+      userData: { transport: "tunnel" },
       skipSsh: false,
       keepVm: false,
       policy: { name: "open", args: { bidWindowSec: 8 } },

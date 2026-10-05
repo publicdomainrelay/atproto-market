@@ -232,6 +232,8 @@ Deno.test({
       ingressProxyHost: PROD_DISPATCHER,
       fedingressHost: PROD_FEDPROXY,
       rbac: true,
+      // Proven here is the fedproxy websocket relay, not the iroh default.
+      userData: { transport: "tunnel" },
       skipSsh: false,
       keepVm: false,
       policy: { name: "open", args: { bidWindowSec: 15 } },

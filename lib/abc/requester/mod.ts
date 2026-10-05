@@ -208,6 +208,12 @@ export interface SshSessionProvider {
   generateKeypair(vmName: string): Promise<{ publicKey: string; privateKeyPath: string }>;
   pollReady(privateKeyPath: string, target: string, timeoutMs: number): Promise<boolean>;
   runSession(privateKeyPath: string, target: string, program: string): Promise<number>;
+  /**
+   * Everything the last non-interactive session printed, when the provider
+   * captures it. Absent on providers that inherit stdio, so the flow treats a
+   * missing capture as "no output to report" rather than an error.
+   */
+  lastSessionOutput?(): string;
 }
 
 export interface ContractFlowResult {
@@ -235,6 +241,12 @@ export interface ContractFlowResult {
   sshProxyCommand?: string;
   sshReady?: boolean;
   sshExitCode?: number;
+  /**
+   * Output captured from the session's stdout/stderr, when the provider
+   * captures it. Lets a caller assert on what the guest printed without
+   * reaching into the guest over a side channel.
+   */
+  sshOutput?: string;
 }
 
 export interface ConsoleBuffer {

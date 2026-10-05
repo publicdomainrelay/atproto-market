@@ -144,13 +144,18 @@ write_files:
 
       TICKET="$(cat "${TICKET_FILE}")"
 
-      for attempt in $(seq 1 60); do
-        if curl -sf -X POST -H 'Content-Type: application/json' \
+      # Fail fast and loudly: a refused POST returns immediately, and a bounded
+      # number of attempts with a hard curl timeout means a guest whose report can
+      # never land exits non-zero in under two minutes instead of retrying for
+      # minutes on end.
+      for attempt in $(seq 1 10); do
+        if curl -sf --connect-timeout 5 --max-time 10 -X POST \
+            -H 'Content-Type: application/json' \
             --data "{\"ticket\":\"${TICKET}\"}" "https://relay.local/iroh/ticket"; then
           exit 0
         fi
         echo "iroh ticket report failed (attempt ${attempt}); retrying" >&2
-        sleep 5
+        sleep 2
       done
 
       echo "iroh ticket report never succeeded" >&2
