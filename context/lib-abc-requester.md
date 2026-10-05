@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-This context exists so the atproto-market requester's ABC layer — the bid collection and winner-selection rules, the requester PDS surface, the contract flow's option and result bags, and the SSH session provider contract — can be specified once and depended on by the implementation, the CLI and the hermetic test fakes without any of them re-deriving the shapes. It is a pure declaration file: no I/O, no runtime globals, only the types and pure helpers that the transport layers below it must satisfy.
+This context exists so the atproto-market requester's ABC layer — the bid collection and winner-selection rules, the requester PDS surface, the contract flow's option and result bags, and the SSH session provider contract — can be specified once and depended on by the implementation, the CLI and the hermetic test fakes without any of them re-deriving the shapes. It is a pure declaration file: no I/O, no runtime globals, only the types and pure helpers that the transport layers below it must satisfy. The guest transport is iroh by default, so the address the flow waits for and hands to the SSH provider is an opaque transport address — an iroh ticket for iroh, a relay hostname for the websocket transports — and the ABC layer never assumes it is a resolvable FQDN.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

@@ -1,0 +1,25 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-abc-requester-s2c-a24b0558524f
+  namespace: default
+spec:
+  systemContext: lib-abc-requester
+  direction: SpecToCode
+  fromSpecHash: 77ac62b316bfad6313c959abcb5533886259cb6e48c07313cf60c6e981a81374
+  toSpecHash: a24b0558524face024201eafec68479c527666b65e2fe53adc3fbb18f3a75ac7
+  delta:
+    counts:
+      added: 2
+      changed: 6
+    requirements:
+    - +r.contract-flow-result-transport
+    - +r.requester-pds-transport-address
+    - ~r.contract-flow-defaults
+    - ~r.ssh-session-provider
+    interfaces:
+    - ~ContractFlowOptions
+    - ~ContractFlowResult
+    - ~SshSessionProvider
+status:
+  phase: Pending

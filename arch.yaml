@@ -447,6 +447,8 @@ system_contexts:
     level: MUST
   - id: r.contract-flow-result
     level: MUST
+  - id: r.contract-flow-result-transport
+    level: MUST
   - id: r.deno-json
     level: SHOULD
   - id: r.pds-options
@@ -462,6 +464,8 @@ system_contexts:
   - id: r.requester-pds-optional-handles
     level: MUST
   - id: r.requester-pds-records
+    level: MUST
+  - id: r.requester-pds-transport-address
     level: MUST
   - id: r.select-winner-cheapest
     level: MUST
