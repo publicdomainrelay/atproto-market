@@ -170,11 +170,13 @@ spec:
       receipt signatures the same way. Resolving a did:plc DID through the fake PLC
       must return a DID document whose verification method yields that DID's did:key,
       and the resolution must work end to end through whatever resolver the relay
-      and the market actually call (including the atproto identity resolver and the
-      did:key fast path), so that the relay's registration call succeeds rather than
-      answering 401 and receipt verification passes. The suite must assert the registration
-      and the receipt explicitly, so a resolution failure fails the test instead of
-      silently degrading the run.
+      and the market actually call, so that the relay's registration call succeeds
+      rather than answering 401 and receipt verification passes. The suite must assert
+      the run-level facts only -- the subscriber registered with no 401 and receiptOk
+      is true. It must not assert on the resolver's internals and must not add a "did:key
+      fast path" or any other assertion about how a particular resolver is implemented
+      -- the test double exists to make registration succeed, not to be tested. A
+      test that asserts on its own mock is a defect, not a stronger suite.
     codeRefs:
     - file:test/bidder_container_integration_test.ts
     - file:test/fetch-interceptor.ts
