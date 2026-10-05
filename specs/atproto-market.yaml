@@ -175,15 +175,17 @@ spec:
       that one app on 0.0.0.0 on a plain port and again on a TLS port whose certificate
       covers relay.localhost and *.relay.localhost (generateLocalhostTlsCert with
       extraDnsSans); pass ingressProxyHost relay.localhost:<plain port> to the requester,
-      the bidder and the provider; install the fetch interceptor with caCertPem so
-      in-process calls keep https; and construct the local compute provider with caCertPem
-      and guestTlsPort set to the TLS port. The provisioning backend then rewrites
-      the portless *.localhost report URL to that TLS port, maps the host to the gateway
-      in the guest''s /etc/hosts and gives the guest''s curl the CA, so the guest''s
-      own outbound report is what reaches the requester''s route. The report must
-      reach the requester this way only: the suite must not read the ticket or any
-      address out of the guest host-side, and must not hand the requester a port it
-      invented.'
+      the bidder and the provider, so their relay subscriptions speak plain ws to
+      the plain listener; install the shared fetch interceptor with the TLS port and
+      caCertPem and not the plain port, so an in-process fetch of a portless https
+      *.localhost name reaches the TLS listener and keeps its scheme; and construct
+      the local compute provider with caCertPem and guestTlsPort set to the TLS port.
+      The provisioning backend then rewrites the portless *.localhost report URL to
+      that TLS port, maps the host to the gateway in the guest''s /etc/hosts and gives
+      the guest''s curl the CA, so the guest''s own outbound report is what reaches
+      the requester''s route. The report must reach the requester this way only: the
+      suite must not read the ticket or any address out of the guest host-side, and
+      must not hand the requester a port it invented.'
     codeRefs:
     - file:test/bidder_container_integration_test.ts
     - file:test/fetch-interceptor.ts
