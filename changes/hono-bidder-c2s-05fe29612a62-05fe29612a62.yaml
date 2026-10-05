@@ -9,5 +9,21 @@ spec:
   fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
   toCommit: 05fe29612a62a645d70273560238ecc3180414d2
 status:
-  phase: Running
-  message: the agent is summarizing hono-bidder
+  phase: Succeeded
+  agentLog: 'hono-bidder is the Deno CLI entrypoint that boots a market compute bidder
+    in atproto-market. Its two files split the work cleanly: hono-bidder/cli-args-env.ts
+    declares the whole flag, environment-variable and default surface as a single
+    default-exported object named "bidder", while hono-bidder/mod.ts resolves those
+    options through the cli-args-env Command with an optional ./config.json overlay,
+    selects one of four AT Protocol auth modes (OAuth, OAuth-by-QR over a genesis
+    did:plc, handle-plus-password, or the default local PDS agent with an association
+    QR prompt), derives the signing key and the attestation keypair, builds DigitalOcean,
+    local and Deno-worker compute providers each with their own freshly keyed ingress
+    and serve instance, wires createMarketBidder with policy, offering-refresh and
+    worker-permission settings, writes badgeBlueKeys records for the attestation and
+    for --associate-with, defers PDS registration with relays until the offering commit
+    exists, verifies offering visibility, emits a single machine-readable bidder_ready
+    line on stdout, and installs shutdown handlers. Local-development affordances
+    -- a patched global fetch and a /oauth-client-metadata.json route -- keep the
+    process runnable against a local ingress proxy and PLC directory.'
+  message: wrote 23 requirement(s) and 0 interface(s) for hono-bidder

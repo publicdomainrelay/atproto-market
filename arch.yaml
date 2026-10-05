@@ -107,6 +107,53 @@ system_contexts:
   - sc.lib-market-bidder-compute
   - sc.lib-market-bidder-worker
   - sc.lib-requester-xrpc
+  requirements:
+  - id: r.association-qr
+    level: MUST
+  - id: r.attestation-keypair
+    level: MUST
+  - id: r.auth-mode-selection
+    level: MUST
+  - id: r.badge-blue-attestation-binding
+    level: MUST
+  - id: r.bidder-serve-binding
+    level: MUST
+  - id: r.compute-providers
+    level: MUST
+  - id: r.config-resolution
+    level: MUST
+  - id: r.container-image-prebuild
+    level: SHOULD
+  - id: r.declarative-config
+    level: MUST
+  - id: r.deferred-relay-registration
+    level: MUST
+  - id: r.event-streams-relays
+    level: MUST
+  - id: r.graceful-shutdown
+    level: MUST
+  - id: r.ingress-per-relay-keypair
+    level: MUST
+  - id: r.local-dev-fetch-patch
+    level: SHOULD
+  - id: r.oauth-client-metadata-route
+    level: MUST
+  - id: r.oauth-session-expiry
+    level: MUST
+  - id: r.offering-refresh
+    level: MUST
+  - id: r.operator-association
+    level: MUST
+  - id: r.policy-config
+    level: MUST
+  - id: r.private-key-precedence
+    level: MUST
+  - id: r.ready-line
+    level: MUST
+  - id: r.relay-visibility-check
+    level: SHOULD
+  - id: r.worker-permission-mode
+    level: MUST
   codeRefIndex:
   - file:hono-bidder/cli-args-env.ts cli-args-env.ts@hono-bidder/cli-args-env.ts
   - file:hono-bidder/mod.ts mod.ts@hono-bidder/mod.ts
