@@ -771,3 +771,58 @@ system_contexts:
   - sc.lib-trust-graph-tangled-graph
   codeRefIndex:
   - file:lib/requester-xrpc/mod.ts mod.ts@lib/requester-xrpc/mod.ts
+- id: sc.lib-secrets-oidc
+  name: lib-secrets-oidc
+  spec: specs/lib-secrets-oidc.yaml
+  upstream: self
+  depends_on:
+  - sc.atproto-market
+  - sc.lib-common-secrets-common
+  codeRefIndex:
+  - file:lib/secrets-oidc/mod.ts mod.ts@lib/secrets-oidc/mod.ts
+- id: sc.lib-trust-graph-bsky-mutuals
+  name: lib-trust-graph-bsky-mutuals
+  spec: specs/lib-trust-graph-bsky-mutuals.yaml
+  upstream: self
+  depends_on:
+  - sc.atproto-market
+  - sc.lib-abc-trust-graph
+  codeRefIndex:
+  - file:lib/trust-graph-bsky-mutuals/mod.ts mod.ts@lib/trust-graph-bsky-mutuals/mod.ts
+- id: sc.lib-trust-graph-tangled-graph
+  name: lib-trust-graph-tangled-graph
+  spec: specs/lib-trust-graph-tangled-graph.yaml
+  upstream: self
+  depends_on:
+  - sc.atproto-market
+  - sc.lib-abc-trust-graph
+  - sc.lib-common-market-common
+  codeRefIndex:
+  - file:lib/trust-graph-tangled-graph/mod.ts mod.ts@lib/trust-graph-tangled-graph/mod.ts
+- id: sc.lib-utils-attestation-key
+  name: lib-utils-attestation-key
+  spec: specs/lib-utils-attestation-key.yaml
+  upstream: self
+  depends_on:
+  - sc.atproto-market
+  codeRefIndex:
+  - file:lib/utils-attestation-key/mod.ts mod.ts@lib/utils-attestation-key/mod.ts
+- id: sc.request-vm-ssh
+  name: request-vm-ssh
+  spec: specs/request-vm-ssh.yaml
+  upstream: self
+  depends_on:
+  - sc.atproto-market
+  - sc.lib-abc-guest-capability
+  - sc.lib-abc-requester
+  - sc.lib-atproto-helpers
+  - sc.lib-atproto-oauth-helpers
+  - sc.lib-common-market-common
+  - sc.lib-common-secrets-common
+  - sc.lib-did-plc
+  - sc.lib-guest-capability-secrets
+  - sc.lib-requester-xrpc
+  codeRefIndex:
+  - file:request-vm-ssh/cli-args-env.ts cli-args-env.ts@request-vm-ssh/cli-args-env.ts
+  - file:request-vm-ssh/cli_smoke_test.ts cli_smoke_test.ts@request-vm-ssh/cli_smoke_test.ts
+  - file:request-vm-ssh/mod.ts mod.ts@request-vm-ssh/mod.ts

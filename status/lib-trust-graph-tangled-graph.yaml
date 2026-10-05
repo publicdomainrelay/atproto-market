@@ -1,0 +1,38 @@
+syncedFingerprint: 6bbaa70d0390cb36fd3ffb5aba6c3e84e9eac42b2e8218e46a400f022d7358b8
+realizedSpecHash: 0dfa562df1bfe0e5fd111bf16b585262f23dc70a8027e697c77ffadba192bcad
+conditions:
+- type: CodeSynced
+  status: "False"
+  reason: InterfacesMissing
+  message: 'undeclared: ListedRecord, TangledGraphVouchResolverOpts, createTangledGraphVouchResolver'
+- type: Drifted
+  status: "False"
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
+- type: SpecValid
+  status: "True"
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed:
+  files:
+  - lib/trust-graph-tangled-graph/mod.ts
+  treeFiles:
+  - lib/trust-graph-tangled-graph/deno.json
+  interfaces:
+  - name: ListedRecord
+    kind: interface
+    file: lib/trust-graph-tangled-graph/mod.ts
+    line: 4
+    codegraphId: interface:f3b2726e5ba78287474a3382ccf87cc2
+  - name: TangledGraphVouchResolverOpts
+    kind: interface
+    file: lib/trust-graph-tangled-graph/mod.ts
+    line: 9
+    codegraphId: interface:96c0ea570aaadab563b357e40f8b2254
+  - name: createTangledGraphVouchResolver
+    kind: function
+    signature: '(opts: TangledGraphVouchResolverOpts): VouchResolver'
+    file: lib/trust-graph-tangled-graph/mod.ts
+    line: 14
+    codegraphId: function:c548791fdd9c126249e41e29c7d44c44
+  fingerprint: 6bbaa70d0390cb36fd3ffb5aba6c3e84e9eac42b2e8218e46a400f022d7358b8
