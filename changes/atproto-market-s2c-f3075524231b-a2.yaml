@@ -18,7 +18,8 @@ spec:
     - +r.iroh-cloud-init-fixture
     - +r.iroh-full-flow-harness
 status:
-  phase: Pending
+  phase: Failed
+  message: 'admission: another change of atproto-market is already running'
 superseded:
 - name: atproto-market-s2c-f3075524231b
   phase: Failed

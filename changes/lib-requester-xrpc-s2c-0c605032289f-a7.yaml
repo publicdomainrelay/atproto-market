@@ -16,17 +16,8 @@ spec:
     - +ensureDumbpipe
     - ~createSshSessionProvider
 status:
-  phase: Pending
-  message: 'attempt 7 retried by john (The acceptance suite must not assert on its
-    own test double. r.iroh-acceptance-plc-key-resolution is amended in the spec:
-    the fake PLC exists only so the relay''s registration is not 401 and receiptOk
-    is true. Delete the did:key-fast-path assertion and every other assertion about
-    resolver internals, and assert only the run-level facts -- the requester''s subscriber
-    registered (no 401), receiptOk is true, the run reaches the guest: sshReady true,
-    sshExitCode 0, result.sshProxyCommand is ''dumbpipe connect <ticket>'' and never
-    websocat or a bare address, and a program run inside the guest prints SSH_OK_VIA_IROH
-    and exits 0. Keep the harness small; specd runs it as the gate, do not run it
-    yourself. The cloud-init iroh module is landed and installs ./dumbpipe correctly.)'
+  phase: Running
+  message: the agent is realizing lib-requester-xrpc in a batch of 5 led by atproto-market
   attempt: 7
   retryReason: 'The acceptance suite must not assert on its own test double. r.iroh-acceptance-plc-key-resolution
     is amended in the spec: the fake PLC exists only so the relay''s registration
