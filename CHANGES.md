@@ -444,3 +444,4 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 | lib-did-key-ingress-proxy-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-did-plc-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
 | lib-guest-capability-secrets-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
+| lib-hono-factory-compute-contract-gateway-xrpc-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
