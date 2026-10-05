@@ -2520,8 +2520,33 @@ system_contexts:
   - sc.atproto-market
   - sc.lib-abc-trust-graph
   - sc.lib-common-market-common
+  requirements:
+  - id: r.export-listed-record
+    level: MUST
+  - id: r.fail-closed-on-lookup-error
+    level: MUST
+  - id: r.is-vouched-membership
+    level: MUST
+  - id: r.list-vouch-collection
+    level: MUST
+  - id: r.opts-list-records-callback
+    level: MUST
+  - id: r.opts-optional-logger
+    level: SHOULD
+  - id: r.returns-vouch-resolver
+    level: MUST
+  - id: r.rkey-must-be-did
+    level: MUST
+  - id: r.single-mod-entrypoint
+    level: SHOULD
+  - id: r.skip-denounce
+    level: MUST
   codeRefIndex:
+  - file:lib/trust-graph-tangled-graph/deno.json deno.json@lib/trust-graph-tangled-graph/deno.json
   - file:lib/trust-graph-tangled-graph/mod.ts mod.ts@lib/trust-graph-tangled-graph/mod.ts
+  - function:c548791fdd9c126249e41e29c7d44c44 createTangledGraphVouchResolver@lib/trust-graph-tangled-graph/mod.ts:14
+  - interface:96c0ea570aaadab563b357e40f8b2254 TangledGraphVouchResolverOpts@lib/trust-graph-tangled-graph/mod.ts:9
+  - interface:f3b2726e5ba78287474a3382ccf87cc2 ListedRecord@lib/trust-graph-tangled-graph/mod.ts:4
 - id: sc.lib-utils-attestation-key
   name: lib-utils-attestation-key
   spec: specs/lib-utils-attestation-key.yaml

@@ -1,10 +1,11 @@
 syncedFingerprint: 6bbaa70d0390cb36fd3ffb5aba6c3e84e9eac42b2e8218e46a400f022d7358b8
-realizedSpecHash: 0dfa562df1bfe0e5fd111bf16b585262f23dc70a8027e697c77ffadba192bcad
+realizedSpecHash: 564984844df05b4cadaec99b3e57187bb517aa573cb074b847711dccb7b589d7
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: ListedRecord, TangledGraphVouchResolverOpts, createTangledGraphVouchResolver'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual

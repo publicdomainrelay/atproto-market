@@ -750,6 +750,20 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 - added `r.vouched-dids-are-follows` (MUST): "getVouchedDids(did) must await getFollows(did) and return that follow Set unchanged, treating an actor's follow set as exactly the set of DIDs that actor vouches for, so no filtering, mapping or re-wrapping of the set happens at this boundary."
 - added `r.warn-log-on-error` (MUST): "On a caught lookup error the resolver must log level "warn" with the message "bsky-mutuals follow lookup failed" and metadata carrying the looked-up DID under key did (the did argument in getVouchedDids, the voucher argument in isVouched) plus the error stringified with String(err) under key error, so failures are diagnosable per actor."
 
+### lib-trust-graph-tangled-graph
+
+- intent: "" -> "This context exists so that vouches expressed as Tangled-style records can be fed to the ABC trust graph without that graph knowing anything about atproto record listing. It fixes the seam between the two: a caller injects a listRecords callback (plus an optional logger), and createTangledGraphVouchResolver returns a VouchResolver whose getVouchedDids and isVouched derive trust from listed records. The design keeps all network and PDS access outside the module so the resolver is a pure, stubbable function of the injected reader, and it deliberately fails closed -- a lookup rejection is logged and treated as an empty vouch set rather than an exception -- so an unavailable repo never manufactures trust."
+- added `r.export-listed-record` (MUST): "Export a ListedRecord shape carrying the record's uri and its decoded value object, so a caller's listRecords implementation can hand back raw listed records without adapting them to this module's needs."
+- added `r.fail-closed-on-lookup-error` (MUST): "A rejection from listRecords must not propagate out of getVouchedDids: it is logged at warn level with the message "tangled-graph vouch lookup failed" and metadata carrying the did and the stringified error, and the vouched set collected so far is returned instead of throwing."
+- added `r.is-vouched-membership` (MUST): "isVouched(voucher, vouchee) must resolve the voucher's vouched set via getVouchedDids and return whether that set contains the vouchee, inheriting the same fail-closed (empty set, not an error) behaviour when the underlying lookup fails."
+- added `r.list-vouch-collection` (MUST): "getVouchedDids must list records for the given did through the injected listRecords callback, passing the module's vouch collection NSID as the collection argument."
+- added `r.opts-list-records-callback` (MUST): "Take the repository read as a required injected listRecords(repo, collection) callback returning a promise of ListedRecord[], so the resolver performs no network or PDS access of its own and is fully testable with a stub."
+- added `r.opts-optional-logger` (SHOULD): "Accept an optional log(level, msg, meta) callback; when it is absent the resolver substitutes a no-op logger, so that logging a failure never itself throws and a logger is never required to construct a resolver."
+- added `r.returns-vouch-resolver` (MUST): "createTangledGraphVouchResolver must return a VouchResolver value exposing async getVouchedDids(did) -> Promise<Set<string>> and async isVouched(voucher, vouchee) -> Promise<boolean>, so it can be passed wherever lib/abc/trust-graph expects a resolver."
+- added `r.rkey-must-be-did` (MUST): "The vouched identity must be taken from the record's rkey -- the last slash-separated segment of uri, empty string when the split yields nothing -- and added to the result set only when that rkey starts with "did:"; every other rkey is discarded."
+- added `r.single-mod-entrypoint` (SHOULD): "The package should expose its whole surface through the single mod.ts entrypoint, with the module configuration kept in deno.json alongside it rather than split across additional source files."
+- added `r.skip-denounce` (MUST): "Records whose value.kind is "denounce" must be skipped entirely before the rkey is examined, so a denouncement is never counted as a vouch for its subject."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance | coverage |
@@ -799,5 +813,5 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 | lib-requester-xrpc-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-secrets-oidc-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-trust-graph-bsky-mutuals-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
-| lib-trust-graph-tangled-graph-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
+| lib-trust-graph-tangled-graph-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-utils-attestation-key-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |

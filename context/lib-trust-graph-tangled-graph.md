@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so that vouches expressed as Tangled-style records can be fed to the ABC trust graph without that graph knowing anything about atproto record listing. It fixes the seam between the two: a caller injects a listRecords callback (plus an optional logger), and createTangledGraphVouchResolver returns a VouchResolver whose getVouchedDids and isVouched derive trust from listed records. The design keeps all network and PDS access outside the module so the resolver is a pure, stubbable function of the injected reader, and it deliberately fails closed -- a lookup rejection is logged and treated as an empty vouch set rather than an exception -- so an unavailable repo never manufactures trust.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 
