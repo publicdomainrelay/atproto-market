@@ -13,8 +13,27 @@ spec:
       removed: 122
       changed: 2
 status:
-  phase: Running
-  message: the agent is summarizing lib-did-plc
+  phase: Succeeded
+  agentLog: 'lib/did-plc is a TypeScript package that puts the PLC directory HTTP
+    surface behind one typed client. PlcClient is constructed from PlcClientOptions
+    (or by createPlcDirectoryClient, which requires a plcDirectoryUrl) and covers
+    the reads and writes a service in atproto-market needs: resolve a DID to a DidDocument,
+    getLog/getAuditLog/getLastOp for the three distinct operation-log views, getData
+    for the raw stored payload, submitOp to POST a signed Operation, health for the
+    health endpoint, and export/exportPages to stream LogEntry history either whole
+    or as pages of 1000. Failures come back as PlcError subclasses carrying the HTTP
+    status - PlcNotFoundError for a missing DID, PlcTombstonedError for a tombstoned
+    one, PlcInvalidOperationError for a rejected operation - so callers can branch
+    on the failure kind. Around the client sit the DID-key helpers (keysFromDidDocument,
+    createPlcKeyResolver, plcClientAsKeyResolver returning a KeysForDid lookup), signed
+    genesis construction (createGenesisOp over GenesisOptions to a GenesisResult)
+    with file-backed keypair persistence (loadKeypairState/saveKeypairState), and
+    shared option and response shapes (ExportOptions, HealthResponse, PlcService)
+    in types.ts re-exported with everything else through mod.ts. The wire format is
+    pinned to lib/did-plc/openapi.official.yaml, which fixup-openapi.ts corrects before
+    openapi-ts.config.ts generates the per-endpoint SDK functions and the shared client
+    transport and parameter serializers.'
+  message: wrote 15 requirement(s) and 35 interface(s) for lib-did-plc
 superseded:
 - name: lib-did-plc-c2s-05fe29612a62-8b36a2bfe627
   phase: Failed

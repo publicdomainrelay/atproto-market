@@ -59,52 +59,18 @@ spec:
     - interface:da65aed4a72e5d371a6f16031aa0ef83
     - method:72f0f2fbb2ecf38e70ef7708ae62c81b
     - method:a8b2aede97428a79b7847a31740b5845
-  - id: r.generated-client-transport
-    level: SHOULD
-    text: The generated client must be created with createClient from a Config, merging
-      configs and headers, building request URLs and parse modes, resolving auth tokens,
-      serializing bodies, path, query and query-key parameters, and running request
-      and response interceptors, so the SDK functions behave consistently against
-      the directory.
-    codeRefs:
-    - file:lib/did-plc/generated/client/client.gen.ts
-    - function:0131a84b31ad85543599f7fcdc257d17
-    - function:045b120064539e4384e726f1ad3a6cfd
-    - function:188d765b509d3931cfcc5bbfffb2b7dc
-    - function:5cc56f8414c5363a5723ab1d53a49283
-    - function:726d44cabe8461d0ca02ce11929e1984
-    - function:8458ee58b9d6ddeb478f0901d8d49b7a
-    - function:8b30a2691d351681cfd7042ce1e15408
-    - function:bf0bf50aa3da564c87154fb48989d79a
   - id: r.generated-sdk-endpoints
     level: MUST
-    text: The generated SDK must expose one thin request function per PLC directory
-      endpoint - resolveDid, createPlcOp, getPlcOpLog, getPlcAuditLog, getLastOp,
-      getPlcData and export_ - each taking an Options object and returning a RequestResult
-      parameterised by that endpoint's responses and errors.
+    text: Generation must emit one thin request function per PLC directory endpoint
+      - resolve a DID, create an op, read the op log, read the audit log, read the
+      last op, read the stored data and export - each taking an Options object and
+      returning a RequestResult parameterised by that endpoint's responses and errors,
+      with a shared client transport underneath that resolves config, auth tokens,
+      URLs, bodies and interceptors, and parameter serializers that follow OpenAPI
+      style rules for arrays, objects, primitives and multipart bodies.
     codeRefs:
-    - file:lib/did-plc/generated/sdk.gen.ts
-    - function:0f780cea28411c032283f1ed477292f0
-    - function:1495d4cb8fc5849c95ebfe53032eb6d5
-    - function:2c8cda686039039edfb62906f1c7b8e4
-    - function:4d0581d5775526dc30563286eee15cf9
-    - function:8197f5c8b53dd102aab15a4859eb9eff
-    - function:c16923351c028a2524d09fd49a4e9396
-    - function:f88f253e570376f3c82045ceb410c964
-  - id: r.generated-serializers
-    level: SHOULD
-    text: 'Request parameters must be serialized per OpenAPI style rules: arrays and
-      objects by explode style with their separators, primitives with reserved-character
-      handling, multipart bodies into FormData, and query keys into JSON values, so
-      the generated URLs and bodies match what the PLC directory expects.'
-    codeRefs:
-    - file:lib/did-plc/generated/core/pathSerializer.gen.ts
-    - function:322f298b5f2b35c454545e9e7383ed23
-    - function:3aa423aa49ce15b5c281fdf674ccea83
-    - function:6b40f3b794b4bad43b14cd20458c4211
-    - function:857ac81730785f9de7bbc011af2905ee
-    - function:9886966e31c3b2166c2973f6d894a6c9
-    - function:d8a8ad4ef7229e1f081c6bf168c34b83
+    - file:lib/did-plc/openapi-ts.config.ts
+    - file:lib/did-plc/openapi.official.yaml
   - id: r.genesis-operation
     level: MUST
     text: createGenesisOp must build a signed PLC genesis operation from GenesisOptions
@@ -151,7 +117,6 @@ spec:
       correctly.
     codeRefs:
     - file:lib/did-plc/fixup-openapi.ts
-    - file:lib/did-plc/generated/index.ts
     - file:lib/did-plc/openapi-ts.config.ts
     - file:lib/did-plc/openapi.official.yaml
   - id: r.operation-log-reads
@@ -196,121 +161,31 @@ spec:
     - class:ca276d9a71683fdf566bcdf5fb46e47c
     - file:lib/did-plc/client.ts
     - method:a608364390c07ffbcb4053df02e4f50c
-  - id: r.sse-streaming
-    level: MAY
-    text: createSseClient may open a server-sent-events stream with configurable retry
-      delay, max retry attempts, max retry delay, sleep function and onRequest/onSseEvent/onSseError
-      callbacks, yielding StreamEvent values for long-lived directory subscriptions.
+  - id: r.shared-types
+    level: MUST
+    text: 'The shared option, response and service shapes must live in types.ts: ExportOptions
+      carrying the export filters PlcClient.export accepts, HealthResponse carrying
+      the directory health payload PlcClient.health resolves to, and PlcService describing
+      a service entry, so the client and its consumers agree on one definition of
+      each.'
     codeRefs:
-    - file:lib/did-plc/generated/core/serverSentEvents.gen.ts
-    - function:328544b37c6f5c21f27f71b2df1541fe
-    - interface:21dc1cb955f27a91202088472797c2b3
-    - type_alias:918b65cfb156b73540784120485ddc65
-    - type_alias:c40de77654e0d20536f33c98f3814deb
+    - file:lib/did-plc/types.ts
+    - interface:4f51012b3df9c0dc5b7b93dc7b0249ba
+    - interface:d20f19dc21ed3a83a1714e5dd722b53e
+    - interface:da65aed4a72e5d371a6f16031aa0ef83
   - id: r.submit-operation
     level: MUST
     text: PlcClient.submitOp must POST a signed Operation for a given DID to the directory
       and resolve to void on success, rejecting with a PlcError-family error otherwise.
     codeRefs:
+    - class:a02218cd093a941f85749da7960298a5
     - file:lib/did-plc/client.ts
     - method:6265c2659cccf561f5f79d7c67669548
   interfaces:
-  - name: ArraySeparatorStyle
-    kind: type
-    signature: type ArraySeparatorStyle
-    file: lib/did-plc/generated/core/pathSerializer.gen.ts
-  - name: ArrayStyle
-    kind: type
-    signature: type ArrayStyle
-    file: lib/did-plc/generated/core/pathSerializer.gen.ts
-  - name: Auth
-    kind: interface
-    signature: interface Auth
-    file: lib/did-plc/generated/core/auth.gen.ts
-  - name: AuthToken
-    kind: type
-    signature: type AuthToken
-    file: lib/did-plc/generated/core/auth.gen.ts
-  - name: BodySerializer
-    kind: type
-    signature: type BodySerializer
-    file: lib/did-plc/generated/core/bodySerializer.gen.ts
-  - name: Client
-    kind: type
-    signature: type Client
-    file: lib/did-plc/generated/client/types.gen.ts
-  - name: ClientMeta
-    kind: interface
-    signature: interface ClientMeta
-    file: lib/did-plc/generated/core/types.gen.ts
-  - name: ClientOptions
-    kind: interface
-    signature: interface ClientOptions
-    file: lib/did-plc/generated/client/types.gen.ts
-  - name: Config
-    kind: interface
-    signature: interface Config
-    file: lib/did-plc/generated/client/types.gen.ts
-  - name: CreateClientConfig
-    kind: type
-    signature: type CreateClientConfig
-    file: lib/did-plc/generated/client.gen.ts
-  - name: CreatePlcOpData
-    kind: type
-    signature: type CreatePlcOpData
-    file: lib/did-plc/generated/types.gen.ts
-  - name: CreatePlcOpError
-    kind: type
-    signature: type CreatePlcOpError
-    file: lib/did-plc/generated/types.gen.ts
-  - name: CreatePlcOpErrors
-    kind: type
-    signature: type CreatePlcOpErrors
-    file: lib/did-plc/generated/types.gen.ts
-  - name: CreatePlcOpResponses
-    kind: type
-    signature: type CreatePlcOpResponses
-    file: lib/did-plc/generated/types.gen.ts
-  - name: DidDocument
-    kind: type
-    signature: type DidDocument
-    file: lib/did-plc/generated/types.gen.ts
-  - name: ExportData
-    kind: type
-    signature: type ExportData
-    file: lib/did-plc/generated/types.gen.ts
-  - name: ExportError
-    kind: type
-    signature: type ExportError
-    file: lib/did-plc/generated/types.gen.ts
-  - name: ExportErrors
-    kind: type
-    signature: type ExportErrors
-    file: lib/did-plc/generated/types.gen.ts
   - name: ExportOptions
     kind: interface
     signature: interface ExportOptions
     file: lib/did-plc/types.ts
-  - name: ExportResponse
-    kind: type
-    signature: type ExportResponse
-    file: lib/did-plc/generated/types.gen.ts
-  - name: ExportResponses
-    kind: type
-    signature: type ExportResponses
-    file: lib/did-plc/generated/types.gen.ts
-  - name: Field
-    kind: type
-    signature: type Field
-    file: lib/did-plc/generated/core/params.gen.ts
-  - name: Fields
-    kind: interface
-    signature: interface Fields
-    file: lib/did-plc/generated/core/params.gen.ts
-  - name: FieldsConfig
-    kind: type
-    signature: type FieldsConfig
-    file: lib/did-plc/generated/core/params.gen.ts
   - name: GenesisOptions
     kind: interface
     signature: interface GenesisOptions
@@ -319,94 +194,10 @@ spec:
     kind: interface
     signature: interface GenesisResult
     file: lib/did-plc/genesis.ts
-  - name: GetLastOpData
-    kind: type
-    signature: type GetLastOpData
-    file: lib/did-plc/generated/types.gen.ts
-  - name: GetLastOpError
-    kind: type
-    signature: type GetLastOpError
-    file: lib/did-plc/generated/types.gen.ts
-  - name: GetLastOpErrors
-    kind: type
-    signature: type GetLastOpErrors
-    file: lib/did-plc/generated/types.gen.ts
-  - name: GetLastOpResponse
-    kind: type
-    signature: type GetLastOpResponse
-    file: lib/did-plc/generated/types.gen.ts
-  - name: GetLastOpResponses
-    kind: type
-    signature: type GetLastOpResponses
-    file: lib/did-plc/generated/types.gen.ts
-  - name: GetPlcAuditLogData
-    kind: type
-    signature: type GetPlcAuditLogData
-    file: lib/did-plc/generated/types.gen.ts
-  - name: GetPlcAuditLogError
-    kind: type
-    signature: type GetPlcAuditLogError
-    file: lib/did-plc/generated/types.gen.ts
-  - name: GetPlcAuditLogErrors
-    kind: type
-    signature: type GetPlcAuditLogErrors
-    file: lib/did-plc/generated/types.gen.ts
-  - name: GetPlcAuditLogResponse
-    kind: type
-    signature: type GetPlcAuditLogResponse
-    file: lib/did-plc/generated/types.gen.ts
-  - name: GetPlcAuditLogResponses
-    kind: type
-    signature: type GetPlcAuditLogResponses
-    file: lib/did-plc/generated/types.gen.ts
-  - name: GetPlcDataData
-    kind: type
-    signature: type GetPlcDataData
-    file: lib/did-plc/generated/types.gen.ts
-  - name: GetPlcDataError
-    kind: type
-    signature: type GetPlcDataError
-    file: lib/did-plc/generated/types.gen.ts
-  - name: GetPlcDataErrors
-    kind: type
-    signature: type GetPlcDataErrors
-    file: lib/did-plc/generated/types.gen.ts
-  - name: GetPlcDataResponses
-    kind: type
-    signature: type GetPlcDataResponses
-    file: lib/did-plc/generated/types.gen.ts
-  - name: GetPlcOpLogData
-    kind: type
-    signature: type GetPlcOpLogData
-    file: lib/did-plc/generated/types.gen.ts
-  - name: GetPlcOpLogError
-    kind: type
-    signature: type GetPlcOpLogError
-    file: lib/did-plc/generated/types.gen.ts
-  - name: GetPlcOpLogErrors
-    kind: type
-    signature: type GetPlcOpLogErrors
-    file: lib/did-plc/generated/types.gen.ts
-  - name: GetPlcOpLogResponse
-    kind: type
-    signature: type GetPlcOpLogResponse
-    file: lib/did-plc/generated/types.gen.ts
-  - name: GetPlcOpLogResponses
-    kind: type
-    signature: type GetPlcOpLogResponses
-    file: lib/did-plc/generated/types.gen.ts
   - name: HealthResponse
     kind: interface
     signature: interface HealthResponse
     file: lib/did-plc/types.ts
-  - name: HttpMethod
-    kind: type
-    signature: type HttpMethod
-    file: lib/did-plc/generated/core/types.gen.ts
-  - name: JsonValue
-    kind: type
-    signature: type JsonValue
-    file: lib/did-plc/generated/core/queryKeySerializer.gen.ts
   - name: KeypairState
     kind: interface
     signature: interface KeypairState
@@ -415,38 +206,6 @@ spec:
     kind: type
     signature: type KeysForDid
     file: lib/did-plc/resolver.ts
-  - name: LegacyCreateOp
-    kind: type
-    signature: type LegacyCreateOp
-    file: lib/did-plc/generated/types.gen.ts
-  - name: LogEntry
-    kind: type
-    signature: type LogEntry
-    file: lib/did-plc/generated/types.gen.ts
-  - name: Middleware
-    kind: interface
-    signature: interface Middleware
-    file: lib/did-plc/generated/client/utils.gen.ts
-  - name: ObjectStyle
-    kind: type
-    signature: type ObjectStyle
-    file: lib/did-plc/generated/core/pathSerializer.gen.ts
-  - name: OmitNever
-    kind: type
-    signature: type OmitNever
-    file: lib/did-plc/generated/core/types.gen.ts
-  - name: Operation
-    kind: type
-    signature: type Operation
-    file: lib/did-plc/generated/types.gen.ts
-  - name: Options
-    kind: type
-    signature: type Options
-    file: lib/did-plc/generated/client/types.gen.ts
-  - name: PathSerializer
-    kind: interface
-    signature: interface PathSerializer
-    file: lib/did-plc/generated/core/utils.gen.ts
   - name: PlcClient
     kind: class
     signature: class PlcClient
@@ -523,14 +282,10 @@ spec:
     kind: method
     signature: 'constructor(did: string)'
     file: lib/did-plc/client.ts
-  - name: PlcOp
-    kind: type
-    signature: type PlcOp
-    file: lib/did-plc/generated/types.gen.ts
   - name: PlcService
-    kind: type
-    signature: type PlcService
-    file: lib/did-plc/generated/types.gen.ts
+    kind: interface
+    signature: interface PlcService
+    file: lib/did-plc/types.ts
   - name: PlcTombstonedError
     kind: class
     signature: class PlcTombstonedError extends PlcError
@@ -539,119 +294,10 @@ spec:
     kind: method
     signature: 'constructor(did: string)'
     file: lib/did-plc/client.ts
-  - name: QuerySerializer
-    kind: type
-    signature: type QuerySerializer
-    file: lib/did-plc/generated/core/bodySerializer.gen.ts
-  - name: QuerySerializerOptions
-    kind: type
-    signature: type QuerySerializerOptions
-    file: lib/did-plc/generated/core/bodySerializer.gen.ts
-  - name: RequestOptions
-    kind: interface
-    signature: interface RequestOptions
-    file: lib/did-plc/generated/client/types.gen.ts
-  - name: RequestResult
-    kind: type
-    signature: type RequestResult
-    file: lib/did-plc/generated/client/types.gen.ts
-  - name: ResolveDidData
-    kind: type
-    signature: type ResolveDidData
-    file: lib/did-plc/generated/types.gen.ts
-  - name: ResolveDidError
-    kind: type
-    signature: type ResolveDidError
-    file: lib/did-plc/generated/types.gen.ts
-  - name: ResolveDidErrors
-    kind: type
-    signature: type ResolveDidErrors
-    file: lib/did-plc/generated/types.gen.ts
-  - name: ResolveDidResponse
-    kind: type
-    signature: type ResolveDidResponse
-    file: lib/did-plc/generated/types.gen.ts
-  - name: ResolveDidResponses
-    kind: type
-    signature: type ResolveDidResponses
-    file: lib/did-plc/generated/types.gen.ts
-  - name: ResolvedRequestOptions
-    kind: interface
-    signature: interface ResolvedRequestOptions
-    file: lib/did-plc/generated/client/types.gen.ts
-  - name: ResponseStyle
-    kind: type
-    signature: type ResponseStyle
-    file: lib/did-plc/generated/client/types.gen.ts
-  - name: SerializerOptions
-    kind: interface
-    signature: interface SerializerOptions
-    file: lib/did-plc/generated/core/pathSerializer.gen.ts
-  - name: ServerSentEventsOptions
-    kind: type
-    signature: type ServerSentEventsOptions
-    file: lib/did-plc/generated/core/serverSentEvents.gen.ts
-  - name: ServerSentEventsOptions.onRequest
-    kind: method
-    signature: '(onRequest?: (url: string, init: RequestInit) => Promise<Request>)'
-    file: lib/did-plc/generated/core/serverSentEvents.gen.ts
-  - name: ServerSentEventsOptions.onSseError
-    kind: method
-    signature: '(onSseError?: (error: unknown) => void)'
-    file: lib/did-plc/generated/core/serverSentEvents.gen.ts
-  - name: ServerSentEventsOptions.onSseEvent
-    kind: method
-    signature: '(onSseEvent?: (event: StreamEvent<TData>) => void)'
-    file: lib/did-plc/generated/core/serverSentEvents.gen.ts
-  - name: ServerSentEventsOptions.sseSleepFn
-    kind: method
-    signature: '(sseSleepFn?: (ms: number) => Promise<void>)'
-    file: lib/did-plc/generated/core/serverSentEvents.gen.ts
-  - name: ServerSentEventsResult
-    kind: type
-    signature: type ServerSentEventsResult
-    file: lib/did-plc/generated/core/serverSentEvents.gen.ts
-  - name: StreamEvent
-    kind: interface
-    signature: interface StreamEvent
-    file: lib/did-plc/generated/core/serverSentEvents.gen.ts
-  - name: TDataShape
-    kind: interface
-    signature: interface TDataShape
-    file: lib/did-plc/generated/client/types.gen.ts
-  - name: TombstoneOp
-    kind: type
-    signature: type TombstoneOp
-    file: lib/did-plc/generated/types.gen.ts
-  - name: bodySerializer
-    kind: function
-    signature: '(body: unknown): FormData'
-    file: lib/did-plc/generated/core/bodySerializer.gen.ts
-  - name: buildClientParams
-    kind: function
-    signature: '(args: ReadonlyArray<unknown>, fields: FieldsConfig): Params'
-    file: lib/did-plc/generated/core/params.gen.ts
-  - name: buildUrl
-    kind: function
-    signature: (options)
-    file: lib/did-plc/generated/client/utils.gen.ts
-  - name: createClient
-    kind: function
-    signature: '(config: Config = {}): Client'
-    file: lib/did-plc/generated/client/client.gen.ts
-  - name: createConfig
-    kind: function
-    signature: '(override: Config<Omit<ClientOptions, keyof T> & T> = {}): Config<Omit<ClientOptions,
-      keyof T> & T>'
-    file: lib/did-plc/generated/client/utils.gen.ts
   - name: createGenesisOp
     kind: function
     signature: '(opts: GenesisOptions): Promise<GenesisResult>'
     file: lib/did-plc/genesis.ts
-  - name: createInterceptors
-    kind: function
-    signature: '(): Middleware<Req, Res, Err, Options>'
-    file: lib/did-plc/generated/client/utils.gen.ts
   - name: createPlcDirectoryClient
     kind: function
     signature: '(opts: { plcDirectoryUrl: string }): PlcClient'
@@ -660,71 +306,6 @@ spec:
     kind: function
     signature: '(opts: PlcKeyResolverOptions = {}): KeysForDid'
     file: lib/did-plc/resolver.ts
-  - name: createPlcOp
-    kind: function
-    signature: '(options: Options<CreatePlcOpData, ThrowOnError>): RequestResult<CreatePlcOpResponses,
-      CreatePlcOpErrors, ThrowOnError>'
-    file: lib/did-plc/generated/sdk.gen.ts
-  - name: createQuerySerializer
-    kind: function
-    signature: '({ parameters = {}, ...args }: QuerySerializerOptions = {}): ((queryParams:
-      T) => string)'
-    file: lib/did-plc/generated/client/utils.gen.ts
-  - name: createSseClient
-    kind: function
-    signature: '({ onRequest, onSseError, onSseEvent, responseTransformer, responseValidator,
-      sseDefaultRetryDelay, sseMaxRetryAttempts, sseMaxRetryDelay, sseSleepFn, url,
-      ...options }: ServerSentEventsOptions): ServerSentEventsResult<TData>'
-    file: lib/did-plc/generated/core/serverSentEvents.gen.ts
-  - name: defaultPathSerializer
-    kind: function
-    signature: '({ path, url: _url }: PathSerializer): string'
-    file: lib/did-plc/generated/core/utils.gen.ts
-  - name: export_
-    kind: function
-    signature: '(options?: Options<ExportData, ThrowOnError>): RequestResult<ExportResponses,
-      ExportErrors, ThrowOnError>'
-    file: lib/did-plc/generated/sdk.gen.ts
-  - name: getAuthToken
-    kind: function
-    signature: '(auth: Auth, callback: ((auth: Auth) => Promise<AuthToken> | AuthToken)
-      | AuthToken): Promise<string | undefined>'
-    file: lib/did-plc/generated/core/auth.gen.ts
-  - name: getLastOp
-    kind: function
-    signature: '(options: Options<GetLastOpData, ThrowOnError>): RequestResult<GetLastOpResponses,
-      GetLastOpErrors, ThrowOnError>'
-    file: lib/did-plc/generated/sdk.gen.ts
-  - name: getParseAs
-    kind: function
-    signature: '(contentType: string | null): Exclude<Config[''parseAs''], ''auto''>'
-    file: lib/did-plc/generated/client/utils.gen.ts
-  - name: getPlcAuditLog
-    kind: function
-    signature: '(options: Options<GetPlcAuditLogData, ThrowOnError>): RequestResult<GetPlcAuditLogResponses,
-      GetPlcAuditLogErrors, ThrowOnError>'
-    file: lib/did-plc/generated/sdk.gen.ts
-  - name: getPlcData
-    kind: function
-    signature: '(options: Options<GetPlcDataData, ThrowOnError>): RequestResult<GetPlcDataResponses,
-      GetPlcDataErrors, ThrowOnError>'
-    file: lib/did-plc/generated/sdk.gen.ts
-  - name: getPlcOpLog
-    kind: function
-    signature: '(options: Options<GetPlcOpLogData, ThrowOnError>): RequestResult<GetPlcOpLogResponses,
-      GetPlcOpLogErrors, ThrowOnError>'
-    file: lib/did-plc/generated/sdk.gen.ts
-  - name: getUrl
-    kind: function
-    signature: '({ baseUrl, path, query, querySerializer, url: _url }: { baseUrl?:
-      string; path?: Record<string, unknown>; query?: Record<string, unknown>; querySerializer:
-      QuerySerializer; url: string }): string'
-    file: lib/did-plc/generated/core/utils.gen.ts
-  - name: getValidRequestBody
-    kind: function
-    signature: '(options: { body?: unknown; bodySerializer?: BodySerializer | null;
-      serializedBody?: unknown }): unknown'
-    file: lib/did-plc/generated/core/utils.gen.ts
   - name: keysFromDidDocument
     kind: function
     signature: '(doc: DidDocument): string[]'
@@ -733,70 +314,14 @@ spec:
     kind: function
     signature: '(path: string): Promise<KeypairState | null>'
     file: lib/did-plc/keypair-state.ts
-  - name: mergeConfigs
-    kind: function
-    signature: '(a: Config, b: Config): Config'
-    file: lib/did-plc/generated/client/utils.gen.ts
-  - name: mergeHeaders
-    kind: function
-    signature: '(...headers: Array<Required<Config>[''headers''] | undefined>): Headers'
-    file: lib/did-plc/generated/client/utils.gen.ts
   - name: plcClientAsKeyResolver
     kind: function
     signature: '(client: PlcClient, opts: { cache?: boolean } = {}): KeysForDid'
     file: lib/did-plc/resolver.ts
-  - name: queryKeyJsonReplacer
-    kind: function
-    signature: '(_key: string, value: unknown): unknown | undefined'
-    file: lib/did-plc/generated/core/queryKeySerializer.gen.ts
-  - name: resolveDid
-    kind: function
-    signature: '(options: Options<ResolveDidData, ThrowOnError>): RequestResult<ResolveDidResponses,
-      ResolveDidErrors, ThrowOnError>'
-    file: lib/did-plc/generated/sdk.gen.ts
   - name: saveKeypairState
     kind: function
     signature: '(path: string, state: KeypairState): Promise<void>'
     file: lib/did-plc/keypair-state.ts
-  - name: separatorArrayExplode
-    kind: function
-    signature: '(style: ArraySeparatorStyle): ''.'' | '';'' | '','' | ''&'''
-    file: lib/did-plc/generated/core/pathSerializer.gen.ts
-  - name: separatorArrayNoExplode
-    kind: function
-    signature: '(style: ArraySeparatorStyle): '','' | ''|'' | ''%20'''
-    file: lib/did-plc/generated/core/pathSerializer.gen.ts
-  - name: separatorObjectExplode
-    kind: function
-    signature: '(style: ObjectSeparatorStyle): ''.'' | '';'' | '','' | ''&'''
-    file: lib/did-plc/generated/core/pathSerializer.gen.ts
-  - name: serializeArrayParam
-    kind: function
-    signature: '({ allowReserved, explode, name, style, value }: SerializeOptions<ArraySeparatorStyle>
-      & { value: unknown[] }): string'
-    file: lib/did-plc/generated/core/pathSerializer.gen.ts
-  - name: serializeObjectParam
-    kind: function
-    signature: '({ allowReserved, explode, name, style, value, valueOnly }: SerializeOptions<ObjectSeparatorStyle>
-      & { value: Record<string, unknown> | Date; valueOnly?: boolean }): string'
-    file: lib/did-plc/generated/core/pathSerializer.gen.ts
-  - name: serializePrimitiveParam
-    kind: function
-    signature: '({ allowReserved, name, value }: SerializePrimitiveParam): string'
-    file: lib/did-plc/generated/core/pathSerializer.gen.ts
-  - name: serializeQueryKeyValue
-    kind: function
-    signature: '(value: unknown): JsonValue | undefined'
-    file: lib/did-plc/generated/core/queryKeySerializer.gen.ts
-  - name: setAuthParams
-    kind: function
-    signature: '(options: Pick<RequestOptions, ''auth'' | ''query'' | ''security''>
-      & { headers: Headers }): Promise<void>'
-    file: lib/did-plc/generated/client/utils.gen.ts
-  - name: stringifyToJsonValue
-    kind: function
-    signature: '(input: unknown): JsonValue | undefined'
-    file: lib/did-plc/generated/core/queryKeySerializer.gen.ts
 codeRefIndex:
 - class:33b7d068752c38948075552d9cef40eb PlcNotFoundError@lib/did-plc/client.ts:52
 - class:8a857a0ac52fbb0a4da6a57b447664ec PlcInvalidOperationError@lib/did-plc/client.ts:66
@@ -805,22 +330,6 @@ codeRefIndex:
 - class:ca276d9a71683fdf566bcdf5fb46e47c PlcClient@lib/did-plc/client.ts:131
 - file:lib/did-plc/client.ts client.ts@lib/did-plc/client.ts
 - file:lib/did-plc/fixup-openapi.ts fixup-openapi.ts@lib/did-plc/fixup-openapi.ts
-- file:lib/did-plc/generated/client.gen.ts client.gen.ts@lib/did-plc/generated/client.gen.ts
-- file:lib/did-plc/generated/client/client.gen.ts client.gen.ts@lib/did-plc/generated/client/client.gen.ts
-- file:lib/did-plc/generated/client/index.ts index.ts@lib/did-plc/generated/client/index.ts
-- file:lib/did-plc/generated/client/types.gen.ts types.gen.ts@lib/did-plc/generated/client/types.gen.ts
-- file:lib/did-plc/generated/client/utils.gen.ts utils.gen.ts@lib/did-plc/generated/client/utils.gen.ts
-- file:lib/did-plc/generated/core/auth.gen.ts auth.gen.ts@lib/did-plc/generated/core/auth.gen.ts
-- file:lib/did-plc/generated/core/bodySerializer.gen.ts bodySerializer.gen.ts@lib/did-plc/generated/core/bodySerializer.gen.ts
-- file:lib/did-plc/generated/core/params.gen.ts params.gen.ts@lib/did-plc/generated/core/params.gen.ts
-- file:lib/did-plc/generated/core/pathSerializer.gen.ts pathSerializer.gen.ts@lib/did-plc/generated/core/pathSerializer.gen.ts
-- file:lib/did-plc/generated/core/queryKeySerializer.gen.ts queryKeySerializer.gen.ts@lib/did-plc/generated/core/queryKeySerializer.gen.ts
-- file:lib/did-plc/generated/core/serverSentEvents.gen.ts serverSentEvents.gen.ts@lib/did-plc/generated/core/serverSentEvents.gen.ts
-- file:lib/did-plc/generated/core/types.gen.ts types.gen.ts@lib/did-plc/generated/core/types.gen.ts
-- file:lib/did-plc/generated/core/utils.gen.ts utils.gen.ts@lib/did-plc/generated/core/utils.gen.ts
-- file:lib/did-plc/generated/index.ts index.ts@lib/did-plc/generated/index.ts
-- file:lib/did-plc/generated/sdk.gen.ts sdk.gen.ts@lib/did-plc/generated/sdk.gen.ts
-- file:lib/did-plc/generated/types.gen.ts types.gen.ts@lib/did-plc/generated/types.gen.ts
 - file:lib/did-plc/genesis.ts genesis.ts@lib/did-plc/genesis.ts
 - file:lib/did-plc/keypair-state.ts keypair-state.ts@lib/did-plc/keypair-state.ts
 - file:lib/did-plc/mod.ts mod.ts@lib/did-plc/mod.ts
@@ -828,37 +337,15 @@ codeRefIndex:
 - file:lib/did-plc/openapi.official.yaml openapi.official.yaml@lib/did-plc/openapi.official.yaml
 - file:lib/did-plc/resolver.ts resolver.ts@lib/did-plc/resolver.ts
 - file:lib/did-plc/types.ts types.ts@lib/did-plc/types.ts
-- function:0131a84b31ad85543599f7fcdc257d17 createConfig@lib/did-plc/generated/client/utils.gen.ts:308
-- function:045b120064539e4384e726f1ad3a6cfd mergeConfigs@lib/did-plc/generated/client/utils.gen.ts:169
-- function:0f780cea28411c032283f1ed477292f0 resolveDid@lib/did-plc/generated/sdk.gen.ts:24
-- function:1495d4cb8fc5849c95ebfe53032eb6d5 createPlcOp@lib/did-plc/generated/sdk.gen.ts:29
-- function:188d765b509d3931cfcc5bbfffb2b7dc createClient@lib/did-plc/generated/client/client.gen.ts:22
-- function:2c8cda686039039edfb62906f1c7b8e4 getLastOp@lib/did-plc/generated/sdk.gen.ts:51
-- function:322f298b5f2b35c454545e9e7383ed23 stringifyToJsonValue@lib/did-plc/generated/core/queryKeySerializer.gen.ts:33
-- function:328544b37c6f5c21f27f71b2df1541fe createSseClient@lib/did-plc/generated/core/serverSentEvents.gen.ts:82
 - function:3a3751439dd48106c07530ecb7436c23 plcClientAsKeyResolver@lib/did-plc/resolver.ts:77
-- function:3aa423aa49ce15b5c281fdf674ccea83 serializeArrayParam@lib/did-plc/generated/core/pathSerializer.gen.ts:67
 - function:3b90763d12a0a4c3f820e3c6672dc372 keysFromDidDocument@lib/did-plc/resolver.ts:22
-- function:4d0581d5775526dc30563286eee15cf9 export_@lib/did-plc/generated/sdk.gen.ts:61
-- function:5cc56f8414c5363a5723ab1d53a49283 mergeHeaders@lib/did-plc/generated/client/utils.gen.ts:186
 - function:689a9b51d2e09d093defe4dfd3db3deb loadKeypairState@lib/did-plc/keypair-state.ts:17
-- function:6b40f3b794b4bad43b14cd20458c4211 serializeObjectParam@lib/did-plc/generated/core/pathSerializer.gen.ts:127
-- function:726d44cabe8461d0ca02ce11929e1984 getAuthToken@lib/did-plc/generated/core/auth.gen.ts:29
-- function:8197f5c8b53dd102aab15a4859eb9eff getPlcOpLog@lib/did-plc/generated/sdk.gen.ts:41
-- function:8458ee58b9d6ddeb478f0901d8d49b7a getParseAs@lib/did-plc/generated/client/utils.gen.ts:68
-- function:857ac81730785f9de7bbc011af2905ee buildClientParams@lib/did-plc/generated/core/params.gen.ts:107
-- function:8b30a2691d351681cfd7042ce1e15408 buildUrl@lib/did-plc/generated/client/utils.gen.ts:157
 - function:8da01723383daa387c12dc941628b9a7 createGenesisOp@lib/did-plc/genesis.ts:63
-- function:9886966e31c3b2166c2973f6d894a6c9 bodySerializer@lib/did-plc/generated/core/bodySerializer.gen.ts:42
 - function:a44d36ee0dc159bf2beed768aaff1e61 createPlcKeyResolver@lib/did-plc/resolver.ts:54
-- function:bf0bf50aa3da564c87154fb48989d79a createInterceptors@lib/did-plc/generated/client/utils.gen.ts:281
-- function:c16923351c028a2524d09fd49a4e9396 getPlcData@lib/did-plc/generated/sdk.gen.ts:56
 - function:c4d5a623ba103c6f42dd447f82559553 saveKeypairState@lib/did-plc/keypair-state.ts:37
-- function:d8a8ad4ef7229e1f081c6bf168c34b83 serializePrimitiveParam@lib/did-plc/generated/core/pathSerializer.gen.ts:109
 - function:e49cc4a90e023dc47d5a2d109f1d2f08 createPlcDirectoryClient@lib/did-plc/client.ts:340
-- function:f88f253e570376f3c82045ceb410c964 getPlcAuditLog@lib/did-plc/generated/sdk.gen.ts:46
-- interface:21dc1cb955f27a91202088472797c2b3 StreamEvent@lib/did-plc/generated/core/serverSentEvents.gen.ts:67
 - interface:4c23cbfe2fc6db60fea7fe843a47a8f6 GenesisOptions@lib/did-plc/genesis.ts:21
+- interface:4f51012b3df9c0dc5b7b93dc7b0249ba PlcService@lib/did-plc/types.ts:51
 - interface:5998a6ebd292373230c747dba056be85 GenesisResult@lib/did-plc/genesis.ts:43
 - interface:d1adb282179ee1bc93186f577980da48 PlcKeyResolverOptions@lib/did-plc/resolver.ts:31
 - interface:d20f19dc21ed3a83a1714e5dd722b53e HealthResponse@lib/did-plc/types.ts:65
@@ -879,6 +366,4 @@ codeRefIndex:
 - method:acc069a9598f75909843cc79e05f199d PlcClient.getLastOp@lib/did-plc/client.ts:224
 - method:ccfc740ff0345ec11783cafe8b0545c9 PlcClient.constructor@lib/did-plc/client.ts:137
 - method:f049cdcb1705123200f64a903d8d30bf PlcClient.getLog@lib/did-plc/client.ts:196
-- type_alias:918b65cfb156b73540784120485ddc65 ServerSentEventsOptions@lib/did-plc/generated/core/serverSentEvents.gen.ts:5
-- type_alias:c40de77654e0d20536f33c98f3814deb ServerSentEventsResult@lib/did-plc/generated/core/serverSentEvents.gen.ts:74
 - type_alias:cda4456d40f40308bc05b5e1f3d08229 KeysForDid@lib/did-plc/resolver.ts:15
