@@ -1,0 +1,54 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-compute-contract-gateway-xrpc-c2s-05fe29612a62-05fe29612a62-a2
+  namespace: default
+spec:
+  systemContext: lib-compute-contract-gateway-xrpc
+  direction: CodeToSpec
+  fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
+  toCommit: 05fe29612a62a645d70273560238ecc3180414d2
+status:
+  phase: Running
+  message: the agent is summarizing lib-compute-contract-gateway-xrpc
+superseded:
+- name: lib-compute-contract-gateway-xrpc-c2s-05fe29612a62-05fe29612a62
+  phase: Failed
+  message: |-
+    ...and keepVm true, the caller's policy spec and policy engine, the configured fedingressHost (defaulting to \"fedproxy.com\"), plcDirectoryUrl and ingressProxyHost, the per-request sshProvider and logger, and a payloadFactory that imports WORKER_MANIFEST_NSID from @publicdomainrelay/compute-deno-common and writes a repo record of that NSID containing the caller's denoLock (defaulting to \"{}\"), denoJson, source bundle and an ISO creation timestamp.",
+          "codeRefs": [
+            "function:03370a182fd0653c2e57c9c946423ce7"
+          ]
+        },
+        {
+          "id": "r.worker-response",
+          "level": "MUST",
+          "text": "Both worker request methods must return only the error together with the RFP uri and cid when the contract fails, and otherwise the receipt uri, cid and ok flag together with winnerDid and the RFP uri and cid, carrying no vmFqdn, websocatUrl, ssh fields or bids.",
+          "codeRefs": [
+            "function:03370a182fd0653c2e57c9c946423ce7"
+          ]
+        },
+        {
+          "id": "r.delete-compute-stub",
+          "level": "MAY",
+          "text": "deleteCompute may ignore the caller identity, receipt uri, receipt cid and token and return { ok: true } unconditionally, since the gateway does not yet perform real deletion of a compute VM.",
+          "codeRefs": [
+            "function:03370a182fd0653c2e57c9c946423ce7"
+          ]
+        }
+      ],
+      "interfaces": [
+        {
+          "name": "GatewayOptions",
+          "kind": "interface",
+          "signature": "interface GatewayOptions {\n  logger: StructuredLoggerInterface;\n  serve: ServeHandle;\n  privateKeyHex?: string;\n  plcDirectoryUrl?: string;\n  ingressProxyHost?: string;\n  fedingressHost?: string;\n  label?: string;\n  storagePath?: string;\n  relayUrls?: string[];\n}",
+          "file": "lib/compute-contract-gateway-xrpc/mod.ts"
+        },
+        {
+          "name": "createComputeContractGateway",
+          "kind": "function",
+          "signature": "(\n  opts: GatewayOptions,\n): ComputeContractGateway",
+          "file": "lib/compute-contract-gateway-xrpc/mod.ts"
+        }
+      ]
+    }
