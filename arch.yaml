@@ -3015,32 +3015,32 @@ system_contexts:
   codeRefIndex:
   - file:lib/requester-xrpc/deno.json deno.json@lib/requester-xrpc/deno.json
   - file:lib/requester-xrpc/mod.ts mod.ts@lib/requester-xrpc/mod.ts
-  - function:0e6067488e94711e9ab880e2e4476b4d getSession@lib/requester-xrpc/mod.ts:2267
-  - function:222cc19853bbcc5c8364dd0045fe404d generateKeypair@lib/requester-xrpc/mod.ts:843
-  - function:37ffe4ae6cccd66c0aa2247b229cb195 discoverBiddersFromRelays@lib/requester-xrpc/mod.ts:222
-  - function:41696176f7bed6e38d01de37865284bb runComputeContract@lib/requester-xrpc/mod.ts:1061
-  - function:60489ade28c54a30e0b402c84f516db0 ensureDumbpipe@lib/requester-xrpc/mod.ts:983
-  - function:645a118ca65dade01b563150f79c4f1c verifyRelayVisibility@lib/requester-xrpc/mod.ts:261
-  - function:6678506da0a57fea32e638410e9241db createRequesterPDS@lib/requester-xrpc/mod.ts:379
-  - function:8df50c647ad47ed966cd0113857e0a62 pollReady@lib/requester-xrpc/mod.ts:861
-  - function:8f23f9232fd7b3e10a7daa80876608f1 autoDiscoverRelayUrls@lib/requester-xrpc/mod.ts:336
-  - function:94d31c50f3b90d6ac685ccd44787d93b discoverBiddersFromRelay@lib/requester-xrpc/mod.ts:193
-  - function:96ce7aa0d3bd68d597d4470b259710ac createSshSessionProvider@lib/requester-xrpc/mod.ts:837
-  - function:9b6bbb6a6c04557c9958f333549aa578 createSignedRepoRecord@lib/requester-xrpc/mod.ts:687
-  - function:9f76009c32bcb68687c9120eaf170b92 createRepoRecord@lib/requester-xrpc/mod.ts:677
-  - function:b34ec33c3d5c37092b2e048b882f896d createOAuthRequester@lib/requester-xrpc/mod.ts:2233
-  - function:ba9049210dbb24c46595af3bff1e77c7 tunnelWsUrl@lib/requester-xrpc/mod.ts:795
-  - function:c6dc2ce50c9ba3f3e49a087dd4a0d95e sshTunnelArgs@lib/requester-xrpc/mod.ts:821
-  - function:cc5a0cab25cd04eece1168807d82450d ensureWebsocat@lib/requester-xrpc/mod.ts:926
-  - function:d95798a777303eff7760923ec8d9ca1f runSession@lib/requester-xrpc/mod.ts:900
-  - function:e74f5a09a1becd90d26cbda903c89f8f resolveBidderEndpoint@lib/requester-xrpc/mod.ts:702
-  - function:f1d87a6602f2314eae99f4b756e03d69 callBidder@lib/requester-xrpc/mod.ts:732
-  - function:f6cb813eef861e20e07c2ebc5d94b8d3 applyOAuthAgentToRequesterPDS@lib/requester-xrpc/mod.ts:2174
-  - interface:66b06e1611350a7f4fb4602342352a5f RequesterPDSImpl@lib/requester-xrpc/mod.ts:91
-  - interface:67624ec68624af49092967677f8abb64 CreateOAuthRequesterOpts@lib/requester-xrpc/mod.ts:2143
-  - interface:6a732b7aa8df6d42f4065089513f2d9a OAuthRequesterHandle@lib/requester-xrpc/mod.ts:2136
-  - interface:73fc6527835ff9fd0374c64f5fd92560 ContractState@lib/requester-xrpc/mod.ts:464
-  - interface:f1991979bdf7c564cd4194b92705e667 RelayVisibilityResult@lib/requester-xrpc/mod.ts:241
+  - function:0cfad758f2a6d57ca10bee75589464f9 pollReady@lib/requester-xrpc/mod.ts:960
+  - function:0f44a3a1a18b2fcd791a7d9ef22ae305 createSshSessionProvider@lib/requester-xrpc/mod.ts:936
+  - function:12eaf0ad17ff6d8bab4b52e5a66d385c runSession@lib/requester-xrpc/mod.ts:999
+  - function:18c117cef9c33be9e08c56764fb4c7c0 sshTunnelArgs@lib/requester-xrpc/mod.ts:920
+  - function:1aca71352ce4a3cd55950fec61b6fd97 getSession@lib/requester-xrpc/mod.ts:2409
+  - function:26df704dd1c608202a67c70e44f5f77d createRequesterPDS@lib/requester-xrpc/mod.ts:478
+  - function:5ec26f410d013dd78efb43c1d146b71a tunnelWsUrl@lib/requester-xrpc/mod.ts:894
+  - function:6e1a53f2a5f998ab393b6e6c7b5a1c27 runComputeContract@lib/requester-xrpc/mod.ts:1160
+  - function:6f04ae9505e51b674d556023926ad0f7 createSignedRepoRecord@lib/requester-xrpc/mod.ts:786
+  - function:6f74d9a735faf0fd8ce7bdec66e464a9 callBidder@lib/requester-xrpc/mod.ts:831
+  - function:8c1b91c6f5d9a94296bf7798a12c8875 discoverBiddersFromRelays@lib/requester-xrpc/mod.ts:321
+  - function:8ed939d7ad2b60aebb38d2cbe4394220 createRepoRecord@lib/requester-xrpc/mod.ts:776
+  - function:ad09ffbcefa45b14c57c5b905f9d454f generateKeypair@lib/requester-xrpc/mod.ts:942
+  - function:ae30cc2203a682953aed241849efcdb1 verifyRelayVisibility@lib/requester-xrpc/mod.ts:360
+  - function:b72b77dd8ed942d7244b06797219a93c ensureDumbpipe@lib/requester-xrpc/mod.ts:1082
+  - function:d436ee0adb5e809653ffd94fe10102b9 resolveBidderEndpoint@lib/requester-xrpc/mod.ts:801
+  - function:e22c7ccbcae3589afb91df183f271e60 createOAuthRequester@lib/requester-xrpc/mod.ts:2375
+  - function:e637f6fe80402e111638fe1f1cd4becd autoDiscoverRelayUrls@lib/requester-xrpc/mod.ts:435
+  - function:e92e0453b17d1c801ff58eeae3be4116 discoverBiddersFromRelay@lib/requester-xrpc/mod.ts:292
+  - function:ed88e0337428a63a473f550045d34de3 applyOAuthAgentToRequesterPDS@lib/requester-xrpc/mod.ts:2316
+  - function:f6a15c1645c6864e0618555257500686 ensureWebsocat@lib/requester-xrpc/mod.ts:1025
+  - interface:14702c13c4bcbe07dcb775a82ce9ff0a CreateOAuthRequesterOpts@lib/requester-xrpc/mod.ts:2285
+  - interface:1e8bec56c87884c994d1138f1501733e OAuthRequesterHandle@lib/requester-xrpc/mod.ts:2278
+  - interface:2c60cf94f5bc84d54a207d32606eef0b RelayVisibilityResult@lib/requester-xrpc/mod.ts:340
+  - interface:33b2e4c18cd26904063ec9333aa13b9a RequesterPDSImpl@lib/requester-xrpc/mod.ts:92
+  - interface:4bbf57764c94584c6a1e9f7853d0fc55 ContractState@lib/requester-xrpc/mod.ts:563
 - id: sc.lib-secrets-oidc
   name: lib-secrets-oidc
   spec: specs/lib-secrets-oidc.yaml
