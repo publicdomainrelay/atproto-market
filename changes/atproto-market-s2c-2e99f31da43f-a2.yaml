@@ -19,8 +19,172 @@ spec:
     - +r.iroh-cloud-init-fixture
     - +r.iroh-full-flow-harness
 status:
-  phase: Running
-  message: the agent is realizing atproto-market in a batch of 3 led by lib-common-cloud-init-common
+  phase: Succeeded
+  branch: spec/lib-common-cloud-init-common/aa1b6165
+  commit: ffe23fab64479bde13589e29ceef8ad39674da78
+  filesTouched:
+  - compute-contract-full-flow/run_full_flow.ts
+  - lib/abc/requester/mod.ts
+  - lib/common/cloud-init-common/mod.ts
+  - lib/compute-contract-gateway-xrpc/mod.ts
+  - lib/requester-xrpc/mod.ts
+  - request-vm-ssh/cli-args-env.ts
+  - request-vm-ssh/mod.ts
+  - test/bidder_container_integration_test.ts
+  - test/bidder_cross_platform_integration_test.ts
+  - test/bidder_prod_integration_test.ts
+  - test/bidder_ssh_relay_test.ts
+  - test/fixtures/cloud-init/iroh.yaml
+  agentLog: |-
+    ... one release.
+    - `test/fixtures/cloud-init/iroh.yaml` regenerated; other six fixtures untouched.
+
+    **lib-requester-xrpc**
+    - `ensureDumbpipe(logger?): Promise<string>` — PATH lookup, else downloads pinned release, unpacks `./dumbpipe` from the tar.gz with a Deno-runtime gzip+tar reader (no shell installer), writes 0755 in a temp dir, prepends PATH; never throws; logs `dumbpipe_{found,unsupported,downloading,download_failed,downloaded,path_updated}`.
+    - `createSshSessionProvider(logger?, { proxyCommandFn?: (target) => string; dumbpipePath? })`; one builder picks `dumbpipe connect <ticket>` for a dotless target, websocat for a dotted one. Session output captured and exposed via `lastSessionOutput()`.
+    - Default transport `iroh`; flow bootstraps the transport's helper and passes `dumbpipePath` in; `result.sshProxyCommand` and `result.sshOutput` recorded.
+    - Ticket-report route mounted on the requester's own serve at `/iroh-ticket/<32-hex token>`; `ctx.irohReportUrl = https://<relay ingress host>/iroh-ticket/<token>` — no invented host/port, no loopback fallback. POST resolves once, 404 for unknown/satisfied.
+    - One `resolveGuestAddress` handler serves the report, submitEvent and both firehose paths: IPv4 skipped, dotless = iroh ticket, dotted = relay FQDN; `vm_fqdn_discovered` / `vm_fqdn_timeout` unchanged.
+
+    **atproto-market**
+    - `test/bidder_container_integration_test.ts` rewritten as the acceptance suite: `relay.localhost` dispatcher (plain + TLS, `generateLocalhostTlsCert` with `*.relay.localhost`), interceptor on the TLS port with CA, provider with `caCertPem`/`guestTlsPort`, contract awaited with no race, asserts receiptOk, no 401, sshReady, exit 0, `dumbpipe connect <reported ticket>`, `SSH_OK_VIA_IROH`.
+    - `hono-compute-contract-gateway`, `bidder_{ssh_relay,prod,cross_platform}` and `request-vm-ssh` name `transport: "tunnel"` / bootstrap accordingly; `run_full_flow.ts` keeps the websocat topology with `ensureWebsocat` and updated diagram.
+
+    verify: exit 0, 268ms, 0 ok
+  message: 'realized atproto-market in a batch of 3 led by lib-common-cloud-init-common
+    on spec/lib-common-cloud-init-common/aa1b6165: 12 file(s) touched, verify exit
+    0'
+  acceptance:
+  - name: acceptance
+    exitCode: 0
+    durationSeconds: 28.772036519
+    passed: true
+    outputTail: "...k3dbpexg4mbonfzg62bonruw42zof4aqayltuyk7l7qcaeakyeiaat274aq\",\"proxyCmd\":\"/tmp/dumbpipe-fe163ddec1c73864/dumbpipe
+      connect endpointad7ka7gslu5xv3xlyss7klsppjvfp5kou3h76udekxbjpxam55oimayaenuhi5dqom5c6l3von3tcljrfzzgk3dbpexg4m\",\"timeoutMs\":300000}\n{\"ts\":\"2026-10-05T21:56:00.388Z\",\"level\":\"info\",\"message\":\"ssh_poll_cmd\",\"prefix\":\"iroh-acceptance\",\"args\":[\"-o\",\"ProxyCommand=/tmp/dumbpipe-fe163ddec1c73864/dumbpipe
+      connect endpointad7ka7gslu5xv3xlyss7klsppjvfp5kou3h76udekxbjpxam55oimayaenuhi5dqom5c6l3von3tcljrfzzgk3dbpexg4mbonfzg62bonruw42zof4aqayltuyk7l7qcaeakyeiaat274aq\",\"-o\",\"IdentityFile=/tmp/ssh-compute-d2a2d57d-2e057cdcad165fbc/id_ed25519\",\"-o\",\"IdentitiesOnly=yes\"]}\n{\"ts\":\"2026-10-05T21:56:00.389Z\",\"level\":\"info\",\"message\":\"response\",\"prefix\":\"iroh-acceptance\",\"method\":\"POST\",\"path\":\"/iroh-ticket/7542f139cacfc979a81d3469697a0abf\",\"status\":200,\"durationMs\":1,\"label\":\"requester\"}\n{\"ts\":\"2026-10-05T21:56:00.490Z\",\"level\":\"info\",\"message\":\"vm_ssh_ready\",\"prefix\":\"iroh-acceptance\",\"fqdn\":\"endpointad7ka7gslu5xv3xlyss7klsppjvfp5kou3h76udekxbjpxam55oimayaenuhi5dqom5c6l3von3tcljrfzzgk3dbpexg4mbonfzg62bonruw42zof4aqayltuyk7l7qcaeakyeiaat274aq\",\"attempt\":1}\nusing
+      secret key f8969315477a9d0eccafe77432e82059c50e22d5d8c424194772050b604d0796\nSSH_OK_VIA_IROH\nLinux
+      5c803706affb 7.2.8-200.fc44.x86_64 #1 SMP PREEMPT_DYNAMIC Fri Sep 25 21:05:44
+      UTC 2026 x86_64 GNU/Linux\n{\"ts\":\"2026-10-05T21:56:00.596Z\",\"level\":\"info\",\"message\":\"vm_ssh_session_exit\",\"prefix\":\"iroh-acceptance\",\"vmFqdn\":\"endpointad7ka7gslu5xv3xlyss7klsppjvfp5kou3h76udekxbjpxam55oimayaenuhi5dqom5c6l3von3tcljrfzzgk3dbpexg4mbonfzg62bonruw42zof4aqayltuyk7l7qcaeakyeiaat274aq\",\"code\":0}\n{\"ts\":\"2026-10-05T21:56:00.596Z\",\"level\":\"info\",\"message\":\"vm_delete_skipped\",\"prefix\":\"iroh-acceptance\",\"reason\":\"--keep-vm\"}\n{\"ts\":\"2026-10-05T21:56:00.596Z\",\"level\":\"info\",\"message\":\"contract_result\",\"prefix\":\"iroh-acceptance\",\"receiptOk\":true,\"sshReady\":true,\"sshExitCode\":0,\"sshProxyCommand\":\"/tmp/dumbpipe-fe163ddec1c73864/dumbpipe
+      connect endpointad7ka7gslu5xv3xlyss7klsppjvfp5kou3h76udekxbjpxam55oimayaenuhi5dqom5c6l3von3tcljrfzzgk3dbpexg4mbonfzg62bonruw42zof4aqayltuyk7l7qcaeakyeiaat274aq\"}\n{\"ts\":\"2026-10-05T21:56:00.597Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shh5siy1nvgfaprk7ck15cygmtfak4gcxz9xgeazxsq4r2\"}\n{\"ts\":\"2026-10-05T21:56:00.598Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shcafjt2js2ssv4hghpehjtozcfavqy2axpvbtzbbnb24d\"}\n{\"ts\":\"2026-10-05T21:56:00.598Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shxdibcnljdu6ddxudfqhsjhwxmjenbwlp6tpvvam2zaft\"}\n{\"ts\":\"2026-10-05T21:56:00.598Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shct2cuzqecpqwymrl51fznm1bh2nucdlvscvyt9pypb82\"}\n{\"ts\":\"2026-10-05T21:56:00.598Z\",\"level\":\"error\",\"message\":\"ws_error\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"error\":\"[object
+      ErrorEvent]\"}\n{\"ts\":\"2026-10-05T21:56:00.598Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":0,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T21:56:00.598Z\",\"level\":\"info\",\"message\":\"ws_reconnect_scheduled\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"delayMs\":1000,\"attempt\":1}\n{\"ts\":\"2026-10-05T21:56:00.598Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":1005,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T21:56:00.598Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":1005,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T21:56:00.598Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"requester\",\"code\":1005,\"reason\":\"\"}\n\e[0m\e[38;5;245m-----
+      output end -----\e[0m\n[acceptance] iroh: RFP -> bid -> accept -> SSH over the
+      guest's own ticket ... \e[0m\e[32mok\e[0m \e[0m\e[38;5;245m(26s)\e[0m\n\n\e[0m\e[32mok\e[0m
+      | 1 passed | 0 failed \e[0m\e[38;5;245m(26s)\e[0m"
+  requirementCoverage:
+  - id: r.iroh-acceptance-flow
+    implemented: true
+    evidence: 'test/bidder_container_integration_test.ts: `const result = await runComputeContract(requester,
+      { ... skipSsh: false, keepVm: true, vmReadyTimeoutSec: 300, execProgram: `echo
+      ${MARKER} && uname -a`, ... })` awaited directly; the old `Promise.race([contract,
+      new Promise((r) => setTimeout(r, 40_000))])` and the spying on pendingBids are
+      deleted, so no race/wall-clock deadline remains. All cleanups (dispatcher/PLC
+      abort, fetch restore, `providerServe.shutdown()`, `bidder.shutdown()`, `requesterServe.shutdown()`)
+      are registered and only run in `finally` after the await. Asserts: `assert(result.receiptOk
+      === true)`, `assert(result.sshReady === true)`, `assert(result.sshExitCode ===
+      0)`, ``/dumbpipe connect /.test(proxyCommand) && proxyCommand.trim().endsWith(ticket)``,
+      `assert(!proxyCommand.includes("websocat"))`, and `assert(result.sshOutput?.includes(MARKER)
+      === true)` with `const MARKER = "SSH_OK_VIA_IROH"`. The ticket comes only from
+      the flow''s own logged address-discovery event `vm_fqdn_discovered`/`kind ===
+      "iroh-ticket"` (fed by the guest''s outbound report / onNetwork), never by exec-ing
+      into the container. `result.sshOutput` is the allowed small result addition
+      (lib/abc/requester/mod.ts adds `sshOutput?: string` and `lastSessionOutput?()`;
+      lib/requester-xrpc captures stdout/stderr while live-streaming). The test is
+      registered unconditionally (no `ignore: true`); the `if (!(await backend.ensureRunning()))
+      return` guard is the repo''s existing container-availability idiom (oauth_session_transfer_test.ts,
+      bidder_prod_integration_test.ts).'
+  - id: r.iroh-acceptance-guest-reachable-report
+    implemented: true
+    evidence: 'test/bidder_container_integration_test.ts: `const gateway = await backend.defaultGateway();`
+      then `createRelayFactory({ hostname: "relay.localhost", additionalHosts: [gateway]
+      }).createApp()`; `generateLocalhostTlsCert({ extraDnsSans: ["relay.localhost",
+      "*.relay.localhost"] })`; the one app served via `serveOnPort0(dispatcherApp.fetch,
+      dispAc, "0.0.0.0")` (plain) and `serveOnPort0(dispatcherApp.fetch, dispTlsAc,
+      "0.0.0.0", serverCertPem, serverKeyPem)` (TLS); `const ingressProxyHost = `relay.localhost:${dispPort}``
+      passed to `createRequesterPDS`, the bidder relays (`makeRelay` uses `ingressProxyHost`)
+      and the provider; interceptor installed with `dispPort: dispTlsPort, caCertPem`
+      (not the plain port); provider built with `ingressProxyHost, caCertPem, guestTlsPort:
+      dispTlsPort`. The provisioning backend already does the rewrite/hosts/CA work
+      (hono-compute-provider lib/compute-provider-local/mod.ts:773-809 uses `ctx.guestTlsPort`
+      to rewrite `https://$1:${port}`, writes `resolve = *:${port}:${gw}` and the
+      CA cert), and the requester composes the portless URL from its own ingress (`irohReportUrl
+      = `https://${ingressHost}${IROH_TICKET_ROUTE}/${token}``). No host-side read
+      of the guest''s ticket/address and no invented port handed to the requester.'
+  - id: r.iroh-acceptance-plc-key-resolution
+    implemented: true
+    evidence: 'test/bidder_container_integration_test.ts createFakePlc GET handler
+      derives the doc''s `verificationMethod` as `{ id: `${did}#${name}`, type: "Multikey",
+      publicKeyMultibase: String(didKey).replace(/^did:key:/, "") }` from the genesis
+      op''s verificationMethods, so resolving a did:plc yields that DID''s did:key
+      end to end through the resolver the relay/market call (fetch is intercepted
+      to the fake PLC). The suite asserts only run-level facts: `assert(result.receiptOk
+      === true, "receipt verification should pass")` and `assert(unauthorized.length
+      === 0, ...)` over the filtered `logEvents` (no 401 during subscriber registration).
+      It adds no did:key fast path and no assertion on any resolver''s internals;
+      the only change to the PLC code path is a comment.'
+  - id: r.iroh-cloud-init-fixture
+    implemented: true
+    evidence: 'test/fixtures/cloud-init/iroh.yaml is present and is the byte-exact
+      composer output: `deno test -A test/cloud_init_snapshot_test.ts` passes 19/19,
+      including `iroh module snapshot matches fixture` (`assertEquals(buildUserData({
+      ctx: IROH_CTX, modules: ["iroh"] }), await fixture("iroh.yaml"))`) and `composer
+      snapshots match fixtures` (the six existing fixtures unchanged; only iroh.yaml
+      is modified in the diff, kept in sync with the cloud-init-common report-loop
+      change). The `iroh module semantics` case asserts the pinned dumbpipe release
+      (`DUMBPIPE_VERSION="0.39.0"`, GitHub release URL), the loopback listener (`--host
+      127.0.0.1:22`), the ticket report to the configured URL (`iroh-report.service`,
+      `IROH_CTX.irohReportUrl`, ticket JSON body), and the sshd it configures (`openssh-server`).'
+  - id: r.iroh-full-flow-harness
+    implemented: true
+    evidence: 'compute-contract-full-flow/run_full_flow.ts imports `ensureWebsocat`
+      (still exported by lib/requester-xrpc) and calls `await ensureWebsocat(logger)`,
+      selects the transport explicitly with `userData: { transport: "tunnel" }` while
+      keeping `skipSsh: false` and `createSshSessionProvider`, and its header diagram
+      line is changed to `cloud-init: sshd + relay tunnel` (no longer claims websocat),
+      plus a progress line `log("transport: tunnel (websocat ProxyCommand through
+      the local dispatcher)")` matching the topology actually used. No removed helper
+      is imported or called (the change kept `ensureWebsocat` and `createSshSessionProvider`).'
+  policy:
+    waived:
+    - policy: guest-report-driven-emission
+      constraint: guest-report-driven-onnetwork
+      enforcementAction: deny
+      severity: error
+      msg: createVmBidderCallbacks emits the vm.onNetwork event from the provisioning
+        lifecycle, not from an inbound guest report
+      object: CodeGraph default/atproto-market
+      file: lib/market-bidder-compute/mod.ts
+      line: 304
+    - policy: rfp-guest-reports-network
+      constraint: rfp-guest-reports-network
+      enforcementAction: deny
+      severity: error
+      msg: 'the host emits the network report "COMPUTE_EVENTS_VM_ONNETWORK_NSID" from
+        the provisioning lifecycle, not from the http.handle of the guest''s report:
+        lib/market-bidder-compute/mod.ts:304'
+      object: ArchitectureModel default/atproto-market
+      file: lib/market-bidder-compute/mod.ts
+      line: 304
+  progress:
+    turns: 1
+    tools:
+    - tool: realize
+      count: 1
+    files:
+    - compute-contract-full-flow/run_full_flow.ts
+    - lib/abc/requester/mod.ts
+    - lib/common/cloud-init-common/mod.ts
+    - lib/compute-contract-gateway-xrpc/mod.ts
+    - lib/requester-xrpc/mod.ts
+    - request-vm-ssh/cli-args-env.ts
+    - request-vm-ssh/mod.ts
+    - test/bidder_container_integration_test.ts
+    - test/bidder_cross_platform_integration_test.ts
+    - test/bidder_prod_integration_test.ts
+    - test/bidder_ssh_relay_test.ts
+    - test/fixtures/cloud-init/iroh.yaml
+    notes: 1
+    first: "2026-10-05T21:59:31Z"
+    last: "2026-10-05T21:59:31Z"
 superseded:
 - name: atproto-market-s2c-2e99f31da43f
   phase: Failed
