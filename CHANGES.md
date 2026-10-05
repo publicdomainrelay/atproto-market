@@ -371,6 +371,20 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 - added `r.worker-bidder-dids` (SHOULD): "The ephemeral worker request should pass the caller's extraBidderDids or an empty list, while the persistent worker request always passes an empty bidder list."
 - added `r.worker-manifest-payload` (MUST): "requestComputeWorkerEphemeral and requestComputeWorkerPersistent must run the contract with skipSsh and keepVm forced true, appliesToNsid set to WORKER_MANIFEST_NSID imported from @publicdomainrelay/compute-deno-common, and a payloadFactory that writes a repo record of that NSID carrying the caller's denoLock (defaulting to "{}"), denoJson, source bundle and a creation timestamp."
 
+### lib-delegated-trust-badge-blue-keys
+
+- intent: "" -> "This context exists to pin down the delegated-trust adapter that lets a market bidder or requester (lib/market-bidder, lib/requester-xrpc) resolve which DIDs are trusted on a subject's behalf when the subject is merely an associate of an operator. It sits between the ABC trust graph's DelegatedTrustResolver contract and the badgeBlueKeys lexicon records, translating association records into operator DIDs whose vouch sets extend the subject's own. The module is deliberately transport-free: the vouch source and the record listing arrive as injected capabilities, so the resolver can be composed with any PDS or repository implementation."
+- added `r.degrade-on-listing-failure` (MUST): "A failure while listing or scanning the badgeBlueKeys records must be caught, reported through the logger at warn level with selfDid and the stringified error, and must leave the accumulator seeded from the self vouches as the return value rather than rejecting the call."
+- added `r.deno-package-manifest` (MAY): "The module may ship its own Deno manifest next to mod.ts so it can be imported and type-checked as a standalone package."
+- added `r.factory-returns-resolver` (MUST): "createBadgeBlueKeysDelegatedTrustResolver must take a DelegatedTrustBadgeBlueKeysOpts and return a DelegatedTrustResolver object whose only member is the async getDelegatedTrustedDids(selfDid) resolving to a Set<string>; it must not perform any resolution work at construction time, only close over the injected options."
+- added `r.filter-association-services` (MUST): "A record whose service field is neither requester_associate nor bidder_associate must be skipped before any shape test, so an unrelated badgeBlueKeys record can never contribute a candidate operator."
+- added `r.list-badge-blue-keys` (MUST): "The resolver must read the subject's own records by calling listOwnRecords with the badgeBlueKeys collection NSID and a limit of 200, then iterate the returned ListedRecord entries reading each record's value object."
+- added `r.optional-logger` (MUST): "The log callback on DelegatedTrustBadgeBlueKeysOpts is optional and falls back to a no-op when absent; when present it is called with a level, a message and a metadata object, carrying challenge/service/keyId/selfDid while scanning each record, keyId and opVouchCount for each resolved operator, and selfDid plus the stringified error on failure."
+- added `r.seed-with-own-vouches` (MUST): "getDelegatedTrustedDids must first seed its accumulator with the DIDs returned by vouchResolver.getVouchedDids(selfDid), and must substitute an empty set rather than propagate the rejection when that call fails, so the accumulator exists and is what the method always returns."
+- added `r.two-association-shapes` (MUST): "An association record must yield a candidate operator in both accepted shapes: the canonical one where keyId equals selfDid and challenge is a string starting with "did:" (challenge names the operator), and the legacy inverted one where challenge equals selfDid and keyId is a string starting with "did:" (keyId names the operator); both feed the same candidate set, deduplicated."
+- added `r.union-operator-vouches` (MUST): "For each candidate operator the resolver must await vouchResolver.getVouchedDids(operator) and union every returned DID into the accumulator seeded from the self vouches, so a wrong candidate with an empty vouch set adds nothing while the correct operator contributes its vouches."
+- added `r.vouch-resolver-injected` (MUST): "The module must not construct its own trust source or record transport; vouchResolver and listOwnRecords arrive through DelegatedTrustBadgeBlueKeysOpts and the returned resolver uses only those, never a PDS, repository or network connection."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance | coverage |
@@ -397,5 +411,5 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 | lib-common-secrets-common-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-compute-contract-gateway-xrpc-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Failed |  | 0 | - | - |
 | lib-compute-contract-gateway-xrpc-c2s-05fe29612a62-05fe29612a62-a2 | CodeToSpec | Succeeded |  | 0 | - | - |
-| lib-delegated-trust-badge-blue-keys-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
+| lib-delegated-trust-badge-blue-keys-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-did-key-ingress-proxy-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |

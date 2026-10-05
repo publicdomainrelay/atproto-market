@@ -1346,8 +1346,33 @@ system_contexts:
   - sc.atproto-market
   - sc.lib-abc-trust-graph
   - sc.lib-common-market-lexicons
+  requirements:
+  - id: r.degrade-on-listing-failure
+    level: MUST
+  - id: r.deno-package-manifest
+    level: MAY
+  - id: r.factory-returns-resolver
+    level: MUST
+  - id: r.filter-association-services
+    level: MUST
+  - id: r.list-badge-blue-keys
+    level: MUST
+  - id: r.optional-logger
+    level: MUST
+  - id: r.seed-with-own-vouches
+    level: MUST
+  - id: r.two-association-shapes
+    level: MUST
+  - id: r.union-operator-vouches
+    level: MUST
+  - id: r.vouch-resolver-injected
+    level: MUST
   codeRefIndex:
+  - file:lib/delegated-trust-badge-blue-keys/deno.json deno.json@lib/delegated-trust-badge-blue-keys/deno.json
   - file:lib/delegated-trust-badge-blue-keys/mod.ts mod.ts@lib/delegated-trust-badge-blue-keys/mod.ts
+  - function:473e9effb9d9e91445db68e031e329ea createBadgeBlueKeysDelegatedTrustResolver@lib/delegated-trust-badge-blue-keys/mod.ts:15
+  - interface:05ddb65bca17c3188f02d33eda8b8481 DelegatedTrustBadgeBlueKeysOpts@lib/delegated-trust-badge-blue-keys/mod.ts:9
+  - interface:9ba074d070c57eb2e62aa0df62cb0178 ListedRecord@lib/delegated-trust-badge-blue-keys/mod.ts:4
 - id: sc.lib-did-key-ingress-proxy
   name: lib-did-key-ingress-proxy
   spec: specs/lib-did-key-ingress-proxy.yaml

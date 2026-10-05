@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists to pin down the delegated-trust adapter that lets a market bidder or requester (lib/market-bidder, lib/requester-xrpc) resolve which DIDs are trusted on a subject's behalf when the subject is merely an associate of an operator. It sits between the ABC trust graph's DelegatedTrustResolver contract and the badgeBlueKeys lexicon records, translating association records into operator DIDs whose vouch sets extend the subject's own. The module is deliberately transport-free: the vouch source and the record listing arrive as injected capabilities, so the resolver can be composed with any PDS or repository implementation.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

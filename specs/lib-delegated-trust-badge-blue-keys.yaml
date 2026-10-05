@@ -10,5 +10,117 @@ spec:
   - sc.atproto-market
   - sc.lib-abc-trust-graph
   - sc.lib-common-market-lexicons
+  intent: 'This context exists to pin down the delegated-trust adapter that lets a
+    market bidder or requester (lib/market-bidder, lib/requester-xrpc) resolve which
+    DIDs are trusted on a subject''s behalf when the subject is merely an associate
+    of an operator. It sits between the ABC trust graph''s DelegatedTrustResolver
+    contract and the badgeBlueKeys lexicon records, translating association records
+    into operator DIDs whose vouch sets extend the subject''s own. The module is deliberately
+    transport-free: the vouch source and the record listing arrive as injected capabilities,
+    so the resolver can be composed with any PDS or repository implementation.'
+  requirements:
+  - id: r.degrade-on-listing-failure
+    level: MUST
+    text: A failure while listing or scanning the badgeBlueKeys records must be caught,
+      reported through the logger at warn level with selfDid and the stringified error,
+      and must leave the accumulator seeded from the self vouches as the return value
+      rather than rejecting the call.
+    codeRefs:
+    - function:473e9effb9d9e91445db68e031e329ea
+  - id: r.deno-package-manifest
+    level: MAY
+    text: The module may ship its own Deno manifest next to mod.ts so it can be imported
+      and type-checked as a standalone package.
+    codeRefs:
+    - file:lib/delegated-trust-badge-blue-keys/deno.json
+    - file:lib/delegated-trust-badge-blue-keys/mod.ts
+  - id: r.factory-returns-resolver
+    level: MUST
+    text: createBadgeBlueKeysDelegatedTrustResolver must take a DelegatedTrustBadgeBlueKeysOpts
+      and return a DelegatedTrustResolver object whose only member is the async getDelegatedTrustedDids(selfDid)
+      resolving to a Set<string>; it must not perform any resolution work at construction
+      time, only close over the injected options.
+    codeRefs:
+    - function:473e9effb9d9e91445db68e031e329ea
+    - interface:05ddb65bca17c3188f02d33eda8b8481
+  - id: r.filter-association-services
+    level: MUST
+    text: A record whose service field is neither requester_associate nor bidder_associate
+      must be skipped before any shape test, so an unrelated badgeBlueKeys record
+      can never contribute a candidate operator.
+    codeRefs:
+    - function:473e9effb9d9e91445db68e031e329ea
+  - id: r.list-badge-blue-keys
+    level: MUST
+    text: The resolver must read the subject's own records by calling listOwnRecords
+      with the badgeBlueKeys collection NSID and a limit of 200, then iterate the
+      returned ListedRecord entries reading each record's value object.
+    codeRefs:
+    - function:473e9effb9d9e91445db68e031e329ea
+    - interface:9ba074d070c57eb2e62aa0df62cb0178
+  - id: r.optional-logger
+    level: MUST
+    text: The log callback on DelegatedTrustBadgeBlueKeysOpts is optional and falls
+      back to a no-op when absent; when present it is called with a level, a message
+      and a metadata object, carrying challenge/service/keyId/selfDid while scanning
+      each record, keyId and opVouchCount for each resolved operator, and selfDid
+      plus the stringified error on failure.
+    codeRefs:
+    - function:473e9effb9d9e91445db68e031e329ea
+    - interface:05ddb65bca17c3188f02d33eda8b8481
+  - id: r.seed-with-own-vouches
+    level: MUST
+    text: getDelegatedTrustedDids must first seed its accumulator with the DIDs returned
+      by vouchResolver.getVouchedDids(selfDid), and must substitute an empty set rather
+      than propagate the rejection when that call fails, so the accumulator exists
+      and is what the method always returns.
+    codeRefs:
+    - function:473e9effb9d9e91445db68e031e329ea
+  - id: r.two-association-shapes
+    level: MUST
+    text: 'An association record must yield a candidate operator in both accepted
+      shapes: the canonical one where keyId equals selfDid and challenge is a string
+      starting with "did:" (challenge names the operator), and the legacy inverted
+      one where challenge equals selfDid and keyId is a string starting with "did:"
+      (keyId names the operator); both feed the same candidate set, deduplicated.'
+    codeRefs:
+    - function:473e9effb9d9e91445db68e031e329ea
+  - id: r.union-operator-vouches
+    level: MUST
+    text: For each candidate operator the resolver must await vouchResolver.getVouchedDids(operator)
+      and union every returned DID into the accumulator seeded from the self vouches,
+      so a wrong candidate with an empty vouch set adds nothing while the correct
+      operator contributes its vouches.
+    codeRefs:
+    - function:473e9effb9d9e91445db68e031e329ea
+  - id: r.vouch-resolver-injected
+    level: MUST
+    text: The module must not construct its own trust source or record transport;
+      vouchResolver and listOwnRecords arrive through DelegatedTrustBadgeBlueKeysOpts
+      and the returned resolver uses only those, never a PDS, repository or network
+      connection.
+    codeRefs:
+    - file:lib/delegated-trust-badge-blue-keys/mod.ts
+    - interface:05ddb65bca17c3188f02d33eda8b8481
+  interfaces:
+  - name: DelegatedTrustBadgeBlueKeysOpts
+    kind: interface
+    signature: 'interface DelegatedTrustBadgeBlueKeysOpts { vouchResolver: VouchResolver;
+      listOwnRecords(collection: string, opts?: { limit?: number }): Promise<ListedRecord[]>;
+      log?(level: string, msg: string, meta?: Record<string, unknown>): void }'
+    file: lib/delegated-trust-badge-blue-keys/mod.ts
+  - name: ListedRecord
+    kind: interface
+    signature: 'interface ListedRecord { uri: string; value: Record<string, unknown>
+      }'
+    file: lib/delegated-trust-badge-blue-keys/mod.ts
+  - name: createBadgeBlueKeysDelegatedTrustResolver
+    kind: function
+    signature: '(opts: DelegatedTrustBadgeBlueKeysOpts): DelegatedTrustResolver'
+    file: lib/delegated-trust-badge-blue-keys/mod.ts
 codeRefIndex:
+- file:lib/delegated-trust-badge-blue-keys/deno.json deno.json@lib/delegated-trust-badge-blue-keys/deno.json
 - file:lib/delegated-trust-badge-blue-keys/mod.ts mod.ts@lib/delegated-trust-badge-blue-keys/mod.ts
+- function:473e9effb9d9e91445db68e031e329ea createBadgeBlueKeysDelegatedTrustResolver@lib/delegated-trust-badge-blue-keys/mod.ts:15
+- interface:05ddb65bca17c3188f02d33eda8b8481 DelegatedTrustBadgeBlueKeysOpts@lib/delegated-trust-badge-blue-keys/mod.ts:9
+- interface:9ba074d070c57eb2e62aa0df62cb0178 ListedRecord@lib/delegated-trust-badge-blue-keys/mod.ts:4

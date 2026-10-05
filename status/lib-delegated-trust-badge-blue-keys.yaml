@@ -1,10 +1,11 @@
 syncedFingerprint: b29671533054f5810c22010be833c835766105b429a3fa3c83f24b71d831e11f
-realizedSpecHash: 1090aa1759ebceaf28c7b25a968bf95d01f7edeb7d5331c42d8c5c49462e3b8d
+realizedSpecHash: 1544979d3f1bfbb7501368cbe428ead45d97e6eab51c1025a8d9b7de7214b2ab
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: DelegatedTrustBadgeBlueKeysOpts, ListedRecord, createBadgeBlueKeysDelegatedTrustResolver'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual
