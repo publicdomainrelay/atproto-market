@@ -108,7 +108,13 @@ spec:
       single `dumbpipe` entry the archive carries (the archive contains ./dumbpipe
       and nothing else) into /usr/local/bin with mode 0755 behind an idempotent stamp
       file, and runs the whole install from a setup script the module writes, so a
-      second boot installs nothing twice.'
+      second boot installs nothing twice. The entry is named ./dumbpipe inside the
+      archive, so an extraction that names it without the leading ./ fails with "tar:
+      dumbpipe: Not found in archive": extract the whole archive into a temporary
+      directory and move the ./dumbpipe it produced into place, or name the member
+      as ./dumbpipe. The install must not loop: after a bounded number of attempts
+      it writes the failure to its log and exits non-zero, so a broken download is
+      visible instead of a guest that never announces a ticket.'
     codeRefs:
     - file:lib/common/cloud-init-common/mod.ts
   - id: r.iroh-fixture-and-snapshot

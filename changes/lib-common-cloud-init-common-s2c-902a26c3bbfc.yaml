@@ -1,0 +1,17 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-common-cloud-init-common-s2c-902a26c3bbfc
+  namespace: default
+spec:
+  systemContext: lib-common-cloud-init-common
+  direction: SpecToCode
+  fromSpecHash: 2ff94dcee5583ad48d51584219aff163315ec50ebe650c5e5a0d334337391bfd
+  toSpecHash: 902a26c3bbfcbacd7ce1378ed5b2f6d3a6088a2cfe2f192bfaf79c7df7f2550c
+  delta:
+    counts:
+      changed: 1
+    requirements:
+    - ~r.iroh-dumbpipe-install
+status:
+  phase: Pending
