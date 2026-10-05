@@ -1,28 +1,11 @@
 syncedFingerprint: 09e1f232cdea49345e02eb499246f99e7741eaf4ac3c2494cf257d02be03e8cd
-realizedSpecHash: 47fdb2fdc2332f4e9e01b34e0d818ad5e01a13ab888a2ba6af7e52e53097601f
+realizedSpecHash: 3fd64eec7f9345f3187dfd7649cfabbc401b86ba58745b0198a74d6954d61333
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: AnyInput, AnyInput.isSerialize, AnyInput.isString, AnyInput.serialize,
-    AnyInput.string, AnyInput.unwrap, AnyInputError, AnyInputError.constructor, Attestation,
-    Attestation.constructor, Attestation.findOwnIndex, Attestation.sign, Attestation.signAndAppend,
-    AttestationError, AttestationError.constructor, AttestationMetadata, AttestationOptions,
-    AttestationSignature, CidMismatchError, CidMismatchError.constructor, CidString,
-    DagCborError, DagCborError.constructor, DanglingProofError, DanglingProofError.constructor,
-    InlineAttestation, InvalidAttestationError, InvalidAttestationError.constructor,
-    InvalidProofError, InvalidProofError.constructor, InvalidSignatureError, InvalidSignatureError.constructor,
-    JsonError, JsonError.constructor, JsonObject, JsonValue, KeyData, KeyResolutionError,
-    KeyResolutionError.constructor, KeyResolver, KeyType, LexiconType, MetadataMissingFieldError,
-    MetadataMissingFieldError.constructor, MetadataMustBeObjectError, MetadataMustBeObjectError.constructor,
-    RecordMap, RecordMustBeObjectError, RecordMustBeObjectError.constructor, RecordResolutionError,
-    RecordResolutionError.constructor, RecordResolver, SignOptions, SignatureDecodingFailedError,
-    SignatureDecodingFailedError.constructor, UnsupportedKeyTypeError, UnsupportedKeyTypeError.constructor,
-    VerifyEntryResult, VerifyOptions, appendInlineAttestation, appendRemoteAttestation,
-    createAttestationCid, createDagCborCid, createInlineAttestation, createRemoteAttestation,
-    createSignature, defaultKeyResolver, didForKey, formatDidKey, formatPrivateMultibase,
-    isAttestationCidString, normalizeSignature, parseDidKey, parsePrivateMultibase,
-    signBytes, validateDagCborCid, verify, verifyBytes, verifyRecord'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual

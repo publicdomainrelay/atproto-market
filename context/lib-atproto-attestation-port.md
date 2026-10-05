@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists to isolate the attestation port — the boundary through which the market code creates, appends and verifies cryptographic attestations on AT Protocol records — from the marketplace logic that consumes it. It fixes the wire shape of an attestation (a signatures array entry with $type, issuer did:key, cid and base64url signature, or a proof strongRef for remote attestations), the deterministic CID binding over record, metadata and repository, and the closed set of typed errors callers may catch. Keeping it separate lets the market, bidder and helper contexts depend on a stable attestation API without re-implementing key encoding, DAG-CBOR CID computation or signature normalisation, and lets verification remain pluggable through KeyResolver and RecordResolver without the library knowing how repositories or DIDs are actually fetched.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

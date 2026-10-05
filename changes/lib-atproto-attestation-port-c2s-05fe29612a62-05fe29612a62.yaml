@@ -9,5 +9,23 @@ spec:
   fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
   toCommit: 05fe29612a62a645d70273560238ecc3180414d2
 status:
-  phase: Running
-  message: the agent is summarizing lib-atproto-attestation-port
+  phase: Succeeded
+  agentLog: 'lib/atproto-attestation-port is a self-contained TypeScript/Deno library
+    that creates and verifies AT Protocol attestations over repo records. It provides
+    an AnyInput wrapper (input.ts) so callers may pass either a JSON object or a JSON
+    string, computes deterministic DAG-CBOR CIDs over (record, metadata, repository)
+    in cid.ts, signs or verifies the raw CID bytes with key material parsed from did:key
+    and private-multibase strings in compat.ts, and exposes record-level helpers in
+    attestation.ts: createInlineAttestation (signature entry embedded in the record),
+    createRemoteAttestation (a separate proof record plus a strongRef from the attested
+    record), createSignature, appendInlineAttestation, appendRemoteAttestation and
+    verifyRecord. Every failure is raised as a subclass of AttestationError declared
+    in errors.ts, distinguishing malformed input, missing metadata fields, DAG-CBOR
+    and CID mismatches, key and record resolution failures, dangling or invalid proofs,
+    signature decoding failures and unsupported key types. compat.ts additionally
+    carries a higher-level Attestation class and a verify() helper that run over the
+    same primitives with pluggable KeyResolver and RecordResolver callbacks, and mod.ts
+    re-exports the whole surface. The library has no server or CLI entrypoint; it
+    is a dependency of the market contexts that need to attest records on behalf of
+    a repository.'
+  message: wrote 17 requirement(s) and 79 interface(s) for lib-atproto-attestation-port
