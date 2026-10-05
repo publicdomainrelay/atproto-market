@@ -23,8 +23,14 @@ const logger = createLogger({ serviceName: "compute-contract-gateway" });
 const serve = createServe({
   logger,
   tcp: options.port
-    ? { port: options.port as number, addr: (options.hostname as string) ?? "0.0.0.0" }
+    ? {
+      port: options.port as number,
+      addr: (options.hostname as string) ?? "0.0.0.0",
+      certFile: options.tlsCertFile as string | undefined,
+      keyFile: options.tlsKeyFile as string | undefined,
+    }
     : undefined,
+  portFile: options.portFile as string | undefined,
 });
 
 // Resolve private key: --private-key-hex takes priority, then --private-key-hex-path
