@@ -479,6 +479,20 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 - added `r.rfp-route` (MUST): "When handlers.rfp is supplied, the factory registers POST /xrpc/${SUBMIT_RFP_NSID} using a handler built by createSubmitRfpHandler with deps, handlers.rfp as callbacks and handlers.rfpScopeFilter as acceptScopeFilter, and the route forwards c.req.raw to that handler; when handlers.rfp is absent the route is not registered at all."
 - added `r.verify-route` (MUST): "The verify route is registered unconditionally as GET /xrpc/${NETWORK_ATTESTED_VERIFY_NSID}, using a createVerifyHandler built once from deps.idResolver, keysForDid from createDidKeyResolver() and deps.log, and the route forwards c.req.raw to that handler so the endpoint exists even when no handlers argument was provided."
 
+### lib-hono-factory-market-settlement-free
+
+- intent: "" -> "This context exists to pin down the boundary between the transport-agnostic free settlement logic in lib-market-settlement-free and the HTTP surface that exposes it: callers that mount a free-settlement receipt endpoint need to know exactly what dependency surface they must supply, what URL shape is published, and what the endpoint returns. It documents createFreeSettlementFactory as the only construction entrypoint, fixes the shape of the injected dependencies, and records the request-scoped environment type so middleware and downstream handlers can be layered on the same Hono app without redefining the context variables."
+- added `r.config-defaults` (MUST): "createFreeSettlementFactory destructures getAgent, resolve, getSigner, log and path out of its FreeSettlementConfig argument at creation time, defaulting log to noopLog and path to "free/receipt" when the caller omits them, so the route is always registered under a concrete prefix and logging can never throw on a deployment that supplied no logger."
+- added `r.dependencies-injected` (SHOULD): "The handler resolves the agent and the signer by calling getAgent() and getSigner() on each request rather than capturing instances once, and passes the configured resolve value straight through to minting, so a caller can rotate credentials or swap resolvers without rebuilding the factory."
+- added `r.export-config-interface` (MUST): "The module exports FreeSettlementConfig as the injection surface for the factory: required getAgent returning an Agent, resolve as a RecordResolver, getSigner returning a RecordSigner, plus optional log as a Logger and optional path as the mount path string, so a caller supplies every external dependency rather than the factory reaching for globals."
+- added `r.export-env-type` (MUST): "The module exports FreeSettlementEnv as the Hono environment type the factory is parameterised with, declaring Variables with agent as an Agent and resolve as a RecordResolver, so middleware and handlers downstream can read the request-scoped agent and record resolver off the Hono context."
+- added `r.factory-entrypoint` (MUST): "createFreeSettlementFactory takes a FreeSettlementConfig and returns the result of createFactory parameterised with FreeSettlementEnv, so callers obtain a mountable app factory rather than a running server or a bound port."
+- added `r.json-response` (MUST): "The handler answers with c.json({ uri, cid }) built from the StrongRef returned by mintGrantForAccepts, so the client receives exactly the minted receipt reference and no additional envelope or status wrapper."
+- added `r.log-request` (MUST): "Each request logs an info entry titled "free grant receipt requested" carrying the parsed acceptsUri and acceptsCid before any minting work is attempted, so a request that later fails minting is still visible in the log."
+- added `r.mint-grant` (MUST): "The handler mints the receipt by calling mintGrantForAccepts with the agent from getAgent(), the configured resolve, the parsed acceptsUri and acceptsCid, and the signer from getSigner(), then logs an info entry titled "receipts.free minted" carrying the returned ref.uri and ref.cid before responding."
+- added `r.mount-get-route` (MUST): "The factory's initApp registers a GET handler on the pattern `/${path}/*` and derives the acceptsUri and acceptsCid pair by calling parseGrantPath with the request path and the `${path}/` prefix, so the published receipt URL shape and the mount prefix are computed from one value and cannot drift apart."
+- added `r.package-config` (MAY): "The package carries its own deno.json so it can be imported as a standalone workspace member independently of the CLI or server that mounts it."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance | coverage |
@@ -512,5 +526,5 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 | lib-hono-factory-compute-contract-gateway-xrpc-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-hono-factory-did-plc-directory-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-hono-factory-market-atproto-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
-| lib-hono-factory-market-settlement-free-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
+| lib-hono-factory-market-settlement-free-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-hono-factory-market-settlement-x402-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |

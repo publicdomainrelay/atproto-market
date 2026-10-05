@@ -1,10 +1,11 @@
 syncedFingerprint: 543cbdec95c06ad40e9ce2351795f1aab6333f6bed50abaec0f32d495d83a918
-realizedSpecHash: 0932097446fc7d3f1b89f574300fc5eb0f6b899eb353da5a8b8391bf9200569d
+realizedSpecHash: 35ce4a5fd314fb9ac0f6b7a18dcf1ee10016f717fbf12fa52f1d6d550855f7aa
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: FreeSettlementConfig, FreeSettlementEnv, createFreeSettlementFactory'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual

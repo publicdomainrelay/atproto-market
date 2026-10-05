@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists to pin down the boundary between the transport-agnostic free settlement logic in lib-market-settlement-free and the HTTP surface that exposes it: callers that mount a free-settlement receipt endpoint need to know exactly what dependency surface they must supply, what URL shape is published, and what the endpoint returns. It documents createFreeSettlementFactory as the only construction entrypoint, fixes the shape of the injected dependencies, and records the request-scoped environment type so middleware and downstream handlers can be layered on the same Hono app without redefining the context variables.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 
