@@ -872,8 +872,31 @@ system_contexts:
   upstream: self
   depends_on:
   - sc.atproto-market
+  requirements:
+  - id: r.context-fields
+    level: MUST
+  - id: r.default-subject-template
+    level: MUST
+  - id: r.did-plc-key-strip
+    level: MUST
+  - id: r.policy-name-agreement
+    level: MUST
+  - id: r.pure-no-io
+    level: SHOULD
+  - id: r.record-type
+    level: MUST
+  - id: r.role-shape
+    level: MUST
+  - id: r.ssh-key-register-policy
+    level: MUST
+  - id: r.subject-placeholders
+    level: MUST
   codeRefIndex:
   - file:lib/common/fedproxy-rbac-common/mod.ts mod.ts@lib/common/fedproxy-rbac-common/mod.ts
+  - function:a98ccef775e425fa7c13add3016e54f5 renderSubject@lib/common/fedproxy-rbac-common/mod.ts:16
+  - function:aac738c94c8e2dfa2a0ff4c0e8d5c018 buildSshKeyRbacRecord@lib/common/fedproxy-rbac-common/mod.ts:26
+  - function:e5377f0a379eb596837b1526cd73134c didPlcKey@lib/common/fedproxy-rbac-common/mod.ts:12
+  - interface:967a594352d4c9b86213f54d84909966 SshKeyRbacContext@lib/common/fedproxy-rbac-common/mod.ts:4
 - id: sc.lib-common-market-common
   name: lib-common-market-common
   spec: specs/lib-common-market-common.yaml

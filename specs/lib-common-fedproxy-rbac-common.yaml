@@ -8,5 +8,123 @@ spec:
   upstream: self
   dependsOn:
   - sc.atproto-market
+  intent: This context exists so that the shape of a fedproxy SSH-key-registration
+    RBAC record is defined once, in a pure and dependency-free module, rather than
+    being hand-assembled wherever a grant is issued. It gives the guest-capability/requester
+    layers a single builder that turns a requester's DID, the actx, the issuer URI
+    and a service name into the $type/roles/policies record the fedproxy gate accepts,
+    and a subject renderer that both those callers and the default-template path share,
+    so subject strings and policy names cannot drift between the issuer and the verifier.
+  requirements:
+  - id: r.context-fields
+    level: MUST
+    text: A caller supplying an SshKeyRbacContext must provide serviceName, issuerUri,
+      actx and requesterDid; subjectTemplate is optional, and its absence selects
+      the built-in default template rather than producing an error or an empty subject.
+    codeRefs:
+    - file:lib/common/fedproxy-rbac-common/mod.ts
+    - function:aac738c94c8e2dfa2a0ff4c0e8d5c018
+    - interface:967a594352d4c9b86213f54d84909966
+  - id: r.default-subject-template
+    level: MUST
+    text: buildSshKeyRbacRecord renders the subject from ctx.subjectTemplate when
+      it is set and otherwise falls back to the literal template "actx:{actx}:plc:{did-plc-key}:role:{role}",
+      feeding the renderer actx from the context, the PLC key of requesterDid and
+      role set to serviceName, so a caller-supplied template and the default travel
+      the same rendering path.
+    codeRefs:
+    - function:a98ccef775e425fa7c13add3016e54f5
+    - function:aac738c94c8e2dfa2a0ff4c0e8d5c018
+    - function:e5377f0a379eb596837b1526cd73134c
+  - id: r.did-plc-key-strip
+    level: MUST
+    text: didPlcKey removes only a leading "did:plc:" prefix from the given DID and
+      returns the remainder untouched, leaving a DID of another method, or an empty
+      string, exactly as it was passed in.
+    codeRefs:
+    - file:lib/common/fedproxy-rbac-common/mod.ts
+    - function:e5377f0a379eb596837b1526cd73134c
+  - id: r.policy-name-agreement
+    level: MUST
+    text: The policy name is derived as "<serviceName>-ssh-key-register" and used
+      both as the key of the record's policies map and as the sole entry of the role
+      definition's policies list, so the granted role and the defined policy cannot
+      disagree about which policy is being referenced.
+    codeRefs:
+    - file:lib/common/fedproxy-rbac-common/mod.ts
+    - function:aac738c94c8e2dfa2a0ff4c0e8d5c018
+  - id: r.pure-no-io
+    level: SHOULD
+    text: The exported helpers stay free of I/O, ambient state and environment lookups
+      and derive their entire result from their arguments, so a caller in a CLI, a
+      service or a test can compute and compare records and subjects without a network
+      or a running service.
+    codeRefs:
+    - file:lib/common/fedproxy-rbac-common/mod.ts
+    - function:a98ccef775e425fa7c13add3016e54f5
+    - function:aac738c94c8e2dfa2a0ff4c0e8d5c018
+    - function:e5377f0a379eb596837b1526cd73134c
+  - id: r.record-type
+    level: MUST
+    text: buildSshKeyRbacRecord returns a plain Record<string, unknown> whose $type
+      is the fedproxy RBAC NSID, so the emitted object identifies itself as a fedproxy
+      RBAC record rather than an arbitrary map.
+    codeRefs:
+    - file:lib/common/fedproxy-rbac-common/mod.ts
+    - function:aac738c94c8e2dfa2a0ff4c0e8d5c018
+  - id: r.role-shape
+    level: MUST
+    text: The returned record's roles map holds exactly one entry keyed by ctx.serviceName,
+      whose role_name repeats that service name and whose definition carries aud built
+      as "api://ATProto?actx=<requesterDid>", iss set to ctx.issuerUri, sub set to
+      the rendered subject, and policies listing the single derived policy name.
+    codeRefs:
+    - file:lib/common/fedproxy-rbac-common/mod.ts
+    - function:aac738c94c8e2dfa2a0ff4c0e8d5c018
+    - interface:967a594352d4c9b86213f54d84909966
+  - id: r.ssh-key-register-policy
+    level: MUST
+    text: The policy object marks itself with meta.policy "ssh-key-register" and contributes
+      a draft-07 JSON schema for /xrpc/com.atproto.repo.createRecord that requires
+      the body's capability and body properties, enums capability to "create", constrains
+      collection to the fedproxy SSH key NSID, requires collection and record inside
+      the body, and closes the record object with additionalProperties false, so the
+      record authorises only the creation of fedproxy SSH key records.
+    codeRefs:
+    - file:lib/common/fedproxy-rbac-common/mod.ts
+    - function:aac738c94c8e2dfa2a0ff4c0e8d5c018
+  - id: r.subject-placeholders
+    level: MUST
+    text: renderSubject replaces every occurrence of the literal placeholders {actx},
+      {did-plc-key} and {role} in the given template with vars.actx, vars.didPlcKey
+      and vars.role respectively, applying each substitution globally so a repeated
+      placeholder is expanded everywhere and no matching placeholder text survives
+      in the result.
+    codeRefs:
+    - file:lib/common/fedproxy-rbac-common/mod.ts
+    - function:a98ccef775e425fa7c13add3016e54f5
+  interfaces:
+  - name: SshKeyRbacContext
+    kind: interface
+    signature: 'interface SshKeyRbacContext { serviceName: string; issuerUri: string;
+      actx: string; requesterDid: string; subjectTemplate?: string }'
+    file: lib/common/fedproxy-rbac-common/mod.ts
+  - name: buildSshKeyRbacRecord
+    kind: function
+    signature: 'buildSshKeyRbacRecord(ctx: SshKeyRbacContext): Record<string, unknown>'
+    file: lib/common/fedproxy-rbac-common/mod.ts
+  - name: didPlcKey
+    kind: function
+    signature: 'didPlcKey(did: string): string'
+    file: lib/common/fedproxy-rbac-common/mod.ts
+  - name: renderSubject
+    kind: function
+    signature: 'renderSubject(template: string, vars: { actx: string; didPlcKey: string;
+      role: string }): string'
+    file: lib/common/fedproxy-rbac-common/mod.ts
 codeRefIndex:
 - file:lib/common/fedproxy-rbac-common/mod.ts mod.ts@lib/common/fedproxy-rbac-common/mod.ts
+- function:a98ccef775e425fa7c13add3016e54f5 renderSubject@lib/common/fedproxy-rbac-common/mod.ts:16
+- function:aac738c94c8e2dfa2a0ff4c0e8d5c018 buildSshKeyRbacRecord@lib/common/fedproxy-rbac-common/mod.ts:26
+- function:e5377f0a379eb596837b1526cd73134c didPlcKey@lib/common/fedproxy-rbac-common/mod.ts:12
+- interface:967a594352d4c9b86213f54d84909966 SshKeyRbacContext@lib/common/fedproxy-rbac-common/mod.ts:4

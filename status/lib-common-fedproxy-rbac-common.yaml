@@ -1,10 +1,11 @@
 syncedFingerprint: 77502dccc4e5fcc06e8cc141912e8762435a6fe3c000fb51b6d8e7909e501fd7
-realizedSpecHash: 9b1be28e42830a302a949fffcbeb0d1f00564aae134bda5c9cfe90df5e5779f0
+realizedSpecHash: 3e22947c31be27bdae6b116d6dee6cbad3117cc2d516a69dc7d28567bf73edda
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: SshKeyRbacContext, buildSshKeyRbacRecord, didPlcKey, renderSubject'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual

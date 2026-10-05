@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so that the shape of a fedproxy SSH-key-registration RBAC record is defined once, in a pure and dependency-free module, rather than being hand-assembled wherever a grant is issued. It gives the guest-capability/requester layers a single builder that turns a requester's DID, the actx, the issuer URI and a service name into the $type/roles/policies record the fedproxy gate accepts, and a subject renderer that both those callers and the default-template path share, so subject strings and policy names cannot drift between the issuer and the verifier.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 
