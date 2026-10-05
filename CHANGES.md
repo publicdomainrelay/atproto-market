@@ -356,6 +356,21 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 - added `r.rbac-record-grants-one-capability` (MUST): "buildSecretsRbacRecord must grant exactly one capability, read: the policy is named role plus the suffix -secrets-read and carries meta policy secrets-read, its single schema is keyed by the resolved route and enum-constrains capability to the one string read, the roles map is keyed by the role with role_name equal to that key and a definition binding iss to issuerUri, aud to expectedAud, sub to subject and policies to that one policy name, and the protects map maps the role to RbacProtectsShape of serviceUrl plus SECRETS_SCOPE."
 - added `r.rbac-record-shape` (MUST): "buildSecretsRbacRecord must return a plain RbacRecordShape whose $type is FEDPROXY_RBAC_NSID, whose policies map holds RbacPolicyShape values of meta plus schemas keyed by route, whose roles map holds RbacRoleShape values of role_name plus a definition carrying iss, aud, sub and policies, and whose protects map holds RbacProtectsShape values of service plus optional scope, with each policy schema exposing a capability property whose enum lists the allowed capability strings."
 
+### lib-compute-contract-gateway-xrpc
+
+- intent: "" -> "It exists to expose the abstract ComputeContractGateway port over XRPC transport, so a host process can hand it a logger and a serve handle and get a running gateway identity plus VM/worker provisioning without knowing anything about requester PDS, PLC registration, or SSH session plumbing. The dynamic imports keep the requester and cloud-init packages out of the module graph until a gateway actually starts, and the option record is the single configuration surface for identity, ingress hostnames, storage location, and relays."
+- added `r.begin-serve-creates-pds` (MUST): "beginServe must dynamically import @publicdomainrelay/requester-xrpc, call createRequesterPDS with the options' logger and serve handle plus privateKeyHex, plcDirectoryUrl, ingressProxyHost and storagePath, defaulting label to "compute-contract-gateway", then await pds.beginServe() and log gateway_ready with the DID."
+- added `r.delete-compute-stub` (MAY): "deleteCompute may ignore the caller, receipt and token arguments and return { ok: true } without contacting the PDS."
+- added `r.did-requires-start` (MUST): "The did accessor and every request method must throw an Error with message "gateway not started" when the PDS handle has not been created yet."
+- added `r.dispose-releases-pds` (MUST): "dispose must await the underlying PDS dispose when a handle exists and be a no-op otherwise."
+- added `r.error-passthrough` (MUST): "When runComputeContract returns an error, each request method must return that error together with the rfpUri and rfpCid instead of a receipt, and a successful run must surface receipt URI/CID, receiptOk, winnerDid and the RFP identifiers."
+- added `r.factory-returns-gateway` (MUST): "createComputeContractGateway must accept a GatewayOptions record and return a ComputeContractGateway whose PDS handle is held in module-local state and is null until beginServe runs."
+- added `r.fedingress-default` (MUST): "All three request methods must default the fedingress host to "fedproxy.com" when the option is absent."
+- added `r.vm-contract-defaults` (MUST): "requestComputeVM must run the contract with rbac enabled, skipSsh defaulting to true, keepVm defaulting to true, the caller's policyEngine, extraBidderDids and vmReadyTimeoutSec, and must report a single synthesized bid entry (winner DID, bid URI/CID, cost 0) when the run recorded at least one bid and an empty bid list otherwise."
+- added `r.vm-name-and-fqdn` (MUST): "requestComputeVM must name the VM after input.computeVm.role when that string is non-empty and otherwise as compute- followed by the first eight characters of a random UUID, and must build vmFqdn as the flattened VM name and flattened gateway DID joined with "--" under the fedingress host, exposing websocatUrl as wss:// plus that fqdn."
+- added `r.worker-bidder-dids` (SHOULD): "The ephemeral worker request should pass the caller's extraBidderDids or an empty list, while the persistent worker request always passes an empty bidder list."
+- added `r.worker-manifest-payload` (MUST): "requestComputeWorkerEphemeral and requestComputeWorkerPersistent must run the contract with skipSsh and keepVm forced true, appliesToNsid set to WORKER_MANIFEST_NSID imported from @publicdomainrelay/compute-deno-common, and a payloadFactory that writes a repo record of that NSID carrying the caller's denoLock (defaulting to "{}"), denoJson, source bundle and a creation timestamp."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance | coverage |
@@ -381,5 +396,5 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 | lib-common-market-lexicons-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-common-secrets-common-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-compute-contract-gateway-xrpc-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Failed |  | 0 | - | - |
-| lib-compute-contract-gateway-xrpc-c2s-05fe29612a62-05fe29612a62-a2 | CodeToSpec | Running |  | 0 | - | - |
+| lib-compute-contract-gateway-xrpc-c2s-05fe29612a62-05fe29612a62-a2 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-delegated-trust-badge-blue-keys-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |

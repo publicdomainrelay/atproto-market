@@ -9,8 +9,23 @@ spec:
   fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
   toCommit: 05fe29612a62a645d70273560238ecc3180414d2
 status:
-  phase: Running
-  message: the agent is summarizing lib-compute-contract-gateway-xrpc
+  phase: Succeeded
+  agentLog: 'This context is the XRPC-backed implementation of the compute-contract
+    gateway: a single Deno/TypeScript module at lib/compute-contract-gateway-xrpc/mod.ts
+    (a deno.json sits alongside it) that exports the GatewayOptions interface and
+    the createComputeContractGateway factory. The factory returns a ComputeContractGateway
+    whose PDS handle is created lazily: beginServe dynamically imports @publicdomainrelay/requester-xrpc,
+    calls createRequesterPDS with the caller''s logger, serve handle, key material,
+    PLC directory, ingress proxy host, storage path and a label defaulting to "compute-contract-gateway",
+    then begins serving and logs gateway_ready with the resulting DID. The three compute
+    request methods (requestComputeVM, requestComputeWorkerEphemeral, requestComputeWorkerPersistent)
+    all require a started gateway, build a VM name, and delegate to runComputeContract
+    with a policy spec, an SSH session provider, the fedingress host (default fedproxy.com)
+    and bidder DIDs; VM requests additionally derive a per-VM fqdn and websocat URL
+    from flattenLabel, while worker requests publish a WORKER_MANIFEST_NSID repo record
+    as the contract payload. deleteCompute is currently a stub that always reports
+    success.'
+  message: wrote 11 requirement(s) and 2 interface(s) for lib-compute-contract-gateway-xrpc
 superseded:
 - name: lib-compute-contract-gateway-xrpc-c2s-05fe29612a62-05fe29612a62
   phase: Failed

@@ -11,5 +11,109 @@ spec:
   - sc.lib-abc-compute-contract-gateway
   - sc.lib-abc-requester
   - sc.lib-common-compute-contract-gateway-common
+  intent: It exists to expose the abstract ComputeContractGateway port over XRPC transport,
+    so a host process can hand it a logger and a serve handle and get a running gateway
+    identity plus VM/worker provisioning without knowing anything about requester
+    PDS, PLC registration, or SSH session plumbing. The dynamic imports keep the requester
+    and cloud-init packages out of the module graph until a gateway actually starts,
+    and the option record is the single configuration surface for identity, ingress
+    hostnames, storage location, and relays.
+  requirements:
+  - id: r.begin-serve-creates-pds
+    level: MUST
+    text: beginServe must dynamically import @publicdomainrelay/requester-xrpc, call
+      createRequesterPDS with the options' logger and serve handle plus privateKeyHex,
+      plcDirectoryUrl, ingressProxyHost and storagePath, defaulting label to "compute-contract-gateway",
+      then await pds.beginServe() and log gateway_ready with the DID.
+    codeRefs:
+    - function:03370a182fd0653c2e57c9c946423ce7
+  - id: r.delete-compute-stub
+    level: MAY
+    text: 'deleteCompute may ignore the caller, receipt and token arguments and return
+      { ok: true } without contacting the PDS.'
+    codeRefs:
+    - function:03370a182fd0653c2e57c9c946423ce7
+  - id: r.did-requires-start
+    level: MUST
+    text: The did accessor and every request method must throw an Error with message
+      "gateway not started" when the PDS handle has not been created yet.
+    codeRefs:
+    - function:03370a182fd0653c2e57c9c946423ce7
+  - id: r.dispose-releases-pds
+    level: MUST
+    text: dispose must await the underlying PDS dispose when a handle exists and be
+      a no-op otherwise.
+    codeRefs:
+    - function:03370a182fd0653c2e57c9c946423ce7
+  - id: r.error-passthrough
+    level: MUST
+    text: When runComputeContract returns an error, each request method must return
+      that error together with the rfpUri and rfpCid instead of a receipt, and a successful
+      run must surface receipt URI/CID, receiptOk, winnerDid and the RFP identifiers.
+    codeRefs:
+    - function:03370a182fd0653c2e57c9c946423ce7
+  - id: r.factory-returns-gateway
+    level: MUST
+    text: createComputeContractGateway must accept a GatewayOptions record and return
+      a ComputeContractGateway whose PDS handle is held in module-local state and
+      is null until beginServe runs.
+    codeRefs:
+    - file:lib/compute-contract-gateway-xrpc/mod.ts
+    - function:03370a182fd0653c2e57c9c946423ce7
+    - interface:ecee421eb7bb2708411146ff260c58b2
+  - id: r.fedingress-default
+    level: MUST
+    text: All three request methods must default the fedingress host to "fedproxy.com"
+      when the option is absent.
+    codeRefs:
+    - function:03370a182fd0653c2e57c9c946423ce7
+  - id: r.vm-contract-defaults
+    level: MUST
+    text: requestComputeVM must run the contract with rbac enabled, skipSsh defaulting
+      to true, keepVm defaulting to true, the caller's policyEngine, extraBidderDids
+      and vmReadyTimeoutSec, and must report a single synthesized bid entry (winner
+      DID, bid URI/CID, cost 0) when the run recorded at least one bid and an empty
+      bid list otherwise.
+    codeRefs:
+    - function:03370a182fd0653c2e57c9c946423ce7
+  - id: r.vm-name-and-fqdn
+    level: MUST
+    text: requestComputeVM must name the VM after input.computeVm.role when that string
+      is non-empty and otherwise as compute- followed by the first eight characters
+      of a random UUID, and must build vmFqdn as the flattened VM name and flattened
+      gateway DID joined with "--" under the fedingress host, exposing websocatUrl
+      as wss:// plus that fqdn.
+    codeRefs:
+    - function:03370a182fd0653c2e57c9c946423ce7
+  - id: r.worker-bidder-dids
+    level: SHOULD
+    text: The ephemeral worker request should pass the caller's extraBidderDids or
+      an empty list, while the persistent worker request always passes an empty bidder
+      list.
+    codeRefs:
+    - function:03370a182fd0653c2e57c9c946423ce7
+  - id: r.worker-manifest-payload
+    level: MUST
+    text: requestComputeWorkerEphemeral and requestComputeWorkerPersistent must run
+      the contract with skipSsh and keepVm forced true, appliesToNsid set to WORKER_MANIFEST_NSID
+      imported from @publicdomainrelay/compute-deno-common, and a payloadFactory that
+      writes a repo record of that NSID carrying the caller's denoLock (defaulting
+      to "{}"), denoJson, source bundle and a creation timestamp.
+    codeRefs:
+    - function:03370a182fd0653c2e57c9c946423ce7
+  interfaces:
+  - name: GatewayOptions
+    kind: interface
+    signature: 'interface GatewayOptions { logger: StructuredLoggerInterface; serve:
+      ServeHandle; privateKeyHex?: string; plcDirectoryUrl?: string; ingressProxyHost?:
+      string; fedingressHost?: string; label?: string; storagePath?: string; relayUrls?:
+      string[] }'
+    file: lib/compute-contract-gateway-xrpc/mod.ts
+  - name: createComputeContractGateway
+    kind: function
+    signature: 'function createComputeContractGateway(opts: GatewayOptions): ComputeContractGateway'
+    file: lib/compute-contract-gateway-xrpc/mod.ts
 codeRefIndex:
 - file:lib/compute-contract-gateway-xrpc/mod.ts mod.ts@lib/compute-contract-gateway-xrpc/mod.ts
+- function:03370a182fd0653c2e57c9c946423ce7 createComputeContractGateway@lib/compute-contract-gateway-xrpc/mod.ts:38
+- interface:ecee421eb7bb2708411146ff260c58b2 GatewayOptions@lib/compute-contract-gateway-xrpc/mod.ts:26

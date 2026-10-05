@@ -1,10 +1,11 @@
 syncedFingerprint: d0d81be78c9ecb29f5536f3d57ce1f14f2b4297f2252b672be71295d7da0d0dd
-realizedSpecHash: b771ad5fb5b5f7d44c5d48639d294236dd54d3150e57c0acee79aa179f950e2f
+realizedSpecHash: 379d827dacdc17f3dd1875d78987219835b7512eee6b58240c0f000d0698d76e
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: GatewayOptions, createComputeContractGateway'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual
