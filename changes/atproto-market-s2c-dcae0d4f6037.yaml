@@ -1,0 +1,20 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: atproto-market-s2c-dcae0d4f6037
+  namespace: default
+spec:
+  systemContext: atproto-market
+  direction: SpecToCode
+  fromSpecHash: f67957227b5c419b9f74c4edbfea0ea54caf8a643990c7bec310952d90535644
+  toSpecHash: dcae0d4f6037998b498be37b203eb756cdbcb09ac186ababe1da57b1b6b91a0d
+  delta:
+    counts:
+      added: 3
+      changed: 1
+    requirements:
+    - +r.iroh-acceptance-flow
+    - +r.iroh-acceptance-plc-key-resolution
+    - +r.iroh-cloud-init-fixture
+status:
+  phase: Pending

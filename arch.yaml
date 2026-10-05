@@ -50,6 +50,12 @@ system_contexts:
     level: MUST
   - id: r.interceptor-teardown
     level: SHOULD
+  - id: r.iroh-acceptance-flow
+    level: MUST
+  - id: r.iroh-acceptance-plc-key-resolution
+    level: MUST
+  - id: r.iroh-cloud-init-fixture
+    level: MUST
   - id: r.localhost-port-rewrite
     level: MUST
   - id: r.plc-directory-factory
@@ -76,6 +82,7 @@ system_contexts:
   - file:test/firehose_watcher_test.ts firehose_watcher_test.ts@test/firehose_watcher_test.ts
   - file:test/fixtures/cloud-init/fedproxy-ssh.yaml fedproxy-ssh.yaml@test/fixtures/cloud-init/fedproxy-ssh.yaml
   - file:test/fixtures/cloud-init/fedproxy-web-wootty.yaml fedproxy-web-wootty.yaml@test/fixtures/cloud-init/fedproxy-web-wootty.yaml
+  - file:test/fixtures/cloud-init/iroh.yaml iroh.yaml@test/fixtures/cloud-init/iroh.yaml
   - file:test/fixtures/cloud-init/k3s.yaml k3s.yaml@test/fixtures/cloud-init/k3s.yaml
   - file:test/fixtures/cloud-init/tunnel-k3s.yaml tunnel-k3s.yaml@test/fixtures/cloud-init/tunnel-k3s.yaml
   - file:test/fixtures/cloud-init/tunnel-secrets.yaml tunnel-secrets.yaml@test/fixtures/cloud-init/tunnel-secrets.yaml

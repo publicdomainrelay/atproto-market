@@ -2,10 +2,9 @@ syncedFingerprint: 8c74a6d83646ccfa9bc3bc627fd09ee186e058a5fd9b6b7b12956afed0be6
 realizedSpecHash: f67957227b5c419b9f74c4edbfea0ea54caf8a643990c7bec310952d90535644
 conditions:
 - type: CodeSynced
-  status: "True"
-  reason: InterfacesObserved
-  message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
+  status: "False"
+  reason: CodeRefsUnresolved
+  message: 'unresolved requirement code refs: r.iroh-cloud-init-fixture: file:test/fixtures/cloud-init/iroh.yaml'
 - type: Drifted
   status: "False"
   reason: FingerprintEqual

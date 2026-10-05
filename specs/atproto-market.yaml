@@ -29,13 +29,17 @@ spec:
   - sc.lib-market-bidder-worker
   - sc.lib-requester-xrpc
   - sc.lib-secrets-oidc
-  intent: The tests that drive the market, the gateway, the bidder and the PLC must
+  intent: 'The tests that drive the market, the gateway, the bidder and the PLC must
     not touch the real plc.directory or depend on a pre-provisioned dispatcher, so
     this context provides one installable fetch redirection plus the fixtures and
     factories those tests share. It exists to keep every integration test pointed
     at in-process fakes with a single, reversible patch, to keep generated cloud-init
     comparable to checked-in golden YAML, and to let the full-flow harness reproduce
-    the same topology end to end on self-chosen ephemeral ports.
+    the same topology end to end on self-chosen ephemeral ports. It also owns the
+    one suite that has to prove the iroh transport for real: the container integration
+    test drives a complete RFP-to-SSH contract against a Docker guest whose cloud-init
+    the RFP itself composed, so the transport the spec claims is the transport the
+    suite exercises.'
   requirements:
   - id: r.async-watcher-tests
     level: MAY
@@ -135,6 +139,57 @@ spec:
     codeRefs:
     - file:test/fetch-interceptor.ts
     - function:c6f81957f952317eb0e87d2454b5add3
+  - id: r.iroh-acceptance-flow
+    level: MUST
+    text: 'test/bidder_container_integration_test.ts must prove the iroh transport
+      end to end instead of racing a timer. It drives runComputeContract through RFP,
+      bid, accept and cloud-init with skipSsh false, and awaits the whole contract
+      promise with no Promise.race and no wall-clock deadline; its servers, bidder,
+      provider and requester are torn down only after that promise settles, so provisioning
+      is never torn down while it runs. It then asserts the run reached the guest
+      over the transport the RFP cloud-init deployed: sshReady true, sshExitCode 0,
+      result.sshProxyCommand naming the dumbpipe connect command for the ticket the
+      guest reported (never a websocat ProxyCommand and never a direct address), and
+      a program run inside the guest that exits 0 and whose output carries the marker
+      SSH_OK_VIA_IROH. The suite must not read the guest''s ticket or address out
+      of the guest by any host-side side channel such as executing a command against
+      the container: the ticket reaches the requester only through the guest''s own
+      outbound report or a vm.onNetwork event, and every SSH byte path goes through
+      the transport ProxyCommand. Capturing the marker is allowed to require a small
+      addition to the flow''s result (for example an optional captured session output)
+      rather than an assertion on the exit code alone, and this test must not be skipped:
+      it is the acceptance suite.'
+    codeRefs:
+    - file:test/bidder_container_integration_test.ts
+  - id: r.iroh-acceptance-plc-key-resolution
+    level: MUST
+    text: The fake PLC the container integration test serves must let a did:plc DID
+      be resolved to its atproto signing key, because the relay authenticates the
+      requester's subscriber registration by resolving that DID and the market verifies
+      receipt signatures the same way. Resolving a did:plc DID through the fake PLC
+      must return a DID document whose verification method yields that DID's did:key,
+      and the resolution must work end to end through whatever resolver the relay
+      and the market actually call (including the atproto identity resolver and the
+      did:key fast path), so that the relay's registration call succeeds rather than
+      answering 401 and receipt verification passes. The suite must assert the registration
+      and the receipt explicitly, so a resolution failure fails the test instead of
+      silently degrading the run.
+    codeRefs:
+    - file:test/bidder_container_integration_test.ts
+    - file:test/fetch-interceptor.ts
+  - id: r.iroh-cloud-init-fixture
+    level: MUST
+    text: 'The composed iroh guest is pinned by a golden fixture: test/fixtures/cloud-init/iroh.yaml
+      is the byte-exact output of the cloud-init composer for the iroh module with
+      its context fields set, and test/cloud_init_snapshot_test.ts gains a case comparing
+      the generated output against it plus semantic assertions that the YAML installs
+      the pinned dumbpipe release, starts the loopback listener, carries the guest''s
+      ticket report to the configured report URL, and configures the sshd it installs.
+      The existing six fixtures stay byte-identical and `deno test -A test/cloud_init_snapshot_test.ts`
+      must pass.'
+    codeRefs:
+    - file:test/cloud_init_snapshot_test.ts
+    - file:test/fixtures/cloud-init/iroh.yaml
   - id: r.localhost-port-rewrite
     level: MUST
     text: For https URLs whose host is exactly localhost, ends with .localhost, or
@@ -202,6 +257,7 @@ codeRefIndex:
 - file:test/firehose_watcher_test.ts firehose_watcher_test.ts@test/firehose_watcher_test.ts
 - file:test/fixtures/cloud-init/fedproxy-ssh.yaml fedproxy-ssh.yaml@test/fixtures/cloud-init/fedproxy-ssh.yaml
 - file:test/fixtures/cloud-init/fedproxy-web-wootty.yaml fedproxy-web-wootty.yaml@test/fixtures/cloud-init/fedproxy-web-wootty.yaml
+- file:test/fixtures/cloud-init/iroh.yaml iroh.yaml@test/fixtures/cloud-init/iroh.yaml
 - file:test/fixtures/cloud-init/k3s.yaml k3s.yaml@test/fixtures/cloud-init/k3s.yaml
 - file:test/fixtures/cloud-init/tunnel-k3s.yaml tunnel-k3s.yaml@test/fixtures/cloud-init/tunnel-k3s.yaml
 - file:test/fixtures/cloud-init/tunnel-secrets.yaml tunnel-secrets.yaml@test/fixtures/cloud-init/tunnel-secrets.yaml

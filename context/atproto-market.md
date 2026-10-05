@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-The tests that drive the market, the gateway, the bidder and the PLC must not touch the real plc.directory or depend on a pre-provisioned dispatcher, so this context provides one installable fetch redirection plus the fixtures and factories those tests share. It exists to keep every integration test pointed at in-process fakes with a single, reversible patch, to keep generated cloud-init comparable to checked-in golden YAML, and to let the full-flow harness reproduce the same topology end to end on self-chosen ephemeral ports.
+The tests that drive the market, the gateway, the bidder and the PLC must not touch the real plc.directory or depend on a pre-provisioned dispatcher, so this context provides one installable fetch redirection plus the fixtures and factories those tests share. It exists to keep every integration test pointed at in-process fakes with a single, reversible patch, to keep generated cloud-init comparable to checked-in golden YAML, and to let the full-flow harness reproduce the same topology end to end on self-chosen ephemeral ports. It also owns the one suite that has to prove the iroh transport for real: the container integration test drives a complete RFP-to-SSH contract against a Docker guest whose cloud-init the RFP itself composed, so the transport the spec claims is the transport the suite exercises.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 
