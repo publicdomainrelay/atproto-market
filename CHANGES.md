@@ -16,6 +16,6 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 
 | change | direction | phase | commit | verify | acceptance | coverage |
 | --- | --- | --- | --- | --- | --- | --- |
-| lib-abc-requester-s2c-a24b0558524f | SpecToCode | Pending |  | 0 | - | - |
+| lib-abc-requester-s2c-a24b0558524f | SpecToCode | Running |  | 0 | - | - |
 | lib-compute-contract-gateway-xrpc-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Failed |  | 0 | - | - |
 | lib-market-settlement-x402-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |

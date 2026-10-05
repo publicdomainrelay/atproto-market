@@ -22,4 +22,5 @@ spec:
     - ~ContractFlowResult
     - ~SshSessionProvider
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is realizing lib-abc-requester
