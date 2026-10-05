@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists to specify the xrpc transport layer of the compute-contract gateway: it is the Hono factory that turns an abstract ComputeContractGateway implementation into an HTTP service, exposing the four gateway operations as authenticated atproto XRPC POST routes, publishing the did:web identity and service entry that clients resolve the gateway through, and enforcing per-method service-auth (LXM) so a token minted for one method cannot be replayed against another. It sits between the abstract gateway interface lib/abc/compute-contract-gateway, the service-auth helper lib/market-atproto, and the shared gateway constants lib/common/compute-contract-gateway-common, and deliberately hands the returned Hono app back to the caller rather than binding a socket itself so the same factory can be embedded in a CLI or a test harness.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

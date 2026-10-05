@@ -1485,8 +1485,36 @@ system_contexts:
   - sc.lib-abc-compute-contract-gateway
   - sc.lib-common-compute-contract-gateway-common
   - sc.lib-market-atproto
+  requirements:
+  - id: r.auth-failure-401
+    level: MUST
+  - id: r.auth-header-required
+    level: MUST
+  - id: r.cors-all-routes
+    level: MUST
+  - id: r.delete-compute-handler
+    level: MUST
+  - id: r.did-web-document
+    level: MUST
+  - id: r.factory-returns-hono-app
+    level: MUST
+  - id: r.health-endpoint
+    level: MUST
+  - id: r.options-shape
+    level: MUST
+  - id: r.request-compute-vm-handler
+    level: MUST
+  - id: r.service-auth-verification
+    level: MUST
+  - id: r.worker-routes-caller-did
+    level: MUST
+  - id: r.xrpc-post-routes-lxm
+    level: MUST
   codeRefIndex:
   - file:lib/hono-factory-compute-contract-gateway-xrpc/mod.ts mod.ts@lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+  - function:35f62ddaabe8e88061e3c0f6d7f5c28c requireAuth@lib/hono-factory-compute-contract-gateway-xrpc/mod.ts:30
+  - function:fb9c0b643b6c0ae7e354f595aa7280cf createComputeContractGatewayFactory@lib/hono-factory-compute-contract-gateway-xrpc/mod.ts:25
+  - interface:9ce82a55642acec416e2eb4c3b27f13c ComputeContractGatewayFactoryOptions@lib/hono-factory-compute-contract-gateway-xrpc/mod.ts:18
 - id: sc.lib-hono-factory-did-plc-directory
   name: lib-hono-factory-did-plc-directory
   spec: specs/lib-hono-factory-did-plc-directory.yaml

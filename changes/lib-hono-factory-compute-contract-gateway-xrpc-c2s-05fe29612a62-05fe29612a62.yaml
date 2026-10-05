@@ -9,5 +9,29 @@ spec:
   fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
   toCommit: 05fe29612a62a645d70273560238ecc3180414d2
 status:
-  phase: Running
-  message: the agent is summarizing lib-hono-factory-compute-contract-gateway-xrpc
+  phase: Succeeded
+  agentLog: 'This context is the Deno + Hono factory package lib/hono-factory-compute-contract-gateway-xrpc,
+    whose single module lib/hono-factory-compute-contract-gateway-xrpc/mod.ts exports
+    the ComputeContractGatewayFactoryOptions interface and the createComputeContractGatewayFactory
+    entrypoint. The factory destructures gateway, hostname, idResolver and audienceDids
+    from its options, builds a Hono app typed with an issuerDid variable, and returns
+    it as { app } so the caller owns the listening socket. Inside it, the unexported
+    requireAuth(lxm) middleware factory closes over the configured hostname, gateway,
+    idResolver and audienceDids: it derives the audience host from the Host header
+    (falling back to hostname) with any port stripped, rejects a missing authorization
+    header with a 401 JSON body, otherwise awaits verifyServiceAuth with the per-route
+    lxm, serviceIds pinned to [DEFAULT_GATEWAY_SERVICE_ID], extraAudienceDids as audienceDids
+    ?? [gateway.did] and the injected idResolver, stores auth.issuerDid in the context,
+    converts any thrown error into a 401 JSON body, and only then awaits next. The
+    app applies cors to the wildcard path, serves GET /health as { status: "ok" }
+    unauthenticated, serves a did:web document at GET /.well-known/did.json with a
+    single PDRComputeContractGateway service entry pointing at https://<hostname>,
+    and registers four authenticated POST routes under /xrpc/ for the VM, ephemeral
+    worker, persistent worker and delete-compute methods, each guarded by requireAuth
+    bound to the matching LXM constant. The VM handler takes the caller DID from the
+    context value the middleware set, while the two worker handlers and the delete
+    handler hard-code it to "unknown"; the VM and worker handlers return status 500
+    when result.error is set and 200 otherwise, while the delete handler returns the
+    result with the default status regardless of result.error. The package''s deno.json
+    is tracked but not covered by the code index.'
+  message: wrote 12 requirement(s) and 3 interface(s) for lib-hono-factory-compute-contract-gateway-xrpc
