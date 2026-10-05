@@ -1,15 +1,11 @@
 syncedFingerprint: 501674c6c22c41f9f64261c6fd696f06ae5a0061a96af985f205b26e8a3d86f9
-realizedSpecHash: f77f584c968e86dd778c0066f8cab9062ea82d64ff7c24a26863488db7623c00
+realizedSpecHash: 3611abcafbcbd420fecb6cf4a6f008a2baae868bc12af924c04e35c75422f641
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: ContractState, CreateOAuthRequesterOpts, OAuthRequesterHandle,
-    RelayVisibilityResult, RequesterPDSImpl, applyOAuthAgentToRequesterPDS, autoDiscoverRelayUrls,
-    callBidder, createOAuthRequester, createRepoRecord, createRequesterPDS, createSignedRepoRecord,
-    createSshSessionProvider, discoverBiddersFromRelay, discoverBiddersFromRelays,
-    ensureWebsocat, generateKeypair, getSession, pollReady, resolveBidderEndpoint,
-    runComputeContract, runSession, sshTunnelArgs, tunnelWsUrl, verifyRelayVisibility'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual

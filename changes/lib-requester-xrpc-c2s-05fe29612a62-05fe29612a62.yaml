@@ -9,5 +9,30 @@ spec:
   fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
   toCommit: 05fe29612a62a645d70273560238ecc3180414d2
 status:
-  phase: Running
-  message: the agent is summarizing lib-requester-xrpc
+  phase: Succeeded
+  agentLog: '...rifies that a discovered bidder is actually visible through the relays
+    the requester considers capable while recording which relays are capable and which
+    failed (verifyRelayVisibility, RelayVisibilityResult), and can find its own relay
+    list from its DID''s PDS records or the ATPROTO_DID environment variable (autoDiscoverRelayUrls).
+    It owns the requester''s atproto identity: createRequesterPDS builds a RequesterPDSImpl
+    (hono app, signer, secp256k1 keypair, repo api) from PDSOptions, createRepoRecord
+    and createSignedRepoRecord write records into the requester''s repo with uri and
+    cid returned, resolveBidderEndpoint turns a bidder endpoint into a target base
+    plus audience DID, callBidder posts an XRPC request to that target, and getSession
+    / createOAuthRequester / applyOAuthAgentToRequesterPDS let the same flow run from
+    an OAuth session instead of a locally held key. The data plane is an SSH session
+    to the bidder VM: generateKeypair writes the requester''s keypair, tunnelWsUrl
+    and sshTunnelArgs build the argument list (with an optional ProxyCommand override),
+    createSshSessionProvider turns a transport target into a ProxyCommand so callers
+    never learn which transport carried the session, ensureWebsocat installs the websocat
+    binary the legacy websocket ProxyCommand needs, pollReady waits for the guest
+    to become reachable, runSession runs a program and returns its exit code, and
+    runComputeContract drives the whole flow, tracking per-contract state in ContractState
+    and returning a ContractFlowResult with optional overrides for the SSH provider,
+    relay URLs, signer, offering-watcher DIDs, logger, payload factory and ATProto
+    event-streams client. The default transport is iroh: the guest runs a dumbpipe
+    listener against its own loopback sshd, announces the ticket outbound to a report
+    route the requester mounts, and SSH runs `dumbpipe connect <ticket>` as its ProxyCommand,
+    with the websocket relay ProxyCommand kept for callers that still select the tunnel
+    or fedproxy-ssh transport.'
+  message: wrote 20 requirement(s) and 25 interface(s) for lib-requester-xrpc

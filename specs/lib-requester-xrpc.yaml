@@ -23,5 +23,416 @@ spec:
   - sc.lib-market-atproto
   - sc.lib-operator-discovery-badge-blue-keys
   - sc.lib-trust-graph-tangled-graph
+  intent: This context exists so the buyer side of the atproto-market compute contract
+    has one library owning everything from 'who is bidding' to 'run my job on the
+    winner's machine', instead of scattering identity, discovery, payment-facing record
+    writes and transport across callers. Bidder discovery is decentralized, so the
+    library queries many relays and unions the results rather than trusting one index,
+    and it double-checks a bidder is visible through the relays the requester considers
+    capable before committing; autoDiscoverRelayUrls lets the requester derive its
+    own capable relay list from its DID's PDS records. It also owns the requester's
+    atproto identity — creating the PDS, writing records (optionally signed with the
+    requester's key), and resolving bidders through service auth so calls are addressed
+    to the right audience — and offers OAuth entrypoints so the flow can run from
+    a user's session rather than a locally held key. The SSH and tunnel half lives
+    here because the contract's data plane is a session to the bidder VM, so keypair
+    generation, proxy-command construction, readiness polling and program execution
+    sit side by side and callers cannot get the transport details half-right; the
+    default transport is iroh (dumbpipe as ProxyCommand, ticket delivered outbound
+    to a requester-mounted report route), with the websocket relay ProxyCommand retained
+    for callers that still select the tunnel or fedproxy-ssh transport.
+  requirements:
+  - id: r.bidder-endpoint-resolution
+    level: MUST
+    text: resolveBidderEndpoint takes a bidder's endpoint URL and returns the target
+      base URL plus the audience DID to address in service auth, or null when the
+      endpoint cannot be resolved; callBidder then posts to that target base for the
+      given nsid with the lxm and audience DID in the body and returns the HTTP status,
+      an ok flag and the parsed response body.
+    codeRefs:
+    - function:75123cd6c2ecd9939caeaeff2ac9f403
+    - function:d85e8ad86a56d4300135fb091e4bfe65
+  - id: r.contract-flow
+    level: MUST
+    text: runComputeContract drives the whole requester-side flow against a RequesterPDS,
+      tracking per-contract state in ContractState, and accepts optional overrides
+      for the SSH session provider, the relay URL list (with the singular relayUrl
+      kept as a deprecated alternative), the signer, a callback returning offering-watcher
+      DIDs, a structured logger, a payload factory returning the job's uri and cid,
+      and an ATProto event-streams client used for cross-party firehose discovery;
+      it returns a ContractFlowResult.
+    codeRefs:
+    - function:742fa0bee0972eced0864f0199608e68
+    - function:df478a6e7b5f0870c41a1822b1442ea5
+    - interface:4ae0e758bc6af355e90d5d253a84727f
+  - id: r.degrade-not-throw
+    level: SHOULD
+    text: 'Discovery and transport helpers degrade instead of throwing: relay listing,
+      relay visibility probing and relay auto-discovery each report failures through
+      the optional logger and return an empty or partial result, so one unreachable
+      relay or an unresolvable DID never aborts the requester''s contract flow.'
+    codeRefs:
+    - function:0bad0cf5b6751fd238881270b5c9c907
+    - function:90e261d66d34a637786e137d0c260cd8
+    - function:9a74e04d247f63426fdb4ddc23b98a81
+  - id: r.dumbpipe-bootstrap
+    level: MUST
+    text: 'ensureDumbpipe makes the dumbpipe binary the default iroh ProxyCommand
+      runs available to the process: it looks for an already-installed dumbpipe on
+      PATH, and otherwise fetches the pinned release archive https://github.com/n0-computer/dumbpipe/releases/download/v<version>/dumbpipe-v<version>-<os>-<arch>.tar.gz
+      for os linux or darwin and arch x86_64 or aarch64, unpacks the dumbpipe binary
+      the archive carries into a private temporary directory with mode 0755 and prepends
+      that directory to PATH, emitting the same family of log events ensureWebsocat
+      emits (dumbpipe_found, dumbpipe_unsupported, dumbpipe_downloading, dumbpipe_download_failed,
+      dumbpipe_downloaded, dumbpipe_path_updated) and returning the resolved binary
+      path so the caller can hand it to the session provider. It never throws, so
+      an unreachable release degrades to an operator-provided dumbpipe; it unpacks
+      with the Deno runtime rather than piping a shell installer, and the version
+      it pins is the same release the iroh cloud-init module installs, so host and
+      guest speak one dumbpipe.'
+    codeRefs:
+    - file:lib/requester-xrpc/mod.ts
+    - function:24cd5e86c9d21bc8fab0490f83ce6950
+  - id: r.dumbpipe-proxy-command
+    level: MUST
+    text: 'The default ProxyCommand is chosen from the target the session is handed,
+      so one argument builder serves both transports: a target that contains a dot
+      is a hostname reachable over the websocket tunnel and keeps the websocat relay
+      ProxyCommand built from tunnelWsUrl, while a target that contains no dot is
+      an iroh ticket (a dumbpipe EndpointTicket of lowercase letters and digits, which
+      never contains a dot) and the ProxyCommand is `dumbpipe connect <ticket>`, taken
+      from the provider''s dumbpipePath when one was supplied and from dumbpipe on
+      PATH otherwise. dumbpipe connect opens one bidi iroh stream and forwards the
+      ssh process''s own stdin/stdout over it, so the ticket needs no local port,
+      no connect-tcp listener and no separate forwarder: pollReady and runSession
+      stay the only places the transport is used, and ssh still authenticates as root@<target>
+      with the requester''s own key.'
+    codeRefs:
+    - function:504104de944999687ef7f977cf1a877e
+    - function:cc3275d83d779e08c41a10fded40e3d6
+  - id: r.iroh-default-transport
+    level: MUST
+    text: runComputeContract composes the transport module `iroh` when the caller
+      names no transport, so a default run provisions the guest with the dumbpipe
+      listener and reaches it by ticket rather than through the websocket relay; before
+      it polls readiness it ensures the helper the selected transport's SSH path actually
+      needs — ensureDumbpipe for iroh, ensureWebsocat for tunnel and fedproxy-ssh
+      — passes the dumbpipe binary ensureDumbpipe resolved into the session provider,
+      and records the ProxyCommand it used on the result as sshProxyCommand, so a
+      caller can see how the guest was reached without re-deriving it.
+    codeRefs:
+    - function:24cd5e86c9d21bc8fab0490f83ce6950
+    - function:df478a6e7b5f0870c41a1822b1442ea5
+  - id: r.iroh-ticket-delivery
+    level: MUST
+    text: The requester learns the guest's iroh ticket and never reads it out of the
+      guest. Before the cloud-config is composed it mounts a ticket-report route on
+      its own serve, exactly as the secrets capability mounts its own, addressed by
+      a per-contract unguessable path token, and when the composed transport is iroh
+      and the requester has a publicly addressed ingress it passes that route's absolute
+      URL to the composer as ctx.irohReportUrl. A POST whose token matches a contract
+      that is still waiting is read for a ticket in its body, recorded once for that
+      contract, and acknowledged; a POST for an unknown or already-satisfied token
+      is ignored without disclosing whether the token existed. The same ticket may
+      also arrive as the address of a vm.onNetwork event, so an onNetwork address
+      that is neither an IPv4 literal nor a dotted hostname is accepted as an iroh
+      ticket and fed into the same one-ticket-per-contract handler that resolves the
+      waiting session, instead of the old check that discarded anything that was not
+      a dispatcher FQDN. The flow keeps the log event names it already emits when
+      it learns the guest address and when it gives up waiting, so tests that wait
+      on those lines keep working.
+    codeRefs:
+    - file:lib/requester-xrpc/mod.ts
+    - function:38c66a944431c997d72ac28acfa2b8b3
+    - function:df478a6e7b5f0870c41a1822b1442ea5
+  - id: r.keypair-generation
+    level: MUST
+    text: generateKeypair produces an SSH keypair for the named VM and returns the
+      public key alongside the path to the written private key, which the tunnel helpers,
+      readiness polling and the SSH session flow then consume.
+    codeRefs:
+    - function:9b364db7648609d2fe412033f27b13de
+  - id: r.multi-relay-union
+    level: MUST
+    text: discoverBiddersFromRelays queries every URL in relayUrls in parallel through
+      discoverBiddersFromRelay and unions the per-relay results into one deduplicated
+      DID list, so a single relay's failure is non-blocking and never rejects the
+      caller; an empty relayUrls array short-circuits to an empty array without issuing
+      any request.
+    codeRefs:
+    - function:742fa0bee0972eced0864f0199608e68
+    - function:9a74e04d247f63426fdb4ddc23b98a81
+  - id: r.oauth-requester
+    level: SHOULD
+    text: createOAuthRequester returns an OAuthRequesterHandle built from CreateOAuthRequesterOpts,
+      applyOAuthAgentToRequesterPDS installs an OAuth agent onto a RequesterPDS so
+      the PDS uses the agent's session user DID and can mint service-auth tokens for
+      an audience (optionally logging events), and getSession exposes the current
+      session behind that handle, letting the contract flow run off an OAuth session
+      instead of a locally held key.
+    codeRefs:
+    - function:64cfc2d9d837801a774327163a75249d
+    - function:95447d450ff2f97655147e5dd97a5f89
+    - function:f6c7b7f574083e9a9c42bbd6a843c416
+    - interface:183e44891c1f0a54e056e43ec047be13
+    - interface:50f477ac838492f2bd615735976c685e
+  - id: r.package-manifest
+    level: MAY
+    text: The module is published as a Deno package described by lib/requester-xrpc/deno.json,
+      which declares the entrypoint and the dependency imports that mod.ts re-exports.
+    codeRefs:
+    - file:lib/requester-xrpc/deno.json
+    - file:lib/requester-xrpc/mod.ts
+  - id: r.relay-autodiscovery
+    level: SHOULD
+    text: autoDiscoverRelayUrls resolves the requester DID (using opts.atprotoDid,
+      falling back to the ATPROTO_DID environment variable), finds that DID's PDS
+      endpoint, lists the records in the relay collection on that PDS and returns
+      the deduplicated http/https URLs found in each record's relays array; an unresolvable
+      DID, a missing PDS endpoint or any thrown error yields an empty array with a
+      logged warning instead of propagating.
+    codeRefs:
+    - file:lib/requester-xrpc/mod.ts
+    - function:90e261d66d34a637786e137d0c260cd8
+  - id: r.relay-bidder-discovery
+    level: MUST
+    text: discoverBiddersFromRelay queries a single relay's /xrpc/com.atproto.sync.listReposByCollection
+      endpoint for the given collection with limit=1000 and returns the deduplicated
+      non-empty DIDs from the repos array, logging the query URL and the result count.
+      A non-OK HTTP response or any thrown error is logged as a warning and yields
+      an empty array rather than propagating, and the optional timeoutMs bounds the
+      fetch via AbortSignal.timeout; the optional log receives relay_discovery_query
+      and relay_discovery_result on success and relay_discovery_http_error or relay_discovery_error
+      on failure.
+    codeRefs:
+    - file:lib/requester-xrpc/mod.ts
+    - function:9a74e04d247f63426fdb4ddc23b98a81
+  - id: r.relay-visibility
+    level: MUST
+    text: verifyRelayVisibility probes each relay in relayUrls for listReposByCollection
+      support, counting an HTTP 200 as a capable relay, a 404 as unsupported and any
+      other status or thrown error as a failure, then separately confirms whether
+      the named bidderDid appears in the collection, polling at pollIntervalMs up
+      to pollTimeoutMs with defaults of 2000 ms and 15000 ms; the outcome is returned
+      as a RelayVisibilityResult carrying the ok flag, the capable relays, the relays
+      whose index contained the bidder, and the per-URL failure reasons, so the requester
+      can distinguish 'relay cannot answer this query' from 'relay answered and does
+      not list the bidder'.
+    codeRefs:
+    - file:lib/requester-xrpc/mod.ts
+    - function:0bad0cf5b6751fd238881270b5c9c907
+    - interface:9abcf87c406c455d60dfaf993419e8b9
+  - id: r.repo-record-writes
+    level: MUST
+    text: createRepoRecord writes a record into the requester's own repo under the
+      given collection and returns its uri and cid; createSignedRepoRecord performs
+      the same write but signs the record with the supplied keypair, using the optional
+      issuer when one is given, so the requester can publish records that carry its
+      own attestation rather than an unsigned client write.
+    codeRefs:
+    - function:648c5a9b93c008d11e933bd9cc3d0499
+    - function:ae343b3d98725ad4c6c44cc7d268c9a2
+  - id: r.requester-pds-shape
+    level: MUST
+    text: createRequesterPDS builds a RequesterPDSImpl from the supplied PDSOptions,
+      extending RequesterPDS with the concrete Hono app, the signer, the secp256k1
+      keypair and the repo API that the rest of the flow uses to write records and
+      mint service-auth tokens.
+    codeRefs:
+    - function:38c66a944431c997d72ac28acfa2b8b3
+    - interface:66b06e1611350a7f4fb4602342352a5f
+  - id: r.session-execution
+    level: MUST
+    text: runSession executes the supplied program over the ssh session identified
+      by the private key path and the guest transport target and resolves with the
+      program's exit code; before a session the flow must have made the transport
+      binary available, with ensureDumbpipe ensuring the dumbpipe binary the default
+      iroh ProxyCommand depends on and ensureWebsocat still ensuring the websocat
+      binary the legacy websocket ProxyCommand depends on.
+    codeRefs:
+    - function:24cd5e86c9d21bc8fab0490f83ce6950
+    - function:fbac4e60f3f0951146764aaa7623d831
+  - id: r.session-readiness
+    level: MUST
+    text: pollReady waits for a bidder at the given target to become reachable over
+      its transport using the specified private key, giving up after timeoutMs and
+      returning whether readiness was achieved rather than throwing.
+    codeRefs:
+    - function:ef9dc35948925beeecf54c12a5fd9ee1
+  - id: r.ssh-session-provider
+    level: MUST
+    text: createSshSessionProvider returns an SshSessionProvider for the session flow,
+      accepting an optional structured logger and an optional proxyCommandFn so the
+      caller can override how the proxy command is derived from the guest transport
+      target, and an optional dumbpipePath naming the dumbpipe binary the default
+      iroh ProxyCommand runs. The target handed to it is the guest's transport address
+      — an iroh ticket for the iroh transport and a hostname for the websocket transports
+      — and the provider owns turning that address into the ProxyCommand so the flow
+      never learns which transport carried the session.
+    codeRefs:
+    - function:504104de944999687ef7f977cf1a877e
+  - id: r.ssh-tunnel-helpers
+    level: MUST
+    text: tunnelWsUrl maps a bidder fqdn to the websocket URL the legacy relay tunnel
+      dials, and sshTunnelArgs builds the ssh argument list for a session from a private
+      key path, a guest transport target and an optional proxy command override that
+      fully replaces the default ProxyCommand, so the websocket tunnel and the iroh
+      ticket share one argument builder.
+    codeRefs:
+    - function:962522e8fb20541868ff3b3934e3b3e5
+    - function:cc3275d83d779e08c41a10fded40e3d6
+  interfaces:
+  - name: ContractState
+    kind: interface
+    signature: interface ContractState
+    file: lib/requester-xrpc/mod.ts
+  - name: CreateOAuthRequesterOpts
+    kind: interface
+    signature: interface CreateOAuthRequesterOpts
+    file: lib/requester-xrpc/mod.ts
+  - name: OAuthRequesterHandle
+    kind: interface
+    signature: interface OAuthRequesterHandle
+    file: lib/requester-xrpc/mod.ts
+  - name: RelayVisibilityResult
+    kind: interface
+    signature: 'interface RelayVisibilityResult { ok: boolean; capableRelays: string[];
+      indexedBy: string[]; failures: Array<{ url: string; reason: string }> }'
+    file: lib/requester-xrpc/mod.ts
+  - name: RequesterPDSImpl
+    kind: interface
+    signature: 'interface RequesterPDSImpl extends RequesterPDS { app: HonoApp; signer:
+      Signer; keypair: Secp256k1Keypair; api: RepoApi }'
+    file: lib/requester-xrpc/mod.ts
+  - name: applyOAuthAgentToRequesterPDS
+    kind: function
+    signature: 'function applyOAuthAgentToRequesterPDS(pds: RequesterPDS, agent: AtprotoAgentLike
+      & { sessionData: { userDid: string }; getServiceAuth?: (aud: string, lxm?: string)
+      => Promise<string> }, opts?: { log?: (event: string, data: Record<string, unknown>)
+      => void }): void'
+    file: lib/requester-xrpc/mod.ts
+  - name: autoDiscoverRelayUrls
+    kind: function
+    signature: 'function autoDiscoverRelayUrls(opts: { atprotoDid?: string; log?:
+      LoggerInterface }): Promise<string[]>'
+    file: lib/requester-xrpc/mod.ts
+  - name: callBidder
+    kind: function
+    signature: 'function callBidder(targetBase: string, nsid: string, lxm: string,
+      audDid: string, body: Record<string, unknown>): Promise<{ status: number; ok:
+      boolean; body: unknown }>'
+    file: lib/requester-xrpc/mod.ts
+  - name: createOAuthRequester
+    kind: function
+    signature: 'function createOAuthRequester(opts: CreateOAuthRequesterOpts): Promise<OAuthRequesterHandle>'
+    file: lib/requester-xrpc/mod.ts
+  - name: createRepoRecord
+    kind: function
+    signature: 'function createRepoRecord(collection: string, record: Record<string,
+      unknown>): Promise<{ uri: string; cid: string }>'
+    file: lib/requester-xrpc/mod.ts
+  - name: createRequesterPDS
+    kind: function
+    signature: 'function createRequesterPDS(opts: PDSOptions): Promise<RequesterPDSImpl>'
+    file: lib/requester-xrpc/mod.ts
+  - name: createSignedRepoRecord
+    kind: function
+    signature: 'function createSignedRepoRecord(collection: string, record: Record<string,
+      unknown>, aKp: { did(): string; privateKey: { bytes: Uint8Array; toBytes?():
+      Uint8Array } }, issuer?: string): Promise<{ uri: string; cid: string }>'
+    file: lib/requester-xrpc/mod.ts
+  - name: createSshSessionProvider
+    kind: function
+    signature: 'function createSshSessionProvider(logger?: StructuredLoggerInterface,
+      opts?: { proxyCommandFn?: (fqdn: string) => string }): SshSessionProvider'
+    file: lib/requester-xrpc/mod.ts
+  - name: discoverBiddersFromRelay
+    kind: function
+    signature: 'function discoverBiddersFromRelay(opts: { relayUrl: string; collection:
+      string; log?: LoggerInterface; timeoutMs?: number }): Promise<string[]>'
+    file: lib/requester-xrpc/mod.ts
+  - name: discoverBiddersFromRelays
+    kind: function
+    signature: 'function discoverBiddersFromRelays(opts: { relayUrls: string[]; collection:
+      string; log?: LoggerInterface; timeoutMs?: number }): Promise<string[]>'
+    file: lib/requester-xrpc/mod.ts
+  - name: ensureWebsocat
+    kind: function
+    signature: 'function ensureWebsocat(logger?: StructuredLoggerInterface): Promise<void>'
+    file: lib/requester-xrpc/mod.ts
+  - name: generateKeypair
+    kind: function
+    signature: 'function generateKeypair(vmName: string): Promise<{ publicKey: string;
+      privateKeyPath: string }>'
+    file: lib/requester-xrpc/mod.ts
+  - name: getSession
+    kind: function
+    signature: function getSession()
+    file: lib/requester-xrpc/mod.ts
+  - name: pollReady
+    kind: function
+    signature: 'function pollReady(privateKeyPath: string, fqdn: string, timeoutMs:
+      number): Promise<boolean>'
+    file: lib/requester-xrpc/mod.ts
+  - name: resolveBidderEndpoint
+    kind: function
+    signature: 'function resolveBidderEndpoint(endpointUrl: string): Promise<{ targetUrl:
+      string; audDid: string } | null>'
+    file: lib/requester-xrpc/mod.ts
+  - name: runComputeContract
+    kind: function
+    signature: 'function runComputeContract(pds: RequesterPDS, opts: ContractFlowOptions
+      & { sshProvider?: SshSessionProvider; relayUrls?: string[]; relayUrl?: string;
+      signer?: Signer; offeringWatcherDids?: () => string[]; logger?: StructuredLoggerInterface;
+      payloadFactory?: () => Promise<{ uri: string; cid: string }>; eventStreams?:
+      import("@publicdomainrelay/atproto-event-streams-client").ATProtoEventStreamsClient
+      } = {}): Promise<ContractFlowResult>'
+    file: lib/requester-xrpc/mod.ts
+  - name: runSession
+    kind: function
+    signature: 'function runSession(privateKeyPath: string, fqdn: string, program:
+      string): Promise<number>'
+    file: lib/requester-xrpc/mod.ts
+  - name: sshTunnelArgs
+    kind: function
+    signature: 'function sshTunnelArgs(privateKeyPath: string, fqdn: string, proxyCmdOverride?:
+      string): string[]'
+    file: lib/requester-xrpc/mod.ts
+  - name: tunnelWsUrl
+    kind: function
+    signature: 'function tunnelWsUrl(fqdn: string): string'
+    file: lib/requester-xrpc/mod.ts
+  - name: verifyRelayVisibility
+    kind: function
+    signature: 'function verifyRelayVisibility(opts: { relayUrls: string[]; bidderDid:
+      string; collection: string; log?: LoggerInterface; pollTimeoutMs?: number; pollIntervalMs?:
+      number }): Promise<RelayVisibilityResult>'
+    file: lib/requester-xrpc/mod.ts
 codeRefIndex:
+- file:lib/requester-xrpc/deno.json deno.json@lib/requester-xrpc/deno.json
 - file:lib/requester-xrpc/mod.ts mod.ts@lib/requester-xrpc/mod.ts
+- function:0bad0cf5b6751fd238881270b5c9c907 verifyRelayVisibility@lib/requester-xrpc/mod.ts:170
+- function:24cd5e86c9d21bc8fab0490f83ce6950 ensureWebsocat@lib/requester-xrpc/mod.ts:807
+- function:38c66a944431c997d72ac28acfa2b8b3 createRequesterPDS@lib/requester-xrpc/mod.ts:288
+- function:504104de944999687ef7f977cf1a877e createSshSessionProvider@lib/requester-xrpc/mod.ts:718
+- function:648c5a9b93c008d11e933bd9cc3d0499 createRepoRecord@lib/requester-xrpc/mod.ts:581
+- function:64cfc2d9d837801a774327163a75249d getSession@lib/requester-xrpc/mod.ts:2001
+- function:742fa0bee0972eced0864f0199608e68 discoverBiddersFromRelays@lib/requester-xrpc/mod.ts:131
+- function:75123cd6c2ecd9939caeaeff2ac9f403 resolveBidderEndpoint@lib/requester-xrpc/mod.ts:606
+- function:90e261d66d34a637786e137d0c260cd8 autoDiscoverRelayUrls@lib/requester-xrpc/mod.ts:245
+- function:95447d450ff2f97655147e5dd97a5f89 createOAuthRequester@lib/requester-xrpc/mod.ts:1967
+- function:962522e8fb20541868ff3b3934e3b3e5 tunnelWsUrl@lib/requester-xrpc/mod.ts:698
+- function:9a74e04d247f63426fdb4ddc23b98a81 discoverBiddersFromRelay@lib/requester-xrpc/mod.ts:102
+- function:9b364db7648609d2fe412033f27b13de generateKeypair@lib/requester-xrpc/mod.ts:724
+- function:ae343b3d98725ad4c6c44cc7d268c9a2 createSignedRepoRecord@lib/requester-xrpc/mod.ts:591
+- function:cc3275d83d779e08c41a10fded40e3d6 sshTunnelArgs@lib/requester-xrpc/mod.ts:703
+- function:d85e8ad86a56d4300135fb091e4bfe65 callBidder@lib/requester-xrpc/mod.ts:636
+- function:df478a6e7b5f0870c41a1822b1442ea5 runComputeContract@lib/requester-xrpc/mod.ts:866
+- function:ef9dc35948925beeecf54c12a5fd9ee1 pollReady@lib/requester-xrpc/mod.ts:742
+- function:f6c7b7f574083e9a9c42bbd6a843c416 applyOAuthAgentToRequesterPDS@lib/requester-xrpc/mod.ts:1908
+- function:fbac4e60f3f0951146764aaa7623d831 runSession@lib/requester-xrpc/mod.ts:781
+- interface:183e44891c1f0a54e056e43ec047be13 CreateOAuthRequesterOpts@lib/requester-xrpc/mod.ts:1877
+- interface:4ae0e758bc6af355e90d5d253a84727f ContractState@lib/requester-xrpc/mod.ts:373
+- interface:50f477ac838492f2bd615735976c685e OAuthRequesterHandle@lib/requester-xrpc/mod.ts:1870
+- interface:66b06e1611350a7f4fb4602342352a5f RequesterPDSImpl@lib/requester-xrpc/mod.ts:91
+- interface:9abcf87c406c455d60dfaf993419e8b9 RelayVisibilityResult@lib/requester-xrpc/mod.ts:150

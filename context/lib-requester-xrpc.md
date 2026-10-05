@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so the buyer side of the atproto-market compute contract has one library owning everything from 'who is bidding' to 'run my job on the winner's machine', instead of scattering identity, discovery, payment-facing record writes and transport across callers. Bidder discovery is decentralized, so the library queries many relays and unions the results rather than trusting one index, and it double-checks a bidder is visible through the relays the requester considers capable before committing; autoDiscoverRelayUrls lets the requester derive its own capable relay list from its DID's PDS records. It also owns the requester's atproto identity — creating the PDS, writing records (optionally signed with the requester's key), and resolving bidders through service auth so calls are addressed to the right audience — and offers OAuth entrypoints so the flow can run from a user's session rather than a locally held key. The SSH and tunnel half lives here because the contract's data plane is a session to the bidder VM, so keypair generation, proxy-command construction, readiness polling and program execution sit side by side and callers cannot get the transport details half-right; the default transport is iroh (dumbpipe as ProxyCommand, ticket delivered outbound to a requester-mounted report route), with the websocket relay ProxyCommand retained for callers that still select the tunnel or fedproxy-ssh transport.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 
