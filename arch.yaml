@@ -2334,8 +2334,26 @@ system_contexts:
   - sc.atproto-market
   - sc.lib-abc-trust-graph
   - sc.lib-common-market-lexicons
+  requirements:
+  - id: r.canonical-association-shape
+    level: MUST
+  - id: r.factory-returns-operator-discovery
+    level: MUST
+  - id: r.inverted-records-rejected
+    level: MUST
+  - id: r.optional-logging
+    level: MAY
+  - id: r.own-repo-first-then-public
+    level: MUST
+  - id: r.per-did-memo-cache
+    level: MUST
+  - id: r.record-listing-is-injected
+    level: MUST
   codeRefIndex:
   - file:lib/operator-discovery-badge-blue-keys/mod.ts mod.ts@lib/operator-discovery-badge-blue-keys/mod.ts
+  - function:dc1f27a14a62ce61d3668e393e355f72 createBadgeBlueKeysOperatorDiscovery@lib/operator-discovery-badge-blue-keys/mod.ts:15
+  - interface:2f571f7e3c998ccd8befe1bbae9ccb85 BadgeBlueKeysOperatorDiscoveryOpts@lib/operator-discovery-badge-blue-keys/mod.ts:9
+  - interface:b712ea6968624576e21a143e7622a253 ListedRecord@lib/operator-discovery-badge-blue-keys/mod.ts:4
 - id: sc.lib-requester-xrpc
   name: lib-requester-xrpc
   spec: specs/lib-requester-xrpc.yaml

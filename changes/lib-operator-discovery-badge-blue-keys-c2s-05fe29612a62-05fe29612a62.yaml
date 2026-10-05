@@ -9,5 +9,24 @@ spec:
   fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
   toCommit: 05fe29612a62a645d70273560238ecc3180414d2
 status:
-  phase: Running
-  message: the agent is summarizing lib-operator-discovery-badge-blue-keys
+  phase: Succeeded
+  agentLog: 'lib-operator-discovery-badge-blue-keys is a dependency-injected Deno/TypeScript
+    factory module that answers which operator DIDs stand behind a given atproto DID.
+    createBadgeBlueKeysOperatorDiscovery takes a BadgeBlueKeysOperatorDiscoveryOpts
+    bundle and returns an OperatorDiscovery whose discoverOperatorDids(atprotoDid)
+    lists badgeBlueKeys records first from the caller''s own repo via listRecordsOwn
+    with limit 200 and then, only when that pass yielded no operator DIDs, from the
+    subject''s public repo via listRecordsPublic. A record counts as an operator association
+    only when its value.keyId equals the subject DID, its value.service is exactly
+    bidder_associate or requester_associate, and its value.challenge is a string beginning
+    with did:; that challenge value is the operator DID returned. Inverted legacy
+    records, where challenge is the subject and keyId is the operator, are deliberately
+    not read as this subject''s operator because that shape acknowledges a different
+    subject and mis-resolves operators as self-operated bidders. Both listing calls
+    are wrapped so a throw degrades discovery to an empty or partial array, non-empty
+    results are memoized in a per-DID Map and returned directly on later calls, and
+    a successful non-empty discovery is optionally reported at info level with bidderDid
+    and operatorDids metadata while empty results are never logged. The module performs
+    no record access or own-repo reads itself: listRecordsOwn, listRecordsPublic and
+    the optional log sink are the entire surface it consumes.'
+  message: wrote 7 requirement(s) and 3 interface(s) for lib-operator-discovery-badge-blue-keys

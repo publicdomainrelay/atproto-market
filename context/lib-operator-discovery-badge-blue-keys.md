@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so that operator discovery for badgeBlueKeys associations is a pure, testable function of injected record listings rather than a component that reaches into a PDS itself. It pins the canonical association shape, distinguishing the current record form (challenge is the operator, keyId is the associated subject) from the inverted legacy form that must not be read as an association, so callers such as requester-xrpc can resolve a bidder's operators without mis-resolving self-operated bidders. It also fixes the resolution order (own repo first, public repo as fallback), the failure posture (swallow listing errors and return what was found), and the caching and logging contract.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

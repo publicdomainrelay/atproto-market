@@ -1,10 +1,11 @@
 syncedFingerprint: fa8e9debd81599bb4b301a537e322a66d6dd7e88976705ac4f3cfeebad18b73d
-realizedSpecHash: 6fded010d07e6ac2582305fbfe84608fcdc14609559de1e9e115301bc1aac383
+realizedSpecHash: 7238e1a450345c2c0964fb05e4c76c57ac26d84555d2f355642e18e51ec94d05
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: BadgeBlueKeysOperatorDiscoveryOpts, ListedRecord, createBadgeBlueKeysOperatorDiscovery'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual
