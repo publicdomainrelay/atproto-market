@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists to hold the shared vocabulary the gateway's layers agree on: the XRPC NSID strings callers and servers must spell identically, and the plain data interfaces describing a caller, a compute request, a contract's lifecycle, its bids and events, its capability tokens, and the response handed back. It is declared so that the ABC interface layer and the XRPC transport can share those shapes without either depending on the other, and so the wire-level identifiers cannot drift between producer and consumer. Because the package imports nothing, it is the bottom of the gateway dependency graph and can be depended on freely.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

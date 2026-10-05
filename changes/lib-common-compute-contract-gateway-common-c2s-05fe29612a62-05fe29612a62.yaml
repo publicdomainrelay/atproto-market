@@ -9,5 +9,18 @@ spec:
   fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
   toCommit: 05fe29612a62a645d70273560238ecc3180414d2
 status:
-  phase: Running
-  message: the agent is summarizing lib-common-compute-contract-gateway-common
+  phase: Succeeded
+  agentLog: 'This context is the dependency-free TypeScript package lib/common/compute-contract-gateway-common
+    inside atproto-market. Its entrypoint mod.ts re-exports two modules wholesale:
+    nsids.ts, which pins the gateway''s five XRPC method identifier strings under
+    the com.publicdomainrelay.temp.gateway authority along with matching *_LXM aliases
+    and the DEFAULT_GATEWAY_SERVICE_ID service fragment, and types.ts, which declares
+    nine exported interfaces: CallerIdentity, GatewayContractState with its GatewayBidEntry
+    and GatewayEventEntry ledgers, GatewayPolicySpec, the VM and worker compute request
+    payloads ComputeRequestVMInput and ComputeRequestWorkerInput with their shared
+    policy/policyEngine/extraBidderDids/tokens fields, GatewayTokens, and the all-optional
+    GatewayComputeResponse. Nothing in the package imports anything, so it sits at
+    the bottom of the gateway''s layering and is consumed by both the ABC interface
+    layer at lib/abc/compute-contract-gateway and the XRPC transport at lib/compute-contract-gateway-xrpc,
+    with a tracked deno.json carrying the package manifest.'
+  message: wrote 14 requirement(s) and 9 interface(s) for lib-common-compute-contract-gateway-common
