@@ -1,15 +1,22 @@
+observedCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
+syncedCommit: 05fe29612a62a645d70273560238ecc3180414d2
 syncedFingerprint: 62eadf7a15fa0d39072ffd39bfb7ee22b17dee000dd95df4fb38a4f7f5eae3b5
-realizedSpecHash: 6e0d217651490467c7d757f4d7272f9ef45a5d164bb6ace3aaad27f49d5b78f4
+realizedSpecHash: 2fa1efc0789c0a83da833cb9da0f3e12280e478353b5740bbf2cc765602c3b7b
 conditions:
 - type: CodeSynced
-  status: "True"
-  reason: InterfacesObserved
-  message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
-- type: Drifted
   status: "False"
-  reason: FingerprintEqual
-  message: observed facts match the synced fingerprint
+  reason: InterfacesMissing
+  message: 'missing: MemoryPlcStore, MemoryPlcStore.exportLogs, MemoryPlcStore.getAuditLog,
+    MemoryPlcStore.getCurrentOps, MemoryPlcStore.getOpByCid, MemoryPlcStore.insertOp,
+    MemoryPlcStore.nullifyOps, PlcStore; unresolved: r.export-pagination: method:b8ee53ece42a3057f7a82bf6033b7ab5,
+    r.memory-store: class:6dc897b2ad83f3474c8cc21fa651b5f0, r.memory-store: file:lib/hono-factory-did-plc-directory/storage/plc-store.ts,
+    r.memory-store: method:5effb1ba90cc09ca38b9facc67e0e5e5, r.memory-store: method:8b706b26d2ae998889c6d053a48c7fe3,
+    r.memory-store: method:b7635d15869a1ecb4b58b9cef42809a8, r.memory-store: method:b796dec3c2dab2f5c026e954e2799299,
+    r.memory-store: method:f3ed83fb406ac57043fa578dc7d44e12, r.store-contract: interface:86a4aca923e87a6278f374fd01ce9547'
+- type: Drifted
+  status: "True"
+  reason: FingerprintChanged
+  message: observed facts changed since the spec was last synced
 - type: PolicyCompliant
   status: "True"
   reason: PolicyCompliant
@@ -24,7 +31,6 @@ observed:
   - lib/hono-factory-did-plc-directory/factory.ts
   - lib/hono-factory-did-plc-directory/handlers.ts
   - lib/hono-factory-did-plc-directory/mod.ts
-  - lib/hono-factory-did-plc-directory/storage/plc-store.ts
   - lib/hono-factory-did-plc-directory/validation.ts
   treeFiles:
   - lib/hono-factory-did-plc-directory/deno.json
@@ -69,52 +75,6 @@ observed:
     file: lib/hono-factory-did-plc-directory/handlers.ts
     line: 30
     codegraphId: function:b33678bc247c0cfd81b6157c59e5bde5
-  - name: PlcStore
-    kind: interface
-    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
-    line: 3
-    codegraphId: interface:86a4aca923e87a6278f374fd01ce9547
-  - name: MemoryPlcStore
-    kind: class
-    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
-    line: 17
-    codegraphId: class:6dc897b2ad83f3474c8cc21fa651b5f0
-  - name: MemoryPlcStore.getCurrentOps
-    kind: method
-    signature: '(did: string): Promise<LogEntry[]>'
-    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
-    line: 20
-    codegraphId: method:f3ed83fb406ac57043fa578dc7d44e12
-  - name: MemoryPlcStore.getAuditLog
-    kind: method
-    signature: '(did: string): Promise<LogEntry[]>'
-    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
-    line: 26
-    codegraphId: method:5effb1ba90cc09ca38b9facc67e0e5e5
-  - name: MemoryPlcStore.getOpByCid
-    kind: method
-    signature: '(did: string, cid: string): Promise<LogEntry | null>'
-    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
-    line: 30
-    codegraphId: method:b7635d15869a1ecb4b58b9cef42809a8
-  - name: MemoryPlcStore.insertOp
-    kind: method
-    signature: '(entry: LogEntry): Promise<void>'
-    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
-    line: 36
-    codegraphId: method:b796dec3c2dab2f5c026e954e2799299
-  - name: MemoryPlcStore.nullifyOps
-    kind: method
-    signature: '(did: string, cids: string[]): Promise<void>'
-    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
-    line: 45
-    codegraphId: method:8b706b26d2ae998889c6d053a48c7fe3
-  - name: MemoryPlcStore.exportLogs
-    kind: method
-    signature: '(after?: Date, count?: number): Promise<LogEntry[]>'
-    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
-    line: 56
-    codegraphId: method:b8ee53ece42a3057f7a82bf6033b7ab5
   - name: computeOperationCid
     kind: function
     signature: '(signedBytes: Uint8Array): Promise<string>'
@@ -158,4 +118,4 @@ observed:
     file: lib/hono-factory-did-plc-directory/validation.ts
     line: 99
     codegraphId: function:3cdeb3d911d0b80c2f67f10b8b825205
-  fingerprint: 62eadf7a15fa0d39072ffd39bfb7ee22b17dee000dd95df4fb38a4f7f5eae3b5
+  fingerprint: 6ac00ee419ac35de281ee3412c187d99b4f7b950df196647cda1d89bbe721cb9

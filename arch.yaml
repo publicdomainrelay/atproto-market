@@ -1730,6 +1730,14 @@ system_contexts:
   - method:b796dec3c2dab2f5c026e954e2799299 MemoryPlcStore.insertOp@lib/hono-factory-did-plc-directory/storage/plc-store.ts:36
   - method:b8ee53ece42a3057f7a82bf6033b7ab5 MemoryPlcStore.exportLogs@lib/hono-factory-did-plc-directory/storage/plc-store.ts:56
   - method:f3ed83fb406ac57043fa578dc7d44e12 MemoryPlcStore.getCurrentOps@lib/hono-factory-did-plc-directory/storage/plc-store.ts:20
+- id: sc.lib-hono-factory-did-plc-directory-storage
+  name: lib-hono-factory-did-plc-directory-storage
+  spec: specs/lib-hono-factory-did-plc-directory-storage.yaml
+  upstream: self
+  depends_on:
+  - sc.lib-did-plc
+  codeRefIndex:
+  - file:lib/hono-factory-did-plc-directory/storage/plc-store.ts plc-store.ts@lib/hono-factory-did-plc-directory/storage/plc-store.ts
 - id: sc.lib-hono-factory-market-atproto
   name: lib-hono-factory-market-atproto
   spec: specs/lib-hono-factory-market-atproto.yaml

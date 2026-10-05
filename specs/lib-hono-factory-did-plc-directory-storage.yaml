@@ -1,0 +1,12 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SystemContext
+metadata:
+  name: lib-hono-factory-did-plc-directory-storage
+  namespace: default
+spec:
+  repository: atproto-market
+  upstream: self
+  dependsOn:
+  - sc.lib-did-plc
+codeRefIndex:
+- file:lib/hono-factory-did-plc-directory/storage/plc-store.ts plc-store.ts@lib/hono-factory-did-plc-directory/storage/plc-store.ts

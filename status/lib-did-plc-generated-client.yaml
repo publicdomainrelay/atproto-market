@@ -4,14 +4,16 @@ syncedFingerprint: 139ca181cf4f4709194afd06757cccf0fb514019c4a7518e7794447997818
 realizedSpecHash: 0bb8d14edb9c2352abaed37cf54c2a063fe2fdc1069236dba0fc2bf607825198
 conditions:
 - type: CodeSynced
-  status: "True"
-  reason: InterfacesObserved
-  message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
+  status: "False"
+  reason: InterfacesMissing
+  message: 'undeclared: Client, ClientOptions, Config, CreateClientConfig, Middleware,
+    Options, RequestOptions, RequestResult, ResolvedRequestOptions, ResponseStyle,
+    TDataShape, buildUrl, createClient, createConfig, createInterceptors, createQuerySerializer,
+    getParseAs, mergeConfigs, mergeHeaders, setAuthParams'
 - type: Drifted
   status: "False"
-  reason: NotSyncedYet
-  message: no synced fingerprint has been recorded yet
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed

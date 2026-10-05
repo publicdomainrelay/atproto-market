@@ -1,0 +1,70 @@
+observedCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
+syncedCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
+syncedFingerprint: 299d71105c1b85d17aeb7f5c881a4050341315fa634af881aa0f3b2cfe87acd1
+realizedSpecHash: 6bea636ddbe02dfce566a640519da71389e60552da2626d7f2fa8d1bc317fbe0
+conditions:
+- type: CodeSynced
+  status: "False"
+  reason: InterfacesMissing
+  message: 'undeclared: MemoryPlcStore, MemoryPlcStore.exportLogs, MemoryPlcStore.getAuditLog,
+    MemoryPlcStore.getCurrentOps, MemoryPlcStore.getOpByCid, MemoryPlcStore.insertOp,
+    MemoryPlcStore.nullifyOps, PlcStore'
+- type: Drifted
+  status: "False"
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
+- type: SpecValid
+  status: "True"
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed:
+  files:
+  - lib/hono-factory-did-plc-directory/storage/plc-store.ts
+  interfaces:
+  - name: PlcStore
+    kind: interface
+    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
+    line: 3
+    codegraphId: interface:86a4aca923e87a6278f374fd01ce9547
+  - name: MemoryPlcStore
+    kind: class
+    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
+    line: 17
+    codegraphId: class:6dc897b2ad83f3474c8cc21fa651b5f0
+  - name: MemoryPlcStore.getCurrentOps
+    kind: method
+    signature: '(did: string): Promise<LogEntry[]>'
+    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
+    line: 20
+    codegraphId: method:f3ed83fb406ac57043fa578dc7d44e12
+  - name: MemoryPlcStore.getAuditLog
+    kind: method
+    signature: '(did: string): Promise<LogEntry[]>'
+    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
+    line: 26
+    codegraphId: method:5effb1ba90cc09ca38b9facc67e0e5e5
+  - name: MemoryPlcStore.getOpByCid
+    kind: method
+    signature: '(did: string, cid: string): Promise<LogEntry | null>'
+    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
+    line: 30
+    codegraphId: method:b7635d15869a1ecb4b58b9cef42809a8
+  - name: MemoryPlcStore.insertOp
+    kind: method
+    signature: '(entry: LogEntry): Promise<void>'
+    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
+    line: 36
+    codegraphId: method:b796dec3c2dab2f5c026e954e2799299
+  - name: MemoryPlcStore.nullifyOps
+    kind: method
+    signature: '(did: string, cids: string[]): Promise<void>'
+    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
+    line: 45
+    codegraphId: method:8b706b26d2ae998889c6d053a48c7fe3
+  - name: MemoryPlcStore.exportLogs
+    kind: method
+    signature: '(after?: Date, count?: number): Promise<LogEntry[]>'
+    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
+    line: 56
+    codegraphId: method:b8ee53ece42a3057f7a82bf6033b7ab5
+  fingerprint: 299d71105c1b85d17aeb7f5c881a4050341315fa634af881aa0f3b2cfe87acd1
