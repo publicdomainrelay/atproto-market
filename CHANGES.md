@@ -81,3 +81,5 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 | hono-bidder-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | hono-compute-contract-gateway-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | hono-market-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
+| lib-abc-compute-contract-gateway-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
+| lib-abc-guest-capability-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
