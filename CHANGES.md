@@ -704,3 +704,4 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 | lib-market-bidder-compute-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-market-bidder-worker-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-market-settlement-free-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
+| lib-market-settlement-x402-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
