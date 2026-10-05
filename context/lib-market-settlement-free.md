@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists to fix the contract of the free settlement path: the wire shape the client and server share, the record each side owns, and the error type that carries an HTTP status back to a transport handler. The client writes an accepts.free record naming the bid and its payload, encodes that record's uri and cid into the grant url, and reads back a receipts.free strongRef; the server parses that same path back into the accepts pair, mints the receipts.free record, and later verifies a payment reference against a bidder DID, treating an absent payment as a free settlement rather than a failure. It is deliberately separable from paid settlement so the no-payment flow can be reasoned about, tested and deployed without the payment machinery, and so a Hono factory layer can mount it by calling only parseGrantPath, mintGrantForAccepts and verifyFreeGrant.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

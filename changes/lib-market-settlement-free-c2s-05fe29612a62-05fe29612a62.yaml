@@ -9,5 +9,24 @@ spec:
   fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
   toCommit: 05fe29612a62a645d70273560238ecc3180414d2
 status:
-  phase: Running
-  message: the agent is summarizing lib-market-settlement-free
+  phase: Succeeded
+  agentLog: lib-market-settlement-free is the zero-payment settlement path of the
+    atproto-market exchange, split into a client half in lib/market-settlement-free/client.ts,
+    a server half in lib/market-settlement-free/server.ts, and a re-export surface
+    in lib/market-settlement-free/mod.ts. The client entry point settleFreeGrant takes
+    a SettleFreeOptions bag (agent, bid strongRef, bid payload strongRef, base url,
+    plus optional egress, fetch, timeoutMs and log overrides), guards the url through
+    safe-egress assertion, writes an accepts.free record into the caller's own repo,
+    builds a grant url by appending that new record's uri and cid to the base url,
+    GETs it under an abort signal bounded by the timeout, and returns the endpoint's
+    uri and cid as a strongRef, throwing when the response is not ok or the body lacks
+    either half. The server half exposes parseGrantPath to recover the accepts uri
+    and cid from a request path under an optional prefix, mintGrantForAccepts to mint
+    the receipts.free record for an accepts, verifyFreeGrant to resolve an optional
+    payment strongRef back to a receipts.free record owned by a given bidder DID,
+    and FreeGrantError, an Error subclass carrying a public readonly HTTP status.
+    All three server functions are callers of FreeGrantError, so a transport handler
+    can read the status off a rejection. The package depends on the market-common,
+    market-lexicons and market-atproto layers for strongRefs, record creation, egress
+    guarding and logging.
+  message: wrote 10 requirement(s) and 7 interface(s) for lib-market-settlement-free

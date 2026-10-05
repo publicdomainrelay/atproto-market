@@ -2253,10 +2253,38 @@ system_contexts:
   - sc.lib-common-market-common
   - sc.lib-common-market-lexicons
   - sc.lib-market-atproto
+  requirements:
+  - id: r.client-injection-defaults
+    level: MUST
+  - id: r.egress-guard-before-write
+    level: MUST
+  - id: r.free-grant-error-status
+    level: MUST
+  - id: r.grant-request-and-errors
+    level: MUST
+  - id: r.grant-url-shape
+    level: MUST
+  - id: r.mint-grant
+    level: MUST
+  - id: r.package-export-surface
+    level: SHOULD
+  - id: r.parse-grant-path
+    level: MUST
+  - id: r.settle-creates-accepts-first
+    level: MUST
+  - id: r.verify-free-grant
+    level: MUST
   codeRefIndex:
+  - class:3827f797a6bd2d1108d56d2774b6518d FreeGrantError@lib/market-settlement-free/server.ts:23
   - file:lib/market-settlement-free/client.ts client.ts@lib/market-settlement-free/client.ts
   - file:lib/market-settlement-free/mod.ts mod.ts@lib/market-settlement-free/mod.ts
   - file:lib/market-settlement-free/server.ts server.ts@lib/market-settlement-free/server.ts
+  - function:528e95e009f7f506a933ba541e0c4ed9 verifyFreeGrant@lib/market-settlement-free/server.ts:66
+  - function:c1a42b12e47d538ba4f2c4033a018daf parseGrantPath@lib/market-settlement-free/server.ts:30
+  - function:ca138dba99fe7843a691d23448a3af85 settleFreeGrant@lib/market-settlement-free/client.ts:24
+  - function:f40dd626ac80197332f89582a7964061 mintGrantForAccepts@lib/market-settlement-free/server.ts:38
+  - interface:cdef64f67aa14f86753db2d82253c04c SettleFreeOptions@lib/market-settlement-free/client.ts:13
+  - method:d2ca5a3b04fbbe08479f73baafeef096 FreeGrantError.constructor@lib/market-settlement-free/server.ts:24
 - id: sc.lib-market-settlement-x402
   name: lib-market-settlement-x402
   spec: specs/lib-market-settlement-x402.yaml
