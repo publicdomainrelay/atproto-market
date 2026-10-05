@@ -241,3 +241,4 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 | lib-atproto-attestation-port-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-atproto-helpers-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-atproto-oauth-helpers-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
+| lib-cocore-api-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
