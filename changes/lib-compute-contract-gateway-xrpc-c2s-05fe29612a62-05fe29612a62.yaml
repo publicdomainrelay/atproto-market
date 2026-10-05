@@ -1,0 +1,13 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-compute-contract-gateway-xrpc-c2s-05fe29612a62-05fe29612a62
+  namespace: default
+spec:
+  systemContext: lib-compute-contract-gateway-xrpc
+  direction: CodeToSpec
+  fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
+  toCommit: 05fe29612a62a645d70273560238ecc3180414d2
+status:
+  phase: Running
+  message: the agent is summarizing lib-compute-contract-gateway-xrpc
