@@ -130,11 +130,18 @@ spec:
       its own serve, exactly as the secrets capability mounts its own, addressed by
       a per-contract unguessable path token, and when the composed transport is iroh
       and the requester has a publicly addressed ingress it passes that route's absolute
-      URL to the composer as ctx.irohReportUrl. A POST whose token matches a contract
-      that is still waiting is read for a ticket in its body, recorded once for that
-      contract, and acknowledged; a POST for an unknown or already-satisfied token
-      is ignored without disclosing whether the token existed. The same ticket may
-      also arrive as the address of a vm.onNetwork event, so an onNetwork address
+      URL to the composer as ctx.irohReportUrl. That URL is the requester's own relay
+      ingress URL -- the same name the rest of the flow addresses the requester by,
+      "https://" plus the registered ingress host, as the relay reports it, plus the
+      unguessable path token. The requester must not invent a host or a port for it
+      and must not fall back to a loopback address. The ingress name is the one public
+      name the requester has, and the provisioning backend that stands up a local
+      guest is what maps that name to a guest-reachable address and substitutes a
+      guest-reachable port for a URL that carries none. A POST whose token matches
+      a contract that is still waiting is read for a ticket in its body, recorded
+      once for that contract, and acknowledged; a POST for an unknown or already-satisfied
+      token is ignored without disclosing whether the token existed. The same ticket
+      may also arrive as the address of a vm.onNetwork event, so an onNetwork address
       that is neither an IPv4 literal nor a dotted hostname is accepted as an iroh
       ticket and fed into the same one-ticket-per-contract handler that resolves the
       waiting session, instead of the old check that discarded anything that was not

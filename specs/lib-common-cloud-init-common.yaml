@@ -180,15 +180,16 @@ spec:
       is absent neither the script nor the units are written. The guest announces
       its own reachability -- nothing host-side may read the ticket out of the guest,
       and the report carries no key material, no provider path and no accept bundle.
-      The report URL the caller bakes into the context must be one the guest can actually
-      reach. It names the host the guest already resolves for the rest of the run,
-      the same host its other https addresses use, which the container backend maps
-      to the host gateway, and it carries that listener's port explicitly, so the
-      script never dials the default 443. When the URL is https the guest must also
-      trust the requester's certificate, so the caller supplies the CA and the module
-      installs it before the reporter runs. The script fails fast and loudly when
-      the POST is refused, with a bounded number of attempts and then a non-zero exit,
-      instead of retrying for minutes.
+      The report URL the caller bakes into the context is the caller's own ingress
+      URL, and the caller must not invent a host or a port for it. The same name the
+      rest of the run uses is what the provisioning backend maps to a guest-reachable
+      address, substituting a guest-reachable port for a URL that carries none, so
+      the script never dials the default 443. When the URL is https the guest must
+      trust the caller's certificate; the provisioning backend supplies that CA to
+      the guest, so the module writes only the report script and the units and carries
+      no CA material of its own. The script fails fast and loudly when the POST is
+      refused, with a bounded number of attempts and then a non-zero exit, instead
+      of retrying for minutes.
     codeRefs:
     - file:lib/common/cloud-init-common/mod.ts
   - id: r.list-registered-ids
