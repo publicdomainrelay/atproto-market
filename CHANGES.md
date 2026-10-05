@@ -764,6 +764,16 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 - added `r.single-mod-entrypoint` (SHOULD): "The package should expose its whole surface through the single mod.ts entrypoint, with the module configuration kept in deno.json alongside it rather than split across additional source files."
 - added `r.skip-denounce` (MUST): "Records whose value.kind is "denounce" must be skipped entirely before the rkey is examined, so a denouncement is never counted as a vouch for its subject."
 
+### lib-utils-attestation-key
+
+- intent: "" -> "The context exists so that every part of atproto-market that needs to sign with the operator's secp256k1 attestation key has one shared, predictable way to obtain it: give it the JWK path and get back the scalar in hex. It hides both the first-run bootstrap (generating and persisting a key when none exists) and the encoding differences between the on-disk JWK (base64url in d) and the form signers consume (lowercase hex), so callers never hand-roll key material handling or accidentally clobber an existing operator key. Pinning validation to kty/crv/d and swallowing only NotFound as a trigger for creation keeps permission and corruption failures loud instead of silently rotating the identity."
+- added `r.generate-and-persist-key` (MUST): "When no file exists at jwkPath, draw 32 random bytes with crypto.getRandomValues, write a private JWK carrying kty "EC", crv "secp256k1", use "sig", alg "ES256K" and the base64url-encoded scalar as d, serialized as JSON with two-space indentation plus a trailing newline, and return the same scalar as lowercase hex so the caller can sign immediately."
+- added `r.load-existing-jwk` (MUST): "When the file at jwkPath exists, read and JSON-parse it and return base64UrlDecode(jwk.d) rendered as lowercase hex, not the JWK object, so every caller receives the key in the same hex form whether it was loaded or generated."
+- added `r.only-notfound-triggers-creation` (MUST): "Only a Deno.errors.NotFound raised by reading jwkPath falls through to key creation; every other read failure is rethrown unchanged so permission and I/O errors surface to the caller instead of silently generating and writing a new key over an unreadable one."
+- added `r.refuse-non-secp256k1-jwk` (MUST): "A pre-existing file whose parsed contents lack kty === "EC", crv === "secp256k1" or a string d causes a thrown error naming the path and stating it is not a secp256k1 private JWK, and the existing file is left untouched rather than overwritten."
+- added `r.restrict-key-file-mode` (SHOULD): "After writing a newly generated JWK the file mode is narrowed to 0600, and a chmod rejection is swallowed so platforms without chmod support still complete key creation and return the scalar."
+- added `r.single-exported-entrypoint` (MUST): "The module exposes exactly one public entry point, loadOrCreateAttestationKeyHex, which takes the JWK path as a string or URL and resolves to a lowercase-hex string; the helpers bytesToHex, base64UrlEncode and base64UrlDecode stay module-private so callers cannot bypass the load-or-create and validation path."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance | coverage |
@@ -814,5 +824,5 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 | lib-secrets-oidc-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-trust-graph-bsky-mutuals-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-trust-graph-tangled-graph-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
-| lib-utils-attestation-key-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
+| lib-utils-attestation-key-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | request-vm-ssh-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |

@@ -2553,8 +2553,22 @@ system_contexts:
   upstream: self
   depends_on:
   - sc.atproto-market
+  requirements:
+  - id: r.generate-and-persist-key
+    level: MUST
+  - id: r.load-existing-jwk
+    level: MUST
+  - id: r.only-notfound-triggers-creation
+    level: MUST
+  - id: r.refuse-non-secp256k1-jwk
+    level: MUST
+  - id: r.restrict-key-file-mode
+    level: SHOULD
+  - id: r.single-exported-entrypoint
+    level: MUST
   codeRefIndex:
   - file:lib/utils-attestation-key/mod.ts mod.ts@lib/utils-attestation-key/mod.ts
+  - function:31d6822de041bbe285c919680dd5898d loadOrCreateAttestationKeyHex@lib/utils-attestation-key/mod.ts:22
 - id: sc.request-vm-ssh
   name: request-vm-ssh
   spec: specs/request-vm-ssh.yaml

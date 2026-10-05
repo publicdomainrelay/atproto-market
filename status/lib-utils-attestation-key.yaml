@@ -1,10 +1,11 @@
 syncedFingerprint: c22b33cc6646e0dae8141ad778a4b1bf50bd12d1e741a6ca7a545bcd410a2352
-realizedSpecHash: 28f92e10f2dd084d2640041a8d83a758bb35e6511bf39d2c8ec4af6f0b23659d
+realizedSpecHash: 521901eda2988ed16e2e0e7b176332abab0bf4c44c1f5128d3a6b7a5a718771b
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: loadOrCreateAttestationKeyHex'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual
