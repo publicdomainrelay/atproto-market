@@ -18,8 +18,45 @@ spec:
     - +r.iroh-cloud-init-fixture
     - +r.iroh-full-flow-harness
 status:
-  phase: Running
-  message: the agent is realizing atproto-market
+  phase: Failed
+  branch: spec/atproto-market/f3075524
+  agentLog: 'verify: exit 0, 0s, 0 ok'
+  message: 'claudecli: realize atproto-market: the model did not answer within 15m0s'
+  progress:
+    turns: 1
+    tools:
+    - tool: Edit
+      count: 23
+    - tool: Read
+      count: 22
+    - tool: Write
+      count: 1
+    files:
+    - compute-contract-full-flow/run_full_flow.ts
+    - deno.json
+    - hono-compute-contract-gateway/README.md
+    - hono-plc/mod.ts
+    - lexicons/com/publicdomainrelay/temp/gateway/requestComputeVM.json
+    - lib/abc/requester/mod.ts
+    - lib/common/cloud-init-common/mod.ts
+    - lib/common/compute-contract-gateway-common/types.ts
+    - lib/common/market-lexicons/com/publicdomainrelay/temp/gateway/requestComputeVM.defs.ts
+    - lib/compute-contract-gateway-xrpc/mod.ts
+    - lib/did-key-ingress-proxy/mod.ts
+    - lib/requester-xrpc/mod.ts
+    - request-vm-ssh/README.md
+    - request-vm-ssh/cli-args-env.ts
+    - test/bidder_container_integration_test.ts
+    - test/bidder_cross_platform_integration_test.ts
+    - test/bidder_prod_integration_test.ts
+    - test/bidder_ssh_relay_test.ts
+    - test/fetch-interceptor.ts
+    - test/gateway_readme_smoke_test.ts
+    - test/gateway_ssh_integration_test.ts
+    - test/oauth_session_transfer_test.ts
+    notes: 2
+    first: "2026-10-05T19:59:18Z"
+    last: "2026-10-05T20:09:54Z"
 superseded:
 - name: atproto-market-s2c-f3075524231b-a2
   phase: Failed
