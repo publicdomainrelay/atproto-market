@@ -745,3 +745,4 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 | lib-market-settlement-x402-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-market-settlement-x402-c2s-05fe29612a62-05fe29612a62-a2 | CodeToSpec | Running |  | 0 | - | - |
 | lib-operator-discovery-badge-blue-keys-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
+| lib-requester-xrpc-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
