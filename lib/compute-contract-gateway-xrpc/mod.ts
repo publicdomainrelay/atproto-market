@@ -100,6 +100,9 @@ export function createComputeContractGateway(
         plcUrl: opts.plcDirectoryUrl,
         ingressProxyHost: opts.ingressProxyHost,
         sshProvider,
+        // The gateway reports a websocat relay URL, so the guest is provisioned
+        // with the websocket transport explicitly instead of the iroh default.
+        userData: { transport: "tunnel" },
         logger,
         extraBidderDids: input.extraBidderDids,
         relayUrls: opts.relayUrls,
@@ -169,6 +172,7 @@ export function createComputeContractGateway(
         plcUrl: opts.plcDirectoryUrl,
         ingressProxyHost: opts.ingressProxyHost,
         sshProvider,
+        userData: { transport: "tunnel" },
         logger,
         extraBidderDids: input.extraBidderDids ?? [],
         appliesToNsid: WORKER_MANIFEST_NSID,
@@ -225,6 +229,7 @@ export function createComputeContractGateway(
         plcUrl: opts.plcDirectoryUrl,
         ingressProxyHost: opts.ingressProxyHost,
         sshProvider,
+        userData: { transport: "tunnel" },
         logger,
         extraBidderDids: [],
         appliesToNsid: WORKER_MANIFEST_NSID,
