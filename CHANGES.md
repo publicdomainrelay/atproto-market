@@ -1198,7 +1198,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | test-fixtures-cloud-init-s2c-3469ff76fae9 | SpecToCode | Succeeded | 1e1cd3c5 | 0 | - |
 | test-fixtures-cloud-init-s2c-a254ccec79c4 | SpecToCode | Failed |  | 0 | - |
 | test-fixtures-cloud-init-s2c-a254ccec79c4-a2 | SpecToCode | Failed |  | 0 | acceptance failed |
-| test-fixtures-cloud-init-s2c-a254ccec79c4-a3 | SpecToCode | Pending |  | 0 | - |
+| test-fixtures-cloud-init-s2c-a254ccec79c4-a3 | SpecToCode | Running |  | 0 | - |
 | test-s2c-360d82d5cad1 | SpecToCode | Succeeded | 1e1cd3c5 | 0 | - |
 | test-s2c-3e99a616070e | SpecToCode | Succeeded | 0a87f24e | 0 | acceptance passed |
 | test-s2c-5415d5e0921b | SpecToCode | Succeeded | a15d9cda | 0 | acceptance passed |

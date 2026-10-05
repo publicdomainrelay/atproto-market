@@ -14,7 +14,8 @@ spec:
     requirements:
     - ~r.iroh-fixture
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is realizing test-fixtures-cloud-init
 superseded:
 - name: test-fixtures-cloud-init-s2c-a254ccec79c4-a2
   phase: Failed
