@@ -772,6 +772,8 @@ system_contexts:
     level: MUST
   - id: r.iroh-dumbpipe-listener
     level: MUST
+  - id: r.iroh-install-ignores-guest-curlrc
+    level: MUST
   - id: r.iroh-log-truncated
     level: MUST
   - id: r.iroh-module-installs-sshd

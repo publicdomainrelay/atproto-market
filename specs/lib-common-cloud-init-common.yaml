@@ -103,13 +103,31 @@ spec:
       in archive` (exit 2) and installs nothing, which leaves the unit restarting
       forever. The module must also write a systemd unit (dumbpipe-listen.service)
       that runs `dumbpipe listen-tcp --host 127.0.0.1:22` as root, ordered After=network-online.target
-      and sshd, with Restart=always, StandardOutput/StandardError appending to /root/secrets/iroh-dumbpipe.log,
-      EnvironmentFile=-/root/secrets/iroh.env, an ExecStartPre that prepares the secret
-      and truncates the log (r.iroh-secret-persisted, r.iroh-log-truncated) and an
-      ExecStartPost that extracts and reports the ticket (r.iroh-ticket-file, r.iroh-ticket-report);
-      runcmd enables and starts it after sshd. The guest sshd must stay reachable
-      at 127.0.0.1:22 with no ListenAddress directive so the compute-provider harness
-      can still TCP-probe port 22 directly.'
+      and sshd, with Restart=always, EnvironmentFile=-/root/secrets/iroh.env and an
+      ExecStartPre that prepares the secret and truncates the log (r.iroh-secret-persisted,
+      r.iroh-log-truncated); runcmd enables and starts it after sshd. The unit''s
+      ExecStart must be a bare path to a listener script that sources /root/secrets/iroh.env,
+      redirects its own output to /root/secrets/iroh-dumbpipe.log and launches the
+      ticket extraction and report (r.iroh-ticket-file, r.iroh-ticket-report, r.iroh-report-carries-workload-token)
+      before it execs dumbpipe, and the unit must not rely on an ExecStartPost or
+      on a StandardOutput/StandardError append redirect at all: the container-mode
+      systemctl shim (r.iroh-unit-runs-under-container-shim) supports neither and
+      cannot run a quoted ExecStart. The guest sshd must stay reachable at 127.0.0.1:22
+      with no ListenAddress directive so the compute-provider harness can still TCP-probe
+      port 22 directly.'
+    codeRefs:
+    - file:lib/common/cloud-init-common/mod.ts
+  - id: r.iroh-install-ignores-guest-curlrc
+    level: MUST
+    text: The dumbpipe install step must fetch the release archive with curl's `-q`
+      flag, or an equivalent that ignores /root/.curlrc, so the download from github
+      is not subject to the guest's global curl configuration. The local container
+      wiring this module runs under writes `resolve = *:<guestTlsPort>:<gateway>`
+      into /root/.curlrc so every curl in the guest can reach the host dispatcher
+      over TLS; without -q that rule sends the archive download to the gateway too,
+      the TLS handshake fails, and the guest ends up with no dumbpipe at all and a
+      unit that restarts forever. The fetch URL, the archive member and the extraction
+      must otherwise stay exactly as r.iroh-dumbpipe-listener requires.
     codeRefs:
     - file:lib/common/cloud-init-common/mod.ts
   - id: r.iroh-log-truncated
@@ -141,10 +159,16 @@ spec:
       exchanges it at the provider issuer''s url_route (default /v1/oidc/issue) exactly
       as the secrets module does -- posting the subject it read out of the provisioning
       token so the exchanged token keeps the same identity -- and sends the result
-      as `Authorization: Bearer <token>` on the POST to ctx.irohReportUrl. When the
-      exchange fails the script must keep retrying with backoff inside its existing
-      attempt loop and must never send an unauthenticated report, and it must still
-      never write the token into the cloud-config or into any record.'
+      as `Authorization: Bearer <token>` on the POST to ctx.irohReportUrl. Reading
+      that subject must pad the token''s base64url payload to a multiple of four characters
+      before decoding (`case $((${#payload} % 4))`: 2 -> `==`, 3 -> `=`, 1 -> `===`),
+      never by appending a fixed `==` as the secrets module does: the provider mints
+      tokens whose payload length varies, and the provisioning token this module reads
+      is 435 characters, i.e. one pad short of the fixed `==`, so the decode fails,
+      the script mints no token and reports nothing at all. When the exchange fails
+      the script must keep retrying with backoff inside its existing attempt loop
+      and must never send an unauthenticated report, and it must still never write
+      the token into the cloud-config or into any record.'
     codeRefs:
     - file:lib/common/cloud-init-common/mod.ts
   - id: r.iroh-secret-persisted
@@ -186,11 +210,14 @@ spec:
       record. When ctx.irohReportUrl is set, the module writes /root/secrets/iroh-report.json
       (owner root:root, mode 0600) holding `{ "url": <ctx.irohReportUrl> }` -- no
       token or other credential, because this cloud-config is published inside the
-      compute.vm record and anything in it is public -- and after every successful
-      ticket extraction (first boot and every listener restart) POSTs to that url,
-      with `content-type: application/json`, the body `{ acceptUri, acceptCid, address:
-      <ticket>, createdAt }`, where acceptUri and acceptCid come from the bidder-injected
-      accept bundle (`.accept.uri` and `.accept.cid` of accept.json at ctx.secretsAcceptPath,
+      compute.vm record and anything in it is public; the request itself is authenticated
+      by the workload-identity token the script mints at boot, see r.iroh-report-carries-workload-token,
+      which is sent as an Authorization header and is never written into this file
+      or into the cloud-config) -- and after every successful ticket extraction (first
+      boot and every listener restart) POSTs to that url, with `content-type: application/json`
+      and that Authorization header, the body `{ acceptUri, acceptCid, address: <ticket>,
+      createdAt }`, where acceptUri and acceptCid come from the bidder-injected accept
+      bundle (`.accept.uri` and `.accept.cid` of accept.json at ctx.secretsAcceptPath,
       default /root/secrets/publicdomainrelay.com/market/accept.json). The POST retries
       with a bounded backoff while the listener runs and logs each attempt; a failed
       report must not stop or restart the listener and must be retried on the next

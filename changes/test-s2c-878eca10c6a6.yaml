@@ -1,0 +1,17 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: test-s2c-878eca10c6a6
+  namespace: default
+spec:
+  systemContext: test
+  direction: SpecToCode
+  fromSpecHash: 3e99a616070e5c8622e3c0964f6ea95635b1cd1082dd463f896bf00d4a932fee
+  toSpecHash: 878eca10c6a6df34760d063c0bb9a89e81bf33b26e7fd20330f42a829ca85b5b
+  delta:
+    counts:
+      added: 1
+    requirements:
+    - +r.container-harness-proves-live-ssh-over-iroh
+status:
+  phase: Pending

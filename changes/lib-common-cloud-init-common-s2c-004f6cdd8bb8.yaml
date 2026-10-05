@@ -1,0 +1,22 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-common-cloud-init-common-s2c-004f6cdd8bb8
+  namespace: default
+spec:
+  systemContext: lib-common-cloud-init-common
+  direction: SpecToCode
+  fromSpecHash: 0c1bd2c5dcde6bfcb503dac4cb3d700db7ab6a4cd1e2fbc63e300251371773c4
+  toSpecHash: 004f6cdd8bb83f17419033a71ddc6a64e5d72a41bb09879c126e0ba716bcfb3e
+  delta:
+    counts:
+      added: 3
+      changed: 2
+    requirements:
+    - +r.iroh-install-ignores-guest-curlrc
+    - +r.iroh-report-carries-workload-token
+    - +r.iroh-unit-runs-under-container-shim
+    - ~r.iroh-dumbpipe-listener
+    - ~r.iroh-ticket-report
+status:
+  phase: Pending

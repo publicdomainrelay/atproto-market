@@ -69,7 +69,22 @@ spec:
       can actually dial and give the provider the guest TLS port and CA certificate,
       the same gateway-reachable wiring the cross-platform and OAuth suites already
       use, because the report endpoint URL is baked into the cloud-config the guest
-      runs.'
+      runs. Concretely, mirror test/oauth_session_transfer_test.ts: serve the dispatcher
+      app on 0.0.0.0 on two ephemeral listeners of the same app -- plain HTTP, which
+      the in-process subscribers and the other in-process components use, and TLS
+      with a generated localhost certificate whose SANs include relay.localhost and
+      *.relay.localhost, which only the guest uses. Pass ingressProxyHost `relay.localhost:<plainPort>`
+      to the requester and to the bidder/provider, so the requester''s ingress URL
+      is `https://<sub>.relay.localhost` (hostnameOnly drops the port), a name the
+      container can resolve. Install the shared fetch interceptor with the plain port
+      and no CA, so in-process https://*.localhost traffic is downgraded to that listener.
+      Pass the TLS port and the certificate PEM to the provider as its guest TLS port
+      and CA, so the provider rewrites the guest''s https://*.localhost URLs to that
+      port, resolves the names to the container gateway and installs the CA, and pass
+      the provider the OIDC provisioning enricher so the guest is issued the workload
+      token the report exchange needs. A single-label wildcard such as *.localhost
+      is rejected by TLS stacks, which is why the two-label relay.localhost base is
+      used.'
     codeRefs:
     - file:test/bidder_container_integration_test.ts
   - id: r.container-harness-relay-resolves-did-keys
