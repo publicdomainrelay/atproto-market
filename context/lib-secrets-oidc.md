@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists to fix the authorization contract of the secrets OIDC package: how a single installed secrets grant turns an inbound bearer token into an AuthorizedRequest, which checks run in which order (grant present, token non-empty, audience precheck, signature verification, sub present, RBAC decision), how issuer signing keys are discovered and cached, and how key rotation is recovered without a restart. It is depended on by atproto-market and lib-common-secrets-common, and consumed by lib-hono-factory-secrets-oidc and lib-guest-capability-secrets, so its types and failure modes are the shared vocabulary for every secrets call that arrives with a JWT.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

@@ -2384,8 +2384,36 @@ system_contexts:
   depends_on:
   - sc.atproto-market
   - sc.lib-common-secrets-common
+  requirements:
+  - id: r.audience-precheck
+    level: MUST
+  - id: r.grant-lifecycle
+    level: MUST
+  - id: r.injected-fetch-and-tolerance
+    level: MUST
+  - id: r.jwks-discovery-and-cache
+    level: MUST
+  - id: r.package-surface
+    level: MUST
+  - id: r.rbac-decision
+    level: MUST
+  - id: r.reject-without-grant-or-token
+    level: MUST
+  - id: r.rotation-retry
+    level: MUST
+  - id: r.signature-verification
+    level: MUST
+  - id: r.sub-required
+    level: MUST
   codeRefIndex:
+  - file:lib/secrets-oidc/deno.json deno.json@lib/secrets-oidc/deno.json
   - file:lib/secrets-oidc/mod.ts mod.ts@lib/secrets-oidc/mod.ts
+  - function:5f4aad08662e2d2094582832d7b08310 createSecretsAuthorizer@lib/secrets-oidc/mod.ts:34
+  - function:d7d076f635e975de9b23dac9be2ef9e7 getJwks@lib/secrets-oidc/mod.ts:48
+  - interface:05b597fb30f58132a5be06a41f6fba0d SecretsAuthorizer@lib/secrets-oidc/mod.ts:16
+  - interface:bf1e05cf2e07ed74d51e51e2e63afc40 SecretsGrant@lib/secrets-oidc/mod.ts:6
+  - interface:d3e1a8191afeaac9625fd120d563275c AuthorizedRequest@lib/secrets-oidc/mod.ts:12
+  - interface:dc48a990f6ac35504ef07082ebff16e1 CreateSecretsAuthorizerOpts@lib/secrets-oidc/mod.ts:23
 - id: sc.lib-trust-graph-bsky-mutuals
   name: lib-trust-graph-bsky-mutuals
   spec: specs/lib-trust-graph-bsky-mutuals.yaml
