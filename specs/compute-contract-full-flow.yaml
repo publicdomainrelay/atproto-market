@@ -14,5 +14,135 @@ spec:
   - sc.lib-market-bidder
   - sc.lib-market-bidder-compute
   - sc.lib-requester-xrpc
+  intent: 'This context exists as the end-to-end smoke harness for the compute market:
+    a single runnable file that wires a dispatcher, a fake PLC, a bidder and a requester
+    together in one process so the whole contract flow can be exercised without any
+    external infrastructure, and that leaves behind three committed artifacts (log,
+    raw records, summary) proving what the run produced. It is deliberately configuration-free
+    and ephemeral-port-only so a developer can reproduce a full round trip with one
+    deno run command, and it depends on the market, bidder, bidder-compute, requester-xrpc,
+    atproto-helpers, did-plc and did-key-ingress-proxy libraries for every participant
+    it instantiates.'
+  requirements:
+  - id: r.cleanup-reverse-order
+    level: MUST
+    text: After the artifacts are written, the registered cleanups run in reverse
+      registration order — restoring the original fetch last-registered first, aborting
+      the PLC and then the dispatcher controllers, and shutting down the market bidder
+      and requester serves — each wrapped in `try/catch` so one failure cannot stop
+      the rest, followed by a 200 ms settle delay and the final `=== flow complete
+      ===` log line.
+    codeRefs:
+    - file:compute-contract-full-flow/run_full_flow.ts
+  - id: r.collect-records-both-repos
+    level: MUST
+    text: '`collectRecords` pages `listRecords` (limit 100 with cursors until the
+      cursor is exhausted) for the requester repo and the bidder repo across the fixed
+      collection list `...temp.market.offering`, `...market.rfp`, `...market.bid`,
+      `...market.accept`, `...market.receipt`, `...market.policy`, `...auth.allowlist.rbacDid`
+      and `...compute.vm`, appending each record as `{source, did, collection, uri,
+      cid, value}` and logging `record: <label> <collection> <uri>`; a per-collection
+      failure is logged as `collect error (<label> <collection>): <err>` and swallowed,
+      and each repo-level call is additionally guarded so a collection error cannot
+      abort the run.'
+    codeRefs:
+    - file:compute-contract-full-flow/run_full_flow.ts
+  - id: r.entrypoint-runs-standalone
+    level: MUST
+    text: 'The module is a directly runnable Deno script (shebang `#!/usr/bin/env
+      -S deno run --allow-all`) that performs the entire flow inside `main()` and
+      installs a top-level `main().catch(...)` handler which logs `FATAL: <err>` to
+      stderr and calls `Deno.exit(1)`, so any escape from the flow terminates the
+      process non-zero rather than leaving servers running.'
+    codeRefs:
+    - file:compute-contract-full-flow/run_full_flow.ts
+  - id: r.fake-plc-did-documents
+    level: MUST
+    text: '`createFakePlc` returns a Hono app acting as an in-memory DID directory:
+      `POST /*` decodes the path into a DID and stores the posted JSON operation in
+      a Map (defaulting to `{}` when the body is unparsable) and answers `{ok: true}`;
+      `GET /*` answers 404 with `DID not found: <did>` for an unknown DID, otherwise
+      renders a document carrying the two W3C contexts (`did/v1`, `security/multikey/v1`),
+      the stored `alsoKnownAs`, one `verificationMethod` per entry with id `<did>#<name>`,
+      type `Multikey`, controller the DID and a `publicKeyMultibase` with any leading
+      `did:key:` stripped, and one service per entry with id `#<name>` plus its type
+      and endpoint.'
+    codeRefs:
+    - file:compute-contract-full-flow/run_full_flow.ts
+  - id: r.fetch-interceptor-local-routing
+    level: MUST
+    text: '`installFetchInterceptor` replaces `globalThis.fetch`: a request URL starting
+      with `https://plc.directory/` is rewritten onto the supplied `plcDirectoryUrl`
+      keeping the path, and a request whose host is `localhost`, ends in `.localhost`,
+      or contains `.localhost:` (with port) is rewritten to `http://<host>` on the
+      dispatcher port, defaulting the port when the host carries none; all other requests
+      fall through to the original fetch. It returns a restore closure that puts the
+      original fetch back, and that closure is registered on `cleanups`.'
+    codeRefs:
+    - file:compute-contract-full-flow/run_full_flow.ts
+  - id: r.no-cli-configuration
+    level: SHOULD
+    text: 'The script declares no CLI flags and reads no environment variables: every
+      knob — hostnames, dispatcher and PLC ports (both 0, discovered at runtime),
+      the `only-me` policy, bid window, timeouts, collection list and output paths
+      — is a literal in source, so the documented invocation is exactly `deno run
+      --allow-all compute-contract-full-flow/run_full_flow.ts` with no arguments.'
+    codeRefs:
+    - file:compute-contract-full-flow/run_full_flow.ts
+  - id: r.participants-on-ephemeral-ports
+    level: MUST
+    text: 'Every participant runs in-process on loopback: the dispatcher (from `createRelayFactory({hostname:
+      "localhost"})`) and the fake PLC are served by `Deno.serve` on port 0 with their
+      real ports recovered through `onListen` resolvers and their `AbortController.abort`
+      pushed onto `cleanups`; a bidder PDS agent comes from `createLocalPDSAgent`
+      with a fresh secp256k1 keypair and `createATProto` wires in a badge-blue signer
+      plus a `createPlcDirectoryClient`; a provider relay from `createIngress` wraps
+      `createLocalComputeProvider` through `createComputeProviderHooks` with `containerMode:
+      "container"` and `getIssuerUrl` derived from the relay ingress ref; a second
+      relay plus `createMarketBidder` form the bidder (shutdown registered as cleanup);
+      and `createRequesterPDS` labelled `requester` supplies the requester, whose
+      serve shutdown is registered as cleanup.'
+    codeRefs:
+    - file:compute-contract-full-flow/run_full_flow.ts
+  - id: r.run-contract-fixed-policy
+    level: MUST
+    text: '`runComputeContract` is invoked against the requester with `policy: {name:
+      "only-me", args: {bidWindowSec: 15}}`, `userData: {transport: "tunnel"}` because
+      the harness drives the guest over the local relay websocket tunnel rather than
+      an iroh default, `skipSsh: false`, `keepVm: true`, `vmReadyTimeoutSec: 60`,
+      `execProgram: "hostname"`, an SSH session provider from `createSshSessionProvider(logger)`,
+      the bidder DID in `extraBidderDids`, and `did:plc:centraldefaultbidder000000`
+      in `denyBidderDids`; the requester and bidder DIDs are logged before the call
+      and the returned contract is serialized into the log.'
+    codeRefs:
+    - file:compute-contract-full-flow/run_full_flow.ts
+  - id: r.tracked-outputs-committed
+    level: MAY
+    text: 'The generated `SUMMARY.md`, `atproto-records.json` and `full-flow.log`
+      are tracked in the repository next to the script as the recorded evidence of
+      a run: the summary''s Participants, Result and record-count sections describe
+      the same requester/bidder DIDs, contract JSON and collection counts captured
+      in the two data artifacts.'
+    codeRefs:
+    - file:compute-contract-full-flow/SUMMARY.md
+    - file:compute-contract-full-flow/atproto-records.json
+    - file:compute-contract-full-flow/full-flow.log
+    - file:compute-contract-full-flow/run_full_flow.ts
+  - id: r.write-three-artifacts
+    level: MUST
+    text: 'The run writes exactly three files rooted at the script''s own directory
+      (`new URL(".", import.meta.url).pathname`): `full-flow.log` holding the accumulated
+      timestamped log lines, `atproto-records.json` holding the collected records
+      pretty-printed with two-space indent, and a generated `SUMMARY.md` containing
+      the requester/bidder DID table, the pretty-printed contract JSON, the dispatcher
+      host and PLC URL, a per-collection record-count table built by grouping the
+      collected records, relative links to the other two artifacts, the reproduce
+      command, the ASCII architecture diagram, the SSH tunnel path description, and
+      a generation timestamp line.'
+    codeRefs:
+    - file:compute-contract-full-flow/run_full_flow.ts
 codeRefIndex:
+- file:compute-contract-full-flow/SUMMARY.md SUMMARY.md@compute-contract-full-flow/SUMMARY.md
+- file:compute-contract-full-flow/atproto-records.json atproto-records.json@compute-contract-full-flow/atproto-records.json
+- file:compute-contract-full-flow/full-flow.log full-flow.log@compute-contract-full-flow/full-flow.log
 - file:compute-contract-full-flow/run_full_flow.ts run_full_flow.ts@compute-contract-full-flow/run_full_flow.ts

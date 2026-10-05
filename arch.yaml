@@ -111,7 +111,31 @@ system_contexts:
   - sc.lib-market-bidder
   - sc.lib-market-bidder-compute
   - sc.lib-requester-xrpc
+  requirements:
+  - id: r.cleanup-reverse-order
+    level: MUST
+  - id: r.collect-records-both-repos
+    level: MUST
+  - id: r.entrypoint-runs-standalone
+    level: MUST
+  - id: r.fake-plc-did-documents
+    level: MUST
+  - id: r.fetch-interceptor-local-routing
+    level: MUST
+  - id: r.no-cli-configuration
+    level: SHOULD
+  - id: r.participants-on-ephemeral-ports
+    level: MUST
+  - id: r.run-contract-fixed-policy
+    level: MUST
+  - id: r.tracked-outputs-committed
+    level: MAY
+  - id: r.write-three-artifacts
+    level: MUST
   codeRefIndex:
+  - file:compute-contract-full-flow/SUMMARY.md SUMMARY.md@compute-contract-full-flow/SUMMARY.md
+  - file:compute-contract-full-flow/atproto-records.json atproto-records.json@compute-contract-full-flow/atproto-records.json
+  - file:compute-contract-full-flow/full-flow.log full-flow.log@compute-contract-full-flow/full-flow.log
   - file:compute-contract-full-flow/run_full_flow.ts run_full_flow.ts@compute-contract-full-flow/run_full_flow.ts
 - id: sc.hono-bidder
   name: hono-bidder

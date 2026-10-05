@@ -9,5 +9,24 @@ spec:
   fromCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
   toCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
 status:
-  phase: Running
-  message: the agent is summarizing compute-contract-full-flow
+  phase: Succeeded
+  agentLog: compute-contract-full-flow holds one self-contained Deno script, compute-contract-full-flow/run_full_flow.ts,
+    that stands up an entire AT Protocol compute-market round trip inside a single
+    process. It serves both a dispatcher built from createRelayFactory (hostname "localhost")
+    and a fake in-memory PLC directory (a Hono app storing posted DID operations in
+    a Map and rendering them back as DID documents) on port 0, recovering the real
+    ports through onListen resolvers, then installs a global fetch interceptor that
+    rewrites https://plc.directory/* to the fake PLC and any localhost / *.localhost
+    host to plain http on the dispatcher port. With routing in place it boots a bidder
+    PDS agent via createLocalPDSAgent plus createATProto, a provider relay from createIngress
+    wrapping createLocalComputeProvider through createComputeProviderHooks, a second
+    relay plus createMarketBidder for the bidder, and a requester PDS via createRequesterPDS
+    labelled "requester", pushing every abort and shutdown closure onto a cleanups
+    array. It then calls runComputeContract on the requester under the only-me policy
+    (15-second bid window, tunnel transport, skipSsh false, keepVm true, vmReadyTimeoutSec
+    60, execProgram "hostname"), pages listRecords over eight market/compute/auth
+    collections in both the requester and bidder repos, writes full-flow.log, atproto-records.json
+    and a generated SUMMARY.md next to itself, tears the cleanups down in reverse
+    order, and exits non-zero through Deno.exit(1) on any uncaught error. The generated
+    artifacts are tracked beside the script as the recorded evidence of a run.
+  message: wrote 10 requirement(s) and 0 interface(s) for compute-contract-full-flow

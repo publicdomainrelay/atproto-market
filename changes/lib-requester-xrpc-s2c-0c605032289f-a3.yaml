@@ -16,7 +16,8 @@ spec:
     - +ensureDumbpipe
     - ~createSshSessionProvider
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is realizing lib-requester-xrpc in a batch of 3 led by atproto-market
 superseded:
 - name: lib-requester-xrpc-s2c-0c605032289f-a2
   phase: Failed
