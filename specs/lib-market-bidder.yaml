@@ -1,0 +1,21 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SystemContext
+metadata:
+  name: lib-market-bidder
+  namespace: default
+spec:
+  repository: atproto-market
+  upstream: self
+  dependsOn:
+  - sc.atproto-market
+  - sc.lib-abc-market-bidder
+  - sc.lib-abc-trust-graph
+  - sc.lib-atproto-helpers
+  - sc.lib-common-market-common
+  - sc.lib-common-market-lexicons
+  - sc.lib-delegated-trust-badge-blue-keys
+  - sc.lib-hono-factory-market-atproto
+  - sc.lib-market-atproto
+  - sc.lib-trust-graph-tangled-graph
+codeRefIndex:
+- file:lib/market-bidder/mod.ts mod.ts@lib/market-bidder/mod.ts

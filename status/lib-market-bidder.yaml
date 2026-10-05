@@ -1,0 +1,69 @@
+syncedFingerprint: 4b44f720d53132ed76693466a2ed553d7bd11cd8d652a1f12190630e48cfc6a3
+realizedSpecHash: cbf1ef06b4a37efe05ff93f73c8f7ef8cad1ac737b74a78d519407d2f8ca23f6
+conditions:
+- type: CodeSynced
+  status: "False"
+  reason: InterfacesMissing
+  message: 'undeclared: MarketBidder, MarketBidderConfig, beginServe, buildOffering,
+    createMarketBidder, ensureOffering, ensureOperatorAllowlist, shutdown'
+- type: Drifted
+  status: "False"
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
+- type: SpecValid
+  status: "True"
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed:
+  files:
+  - lib/market-bidder/mod.ts
+  treeFiles:
+  - lib/market-bidder/deno.json
+  interfaces:
+  - name: MarketBidderConfig
+    kind: interface
+    file: lib/market-bidder/mod.ts
+    line: 80
+    codegraphId: interface:9a1b67b2492832d7ba6133e09229a106
+  - name: MarketBidder
+    kind: interface
+    file: lib/market-bidder/mod.ts
+    line: 126
+    codegraphId: interface:d09a574816bbdda0321751f00f3c47d6
+  - name: createMarketBidder
+    kind: function
+    signature: '(config: MarketBidderConfig): Promise<MarketBidder>'
+    file: lib/market-bidder/mod.ts
+    line: 140
+    codegraphId: function:9b2026d2f9671120feac1c6c94133674
+  - name: ensureOperatorAllowlist
+    kind: function
+    signature: '(service: string): Promise<void>'
+    file: lib/market-bidder/mod.ts
+    line: 255
+    codegraphId: function:ececd2885fb9130953d79504bd2faf46
+  - name: buildOffering
+    kind: function
+    signature: '(createdAt: string): Record<string, unknown>'
+    file: lib/market-bidder/mod.ts
+    line: 279
+    codegraphId: function:b19f7ada80292e197cdcc8a29e763b0c
+  - name: ensureOffering
+    kind: function
+    signature: '(): Promise<{ rkey: string; createdAt: string } | null>'
+    file: lib/market-bidder/mod.ts
+    line: 297
+    codegraphId: function:b839dc17d3496456f26776592f7f10d3
+  - name: beginServe
+    kind: function
+    signature: '(): Promise<void>'
+    file: lib/market-bidder/mod.ts
+    line: 341
+    codegraphId: function:47138519ea324c71993a2053303ad1a3
+  - name: shutdown
+    kind: function
+    signature: '(): void'
+    file: lib/market-bidder/mod.ts
+    line: 676
+    codegraphId: function:e2d4401ef119cf8107620590e41e0a6c
+  fingerprint: 4b44f720d53132ed76693466a2ed553d7bd11cd8d652a1f12190630e48cfc6a3

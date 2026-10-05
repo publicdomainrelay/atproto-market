@@ -1,0 +1,142 @@
+syncedFingerprint: 2076c902857ac4bea558bd1462f045436c7e0300383a9622284edbd16b81eac9
+realizedSpecHash: 6fdd8171ff8778270aae9a40e3d78dd30c0349599dabcce9b5be70c97390a708
+conditions:
+- type: CodeSynced
+  status: "False"
+  reason: InterfacesMissing
+  message: 'undeclared: DidResolverLike, OAuthAgentOptions, OAuthAgentSession, applyWrites,
+    createDesktopATProto, createOAuthAgent, createRecord, dpopFetch, getRecord, getServiceAuth,
+    listRecords, putRecord, refreshLock'
+- type: Drifted
+  status: "False"
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
+- type: SpecValid
+  status: "True"
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed:
+  files:
+  - lib/market-bidder-agent/mod.ts
+  treeFiles:
+  - lib/market-bidder-agent/deno.json
+  interfaces:
+  - name: DidResolverLike
+    kind: interface
+    file: lib/market-bidder-agent/mod.ts
+    line: 136
+    codegraphId: interface:ac5d8663ab340c835a37c121adbb2dac
+  - name: OAuthAgentSession
+    kind: interface
+    file: lib/market-bidder-agent/mod.ts
+    line: 144
+    codegraphId: interface:76dfa4cb57701d3cf137a9d79e664dfe
+  - name: OAuthAgentOptions
+    kind: interface
+    file: lib/market-bidder-agent/mod.ts
+    line: 152
+    codegraphId: interface:981804416897bc52d8c40722ea378abb
+  - name: createOAuthAgent
+    kind: function
+    signature: |-
+      (
+        session: OAuthAgentSession,
+        signer: { did(): string; sign(bytes: Uint8Array): Promise<Uint8Array> },
+        opts: OAuthAgentOptions,
+      ): AtprotoAgentLike
+    file: lib/market-bidder-agent/mod.ts
+    line: 163
+    codegraphId: function:407e4c41cef3e86724e04659cedadfdb
+  - name: refreshLock
+    kind: function
+    signature: '(): Promise<void>'
+    file: lib/market-bidder-agent/mod.ts
+    line: 225
+    codegraphId: function:691e68a35723a4f0e774745f7efb891b
+  - name: dpopFetch
+    kind: function
+    signature: |-
+      (
+          method: string,
+          url: string,
+          body?: Record<string, unknown>,
+        ): Promise<Response>
+    file: lib/market-bidder-agent/mod.ts
+    line: 249
+    codegraphId: function:1b2e0f2694d705889bcfb6ed573a9d5a
+  - name: applyWrites
+    kind: function
+    signature: |-
+      (
+          did: string,
+          writes: WriteOp[],
+        )
+    file: lib/market-bidder-agent/mod.ts
+    line: 294
+    codegraphId: function:06cebf856c3be35de17c689a0ccaca29
+  - name: getRecord
+    kind: function
+    signature: |-
+      (
+          did: string,
+          collection: string,
+          rkey: string,
+        ): Promise<{ uri: string; cid: string; value: Record<string, unknown> } | null>
+    file: lib/market-bidder-agent/mod.ts
+    line: 314
+    codegraphId: function:fdc54648c4f6169ee7c3ef17e76f9628
+  - name: listRecords
+    kind: function
+    signature: |-
+      (
+          did: string,
+          collection: string,
+          opts?: { limit?: number },
+        ): Promise<{ records: Array<{ uri: string; cid: string; value: Record<string, unknown> }> }>
+    file: lib/market-bidder-agent/mod.ts
+    line: 332
+    codegraphId: function:08fbe16787fbdc5b92d51bda4c9a4519
+  - name: createRecord
+    kind: function
+    signature: |-
+      (
+          did: string,
+          collection: string,
+          rkey: string,
+          record: Record<string, unknown>,
+        ): Promise<{ uri: string; cid: string }>
+    file: lib/market-bidder-agent/mod.ts
+    line: 349
+    codegraphId: function:8f78299c9e8f2a298e0fa81860dd13d0
+  - name: putRecord
+    kind: function
+    signature: |-
+      (
+          did: string,
+          collection: string,
+          rkey: string,
+          record: Record<string, unknown>,
+        ): Promise<{ uri: string; cid: string }>
+    file: lib/market-bidder-agent/mod.ts
+    line: 367
+    codegraphId: function:96dc609775f8f9f5382312d19ec99f0e
+  - name: getServiceAuth
+    kind: function
+    signature: '(aud: string, lxm?: string): Promise<string>'
+    file: lib/market-bidder-agent/mod.ts
+    line: 385
+    codegraphId: function:a690e444f084e1d7e654f05a07f22482
+  - name: createDesktopATProto
+    kind: function
+    signature: |-
+      (
+        logger: StructuredLoggerInterface,
+        agent: AtprotoAgentLike,
+        badgeBlueSigner: CreateATProtoOpts["badgeBlueSigner"],
+        idResolver: DidResolverLike,
+        plcClient: CreateATProtoOpts["plcDirectory"],
+      ): Promise<ATProto>
+    file: lib/market-bidder-agent/mod.ts
+    line: 418
+    codegraphId: function:a9adf14c6ea59e323dcdd8a8ad87784f
+  fingerprint: 2076c902857ac4bea558bd1462f045436c7e0300383a9622284edbd16b81eac9

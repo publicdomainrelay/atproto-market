@@ -1,0 +1,15 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SystemContext
+metadata:
+  name: lib-market-bidder-agent
+  namespace: default
+spec:
+  repository: atproto-market
+  upstream: self
+  dependsOn:
+  - sc.atproto-market
+  - sc.lib-atproto-helpers
+  - sc.lib-common-market-common
+  - sc.lib-market-atproto
+codeRefIndex:
+- file:lib/market-bidder-agent/mod.ts mod.ts@lib/market-bidder-agent/mod.ts

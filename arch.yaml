@@ -655,3 +655,58 @@ system_contexts:
   - file:lib/market-atproto/records.ts records.ts@lib/market-atproto/records.ts
   - file:lib/market-atproto/server.ts server.ts@lib/market-atproto/server.ts
   - file:lib/market-atproto/signing.ts signing.ts@lib/market-atproto/signing.ts
+- id: sc.lib-market-bidder
+  name: lib-market-bidder
+  spec: specs/lib-market-bidder.yaml
+  upstream: self
+  depends_on:
+  - sc.atproto-market
+  - sc.lib-abc-market-bidder
+  - sc.lib-abc-trust-graph
+  - sc.lib-atproto-helpers
+  - sc.lib-common-market-common
+  - sc.lib-common-market-lexicons
+  - sc.lib-delegated-trust-badge-blue-keys
+  - sc.lib-hono-factory-market-atproto
+  - sc.lib-market-atproto
+  - sc.lib-trust-graph-tangled-graph
+  codeRefIndex:
+  - file:lib/market-bidder/mod.ts mod.ts@lib/market-bidder/mod.ts
+- id: sc.lib-market-bidder-agent
+  name: lib-market-bidder-agent
+  spec: specs/lib-market-bidder-agent.yaml
+  upstream: self
+  depends_on:
+  - sc.atproto-market
+  - sc.lib-atproto-helpers
+  - sc.lib-common-market-common
+  - sc.lib-market-atproto
+  codeRefIndex:
+  - file:lib/market-bidder-agent/mod.ts mod.ts@lib/market-bidder-agent/mod.ts
+- id: sc.lib-market-bidder-compute
+  name: lib-market-bidder-compute
+  spec: specs/lib-market-bidder-compute.yaml
+  upstream: self
+  depends_on:
+  - sc.atproto-market
+  - sc.lib-abc-market
+  - sc.lib-abc-market-bidder
+  - sc.lib-atproto-attestation-port
+  - sc.lib-common-market-common
+  - sc.lib-market-atproto
+  codeRefIndex:
+  - file:lib/market-bidder-compute/mod.ts mod.ts@lib/market-bidder-compute/mod.ts
+- id: sc.lib-market-bidder-worker
+  name: lib-market-bidder-worker
+  spec: specs/lib-market-bidder-worker.yaml
+  upstream: self
+  depends_on:
+  - sc.atproto-market
+  - sc.lib-abc-market
+  - sc.lib-abc-market-bidder
+  - sc.lib-atproto-attestation-port
+  - sc.lib-atproto-helpers
+  - sc.lib-common-market-common
+  - sc.lib-market-atproto
+  codeRefIndex:
+  - file:lib/market-bidder-worker/mod.ts mod.ts@lib/market-bidder-worker/mod.ts

@@ -1,0 +1,67 @@
+syncedFingerprint: 3b647450ab559d1f441945e474e994bf24717f8f3832f05b8b18b6802c843f9e
+realizedSpecHash: fd3a529ac9a6c98366b6def9fd70b94f4a718ac28443a85283cbeaa0e6f80fc0
+conditions:
+- type: CodeSynced
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
+  status: "True"
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed:
+  files:
+  - lib/market-bidder-worker/mod.ts
+  treeFiles:
+  - lib/market-bidder-worker/deno.json
+  interfaces:
+  - name: WorkerBidderDeps
+    kind: interface
+    file: lib/market-bidder-worker/mod.ts
+    line: 39
+    codegraphId: interface:6588bb229d1d3f4b0851680b4a33303c
+  - name: createWorkerBidderCallbacks
+    kind: function
+    signature: |-
+      (deps: WorkerBidderDeps): {
+        rfp: Record<string, Record<string, SubmitRfpCallback>>;
+        accept: SubmitAcceptCallback;
+      }
+    file: lib/market-bidder-worker/mod.ts
+    line: 74
+    codegraphId: function:35fb7d4b902e6ad5a4f68cf585a580df
+  - name: CreateComputeProviderDenoWorkerOpts
+    kind: interface
+    file: lib/market-bidder-worker/mod.ts
+    line: 292
+    codegraphId: interface:7505aec1e654513bf40d42b074c9622b
+  - name: WorkerProvider
+    kind: interface
+    file: lib/market-bidder-worker/mod.ts
+    line: 297
+    codegraphId: interface:61e8bfc9bbbe2ef113ac6821edec06fc
+  - name: createComputeProviderDenoWorker
+    kind: function
+    signature: |-
+      (
+        opts: CreateComputeProviderDenoWorkerOpts,
+      ): Promise<WorkerProvider>
+    file: lib/market-bidder-worker/mod.ts
+    line: 305
+    codegraphId: function:0270e1f8fb0d9ba7755ac84195824cd5
+  - name: createWorkerProviderHooks
+    kind: function
+    signature: |-
+      (opts: {
+        provider: WorkerProvider;
+        permissionPolicyHandler?: PermissionPolicyHandler;
+      }): MarketBidderProviderRef
+    file: lib/market-bidder-worker/mod.ts
+    line: 335
+    codegraphId: function:a5248f76fd7c17fa0d03949153f13023
+  fingerprint: 3b647450ab559d1f441945e474e994bf24717f8f3832f05b8b18b6802c843f9e
