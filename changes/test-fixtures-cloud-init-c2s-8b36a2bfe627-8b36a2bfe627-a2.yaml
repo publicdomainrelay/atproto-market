@@ -1,0 +1,61 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: test-fixtures-cloud-init-c2s-8b36a2bfe627-8b36a2bfe627-a2
+  namespace: default
+spec:
+  systemContext: test-fixtures-cloud-init
+  direction: CodeToSpec
+  fromCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
+  toCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
+status:
+  phase: Running
+  message: the agent is summarizing test-fixtures-cloud-init
+superseded:
+- name: test-fixtures-cloud-init-c2s-8b36a2bfe627-8b36a2bfe627
+  phase: Failed
+  message: |-
+    ...de per ADR 0012.",
+          "codeRefs": ["file:test/fixtures/cloud-init/k3s.yaml"]
+        },
+        {
+          "id": "r.k3s-carries-no-token",
+          "level": "MUST",
+          "text": "k3s.yaml must carry neither a join token, a node name, a server target, nor a /etc/rancher/k3s/config.yaml carrier, because those travel in the run command and never in user_data; the module is discriminated from a hand-written '#cloud-config | sh -' document by its /usr/local/bin/setup-k3s.sh write_files path, not by the header.",
+          "codeRefs": ["file:test/fixtures/cloud-init/k3s.yaml"]
+        },
+        {
+          "id": "r.k3s-composes-with-tunnel",
+          "level": "MUST",
+          "text": "tunnel-k3s.yaml must be the single composed document for modules [\"tunnel\", \"k3s\"], carrying both the tunnel-subscriber.service unit and /usr/local/bin/setup-k3s.sh, with the Deno runtime installed first in runcmd and the k3s install left out of the enabled services.",
+          "codeRefs": [
+            "file:test/fixtures/cloud-init/tunnel-k3s.yaml",
+            "file:test/fixtures/cloud-init/tunnel.yaml",
+            "file:test/fixtures/cloud-init/k3s.yaml"
+          ]
+        },
+        {
+          "id": "r.fixture-header-and-determinism",
+          "level": "MUST",
+          "text": "Every fixture must begin with the '#cloud-config' header line and be reproducible: building the same context and module list twice yields the identical bytes, and an unparseable or empty base falls back to the same fresh build the fixture records.",
+          "codeRefs": [
+            "file:test/fixtures/cloud-init/tunnel.yaml",
+            "file:test/fixtures/cloud-init/fedproxy-ssh.yaml"
+          ]
+        }
+      ],
+      "interfaces": [
+        {
+          "name": "fixture",
+          "kind": "function",
+          "signature": "function fixture(name: string): Promise<string>",
+          "file": "test/cloud_init_snapshot_test.ts"
+        },
+        {
+          "name": "fixture",
+          "kind": "function",
+          "signature": "function fixture(name: string): Promise<string>",
+          "file": "test/cloud_init_k3s_test.ts"
+        }
+      ]
+    }
