@@ -52,6 +52,8 @@ system_contexts:
     level: SHOULD
   - id: r.iroh-acceptance-flow
     level: MUST
+  - id: r.iroh-acceptance-guest-reachable-report
+    level: MUST
   - id: r.iroh-acceptance-plc-key-resolution
     level: MUST
   - id: r.iroh-cloud-init-fixture

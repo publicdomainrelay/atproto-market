@@ -162,6 +162,31 @@ spec:
     codeRefs:
     - file:compute-contract-full-flow/run_full_flow.ts
     - file:test/bidder_container_integration_test.ts
+  - id: r.iroh-acceptance-guest-reachable-report
+    level: MUST
+    text: 'test/bidder_container_integration_test.ts must also make the requester''s
+      inbound ticket-report route reachable from inside the guest container, because
+      the requester composes a portless https report URL from its own relay ingress
+      and a guest that dials the default 443 reaches nothing. The suite must build
+      that reachability the way test/oauth_session_transfer_test.ts already does:
+      create the relay dispatcher with createRelayFactory({ hostname: "relay.localhost",
+      additionalHosts: [gateway] }) using the container gateway the backend reports,
+      so the ingress host has two labels and not the single-label localhost; serve
+      that one app on 0.0.0.0 on a plain port and again on a TLS port whose certificate
+      covers relay.localhost and *.relay.localhost (generateLocalhostTlsCert with
+      extraDnsSans); pass ingressProxyHost relay.localhost:<plain port> to the requester,
+      the bidder and the provider; install the fetch interceptor with caCertPem so
+      in-process calls keep https; and construct the local compute provider with caCertPem
+      and guestTlsPort set to the TLS port. The provisioning backend then rewrites
+      the portless *.localhost report URL to that TLS port, maps the host to the gateway
+      in the guest''s /etc/hosts and gives the guest''s curl the CA, so the guest''s
+      own outbound report is what reaches the requester''s route. The report must
+      reach the requester this way only: the suite must not read the ticket or any
+      address out of the guest host-side, and must not hand the requester a port it
+      invented.'
+    codeRefs:
+    - file:test/bidder_container_integration_test.ts
+    - file:test/fetch-interceptor.ts
   - id: r.iroh-acceptance-plc-key-resolution
     level: MUST
     text: The fake PLC the container integration test serves must let a did:plc DID
