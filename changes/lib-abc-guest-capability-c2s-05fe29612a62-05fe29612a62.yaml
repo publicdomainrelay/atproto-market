@@ -9,5 +9,27 @@ spec:
   fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
   toCommit: 05fe29612a62a645d70273560238ecc3180414d2
 status:
-  phase: Running
-  message: the agent is summarizing lib-abc-guest-capability
+  phase: Succeeded
+  agentLog: 'lib/abc/guest-capability is the ABC-layer contract module for guest-side
+    compute capabilities in atproto-market, published from a single lib/abc/guest-capability/mod.ts
+    as @publicdomainrelay/guest-capability-abc. It declares what a guest capability
+    is and what it receives at each stage of a compute contract: WifSimpleConfig,
+    the resolved com.publicdomainrelay.temp.compute.config.wif.simple record taken
+    from the winning bid with issuer_uri and actx required and the subject template
+    plus path and route overrides optional; GrantVars, the six string authorization
+    values derived from that bid (requesterDid, role, actx, issuerUri, subject, expectedAud);
+    PrepareContext, giving the prepare hook the vm name, requester DID, ingress proxy
+    host, a did()/sign() signer, an optional tls flag and a structured log callback;
+    CapabilityPrepared, the optional partial CloudInitContext a capability hands back
+    to the guest''s cloud-init; GuestCapability, an id plus the optional prepare,
+    userDataModule, onContract, onRevoke and dispose hooks spanning RFP to teardown;
+    and DeriveGrantVarsInput, the cfg plus subjectDid, audienceDid and role that feed
+    the derivation. Three exported functions carry the logic: subjectKeyOf takes the
+    tail colon-separated segment of a DID so the rendered subject matches the provider''s
+    tag-derived oidc-sub, deriveGrantVars renders the subject through renderSubject
+    with the WIF config''s own template or DEFAULT_SUBJECT_TEMPLATE and computes expectedAud
+    as api://ATProto?actx=<audienceDid>, and isWifSimpleConfig is a runtime type guard
+    over the two required string fields. The module depends only on cloud-init-common
+    and fedproxy-rbac-common, keeping the ABC layer free of transport and runtime
+    concerns.'
+  message: wrote 11 requirement(s) and 9 interface(s) for lib-abc-guest-capability

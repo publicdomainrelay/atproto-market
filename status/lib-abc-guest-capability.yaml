@@ -1,11 +1,11 @@
 syncedFingerprint: da59922f5887beb5930682b6acaad0c3a3204dd9cafb48151ba50fe2b48b00e8
-realizedSpecHash: 0d01baf416574ed9e83af691aad94e7cc38f9fe8e694faf67bb416f3a0eb56ab
+realizedSpecHash: dfb986a5e2ff4ec0ee75a15a5cadf3e2b2fb3563e9ab1d13079b213f2a69c8a9
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: CapabilityPrepared, DeriveGrantVarsInput, GrantVars, GuestCapability,
-    PrepareContext, WifSimpleConfig, deriveGrantVars, isWifSimpleConfig, subjectKeyOf'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual

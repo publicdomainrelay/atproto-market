@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists to pin down the interface contract the ABC layer offers between the requester runtime and guest-side capabilities: the shapes passed in (WifSimpleConfig from the winning bid, PrepareContext for the prepare hook, DeriveGrantVarsInput for grant derivation) and the shapes handed back or consumed downstream (CapabilityPrepared, GrantVars), plus the three pure helpers that turn a bid into authorization values. It is separate from the implementations that consume it (lib/guest-capability-secrets, lib/requester-xrpc) so that capability authors can target one stable, transport-free module and so that the subject and audience derivation rules stay defined in one place.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

@@ -10,5 +10,179 @@ spec:
   - sc.atproto-market
   - sc.lib-common-cloud-init-common
   - sc.lib-common-fedproxy-rbac-common
+  intent: 'This context exists to pin down the interface contract the ABC layer offers
+    between the requester runtime and guest-side capabilities: the shapes passed in
+    (WifSimpleConfig from the winning bid, PrepareContext for the prepare hook, DeriveGrantVarsInput
+    for grant derivation) and the shapes handed back or consumed downstream (CapabilityPrepared,
+    GrantVars), plus the three pure helpers that turn a bid into authorization values.
+    It is separate from the implementations that consume it (lib/guest-capability-secrets,
+    lib/requester-xrpc) so that capability authors can target one stable, transport-free
+    module and so that the subject and audience derivation rules stay defined in one
+    place.'
+  requirements:
+  - id: r.capability-lifecycle
+    level: MUST
+    text: 'GuestCapability models one guest-side concern across a compute contract
+      through optional hooks: a required readonly id string identifies it, prepare(ctx)
+      runs before the RFP is sent and resolves to a Promise<CapabilityPrepared>, readonly
+      userDataModule (a string path or a UserDataModule) contributes cloud-init, onContract(vars)
+      fires once a bid wins and may be sync or async, onRevoke() fires when the VM
+      delete event is sent, and dispose() releases resources at the end; a capability
+      that does not need a hook omits it rather than supplying a no-op.'
+    codeRefs:
+    - interface:4a42c93f29714a7a7b77a0bc305ced37
+    - interface:5f5c338392bdac0f1231e29c58ed026a
+    - interface:e5b63e63421abe6ef6831d96f92908ca
+    - interface:ef44ecde4500e20b9d199d5a1a0e1fbd
+  - id: r.capability-prepared
+    level: MUST
+    text: CapabilityPrepared is the value prepare resolves to and carries an optional
+      partial CloudInitContext in ctx, so a capability merges only its own cloud-init
+      keys into the guest's context and never owns the whole context.
+    codeRefs:
+    - interface:4a42c93f29714a7a7b77a0bc305ced37
+    - interface:5f5c338392bdac0f1231e29c58ed026a
+  - id: r.default-subject-template
+    level: MUST
+    text: The module exports DEFAULT_SUBJECT_TEMPLATE = "actx:{actx}:plc:{did-plc-key}:role:{role}"
+      and deriveGrantVars falls back to it whenever the WIF config carries no subject
+      template, keeping the placeholders did-plc-key and role in sync with the vars
+      passed to renderSubject.
+    codeRefs:
+    - file:lib/abc/guest-capability/mod.ts
+    - function:d4dc1e02e9dae26d725c63e37e4e73ad
+  - id: r.derive-grant-vars
+    level: MUST
+    text: 'deriveGrantVars maps a DeriveGrantVarsInput to GrantVars: requesterDid
+      is set to audienceDid, role and actx are copied from the WIF config and issuerUri
+      from cfg.issuer_uri, subject is rendered through renderSubject over cfg.subject
+      or DEFAULT_SUBJECT_TEMPLATE with vars actx=cfg.actx, didPlcKey=subjectKeyOf(subjectDid)
+      and role, and expectedAud is the literal api://ATProto?actx=<audienceDid>.'
+    codeRefs:
+    - function:d4dc1e02e9dae26d725c63e37e4e73ad
+    - interface:08837ecc0b4c67d61d030acb83c87cff
+    - interface:b7bf881b25d7887524eb96f3c3e767d7
+    - interface:ef44ecde4500e20b9d199d5a1a0e1fbd
+  - id: r.grant-vars-shape
+    level: MUST
+    text: 'GrantVars carries everything a capability needs to authorize the guest,
+      all six fields typed as strings: requesterDid, role, actx, issuerUri, subject
+      and expectedAud.'
+    codeRefs:
+    - function:d4dc1e02e9dae26d725c63e37e4e73ad
+    - interface:ef44ecde4500e20b9d199d5a1a0e1fbd
+  - id: r.layer-dependencies
+    level: MUST
+    text: The package's deno.json names it @publicdomainrelay/guest-capability-abc
+      and exposes a single ./mod.ts export, and mod.ts imports only @publicdomainrelay/cloud-init-common
+      (for CloudInitContext and UserDataModule) and @publicdomainrelay/fedproxy-rbac-common
+      (for renderSubject), keeping the ABC layer free of transport and runtime dependencies.
+    codeRefs:
+    - file:lib/abc/guest-capability/deno.json
+    - file:lib/abc/guest-capability/mod.ts
+  - id: r.prepare-context-shape
+    level: MUST
+    text: 'PrepareContext supplies the prepare hook with everything it may read: vmName,
+      requesterDid, ingressProxyHost, a signer exposing did() and sign(bytes: Uint8Array):
+      Promise<Uint8Array>, an optional tls boolean, and a log(event, extra?) callback
+      for emitting a named event with optional structured extras.'
+    codeRefs:
+    - interface:4a42c93f29714a7a7b77a0bc305ced37
+    - interface:e5b63e63421abe6ef6831d96f92908ca
+  - id: r.subject-key-tail
+    level: MUST
+    text: subjectKeyOf returns the last colon-separated segment of a DID, so the guest-rendered
+      subject equals the subject the issuer's prove handler assembles from the droplet's
+      oidc-sub:plc:<tail> tag.
+    codeRefs:
+    - file:lib/abc/guest-capability/mod.ts
+    - function:843034a41b996ad93e7eddbd263f3ff7
+  - id: r.subject-vs-audience-did
+    level: MUST
+    text: DeriveGrantVarsInput keeps subjectDid and audienceDid as two separate required
+      inputs rather than one DID, because the token subject is derived from the DID
+      that authored and submitted the market records (the user's PDS DID under OAuth,
+      not the requester's local relay DID) while the audience is baked into cloud-init
+      before any bid exists and so can only be the requester's own relay DID; cfg
+      and role are required alongside them.
+    codeRefs:
+    - function:d4dc1e02e9dae26d725c63e37e4e73ad
+    - interface:08837ecc0b4c67d61d030acb83c87cff
+  - id: r.wif-guard
+    level: MUST
+    text: 'isWifSimpleConfig is a runtime type guard over an unknown value: it returns
+      false for any falsy or non-object input and true only when both issuer_uri and
+      actx are strings, so a bid''s WIF config can be narrowed before deriveGrantVars
+      consumes it.'
+    codeRefs:
+    - function:9fc5d3416856b249927132984c52288d
+    - interface:b7bf881b25d7887524eb96f3c3e767d7
+  - id: r.wif-simple-config-shape
+    level: MUST
+    text: 'WifSimpleConfig models the resolved com.publicdomainrelay.temp.compute.config.wif.simple
+      record from the winning bid: issuer_uri and actx are required strings, while
+      subject, to_issue, accept_path, actx_path, token_path, url_path and url_route
+      are optional strings, so a config may omit the template and path overrides and
+      still be complete.'
+    codeRefs:
+    - file:lib/abc/guest-capability/mod.ts
+    - interface:b7bf881b25d7887524eb96f3c3e767d7
+  interfaces:
+  - name: CapabilityPrepared
+    kind: interface
+    signature: 'interface CapabilityPrepared { ctx?: Partial<CloudInitContext> }'
+    file: lib/abc/guest-capability/mod.ts
+  - name: DeriveGrantVarsInput
+    kind: interface
+    signature: 'interface DeriveGrantVarsInput { cfg: WifSimpleConfig; subjectDid:
+      string; audienceDid: string; role: string }'
+    file: lib/abc/guest-capability/mod.ts
+  - name: GrantVars
+    kind: interface
+    signature: 'interface GrantVars { requesterDid: string; role: string; actx: string;
+      issuerUri: string; subject: string; expectedAud: string }'
+    file: lib/abc/guest-capability/mod.ts
+  - name: GuestCapability
+    kind: interface
+    signature: 'interface GuestCapability { readonly id: string; prepare?(ctx: PrepareContext):
+      Promise<CapabilityPrepared>; readonly userDataModule?: string | UserDataModule;
+      onContract?(vars: GrantVars): void | Promise<void>; onRevoke?(): void | Promise<void>;
+      dispose?(): Promise<void> }'
+    file: lib/abc/guest-capability/mod.ts
+  - name: PrepareContext
+    kind: interface
+    signature: 'interface PrepareContext { vmName: string; requesterDid: string; ingressProxyHost:
+      string; signer: { did(): string; sign(bytes: Uint8Array): Promise<Uint8Array>
+      }; tls?: boolean; log: (event: string, extra?: Record<string, unknown>) => void
+      }'
+    file: lib/abc/guest-capability/mod.ts
+  - name: WifSimpleConfig
+    kind: interface
+    signature: 'interface WifSimpleConfig { issuer_uri: string; actx: string; subject?:
+      string; to_issue?: string; accept_path?: string; actx_path?: string; token_path?:
+      string; url_path?: string; url_route?: string }'
+    file: lib/abc/guest-capability/mod.ts
+  - name: deriveGrantVars
+    kind: function
+    signature: 'function deriveGrantVars(input: DeriveGrantVarsInput): GrantVars'
+    file: lib/abc/guest-capability/mod.ts
+  - name: isWifSimpleConfig
+    kind: function
+    signature: 'function isWifSimpleConfig(v: unknown): v is WifSimpleConfig'
+    file: lib/abc/guest-capability/mod.ts
+  - name: subjectKeyOf
+    kind: function
+    signature: 'function subjectKeyOf(did: string): string'
+    file: lib/abc/guest-capability/mod.ts
 codeRefIndex:
+- file:lib/abc/guest-capability/deno.json deno.json@lib/abc/guest-capability/deno.json
 - file:lib/abc/guest-capability/mod.ts mod.ts@lib/abc/guest-capability/mod.ts
+- function:843034a41b996ad93e7eddbd263f3ff7 subjectKeyOf@lib/abc/guest-capability/mod.ts:63
+- function:9fc5d3416856b249927132984c52288d isWifSimpleConfig@lib/abc/guest-capability/mod.ts:99
+- function:d4dc1e02e9dae26d725c63e37e4e73ad deriveGrantVars@lib/abc/guest-capability/mod.ts:83
+- interface:08837ecc0b4c67d61d030acb83c87cff DeriveGrantVarsInput@lib/abc/guest-capability/mod.ts:67
+- interface:4a42c93f29714a7a7b77a0bc305ced37 GuestCapability@lib/abc/guest-capability/mod.ts:48
+- interface:5f5c338392bdac0f1231e29c58ed026a CapabilityPrepared@lib/abc/guest-capability/mod.ts:38
+- interface:b7bf881b25d7887524eb96f3c3e767d7 WifSimpleConfig@lib/abc/guest-capability/mod.ts:7
+- interface:e5b63e63421abe6ef6831d96f92908ca PrepareContext@lib/abc/guest-capability/mod.ts:29
+- interface:ef44ecde4500e20b9d199d5a1a0e1fbd GrantVars@lib/abc/guest-capability/mod.ts:20
