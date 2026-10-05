@@ -15,10 +15,8 @@ spec:
     requirements:
     - +r.control-plane-and-report-route
 status:
-  phase: Pending
-  message: attempt 12 retried by johnandersen777 (the acceptance gate is green now
-    (atproto-market ffe23fa); r.control-plane-and-report-route is realized by the
-    unchanged wrapper, so re-run the episode to record it)
+  phase: Running
+  message: the agent is realizing lib-did-key-ingress-proxy
   attempt: 12
   retryReason: the acceptance gate is green now (atproto-market ffe23fa); r.control-plane-and-report-route
     is realized by the unchanged wrapper, so re-run the episode to record it
