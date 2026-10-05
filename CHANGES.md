@@ -201,7 +201,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-requester-xrpc-s2c-0c605032289f-a5 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | test-c2s-8b36a2bfe627-8b36a2bfe627 | CodeToSpec | Succeeded |  | 0 | - | - |
 | test-fixtures-cloud-init-c2s-8b36a2bfe627-8b36a2bfe627 | CodeToSpec | Failed |  | 0 | - | - |
-| test-fixtures-cloud-init-c2s-8b36a2bfe627-8b36a2bfe627-a2 | CodeToSpec | Running |  | 0 | - | - |
+| test-fixtures-cloud-init-c2s-8b36a2bfe627-8b36a2bfe627-a2 | CodeToSpec | Failed |  | 0 | - | - |
 
 ## Unimplemented requirements
 

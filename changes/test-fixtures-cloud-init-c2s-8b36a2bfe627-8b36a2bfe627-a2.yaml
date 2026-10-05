@@ -9,8 +9,77 @@ spec:
   fromCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
   toCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
 status:
-  phase: Running
-  message: the agent is summarizing test-fixtures-cloud-init
+  phase: Failed
+  agentLog: |-
+    ..., no best-effort skip path, non-zero exit on any failure; it carries no secret values, only the fetch location, and each returned secret is written with umask 077 into a 0700 root-owned parent directory at mode 0600.",
+          "codeRefs": [
+            "file:test/fixtures/cloud-init/tunnel-secrets.yaml"
+          ]
+        },
+        {
+          "id": "r.k3s-pinned-and-not-started",
+          "level": "MUST",
+          "text": "The k3s fixtures install k3s at the pinned release INSTALL_K3S_VERSION=v1.36.4+k3s1 with INSTALL_K3S_SKIP_START and INSTALL_K3S_SKIP_ENABLE set, prove the binary with `k3s --version`, and run the install from an idempotent `/usr/local/bin/setup-k3s.sh` guarded by a done-stamp; they never start, enable or exec a k3s server, and carry no token, node name, join target or config.yaml that could hold one, because the server runs gateway-side and this VM only supplies the binary.",
+          "codeRefs": [
+            "file:test/fixtures/cloud-init/k3s.yaml",
+            "file:test/fixtures/cloud-init/tunnel-k3s.yaml"
+          ]
+        },
+        {
+          "id": "r.k3s-discriminator-is-a-path",
+          "level": "SHOULD",
+          "text": "The k3s document is recognised by the write_files path `/usr/local/bin/setup-k3s.sh` it introduces, not by the `#cloud-config` header, which a hand-written document shares; the path is absent from a module-free build, so it discriminates the composed k3s document from an arbitrary user-data blob.",
+          "codeRefs": [
+            "file:test/fixtures/cloud-init/k3s.yaml"
+          ]
+        },
+        {
+          "id": "r.fixtures-loaded-relative-to-test",
+          "level": "SHOULD",
+          "text": "Fixtures are read by name from the cloud-init fixture directory resolved relative to the consuming test module's own URL, so the snapshot tests keep working from any working directory and add a fixture by dropping a file into that directory.",
+          "codeRefs": [
+            "file:test/fixtures/cloud-init/tunnel.yaml",
+            "file:test/fixtures/cloud-init/k3s.yaml"
+          ]
+        }
+      ],
+      "interfaces": []
+    }
+  message: |-
+    ..., no best-effort skip path, non-zero exit on any failure; it carries no secret values, only the fetch location, and each returned secret is written with umask 077 into a 0700 root-owned parent directory at mode 0600.",
+          "codeRefs": [
+            "file:test/fixtures/cloud-init/tunnel-secrets.yaml"
+          ]
+        },
+        {
+          "id": "r.k3s-pinned-and-not-started",
+          "level": "MUST",
+          "text": "The k3s fixtures install k3s at the pinned release INSTALL_K3S_VERSION=v1.36.4+k3s1 with INSTALL_K3S_SKIP_START and INSTALL_K3S_SKIP_ENABLE set, prove the binary with `k3s --version`, and run the install from an idempotent `/usr/local/bin/setup-k3s.sh` guarded by a done-stamp; they never start, enable or exec a k3s server, and carry no token, node name, join target or config.yaml that could hold one, because the server runs gateway-side and this VM only supplies the binary.",
+          "codeRefs": [
+            "file:test/fixtures/cloud-init/k3s.yaml",
+            "file:test/fixtures/cloud-init/tunnel-k3s.yaml"
+          ]
+        },
+        {
+          "id": "r.k3s-discriminator-is-a-path",
+          "level": "SHOULD",
+          "text": "The k3s document is recognised by the write_files path `/usr/local/bin/setup-k3s.sh` it introduces, not by the `#cloud-config` header, which a hand-written document shares; the path is absent from a module-free build, so it discriminates the composed k3s document from an arbitrary user-data blob.",
+          "codeRefs": [
+            "file:test/fixtures/cloud-init/k3s.yaml"
+          ]
+        },
+        {
+          "id": "r.fixtures-loaded-relative-to-test",
+          "level": "SHOULD",
+          "text": "Fixtures are read by name from the cloud-init fixture directory resolved relative to the consuming test module's own URL, so the snapshot tests keep working from any working directory and add a fixture by dropping a file into that directory.",
+          "codeRefs": [
+            "file:test/fixtures/cloud-init/tunnel.yaml",
+            "file:test/fixtures/cloud-init/k3s.yaml"
+          ]
+        }
+      ],
+      "interfaces": []
+    }
 superseded:
 - name: test-fixtures-cloud-init-c2s-8b36a2bfe627-8b36a2bfe627
   phase: Failed
