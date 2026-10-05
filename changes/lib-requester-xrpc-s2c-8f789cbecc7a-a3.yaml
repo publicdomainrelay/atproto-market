@@ -16,7 +16,8 @@ spec:
     - +r.iroh-report-workload-identity
     - ~r.iroh-report-endpoint
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is realizing lib-requester-xrpc in a batch of 4 led by lib-common-cloud-init-common
 superseded:
 - name: lib-requester-xrpc-s2c-8f789cbecc7a-a2
   phase: Failed
