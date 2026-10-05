@@ -398,3 +398,4 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 | lib-compute-contract-gateway-xrpc-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Failed |  | 0 | - | - |
 | lib-compute-contract-gateway-xrpc-c2s-05fe29612a62-05fe29612a62-a2 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-delegated-trust-badge-blue-keys-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
+| lib-did-key-ingress-proxy-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
