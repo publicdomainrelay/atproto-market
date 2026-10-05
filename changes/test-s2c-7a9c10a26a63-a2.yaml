@@ -14,7 +14,8 @@ spec:
     requirements:
     - +r.container-harness-proves-live-ssh-over-iroh
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is realizing test in a batch of 4 led by test-fixtures-cloud-init
 superseded:
 - name: test-s2c-7a9c10a26a63
   phase: Failed

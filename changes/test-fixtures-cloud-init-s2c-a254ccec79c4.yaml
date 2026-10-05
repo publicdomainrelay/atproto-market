@@ -14,4 +14,6 @@ spec:
     requirements:
     - ~r.iroh-fixture
 status:
-  phase: Pending
+  phase: Running
+  message: the agent is realizing test-fixtures-cloud-init in a batch of 4 led by
+    test-fixtures-cloud-init
