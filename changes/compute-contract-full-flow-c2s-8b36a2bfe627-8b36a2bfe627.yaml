@@ -1,0 +1,13 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: compute-contract-full-flow-c2s-8b36a2bfe627-8b36a2bfe627
+  namespace: default
+spec:
+  systemContext: compute-contract-full-flow
+  direction: CodeToSpec
+  fromCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
+  toCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
+status:
+  phase: Running
+  message: the agent is summarizing compute-contract-full-flow

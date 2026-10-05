@@ -64,17 +64,22 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | --- | --- | --- | --- | --- | --- | --- |
 | atproto-market-s2c-dcae0d4f6037 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | atproto-market-s2c-e34ce8f9f34c | SpecToCode | Failed |  | 0 | acceptance failed | - |
-| atproto-market-s2c-e34ce8f9f34c-a2 | SpecToCode | Running |  | 0 | - | - |
+| atproto-market-s2c-e34ce8f9f34c-a2 | SpecToCode | Failed |  | 0 | acceptance failed | - |
+| atproto-market-s2c-e34ce8f9f34c-a3 | SpecToCode | Pending |  | 0 | - | - |
+| compute-contract-full-flow-c2s-8b36a2bfe627-8b36a2bfe627 | CodeToSpec | Running |  | 0 | - | - |
+| hono-plc-c2s-8b36a2bfe627-8b36a2bfe627 | CodeToSpec | Running |  | 0 | - | - |
 | lib-abc-requester-s2c-a24b0558524f | SpecToCode | Succeeded | 8b36a2bf | 0 | acceptance passed | 1 of 4 missing |
 | lib-compute-contract-gateway-xrpc-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Failed |  | 0 | - | - |
 | lib-did-key-ingress-proxy-s2c-2414ea013542 | SpecToCode | Failed |  | 0 | acceptance failed | - |
-| lib-did-key-ingress-proxy-s2c-2414ea013542-a2 | SpecToCode | Running |  | 0 | - | - |
+| lib-did-key-ingress-proxy-s2c-2414ea013542-a2 | SpecToCode | Failed |  | 0 | acceptance failed | - |
+| lib-did-key-ingress-proxy-s2c-2414ea013542-a3 | SpecToCode | Pending |  | 0 | - | - |
 | lib-did-plc-c2s-05fe29612a62-8b36a2bfe627 | CodeToSpec | Failed |  | 0 | - | - |
 | lib-did-plc-c2s-05fe29612a62-8b36a2bfe627-a2 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-hono-factory-did-plc-directory-c2s-05fe29612a62-8b36a2bfe627 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-market-settlement-x402-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-requester-xrpc-s2c-0c605032289f | SpecToCode | Failed |  | 0 | acceptance failed | - |
-| lib-requester-xrpc-s2c-0c605032289f-a2 | SpecToCode | Running |  | 0 | - | - |
+| lib-requester-xrpc-s2c-0c605032289f-a2 | SpecToCode | Failed |  | 0 | acceptance failed | - |
+| lib-requester-xrpc-s2c-0c605032289f-a3 | SpecToCode | Pending |  | 0 | - | - |
 
 ## Unimplemented requirements
 
