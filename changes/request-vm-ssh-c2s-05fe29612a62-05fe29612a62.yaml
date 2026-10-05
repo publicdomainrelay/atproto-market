@@ -9,5 +9,22 @@ spec:
   fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
   toCommit: 05fe29612a62a645d70273560238ecc3180414d2
 status:
-  phase: Running
-  message: the agent is summarizing request-vm-ssh
+  phase: Succeeded
+  agentLog: 'request-vm-ssh is a Deno command-line entrypoint that provisions a remote
+    VM and opens an SSH session into it under a compute contract. It resolves its
+    whole configuration declaratively from request-vm-ssh/cli-args-env.ts, optionally
+    overlaying a sibling config.json, then picks one of three mutually exclusive requester
+    identity modes (interactive OAuth via a loopback callback, QR-based sign-in transferred
+    from qr.fedfork.com, or a plain local PDS keypair). It proves the requester''s
+    association before proceeding, prompting the operator with a QR code only when
+    no association is on record and --skip-qr was not given, and it wires up a serve
+    listener, event-stream clients with firehose and offering watchers, an optional
+    secrets guest capability and cloud-init user data, a policy resolved from the
+    Deno/TypeScript policy registry, and finally calls runComputeContract. The default
+    guest transport is iroh: the guest runs the dumbpipe listener and the host connects
+    with `dumbpipe connect <ticket>`, installing whichever SSH helper the selected
+    transport needs, while the older websocat and fedproxy-ssh relay transports remain
+    selectable. On exit it tears down the contract, disposes the PDS, closes event
+    streams and the serve handle, and hold mode converts signals into a provisioning-only
+    VM delete.'
+  message: wrote 20 requirement(s) and 0 interface(s) for request-vm-ssh

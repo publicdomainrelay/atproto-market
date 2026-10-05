@@ -2584,7 +2584,50 @@ system_contexts:
   - sc.lib-did-plc
   - sc.lib-guest-capability-secrets
   - sc.lib-requester-xrpc
+  requirements:
+  - id: r.association-proof
+    level: MUST
+  - id: r.begin-serve-nonoauth
+    level: MUST
+  - id: r.capabilities
+    level: MUST
+  - id: r.cli-configuration-surface
+    level: MUST
+  - id: r.cli-smoke-test
+    level: MUST
+  - id: r.config-json-overlay
+    level: SHOULD
+  - id: r.contract-invocation
+    level: MUST
+  - id: r.firehose-watchers
+    level: MUST
+  - id: r.hold-mode
+    level: MUST
+  - id: r.identity-modes
+    level: MUST
+  - id: r.iroh-default-transport
+    level: MUST
+  - id: r.iroh-readme-topology
+    level: MUST
+  - id: r.local-dev-fetch-patch
+    level: MUST
+  - id: r.oauth-session-expiry
+    level: MUST
+  - id: r.policy-selection
+    level: MUST
+  - id: r.private-key-resolution
+    level: MUST
+  - id: r.qr-association-prompt
+    level: MUST
+  - id: r.rbac-default-on
+    level: MUST
+  - id: r.serve-binding
+    level: MUST
+  - id: r.shutdown
+    level: MUST
   codeRefIndex:
+  - file:request-vm-ssh/README.md README.md@request-vm-ssh/README.md
   - file:request-vm-ssh/cli-args-env.ts cli-args-env.ts@request-vm-ssh/cli-args-env.ts
   - file:request-vm-ssh/cli_smoke_test.ts cli_smoke_test.ts@request-vm-ssh/cli_smoke_test.ts
+  - file:request-vm-ssh/config.json config.json@request-vm-ssh/config.json
   - file:request-vm-ssh/mod.ts mod.ts@request-vm-ssh/mod.ts
