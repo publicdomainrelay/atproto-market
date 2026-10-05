@@ -11,5 +11,99 @@ spec:
   - sc.lib-common-market-common
   - sc.lib-common-market-lexicons
   - sc.lib-market-atproto
+  intent: 'This context exists to give the market server a transport-agnostic Hono
+    factory layer: callers hand it a MarketServerDeps bundle and whichever market
+    callbacks they support, and it returns a configured Hono app exposing the market
+    XRPC endpoints. It keeps the HTTP wiring (route paths, error boundary, deps injection,
+    handler construction) in one small package so the market-bidder entrypoint and
+    other hosts can mount a market server without duplicating route registration or
+    the NSID constants that live in the lexicons package.'
+  requirements:
+  - id: r.bid-accept-event-routes
+    level: MUST
+    text: Each of handlers.bid, handlers.accept and handlers.event independently gates
+      its POST route at /xrpc/${SUBMIT_BID_NSID}, /xrpc/${SUBMIT_ACCEPT_NSID} and
+      /xrpc/${SUBMIT_EVENT_NSID} respectively, with the handler built by spreading
+      that field's own config (serviceIds plus onBid / onAccept, or callbacks and
+      optional background for event) together with deps into createSubmitBidHandler,
+      createSubmitAcceptHandler and createSubmitEventHandler, and each registered
+      route despatches c.req.raw to the constructed handler.
+    codeRefs:
+    - function:800a02055445c67608223d52523a4f52
+    - interface:8e5a087b65382c18eeeb71bed01f210a
+  - id: r.deps-on-context
+    level: MUST
+    text: createMarketFactory installs a middleware registered before any route that
+      sets the MarketServerDeps it was given on the Hono context variable marketDeps
+      and then awaits next, so every route in the factory can read the deps from the
+      context instead of closing over them directly.
+    codeRefs:
+    - function:800a02055445c67608223d52523a4f52
+    - type_alias:7760b83d04c47b7681b47b9d97351064
+  - id: r.env-typed
+    level: MUST
+    text: MarketEnv stays a Hono environment type whose Variables contain marketDeps
+      typed as MarketServerDeps, matching what the deps middleware writes with c.set("marketDeps",
+      deps) and what the factory's typed routes read, so route handlers can recover
+      the server dependencies from the context.
+    codeRefs:
+    - file:lib/hono-factory-market-atproto/mod.ts
+    - type_alias:7760b83d04c47b7681b47b9d97351064
+  - id: r.error-boundary
+    level: MUST
+    text: 'The factory registers an app-level error handler that logs the failure
+      through deps.log with level "error", the message "market route error", and a
+      detail object carrying the request path, method and String(err), then responds
+      500 with the JSON body {"ok": false, "error": "internal error"} so the underlying
+      error is recorded server-side and not leaked to the client.'
+    codeRefs:
+    - function:800a02055445c67608223d52523a4f52
+  - id: r.handlers-optional
+    level: MUST
+    text: createMarketFactory accepts handlers as an optional second argument, so
+      calling it with deps alone yields a factory serving only the always-on verify
+      route; every field of MarketFactoryHandlers (rfp, rfpScopeFilter, bid, accept,
+      event) is optional and each submit route is gated independently by the presence
+      of its own field rather than a single all-or-nothing switch.
+    codeRefs:
+    - function:800a02055445c67608223d52523a4f52
+    - interface:8e5a087b65382c18eeeb71bed01f210a
+  - id: r.rfp-route
+    level: MUST
+    text: When handlers.rfp is supplied, the factory registers POST /xrpc/${SUBMIT_RFP_NSID}
+      using a handler built by createSubmitRfpHandler with deps, handlers.rfp as callbacks
+      and handlers.rfpScopeFilter as acceptScopeFilter, and the route forwards c.req.raw
+      to that handler; when handlers.rfp is absent the route is not registered at
+      all.
+    codeRefs:
+    - function:800a02055445c67608223d52523a4f52
+    - interface:8e5a087b65382c18eeeb71bed01f210a
+  - id: r.verify-route
+    level: MUST
+    text: The verify route is registered unconditionally as GET /xrpc/${NETWORK_ATTESTED_VERIFY_NSID},
+      using a createVerifyHandler built once from deps.idResolver, keysForDid from
+      createDidKeyResolver() and deps.log, and the route forwards c.req.raw to that
+      handler so the endpoint exists even when no handlers argument was provided.
+    codeRefs:
+    - function:800a02055445c67608223d52523a4f52
+  interfaces:
+  - name: MarketEnv
+    kind: type_alias
+    signature: 'type MarketEnv = { Variables: { marketDeps: MarketServerDeps } }'
+    file: lib/hono-factory-market-atproto/mod.ts
+  - name: MarketFactoryHandlers
+    kind: interface
+    signature: 'interface MarketFactoryHandlers { rfp?: RfpCallbacks; rfpScopeFilter?:
+      SubmitRfpHandlerConfig["acceptScopeFilter"]; bid?: { serviceIds: string[]; onBid:
+      SubmitBidCallback }; accept?: { serviceIds: string[]; onAccept: SubmitAcceptCallback
+      }; event?: { callbacks: EventCallbacks; background?: boolean } }'
+    file: lib/hono-factory-market-atproto/mod.ts
+  - name: createMarketFactory
+    kind: function
+    signature: 'createMarketFactory(deps: MarketServerDeps, handlers?: MarketFactoryHandlers)'
+    file: lib/hono-factory-market-atproto/mod.ts
 codeRefIndex:
 - file:lib/hono-factory-market-atproto/mod.ts mod.ts@lib/hono-factory-market-atproto/mod.ts
+- function:800a02055445c67608223d52523a4f52 createMarketFactory@lib/hono-factory-market-atproto/mod.ts:44
+- interface:8e5a087b65382c18eeeb71bed01f210a MarketFactoryHandlers@lib/hono-factory-market-atproto/mod.ts:35
+- type_alias:7760b83d04c47b7681b47b9d97351064 MarketEnv@lib/hono-factory-market-atproto/mod.ts:29

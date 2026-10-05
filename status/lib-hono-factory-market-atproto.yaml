@@ -1,10 +1,11 @@
 syncedFingerprint: b65a7d98db73cca6a40d38dee5b38259cbd7b330a90527f53e83826f1b143408
-realizedSpecHash: 12ac2428cce46c0891974d8ab11c5e746d4e150d5e2d8fc6e318c63f785b9ff5
+realizedSpecHash: 23537a7760cfd0478db750076d018ec193303302d9e5f1ba8e65cae1530f9b99
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: MarketEnv, MarketFactoryHandlers, createMarketFactory'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual

@@ -1632,8 +1632,26 @@ system_contexts:
   - sc.lib-common-market-common
   - sc.lib-common-market-lexicons
   - sc.lib-market-atproto
+  requirements:
+  - id: r.bid-accept-event-routes
+    level: MUST
+  - id: r.deps-on-context
+    level: MUST
+  - id: r.env-typed
+    level: MUST
+  - id: r.error-boundary
+    level: MUST
+  - id: r.handlers-optional
+    level: MUST
+  - id: r.rfp-route
+    level: MUST
+  - id: r.verify-route
+    level: MUST
   codeRefIndex:
   - file:lib/hono-factory-market-atproto/mod.ts mod.ts@lib/hono-factory-market-atproto/mod.ts
+  - function:800a02055445c67608223d52523a4f52 createMarketFactory@lib/hono-factory-market-atproto/mod.ts:44
+  - interface:8e5a087b65382c18eeeb71bed01f210a MarketFactoryHandlers@lib/hono-factory-market-atproto/mod.ts:35
+  - type_alias:7760b83d04c47b7681b47b9d97351064 MarketEnv@lib/hono-factory-market-atproto/mod.ts:29
 - id: sc.lib-hono-factory-market-settlement-free
   name: lib-hono-factory-market-settlement-free
   spec: specs/lib-hono-factory-market-settlement-free.yaml

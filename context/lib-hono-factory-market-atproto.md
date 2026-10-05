@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists to give the market server a transport-agnostic Hono factory layer: callers hand it a MarketServerDeps bundle and whichever market callbacks they support, and it returns a configured Hono app exposing the market XRPC endpoints. It keeps the HTTP wiring (route paths, error boundary, deps injection, handler construction) in one small package so the market-bidder entrypoint and other hosts can mount a market server without duplicating route registration or the NSID constants that live in the lexicons package.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 
