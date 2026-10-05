@@ -1745,8 +1745,32 @@ system_contexts:
   - sc.lib-common-market-common
   - sc.lib-market-atproto
   - sc.lib-market-settlement-x402
+  requirements:
+  - id: r.config-optional-overrides
+    level: SHOULD
+  - id: r.config-required-dependencies
+    level: MUST
+  - id: r.defaults
+    level: MUST
+  - id: r.env-variables
+    level: MUST
+  - id: r.factory-returns-hono-factory
+    level: MUST
+  - id: r.json-response
+    level: MUST
+  - id: r.logging
+    level: MUST
+  - id: r.mint-receipt
+    level: MUST
+  - id: r.payment-middleware-mount
+    level: MUST
+  - id: r.receipt-get-route
+    level: MUST
   codeRefIndex:
   - file:lib/hono-factory-market-settlement-x402/mod.ts mod.ts@lib/hono-factory-market-settlement-x402/mod.ts
+  - function:78e258a8c5323f8774599a9e9adf6dad createX402SettlementFactory@lib/hono-factory-market-settlement-x402/mod.ts:30
+  - interface:689a63cbfa61ba7bfe171e76eeea36d4 X402SettlementConfig@lib/hono-factory-market-settlement-x402/mod.ts:19
+  - type_alias:aed7d5829498218c0606453c9468be76 X402SettlementEnv@lib/hono-factory-market-settlement-x402/mod.ts:12
 - id: sc.lib-hono-factory-requester-xrpc
   name: lib-hono-factory-requester-xrpc
   spec: specs/lib-hono-factory-requester-xrpc.yaml

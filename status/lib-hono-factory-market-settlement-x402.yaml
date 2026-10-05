@@ -1,10 +1,11 @@
 syncedFingerprint: 9dce1b6a546cbb6d761e7561d54880cf8ca3a8531e086b9a1d6ff1b6c06f733d
-realizedSpecHash: 4fa2ddf0bae17a4e1ea5fdbcf61ddfe3992b97492060d9326cb77e601e67f989
+realizedSpecHash: 00c748f999b549ef66ea3bf1a9147e27cab77250ad02c4d347f5d8387a2b4025
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: X402SettlementConfig, X402SettlementEnv, createX402SettlementFactory'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual
