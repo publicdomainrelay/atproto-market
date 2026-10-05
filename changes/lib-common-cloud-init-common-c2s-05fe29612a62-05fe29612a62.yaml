@@ -9,5 +9,24 @@ spec:
   fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
   toCommit: 05fe29612a62a645d70273560238ecc3180414d2
 status:
-  phase: Running
-  message: the agent is summarizing lib-common-cloud-init-common
+  phase: Succeeded
+  agentLog: 'lib/common/cloud-init-common is a single-file Deno package (lib/common/cloud-init-common/mod.ts,
+    941 lines, plus its own lib/common/cloud-init-common/deno.json exporting @publicdomainrelay/cloud-init-common)
+    that owns the monorepo''s shared cloud-init composition. It exports the context
+    and patch shapes every provisioning flow speaks — CloudInitContext (vmName required;
+    relay, tunnel, terminal, secrets and iroh fields optional), TunnelCloudInitContext
+    as the historical tunnel-subscriber shape, UserDataPatch, WriteFileEntry and the
+    UserDataModule function type — a module-level string-id registry with registerUserDataModule,
+    getUserDataModules and listUserDataModules, and the built-in modules tunnel, fedproxy-ssh,
+    fedproxy-web, wootty, secrets and k3s registered at import time (mod.ts:906-911).
+    buildUserData parses an optional base cloud-config, applies each requested module''s
+    patch in the caller''s order, then the overrides patch, and serialises the result
+    with line wrapping disabled behind a `#cloud-config` header the composer alone
+    owns; acceptBundleModule turns a bidder-injected accept bundle into a root-only
+    guest file, flattenLabel derives DNS-safe labels in parity with the Go relay,
+    injectJsrUrl splices a JSR_URL environment line into the rendered tunnel-subscriber
+    unit, and buildDefaultUserData/buildTunnelUserData remain as deprecated single-module
+    wrappers. Output is verified by snapshot: test/cloud_init_snapshot_test.ts compares
+    composed YAML against the six golden fixtures under test/fixtures/cloud-init/.'
+  message: wrote 22 requirement(s) and 14 interface(s) for lib-common-cloud-init-common;
+    dropped 2 unresolved code ref(s)

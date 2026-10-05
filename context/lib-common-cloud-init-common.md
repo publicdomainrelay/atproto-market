@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so every guest-provisioning flow in the monorepo composes cloud-init through one shared, ordered composer instead of hand-writing YAML per transport. It centralises the context shape, the patch/merge precedence rules that make layered modules compose predictably, and the string-id registry that lets a caller name a module instead of importing its function — so the tunnel, fedproxy-ssh, fedproxy-web, wootty, secrets, k3s and iroh flows agree on one precedence rule, one `#cloud-config` header owner and one notion of what a module may write into the guest. The iroh module is the transport a guest runs by default: it installs a pinned dumbpipe listener in front of the guest's own sshd on loopback, and it is the guest, not the host, that announces where it can be reached, by POSTing the listener's ticket outbound to the URL the caller baked into the context.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 
