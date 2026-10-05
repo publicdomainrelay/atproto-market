@@ -221,7 +221,8 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | test-fixtures-cloud-init-c2s-8b36a2bfe627-8b36a2bfe627 | CodeToSpec | Failed |  | 0 | - | - |
 | test-fixtures-cloud-init-c2s-8b36a2bfe627-8b36a2bfe627-a2 | CodeToSpec | Failed |  | 0 | - | - |
 | test-fixtures-cloud-init-c2s-8b36a2bfe627-924781f0e5da | CodeToSpec | Failed |  | 0 | - | - |
-| test-fixtures-cloud-init-c2s-8b36a2bfe627-924781f0e5da-a2 | CodeToSpec | Running |  | 0 | - | - |
+| test-fixtures-cloud-init-c2s-8b36a2bfe627-924781f0e5da-a2 | CodeToSpec | Failed |  | 0 | - | - |
+| test-fixtures-cloud-init-c2s-8b36a2bfe627-924781f0e5da-a3 | CodeToSpec | Running |  | 0 | - | - |
 
 ## Unimplemented requirements
 

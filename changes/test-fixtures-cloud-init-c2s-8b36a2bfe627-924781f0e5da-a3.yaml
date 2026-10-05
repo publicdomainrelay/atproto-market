@@ -1,0 +1,88 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: test-fixtures-cloud-init-c2s-8b36a2bfe627-924781f0e5da-a3
+  namespace: default
+spec:
+  systemContext: test-fixtures-cloud-init
+  direction: CodeToSpec
+  fromCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
+  toCommit: 924781f0e5da1820ab6215181ae5358ff5a8a149
+  delta:
+    counts:
+      added: 1
+      changed: 1
+status:
+  phase: Running
+  message: the agent is summarizing test-fixtures-cloud-init
+superseded:
+- name: test-fixtures-cloud-init-c2s-8b36a2bfe627-924781f0e5da-a2
+  phase: Failed
+  message: |-
+    ...ts from the ui.fedfork.com wootty-web tarball, and enables wootty and fedproxy-client behind the stamp /var/lib/setup-wootty.done.",
+          "codeRefs": [
+            "file:test/fixtures/cloud-init/fedproxy-web-wootty.yaml"
+          ]
+        },
+        {
+          "id": "r.fedproxy-ssh-websocat-path",
+          "level": "SHOULD",
+          "text": "fedproxy-ssh.yaml enables sshd and then enables and starts a setup-websocat.path unit without blocking, so the websocat bridge is installed by a path-triggered unit rather than inline in runcmd.",
+          "codeRefs": [
+            "file:test/fixtures/cloud-init/fedproxy-ssh.yaml"
+          ]
+        },
+        {
+          "id": "r.first-boot-stamps",
+          "level": "MUST",
+          "text": "Every first-boot script is idempotent by stamp file: it returns immediately when /var/lib/setup-k3s.done, /var/lib/setup-iroh.done, /var/lib/setup-secrets.done or /var/lib/setup-wootty.done already exists, and touches that stamp only after the work has fully succeeded, so a partially failed boot is retried rather than skipped.",
+          "codeRefs": [
+            "file:test/fixtures/cloud-init/k3s.yaml",
+            "file:test/fixtures/cloud-init/iroh.yaml",
+            "file:test/fixtures/cloud-init/tunnel-secrets.yaml",
+            "file:test/fixtures/cloud-init/fedproxy-web-wootty.yaml"
+          ]
+        },
+        {
+          "id": "r.fixed-fixture-identities",
+          "level": "MUST",
+          "text": "Because these are test fixtures, every identity and endpoint is a constant rather than runtime-derived: the did:plc:abc123 handle, the rly-xyz.xrpc.fedproxy.com relay, the relay.local dispatcher, the vm-test service/rkey, and the ssh-ed25519 AAAA test@example key appear literally in the files so snapshot assertions stay stable.",
+          "codeRefs": [
+            "file:test/fixtures/cloud-init/fedproxy-ssh.yaml",
+            "file:test/fixtures/cloud-init/fedproxy-web-wootty.yaml",
+            "file:test/fixtures/cloud-init/tunnel-secrets.yaml",
+            "file:test/fixtures/cloud-init/tunnel.yaml"
+          ]
+        }
+      ],
+      "interfaces": []
+    }
+- name: test-fixtures-cloud-init-c2s-8b36a2bfe627-924781f0e5da
+  phase: Failed
+  message: |-
+    ...roxy.com` to extract `.value.password`, writes it as `WOOTTY_AUTH_TOKEN` into `/etc/wootty/wootty.env` (`0600`, owner `agent`), installs `woottyd` 0.2.17 and the wootty-web asset tarball from `https://ui.fedfork.com/wootty-web-dist.tar.gz`, and enables `wootty` and `fedproxy-client`. `wootty.service` runs as `User=agent` with `WOOTTY_HOST=127.0.0.1`, `WOOTTY_PORT=8080`, `WOOTTY_COMMAND=tmux` and `WOOTTY_STATIC_DIR=/usr/local/share/wootty/wootty-web`, reading the token from the environment file.",
+          "codeRefs": ["file:test/fixtures/cloud-init/fedproxy-web-wootty.yaml"]
+        },
+        {
+          "id": "r.fixtures-are-placeholder-identities",
+          "level": "SHOULD",
+          "text": "Every fixture carries non-secret placeholder identity material — the same `ssh-ed25519 AAAA test@example` authorized key, `did:plc:abc123`, `vm-test` and `relay.local`/`rly-xyz.xrpc.fedproxy.com` hostnames — so the fixtures can be compared byte-for-byte without depending on live credentials or real relay names.",
+          "codeRefs": [
+            "file:test/fixtures/cloud-init/tunnel.yaml",
+            "file:test/fixtures/cloud-init/fedproxy-ssh.yaml",
+            "file:test/fixtures/cloud-init/fedproxy-web-wootty.yaml"
+          ]
+        },
+        {
+          "id": "r.fixtures-are-cloud-config-documents",
+          "level": "MUST",
+          "text": "Each fixture is a standalone cloud-init document beginning with `#cloud-config` that a guest can consume directly: files are declared only through `write_files` with explicit `owner`, `permissions` and block-scalar `content`, first-boot work is invoked through `runcmd` after `systemctl daemon-reload`, long-running components are `Restart=always` systemd units with `WantedBy=multi-user.target`, and the document closes with `disable_root: false` and `ssh_pwauth: false`.",
+          "codeRefs": [
+            "file:test/fixtures/cloud-init/tunnel.yaml",
+            "file:test/fixtures/cloud-init/k3s.yaml",
+            "file:test/fixtures/cloud-init/iroh.yaml"
+          ]
+        }
+      ],
+      "interfaces": []
+    }
