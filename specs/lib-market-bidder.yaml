@@ -17,5 +17,246 @@ spec:
   - sc.lib-hono-factory-market-atproto
   - sc.lib-market-atproto
   - sc.lib-trust-graph-tangled-graph
+  intent: 'This context exists to pin down the contract of the single factory in lib/market-bidder/mod.ts:
+    the shape of MarketBidderConfig, the MarketBidder handle it produces, and the
+    behaviour beginServe/shutdown must have once it is running. It matters because
+    that factory is shared by more than one host — a CLI daemon and a desktop app
+    that already owns an HTTP server — so the module must stay free of process-level
+    I/O and take every network handle by injection, and because the bidder''s offering
+    record, operator allowlist, scope gate and firehose watchers are the parts other
+    services in atproto-market observe and depend on.'
+  requirements:
+  - id: r.accept-dedup
+    level: MUST
+    text: The merged onAccept must be wrapped so that an acceptUri already dispatched
+      returns 200 without re-running the handler, with dispatched keys expiring after
+      one hour once the map passes one hundred entries.
+    codeRefs:
+    - function:47138519ea324c71993a2053303ad1a3
+  - id: r.begin-serve-wiring
+    level: MUST
+    text: beginServe must run provider setup hooks and the config setup hook before
+      mounting anything, build one shared CallbackFactoryDeps from the atproto client,
+      then mount the market factory app on serve.app and register the /v1/on-network
+      guest event route when any rfp, accept, event or firehose callback set is present.
+    codeRefs:
+    - function:47138519ea324c71993a2053303ad1a3
+  - id: r.callback-merge
+    level: MUST
+    text: Provider-supplied rfpCallbacks and eventCallbacks must be deep-merged by
+      group and key across providers and the callbackFactory, while onAccept keeps
+      the first non-undefined handler and is the only callback collapsed rather than
+      merged.
+    codeRefs:
+    - function:47138519ea324c71993a2053303ad1a3
+  - id: r.config-surface
+    level: MUST
+    text: MarketBidderConfig must carry logger, serve, atproto and the optional relay,
+      providers, setup, teardown, callbackFactory, onContractChange, policy, policyArgs,
+      policyExec, eventStreams, offeringRefreshMs, appliesTo, skipServeBegin, onSessionExpired
+      and acceptToContract fields, with appliesTo overriding the union of provider
+      appliesTo lists and acceptToContract shared with providers for guest event routes.
+    codeRefs:
+    - file:lib/market-bidder/mod.ts
+    - function:9b2026d2f9671120feac1c6c94133674
+    - interface:9a1b67b2492832d7ba6133e09229a106
+  - id: r.connected-lifecycle
+    level: MUST
+    text: On serve connection the bidder must ensure the operator allowlist, ensure
+      the offering record, and when offeringRefreshMs is set start a refresher that
+      re-commits the offering on its canonical rkey, treating session expiry during
+      refresh as a reported expiry rather than a fatal error.
+    codeRefs:
+    - function:47138519ea324c71993a2053303ad1a3
+    - interface:9a1b67b2492832d7ba6133e09229a106
+  - id: r.delegated-vouch
+    level: MUST
+    text: Policy vouch lookups must go through the operator-delegated resolver so
+      an ephemeral bidder DID inherits its operator's vouches, and the resulting getVouchedDids
+      function must be handed to both the evaluator and the callback factory deps.
+    codeRefs:
+    - function:9b2026d2f9671120feac1c6c94133674
+  - id: r.factory-contract
+    level: MUST
+    text: createMarketBidder must accept a MarketBidderConfig and resolve to a MarketBidder
+      exposing beginServe, shutdown and refreshOffering; it must not itself start
+      a server, install signal handlers or open a websocket, instead using the injected
+      serve, atproto and eventStreams handles.
+    codeRefs:
+    - file:lib/market-bidder/mod.ts
+    - function:9b2026d2f9671120feac1c6c94133674
+    - interface:9a1b67b2492832d7ba6133e09229a106
+    - interface:d09a574816bbdda0321751f00f3c47d6
+  - id: r.firehose-accept-event
+    level: MUST
+    text: When an event streams client and a merged onAccept are present, accept creations
+      must be resolved through the DID document and PDS to confirm the referenced
+      bid exists in the bidder's own repo before dispatch; event creations must be
+      resolved the same way and routed by the payload's referenced collection NSID,
+      derived from the strongRef URI rather than the ref's own $type.
+    codeRefs:
+    - function:47138519ea324c71993a2053303ad1a3
+  - id: r.firehose-rfp
+    level: MUST
+    text: When an event streams client is configured, the bidder must watch RFP creations
+      and updates, skip events failing the scope gate, and dispatch matches through
+      the RFP dispatcher, relying on the client for cross-source deduplication.
+    codeRefs:
+    - function:47138519ea324c71993a2053303ad1a3
+    - interface:9a1b67b2492832d7ba6133e09229a106
+  - id: r.guest-on-network
+    level: MUST
+    text: The /v1/on-network route must reject bodies lacking acceptUri or acceptCid
+      with InvalidRequest, reject accept refs absent from the shared acceptToContract
+      map with UnknownAccept, and on success write a vm-on-network compute event plus
+      a receipt-linked market.event record, forwarding the event to the guest entry's
+      submitEventUrl when one is set.
+    codeRefs:
+    - function:47138519ea324c71993a2053303ad1a3
+  - id: r.offering-shape
+    level: MUST
+    text: buildOffering must emit an offering record carrying the OFFERING_NSID type,
+      appliesTo resolved from config.appliesTo or the deduplicated union of provider
+      appliesTo lists, an endpointUrl taken from the relay ingress URL or a did-scoped
+      temporary market tag, and both createdAt and a freshly stamped refreshedAt.
+    codeRefs:
+    - function:b19f7ada80292e197cdcc8a29e763b0c
+  - id: r.operator-allowlist
+    level: MUST
+    text: ensureOperatorAllowlist must scan the bidder's own allowlistRbacDid records
+      for an entry whose protects map targets the given service (or "*") with scope
+      account.auth or no scope, and when none is found create one granting the bidder
+      DID self-access for that service.
+    codeRefs:
+    - function:ececd2885fb9130953d79504bd2faf46
+  - id: r.operator-resolution
+    level: MUST
+    text: Operator resolution must read a subject's badgeBlueKeys records and accept
+      only the canonical challenge-is-operator, keyId-is-subject shape for bidder_associate
+      or requester_associate services, falling back to the inverted shape only when
+      the canonical lookup finds nothing, and returning null when nothing readable
+      exists.
+    codeRefs:
+    - function:9b2026d2f9671120feac1c6c94133674
+  - id: r.policy-fallback
+    level: SHOULD
+    text: An unknown or wrong-side policy name should be logged with the registry's
+      known names and fall back to an ungated bidder rather than failing construction.
+    codeRefs:
+    - function:9b2026d2f9671120feac1c6c94133674
+  - id: r.refresh-offering
+    level: MUST
+    text: refreshOffering must re-run ensureOffering so relays re-index the offering
+      immediately, and log a warning instead of throwing when the session is expired.
+    codeRefs:
+    - function:b839dc17d3496456f26776592f7f10d3
+  - id: r.scope-gate
+    level: MUST
+    text: 'Engagement must be gated by the bidder scope policy: when a canonical bidder-side
+      policy name and workflow are resolved, every counterparty DID is checked through
+      the policy evaluator''s scope mode against the scope cache and cached verdicts
+      are served on hit; when no policy resolves, the gate must allow the counterparty
+      instead of blocking it.'
+    codeRefs:
+    - function:47138519ea324c71993a2053303ad1a3
+    - function:9b2026d2f9671120feac1c6c94133674
+  - id: r.session-expiry
+    level: MUST
+    text: When an offering read or write raises OAuthSessionExpiredError, the bidder
+      must log the expired session path, invoke the configured onSessionExpired callback,
+      and return null rather than throwing or continuing as if the offering existed.
+    codeRefs:
+    - function:b839dc17d3496456f26776592f7f10d3
+    - interface:9a1b67b2492832d7ba6133e09229a106
+  - id: r.shared-accept-map
+    level: MAY
+    text: The acceptToContract map may be supplied by config and shared with providers
+      for guest event routes; otherwise the bidder creates its own.
+    codeRefs:
+    - function:9b2026d2f9671120feac1c6c94133674
+    - interface:9a1b67b2492832d7ba6133e09229a106
+  - id: r.shutdown
+    level: MUST
+    text: shutdown must close the event streams client, stop the offering refresher,
+      clear the active contract map, and fire provider and config teardown hooks as
+      best-effort without awaiting their rejection.
+    codeRefs:
+    - function:e2d4401ef119cf8107620590e41e0a6c
+  - id: r.single-offering
+    level: MUST
+    text: 'ensureOffering must keep exactly one offering record per bidder DID: reuse
+      the oldest existing record''s rkey, leave it untouched when appliesTo, an https
+      endpointUrl and the expected endpoint already match, otherwise update that same
+      record in place, and create a fresh record only when the collection is empty.'
+    codeRefs:
+    - function:b19f7ada80292e197cdcc8a29e763b0c
+    - function:b839dc17d3496456f26776592f7f10d3
+  - id: r.skip-serve-begin
+    level: MUST
+    text: When skipServeBegin is set the bidder must skip both serve.beginServe()
+      and serve.shutdown(), leaving route mounting, offering setup and firehose watchers
+      in place for a caller that owns the server lifecycle.
+    codeRefs:
+    - function:47138519ea324c71993a2053303ad1a3
+    - function:e2d4401ef119cf8107620590e41e0a6c
+    - interface:9a1b67b2492832d7ba6133e09229a106
+  - id: r.trust-invalidation
+    level: MUST
+    text: Badge-blue-keys, vouch and bidder-association commits seen on the firehose
+      must be applied to the scope cache so a changed operator or vouch cannot leave
+      a stale verdict behind, with non-Jetstream transports relying on cache TTLs
+      instead.
+    codeRefs:
+    - function:47138519ea324c71993a2053303ad1a3
+  interfaces:
+  - name: MarketBidder
+    kind: interface
+    signature: 'interface MarketBidder { beginServe(): Promise<void>; shutdown():
+      void; refreshOffering(): Promise<void> }'
+    file: lib/market-bidder/mod.ts
+  - name: MarketBidderConfig
+    kind: interface
+    signature: 'interface MarketBidderConfig { logger: StructuredLoggerInterface;
+      serve: ServeHandle; atproto: ATProto; relay?: IngressRef; providers?: MarketBidderProviderRef[];
+      setup?(): Promise<void>; teardown?(): Promise<void>; callbackFactory?: (deps:
+      CallbackFactoryDeps) => CallbackSet | Promise<CallbackSet>; onContractChange?:
+      (event: ContractEvent) => void; policy?: string | null; policyArgs?: PolicyArgs;
+      policyExec?: PolicyExecOptions; eventStreams?: ATProtoEventStreamsClient; offeringRefreshMs?:
+      number; appliesTo?: string[]; skipServeBegin?: boolean; onSessionExpired?: (err:
+      OAuthSessionExpiredError) => void; acceptToContract?: Map<string, GuestContractEntry>
+      }'
+    file: lib/market-bidder/mod.ts
+  - name: beginServe
+    kind: function
+    signature: 'beginServe(): Promise<void>'
+    file: lib/market-bidder/mod.ts
+  - name: buildOffering
+    kind: function
+    signature: 'buildOffering(createdAt: string): Record<string, unknown>'
+    file: lib/market-bidder/mod.ts
+  - name: createMarketBidder
+    kind: function
+    signature: 'createMarketBidder(config: MarketBidderConfig): Promise<MarketBidder>'
+    file: lib/market-bidder/mod.ts
+  - name: ensureOffering
+    kind: function
+    signature: 'ensureOffering(): Promise<{ rkey: string; createdAt: string } | null>'
+    file: lib/market-bidder/mod.ts
+  - name: ensureOperatorAllowlist
+    kind: function
+    signature: 'ensureOperatorAllowlist(service: string): Promise<void>'
+    file: lib/market-bidder/mod.ts
+  - name: shutdown
+    kind: function
+    signature: 'shutdown(): void'
+    file: lib/market-bidder/mod.ts
 codeRefIndex:
 - file:lib/market-bidder/mod.ts mod.ts@lib/market-bidder/mod.ts
+- function:47138519ea324c71993a2053303ad1a3 beginServe@lib/market-bidder/mod.ts:341
+- function:9b2026d2f9671120feac1c6c94133674 createMarketBidder@lib/market-bidder/mod.ts:140
+- function:b19f7ada80292e197cdcc8a29e763b0c buildOffering@lib/market-bidder/mod.ts:279
+- function:b839dc17d3496456f26776592f7f10d3 ensureOffering@lib/market-bidder/mod.ts:297
+- function:e2d4401ef119cf8107620590e41e0a6c shutdown@lib/market-bidder/mod.ts:676
+- function:ececd2885fb9130953d79504bd2faf46 ensureOperatorAllowlist@lib/market-bidder/mod.ts:255
+- interface:9a1b67b2492832d7ba6133e09229a106 MarketBidderConfig@lib/market-bidder/mod.ts:80
+- interface:d09a574816bbdda0321751f00f3c47d6 MarketBidder@lib/market-bidder/mod.ts:126

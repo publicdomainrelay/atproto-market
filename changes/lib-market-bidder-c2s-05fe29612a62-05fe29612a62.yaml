@@ -9,5 +9,22 @@ spec:
   fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
   toCommit: 05fe29612a62a645d70273560238ecc3180414d2
 status:
-  phase: Running
-  message: the agent is summarizing lib-market-bidder
+  phase: Succeeded
+  agentLog: 'lib/market-bidder is the Deno/TypeScript module at lib/market-bidder/mod.ts
+    that builds a market bidder: a long-lived service identity which advertises an
+    offering record, watches the firehose for RFP, accept and event records, gates
+    engagement through a policy engine, and dispatches matched work into provider-supplied
+    callbacks. createMarketBidder takes a MarketBidderConfig (logger, serve handle,
+    atproto client, optional relay, providers, policy settings, event-streams client)
+    and resolves to a MarketBidder whose beginServe() mounts routes and watchers,
+    ensures the operator allowlist and the offering record, and starts an optional
+    offering refresher, while shutdown() closes the event streams client, stops the
+    refresher, clears the active contract map and runs teardown hooks. The module
+    owns no I/O of its own: it never calls Deno.serve, never installs signal handlers
+    and never opens a websocket, instead borrowing the caller''s ServeHandle, ATProto
+    client and event-streams client, which is what lets one factory serve both a CLI
+    daemon and a desktop app that already runs its own HTTP server. Off-chain policy
+    vouch lookups are operator-delegated so an ephemeral bidder DID inherits its operator''s
+    vouches, and the scope cache is invalidated by badge-blue-keys, vouch and bidder-association
+    commits seen on the firehose.'
+  message: wrote 22 requirement(s) and 8 interface(s) for lib-market-bidder

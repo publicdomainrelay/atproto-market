@@ -1871,8 +1871,61 @@ system_contexts:
   - sc.lib-hono-factory-market-atproto
   - sc.lib-market-atproto
   - sc.lib-trust-graph-tangled-graph
+  requirements:
+  - id: r.accept-dedup
+    level: MUST
+  - id: r.begin-serve-wiring
+    level: MUST
+  - id: r.callback-merge
+    level: MUST
+  - id: r.config-surface
+    level: MUST
+  - id: r.connected-lifecycle
+    level: MUST
+  - id: r.delegated-vouch
+    level: MUST
+  - id: r.factory-contract
+    level: MUST
+  - id: r.firehose-accept-event
+    level: MUST
+  - id: r.firehose-rfp
+    level: MUST
+  - id: r.guest-on-network
+    level: MUST
+  - id: r.offering-shape
+    level: MUST
+  - id: r.operator-allowlist
+    level: MUST
+  - id: r.operator-resolution
+    level: MUST
+  - id: r.policy-fallback
+    level: SHOULD
+  - id: r.refresh-offering
+    level: MUST
+  - id: r.scope-gate
+    level: MUST
+  - id: r.session-expiry
+    level: MUST
+  - id: r.shared-accept-map
+    level: MAY
+  - id: r.shutdown
+    level: MUST
+  - id: r.single-offering
+    level: MUST
+  - id: r.skip-serve-begin
+    level: MUST
+  - id: r.trust-invalidation
+    level: MUST
   codeRefIndex:
   - file:lib/market-bidder/mod.ts mod.ts@lib/market-bidder/mod.ts
+  - function:47138519ea324c71993a2053303ad1a3 beginServe@lib/market-bidder/mod.ts:341
+  - function:9b2026d2f9671120feac1c6c94133674 createMarketBidder@lib/market-bidder/mod.ts:140
+  - function:b19f7ada80292e197cdcc8a29e763b0c buildOffering@lib/market-bidder/mod.ts:279
+  - function:b839dc17d3496456f26776592f7f10d3 ensureOffering@lib/market-bidder/mod.ts:297
+  - function:e2d4401ef119cf8107620590e41e0a6c shutdown@lib/market-bidder/mod.ts:676
+  - function:ececd2885fb9130953d79504bd2faf46 ensureOperatorAllowlist@lib/market-bidder/mod.ts:255
+  - interface:9a1b67b2492832d7ba6133e09229a106 MarketBidderConfig@lib/market-bidder/mod.ts:80
+  - interface:d09a574816bbdda0321751f00f3c47d6 MarketBidder@lib/market-bidder/mod.ts:126
 - id: sc.lib-market-bidder-agent
   name: lib-market-bidder-agent
   spec: specs/lib-market-bidder-agent.yaml

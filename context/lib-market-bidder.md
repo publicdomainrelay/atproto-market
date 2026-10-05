@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists to pin down the contract of the single factory in lib/market-bidder/mod.ts: the shape of MarketBidderConfig, the MarketBidder handle it produces, and the behaviour beginServe/shutdown must have once it is running. It matters because that factory is shared by more than one host — a CLI daemon and a desktop app that already owns an HTTP server — so the module must stay free of process-level I/O and take every network handle by injection, and because the bidder's offering record, operator allowlist, scope gate and firehose watchers are the parts other services in atproto-market observe and depend on.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

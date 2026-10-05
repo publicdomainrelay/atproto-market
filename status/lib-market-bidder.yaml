@@ -1,11 +1,11 @@
 syncedFingerprint: 4b44f720d53132ed76693466a2ed553d7bd11cd8d652a1f12190630e48cfc6a3
-realizedSpecHash: cbf1ef06b4a37efe05ff93f73c8f7ef8cad1ac737b74a78d519407d2f8ca23f6
+realizedSpecHash: bf6fe7b8a0f07a9c74f410fd19cd44e73bae4a2d710e948386677511c166a416
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: MarketBidder, MarketBidderConfig, beginServe, buildOffering,
-    createMarketBidder, ensureOffering, ensureOperatorAllowlist, shutdown'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual
