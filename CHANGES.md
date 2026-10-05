@@ -1181,7 +1181,8 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | hono-compute-contract-gateway-s2c-61ccdb8e80cc | SpecToCode | Succeeded | 1e1cd3c5 | 0 | - |
 | lib-abc-requester-s2c-43233687cb3d | SpecToCode | Succeeded | 1e1cd3c5 | 0 | - |
 | lib-common-cloud-init-common-c2s-a15d9cdab92c-26307737e859 | CodeToSpec | Failed |  | 0 | - |
-| lib-common-cloud-init-common-c2s-a15d9cdab92c-26307737e859-a2 | CodeToSpec | Running |  | 0 | - |
+| lib-common-cloud-init-common-c2s-a15d9cdab92c-26307737e859-a2 | CodeToSpec | Failed |  | 0 | - |
+| lib-common-cloud-init-common-c2s-a15d9cdab92c-26307737e859-a3 | CodeToSpec | Running |  | 0 | - |
 | lib-common-cloud-init-common-s2c-004f6cdd8bb8 | SpecToCode | Running |  | 0 | - |
 | lib-common-cloud-init-common-s2c-73bfe7993c46 | SpecToCode | Succeeded | 1e1cd3c5 | 0 | - |
 | lib-common-cloud-init-common-s2c-cdde016620fc | SpecToCode | Succeeded | a15d9cda | 0 | acceptance passed |
