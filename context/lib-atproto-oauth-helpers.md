@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so the two OAuth-fetching clients in the repository — createOAuthAgent in lib/atproto-helpers/agent.ts and createOAuthRequester in lib/requester-xrpc/mod.ts — can share one set of Web Crypto backed runtime, state-store, session-store, client-metadata and loopback-callback implementations instead of each carrying its own copy. Deno has no Node-style crypto adapter that @atproto/oauth-client accepts, so these helpers supply the RuntimeImplementation and the Key subclass that make DPoP-bound OAuth flows work against a PDS, plus the small persistence and localhost-redirect pieces those flows need.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

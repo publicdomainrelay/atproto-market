@@ -8,6 +8,185 @@ spec:
   upstream: self
   dependsOn:
   - sc.atproto-market
+  intent: This context exists so the two OAuth-fetching clients in the repository
+    — createOAuthAgent in lib/atproto-helpers/agent.ts and createOAuthRequester in
+    lib/requester-xrpc/mod.ts — can share one set of Web Crypto backed runtime, state-store,
+    session-store, client-metadata and loopback-callback implementations instead of
+    each carrying its own copy. Deno has no Node-style crypto adapter that @atproto/oauth-client
+    accepts, so these helpers supply the RuntimeImplementation and the Key subclass
+    that make DPoP-bound OAuth flows work against a PDS, plus the small persistence
+    and localhost-redirect pieces those flows need.
+  requirements:
+  - id: r.create-jwt-signs-compact-jws
+    level: MUST
+    text: WebCryptoKey.createJwt must override the alg and kid of the supplied header
+      with the key's own alg and this.jwk.kid, base64url-encode the header and payload
+      JSON into the header.payload signing input, sign that input with ECDSA over
+      P-256/SHA-256 through crypto.subtle.sign, and return the three-part compact
+      JWS header.payload.signature.
+    codeRefs:
+    - file:lib/atproto-oauth-helpers/key.ts
+    - method:26adc3684a97b0c5cac3325b5165757c
+  - id: r.create-key-generates-es256-pair
+    level: MUST
+    text: createWebCryptoKey must generate an extractable ECDSA P-256 key pair usable
+      for both sign and verify, select "ES256" when the supplied algorithm list contains
+      it and otherwise the first listed algorithm, derive the kid from crypto.randomUUID(),
+      and return a WebCryptoKey constructed from the generated private CryptoKey with
+      the exported public and private JWKs.
+    codeRefs:
+    - file:lib/atproto-oauth-helpers/key.ts
+    - function:a1f1c096bf7c6dd3ad9ba01660767894
+  - id: r.deno-package-manifest
+    level: MAY
+    text: The directory may carry a deno.json next to the two TypeScript files to
+      describe the package to the Deno toolchain; nothing in the runtime code reads
+      it.
+  - id: r.json-session-store-persistence
+    level: MUST
+    text: jsonSessionStore must return a SessionStore over the given file path whose
+      load lazily reads, parses and caches the stored JSON object and whose save rewrites
+      the whole file as two-space-indented JSON after every set and del; a missing
+      or unparsable file must fall back to an empty object rather than throw.
+    codeRefs:
+    - file:lib/atproto-oauth-helpers/mod.ts
+    - function:3cb1b51f5aea3838133b4e60f686144d
+    - function:d160bc8be496a8089360e4f03266343f
+    - function:fdf5c99b8f6ee5d65a5a59079345a3b3
+  - id: r.loopback-callback-server
+    level: MUST
+    text: startLoopbackCallbackServer must serve on hostname 127.0.0.1 at the requested
+      port, resolve the returned promise with the redirect's query parameters as a
+      string record when the request path is /callback (answering with an HTML page
+      telling the user to close the tab), answer 404 for any other path, and expose
+      a shutdown function that stops the Deno server.
+    codeRefs:
+    - file:lib/atproto-oauth-helpers/mod.ts
+    - function:653db074b84283be302a08bc6df60d44
+  - id: r.memory-state-store
+    level: MUST
+    text: memoryStateStore must return a StateStore backed by a fresh in-memory Map
+      per call, whose async get, set and del read, write and delete entries in that
+      map; it holds no on-disk or cross-process state, so it only carries the short-lived
+      state of a single authorization flow.
+    codeRefs:
+    - file:lib/atproto-oauth-helpers/mod.ts
+    - function:7981a0b8b11bca99dd8741f34edb3e25
+  - id: r.oauth-client-metadata-defaults
+    level: MUST
+    text: oauthClientMetadata must build the client metadata document with client_id
+      defaulting to "http://localhost", redirect_uris defaulting to ["http://127.0.0.1:0/callback"],
+      client_name defaulting to "ATProto OAuth Client", the required scope taken verbatim
+      from the options, and the fixed fields application_type "web", dpop_bound_access_tokens
+      true, grant_types ["authorization_code", "refresh_token"], response_types ["code"]
+      and token_endpoint_auth_method "none".
+    codeRefs:
+    - file:lib/atproto-oauth-helpers/mod.ts
+    - function:d03b1bd1ba44ea92ad6b5bb772af7fe3
+  - id: r.runtime-implementation
+    level: MUST
+    text: webCryptoRuntime must return a RuntimeImplementation whose createKey is
+      createWebCryptoKey, whose getRandomValues fills a fresh Uint8Array of the requested
+      length via crypto.getRandomValues, and whose digest maps the lowercase names
+      sha256, sha384 and sha512 onto SHA-256, SHA-384 and SHA-512 (passing any other
+      name through unchanged) before calling crypto.subtle.digest and wrapping the
+      result in a Uint8Array.
+    codeRefs:
+    - file:lib/atproto-oauth-helpers/mod.ts
+    - function:c4b50dc71822e21c61d8462aa6849574
+  - id: r.shared-by-agent-and-requester
+    level: SHOULD
+    text: The helpers should stay free of any dependency on a particular caller so
+      that createOAuthAgent and createOAuthRequester can configure their OAuthClient
+      with the same webCryptoRuntime, memoryStateStore, jsonSessionStore and oauthClientMetadata
+      rather than each carrying its own copy.
+    codeRefs:
+    - file:lib/atproto-oauth-helpers/key.ts
+    - file:lib/atproto-oauth-helpers/mod.ts
+  - id: r.verify-jwt-unimplemented
+    level: MUST
+    text: WebCryptoKey.verifyJwt must accept the token and options parameters but
+      always throw an Error reading "WebCryptoKey.verifyJwt not implemented"; the
+      key is used for signing DPoP proofs only, so verification is out of scope for
+      this helper.
+    codeRefs:
+    - file:lib/atproto-oauth-helpers/key.ts
+    - method:e6fca13262fb7317e7cd6ca588b27877
+  - id: r.web-crypto-key-extends-jwk-key
+    level: MUST
+    text: 'WebCryptoKey must extend @atproto/jwk''s abstract Key and pass super a
+      JWK built from the public and private JWK arguments plus the alg and kid, with
+      use fixed to "sig" and key_ops fixed to ["sign", "verify"], while holding the
+      CryptoKey, the alg string and the public JWK in private fields (#cryptoKey,
+      #alg, #publicJwk) that createJwt reads.'
+    codeRefs:
+    - class:5a1bec4d77c5f5a5cde8c04bb59bca88
+    - file:lib/atproto-oauth-helpers/key.ts
+    - method:2c62f219629eb196fc241a82271bf951
+  interfaces:
+  - name: WebCryptoKey
+    kind: class
+    signature: class WebCryptoKey extends Key
+    file: lib/atproto-oauth-helpers/key.ts
+  - name: WebCryptoKey.constructor
+    kind: method
+    signature: 'constructor(cryptoKey: CryptoKey, publicJwk: Record<string, unknown>,
+      privateJwk: Record<string, unknown>, alg: string, kid: string)'
+    file: lib/atproto-oauth-helpers/key.ts
+  - name: WebCryptoKey.createJwt
+    kind: method
+    signature: 'async createJwt(header: any, payload: any): Promise<`${string}.${string}.${string}`>'
+    file: lib/atproto-oauth-helpers/key.ts
+  - name: WebCryptoKey.verifyJwt
+    kind: method
+    signature: 'async verifyJwt(_token: string, _options?: any): Promise<any>'
+    file: lib/atproto-oauth-helpers/key.ts
+  - name: createWebCryptoKey
+    kind: function
+    signature: 'async function createWebCryptoKey(algs: string[]): Promise<Key>'
+    file: lib/atproto-oauth-helpers/key.ts
+  - name: jsonSessionStore
+    kind: function
+    signature: 'function jsonSessionStore(filePath: string): SessionStore'
+    file: lib/atproto-oauth-helpers/mod.ts
+  - name: load
+    kind: function
+    signature: 'async function load(): Promise<Record<string, unknown>>'
+    file: lib/atproto-oauth-helpers/mod.ts
+  - name: memoryStateStore
+    kind: function
+    signature: 'function memoryStateStore(): StateStore'
+    file: lib/atproto-oauth-helpers/mod.ts
+  - name: oauthClientMetadata
+    kind: function
+    signature: 'function oauthClientMetadata(opts: { clientId?: string; redirectUri?:
+      string; scope: string; clientName?: string; }): Record<string, unknown>'
+    file: lib/atproto-oauth-helpers/mod.ts
+  - name: save
+    kind: function
+    signature: 'async function save(): Promise<void>'
+    file: lib/atproto-oauth-helpers/mod.ts
+  - name: startLoopbackCallbackServer
+    kind: function
+    signature: 'function startLoopbackCallbackServer(port: number): { promise: Promise<Record<string,
+      string>>; shutdown(): void; }'
+    file: lib/atproto-oauth-helpers/mod.ts
+  - name: webCryptoRuntime
+    kind: function
+    signature: 'function webCryptoRuntime(): RuntimeImplementation'
+    file: lib/atproto-oauth-helpers/mod.ts
 codeRefIndex:
+- class:5a1bec4d77c5f5a5cde8c04bb59bca88 WebCryptoKey@lib/atproto-oauth-helpers/key.ts:11
 - file:lib/atproto-oauth-helpers/key.ts key.ts@lib/atproto-oauth-helpers/key.ts
 - file:lib/atproto-oauth-helpers/mod.ts mod.ts@lib/atproto-oauth-helpers/mod.ts
+- function:3cb1b51f5aea3838133b4e60f686144d load@lib/atproto-oauth-helpers/mod.ts:34
+- function:653db074b84283be302a08bc6df60d44 startLoopbackCallbackServer@lib/atproto-oauth-helpers/mod.ts:75
+- function:7981a0b8b11bca99dd8741f34edb3e25 memoryStateStore@lib/atproto-oauth-helpers/mod.ts:22
+- function:a1f1c096bf7c6dd3ad9ba01660767894 createWebCryptoKey@lib/atproto-oauth-helpers/key.ts:55
+- function:c4b50dc71822e21c61d8462aa6849574 webCryptoRuntime@lib/atproto-oauth-helpers/mod.ts:8
+- function:d03b1bd1ba44ea92ad6b5bb772af7fe3 oauthClientMetadata@lib/atproto-oauth-helpers/mod.ts:55
+- function:d160bc8be496a8089360e4f03266343f jsonSessionStore@lib/atproto-oauth-helpers/mod.ts:32
+- function:fdf5c99b8f6ee5d65a5a59079345a3b3 save@lib/atproto-oauth-helpers/mod.ts:44
+- method:26adc3684a97b0c5cac3325b5165757c WebCryptoKey.createJwt@lib/atproto-oauth-helpers/key.ts:30
+- method:2c62f219629eb196fc241a82271bf951 WebCryptoKey.constructor@lib/atproto-oauth-helpers/key.ts:16
+- method:e6fca13262fb7317e7cd6ca588b27877 WebCryptoKey.verifyJwt@lib/atproto-oauth-helpers/key.ts:45

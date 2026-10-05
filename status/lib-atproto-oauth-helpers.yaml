@@ -1,12 +1,11 @@
 syncedFingerprint: 1b70ada817d729068f36dbbc31ec327c7ebca73a9fe5861620b4b3a01eb100cc
-realizedSpecHash: 4394d799dcb40f071ad6a091853213c5d771533fab47c5db824f3c5e274054a9
+realizedSpecHash: cc75283ec3463ed314c776ef8430cf26eacb4602e1ec9b994a8ae742fa9bfb9e
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: WebCryptoKey, WebCryptoKey.constructor, WebCryptoKey.createJwt,
-    WebCryptoKey.verifyJwt, createWebCryptoKey, jsonSessionStore, load, memoryStateStore,
-    oauthClientMetadata, save, startLoopbackCallbackServer, webCryptoRuntime'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual
