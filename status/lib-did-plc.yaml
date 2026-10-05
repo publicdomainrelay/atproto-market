@@ -2,14 +2,41 @@ syncedFingerprint: c57e44c7dd1123a78a3ff725073adb918ce994cf426194884a7f24192f002
 realizedSpecHash: 22a675dfa4c8abe5fcdc756c6a4a3d53de122201b03b86fdd83ac3c263ac2a7a
 conditions:
 - type: CodeSynced
-  status: "True"
-  reason: InterfacesObserved
-  message: every declared interface is observed, nothing undeclared is exported and
-    every requirement code ref resolves
+  status: "False"
+  reason: InterfacesMissing
+  message: 'undeclared: ArraySeparatorStyle, ArrayStyle, Auth, AuthToken, BodySerializer,
+    Client, ClientMeta, ClientOptions, Config, CreateClientConfig, CreatePlcOpData,
+    CreatePlcOpError, CreatePlcOpErrors, CreatePlcOpResponses, DidDocument, ExportData,
+    ExportError, ExportErrors, ExportOptions, ExportResponse, ExportResponses, Field,
+    Fields, FieldsConfig, GenesisOptions, GenesisResult, GetLastOpData, GetLastOpError,
+    GetLastOpErrors, GetLastOpResponse, GetLastOpResponses, GetPlcAuditLogData, GetPlcAuditLogError,
+    GetPlcAuditLogErrors, GetPlcAuditLogResponse, GetPlcAuditLogResponses, GetPlcDataData,
+    GetPlcDataError, GetPlcDataErrors, GetPlcDataResponses, GetPlcOpLogData, GetPlcOpLogError,
+    GetPlcOpLogErrors, GetPlcOpLogResponse, GetPlcOpLogResponses, HealthResponse,
+    HttpMethod, JsonValue, KeypairState, KeysForDid, LegacyCreateOp, LogEntry, Middleware,
+    ObjectStyle, OmitNever, Operation, Options, PathSerializer, PlcClient, PlcClient.constructor,
+    PlcClient.export, PlcClient.exportPages, PlcClient.getAuditLog, PlcClient.getData,
+    PlcClient.getLastOp, PlcClient.getLog, PlcClient.health, PlcClient.resolve, PlcClient.submitOp,
+    PlcClientOptions, PlcError, PlcError.constructor, PlcInvalidOperationError, PlcInvalidOperationError.constructor,
+    PlcKeyResolverOptions, PlcNotFoundError, PlcNotFoundError.constructor, PlcOp,
+    PlcService, PlcTombstonedError, PlcTombstonedError.constructor, QuerySerializer,
+    QuerySerializerOptions, RequestOptions, RequestResult, ResolveDidData, ResolveDidError,
+    ResolveDidErrors, ResolveDidResponse, ResolveDidResponses, ResolvedRequestOptions,
+    ResponseStyle, SerializerOptions, ServerSentEventsOptions, ServerSentEventsOptions.onRequest,
+    ServerSentEventsOptions.onSseError, ServerSentEventsOptions.onSseEvent, ServerSentEventsOptions.sseSleepFn,
+    ServerSentEventsResult, StreamEvent, TDataShape, TombstoneOp, bodySerializer,
+    buildClientParams, buildUrl, createClient, createConfig, createGenesisOp, createInterceptors,
+    createPlcDirectoryClient, createPlcKeyResolver, createPlcOp, createQuerySerializer,
+    createSseClient, defaultPathSerializer, export_, getAuthToken, getLastOp, getParseAs,
+    getPlcAuditLog, getPlcData, getPlcOpLog, getUrl, getValidRequestBody, keysFromDidDocument,
+    loadKeypairState, mergeConfigs, mergeHeaders, plcClientAsKeyResolver, queryKeyJsonReplacer,
+    resolveDid, saveKeypairState, separatorArrayExplode, separatorArrayNoExplode,
+    separatorObjectExplode, serializeArrayParam, serializeObjectParam, serializePrimitiveParam,
+    serializeQueryKeyValue, setAuthParams, stringifyToJsonValue'
 - type: Drifted
   status: "False"
-  reason: NotSyncedYet
-  message: no synced fingerprint has been recorded yet
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed

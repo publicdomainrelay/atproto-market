@@ -1,0 +1,39 @@
+syncedFingerprint: 543cbdec95c06ad40e9ce2351795f1aab6333f6bed50abaec0f32d495d83a918
+realizedSpecHash: 0932097446fc7d3f1b89f574300fc5eb0f6b899eb353da5a8b8391bf9200569d
+conditions:
+- type: CodeSynced
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
+- type: Drifted
+  status: "False"
+  reason: NotSyncedYet
+  message: no synced fingerprint has been recorded yet
+- type: SpecValid
+  status: "True"
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed:
+  files:
+  - lib/hono-factory-market-settlement-free/mod.ts
+  treeFiles:
+  - lib/hono-factory-market-settlement-free/deno.json
+  interfaces:
+  - name: FreeSettlementEnv
+    kind: type_alias
+    file: lib/hono-factory-market-settlement-free/mod.ts
+    line: 11
+    codegraphId: type_alias:259f1f8ce12ab1cae693c13fa0c86028
+  - name: FreeSettlementConfig
+    kind: interface
+    file: lib/hono-factory-market-settlement-free/mod.ts
+    line: 18
+    codegraphId: interface:d9c1f785121068db886f45f3e476e730
+  - name: createFreeSettlementFactory
+    kind: function
+    signature: '(config: FreeSettlementConfig)'
+    file: lib/hono-factory-market-settlement-free/mod.ts
+    line: 28
+    codegraphId: function:7bbe9c9808ae3467009f796d9d61f7a7
+  fingerprint: 543cbdec95c06ad40e9ce2351795f1aab6333f6bed50abaec0f32d495d83a918

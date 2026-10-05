@@ -1,0 +1,160 @@
+syncedFingerprint: 62eadf7a15fa0d39072ffd39bfb7ee22b17dee000dd95df4fb38a4f7f5eae3b5
+realizedSpecHash: 319a24c26d550614707a522679a64dfc37054d20f1b997d12beb2c3c67d2ef29
+conditions:
+- type: CodeSynced
+  status: "False"
+  reason: InterfacesMissing
+  message: 'undeclared: HandlerDeps, MemoryPlcStore, MemoryPlcStore.exportLogs, MemoryPlcStore.getAuditLog,
+    MemoryPlcStore.getCurrentOps, MemoryPlcStore.getOpByCid, MemoryPlcStore.insertOp,
+    MemoryPlcStore.nullifyOps, PlcDirectoryFactory, PlcDirectoryOptions, PlcStore,
+    computeOperationCid, createPlcDirectoryFactory, mountHandlers, resolveDidDocument,
+    validateOperationStructure, validatePrevChain, validateRotationKeyAuth, verifyOperationSignature'
+- type: Drifted
+  status: "False"
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
+- type: SpecValid
+  status: "True"
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed:
+  files:
+  - lib/hono-factory-did-plc-directory/did-resolution.ts
+  - lib/hono-factory-did-plc-directory/factory.ts
+  - lib/hono-factory-did-plc-directory/handlers.ts
+  - lib/hono-factory-did-plc-directory/mod.ts
+  - lib/hono-factory-did-plc-directory/storage/plc-store.ts
+  - lib/hono-factory-did-plc-directory/validation.ts
+  treeFiles:
+  - lib/hono-factory-did-plc-directory/deno.json
+  interfaces:
+  - name: resolveDidDocument
+    kind: function
+    signature: |-
+      (
+        did: string,
+        currentOps: LogEntry[],
+      ): DidDocument | null
+    file: lib/hono-factory-did-plc-directory/did-resolution.ts
+    line: 9
+    codegraphId: function:45efe51af646c2a859080a62330a6a54
+  - name: PlcDirectoryOptions
+    kind: interface
+    file: lib/hono-factory-did-plc-directory/factory.ts
+    line: 6
+    codegraphId: interface:5a96ae66f70475a99ec34b51ef860a0b
+  - name: PlcDirectoryFactory
+    kind: interface
+    file: lib/hono-factory-did-plc-directory/factory.ts
+    line: 12
+    codegraphId: interface:ebd7cb20d08759e13cef8d018c871479
+  - name: createPlcDirectoryFactory
+    kind: function
+    signature: |-
+      (
+        opts: PlcDirectoryOptions = {},
+      ): PlcDirectoryFactory
+    file: lib/hono-factory-did-plc-directory/factory.ts
+    line: 19
+    codegraphId: function:3179a5fa554e021c00aadca31e4500e6
+  - name: HandlerDeps
+    kind: interface
+    file: lib/hono-factory-did-plc-directory/handlers.ts
+    line: 14
+    codegraphId: interface:cc3d4161f433917a2f2ac397219b72d6
+  - name: mountHandlers
+    kind: function
+    signature: '(app: Hono, deps: HandlerDeps): void'
+    file: lib/hono-factory-did-plc-directory/handlers.ts
+    line: 30
+    codegraphId: function:b33678bc247c0cfd81b6157c59e5bde5
+  - name: PlcStore
+    kind: interface
+    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
+    line: 3
+    codegraphId: interface:86a4aca923e87a6278f374fd01ce9547
+  - name: MemoryPlcStore
+    kind: class
+    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
+    line: 17
+    codegraphId: class:6dc897b2ad83f3474c8cc21fa651b5f0
+  - name: MemoryPlcStore.getCurrentOps
+    kind: method
+    signature: '(did: string): Promise<LogEntry[]>'
+    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
+    line: 20
+    codegraphId: method:f3ed83fb406ac57043fa578dc7d44e12
+  - name: MemoryPlcStore.getAuditLog
+    kind: method
+    signature: '(did: string): Promise<LogEntry[]>'
+    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
+    line: 26
+    codegraphId: method:5effb1ba90cc09ca38b9facc67e0e5e5
+  - name: MemoryPlcStore.getOpByCid
+    kind: method
+    signature: '(did: string, cid: string): Promise<LogEntry | null>'
+    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
+    line: 30
+    codegraphId: method:b7635d15869a1ecb4b58b9cef42809a8
+  - name: MemoryPlcStore.insertOp
+    kind: method
+    signature: '(entry: LogEntry): Promise<void>'
+    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
+    line: 36
+    codegraphId: method:b796dec3c2dab2f5c026e954e2799299
+  - name: MemoryPlcStore.nullifyOps
+    kind: method
+    signature: '(did: string, cids: string[]): Promise<void>'
+    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
+    line: 45
+    codegraphId: method:8b706b26d2ae998889c6d053a48c7fe3
+  - name: MemoryPlcStore.exportLogs
+    kind: method
+    signature: '(after?: Date, count?: number): Promise<LogEntry[]>'
+    file: lib/hono-factory-did-plc-directory/storage/plc-store.ts
+    line: 56
+    codegraphId: method:b8ee53ece42a3057f7a82bf6033b7ab5
+  - name: computeOperationCid
+    kind: function
+    signature: '(signedBytes: Uint8Array): Promise<string>'
+    file: lib/hono-factory-did-plc-directory/validation.ts
+    line: 25
+    codegraphId: function:cee54877382c117e060715b89d4affa0
+  - name: validateOperationStructure
+    kind: function
+    signature: '(op: unknown): string | null'
+    file: lib/hono-factory-did-plc-directory/validation.ts
+    line: 32
+    codegraphId: function:5503ef41dd95dd3ff95e23b6b7bd072e
+  - name: verifyOperationSignature
+    kind: function
+    signature: |-
+      (
+        op: PlcOp | TombstoneOp,
+        signerDid: string,
+        verifySig: (did: string, data: Uint8Array, sig: Uint8Array) => Promise<boolean>,
+      ): Promise<boolean>
+    file: lib/hono-factory-did-plc-directory/validation.ts
+    line: 70
+    codegraphId: function:d29a8b70510a2a66739855a818989601
+  - name: validatePrevChain
+    kind: function
+    signature: |-
+      (
+        prev: string | null,
+        existingOps: LogEntry[],
+      ): string | null
+    file: lib/hono-factory-did-plc-directory/validation.ts
+    line: 81
+    codegraphId: function:ce60a9ce515fde8a842b8e510617e5e3
+  - name: validateRotationKeyAuth
+    kind: function
+    signature: |-
+      (
+        prevOp: PlcOp,
+        signerDid: string,
+      ): boolean
+    file: lib/hono-factory-did-plc-directory/validation.ts
+    line: 99
+    codegraphId: function:3cdeb3d911d0b80c2f67f10b8b825205
+  fingerprint: 62eadf7a15fa0d39072ffd39bfb7ee22b17dee000dd95df4fb38a4f7f5eae3b5

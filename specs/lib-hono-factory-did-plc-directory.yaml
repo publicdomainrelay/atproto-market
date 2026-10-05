@@ -1,0 +1,18 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SystemContext
+metadata:
+  name: lib-hono-factory-did-plc-directory
+  namespace: default
+spec:
+  repository: atproto-market
+  upstream: self
+  dependsOn:
+  - sc.atproto-market
+  - sc.lib-did-plc
+codeRefIndex:
+- file:lib/hono-factory-did-plc-directory/did-resolution.ts did-resolution.ts@lib/hono-factory-did-plc-directory/did-resolution.ts
+- file:lib/hono-factory-did-plc-directory/factory.ts factory.ts@lib/hono-factory-did-plc-directory/factory.ts
+- file:lib/hono-factory-did-plc-directory/handlers.ts handlers.ts@lib/hono-factory-did-plc-directory/handlers.ts
+- file:lib/hono-factory-did-plc-directory/mod.ts mod.ts@lib/hono-factory-did-plc-directory/mod.ts
+- file:lib/hono-factory-did-plc-directory/storage/plc-store.ts plc-store.ts@lib/hono-factory-did-plc-directory/storage/plc-store.ts
+- file:lib/hono-factory-did-plc-directory/validation.ts validation.ts@lib/hono-factory-did-plc-directory/validation.ts

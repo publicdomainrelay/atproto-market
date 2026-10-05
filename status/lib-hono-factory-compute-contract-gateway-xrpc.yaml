@@ -1,0 +1,43 @@
+syncedFingerprint: b0aafdacc846eac2be4803e1e30aa33c3808ca81ef69a88830b6fe46e5351094
+realizedSpecHash: 1585d3c72bd6a3fe3746f4c4c5568dd455d804e2d2e3e6fd6e44af8ab32e3118
+conditions:
+- type: CodeSynced
+  status: "False"
+  reason: InterfacesMissing
+  message: 'undeclared: ComputeContractGatewayFactoryOptions, createComputeContractGatewayFactory,
+    requireAuth'
+- type: Drifted
+  status: "False"
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
+- type: SpecValid
+  status: "True"
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed:
+  files:
+  - lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+  treeFiles:
+  - lib/hono-factory-compute-contract-gateway-xrpc/deno.json
+  interfaces:
+  - name: ComputeContractGatewayFactoryOptions
+    kind: interface
+    file: lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+    line: 18
+    codegraphId: interface:9ce82a55642acec416e2eb4c3b27f13c
+  - name: createComputeContractGatewayFactory
+    kind: function
+    signature: |-
+      (
+        opts: ComputeContractGatewayFactoryOptions,
+      ): { app: Hono<{ Variables: { issuerDid: string } }> }
+    file: lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+    line: 25
+    codegraphId: function:fb9c0b643b6c0ae7e354f595aa7280cf
+  - name: requireAuth
+    kind: function
+    signature: '(lxm: string)'
+    file: lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+    line: 30
+    codegraphId: function:35f62ddaabe8e88061e3c0f6d7f5c28c
+  fingerprint: b0aafdacc846eac2be4803e1e30aa33c3808ca81ef69a88830b6fe46e5351094

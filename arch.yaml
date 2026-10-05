@@ -541,3 +541,64 @@ system_contexts:
   - file:lib/did-plc/openapi.official.yaml openapi.official.yaml@lib/did-plc/openapi.official.yaml
   - file:lib/did-plc/resolver.ts resolver.ts@lib/did-plc/resolver.ts
   - file:lib/did-plc/types.ts types.ts@lib/did-plc/types.ts
+- id: sc.lib-guest-capability-secrets
+  name: lib-guest-capability-secrets
+  spec: specs/lib-guest-capability-secrets.yaml
+  upstream: self
+  depends_on:
+  - sc.atproto-market
+  - sc.lib-abc-guest-capability
+  - sc.lib-common-secrets-common
+  - sc.lib-did-key-ingress-proxy
+  - sc.lib-hono-factory-secrets-oidc
+  - sc.lib-secrets-oidc
+  codeRefIndex:
+  - file:lib/guest-capability-secrets/mod.ts mod.ts@lib/guest-capability-secrets/mod.ts
+- id: sc.lib-hono-factory-compute-contract-gateway-xrpc
+  name: lib-hono-factory-compute-contract-gateway-xrpc
+  spec: specs/lib-hono-factory-compute-contract-gateway-xrpc.yaml
+  upstream: self
+  depends_on:
+  - sc.atproto-market
+  - sc.lib-abc-compute-contract-gateway
+  - sc.lib-common-compute-contract-gateway-common
+  - sc.lib-market-atproto
+  codeRefIndex:
+  - file:lib/hono-factory-compute-contract-gateway-xrpc/mod.ts mod.ts@lib/hono-factory-compute-contract-gateway-xrpc/mod.ts
+- id: sc.lib-hono-factory-did-plc-directory
+  name: lib-hono-factory-did-plc-directory
+  spec: specs/lib-hono-factory-did-plc-directory.yaml
+  upstream: self
+  depends_on:
+  - sc.atproto-market
+  - sc.lib-did-plc
+  codeRefIndex:
+  - file:lib/hono-factory-did-plc-directory/did-resolution.ts did-resolution.ts@lib/hono-factory-did-plc-directory/did-resolution.ts
+  - file:lib/hono-factory-did-plc-directory/factory.ts factory.ts@lib/hono-factory-did-plc-directory/factory.ts
+  - file:lib/hono-factory-did-plc-directory/handlers.ts handlers.ts@lib/hono-factory-did-plc-directory/handlers.ts
+  - file:lib/hono-factory-did-plc-directory/mod.ts mod.ts@lib/hono-factory-did-plc-directory/mod.ts
+  - file:lib/hono-factory-did-plc-directory/storage/plc-store.ts plc-store.ts@lib/hono-factory-did-plc-directory/storage/plc-store.ts
+  - file:lib/hono-factory-did-plc-directory/validation.ts validation.ts@lib/hono-factory-did-plc-directory/validation.ts
+- id: sc.lib-hono-factory-market-atproto
+  name: lib-hono-factory-market-atproto
+  spec: specs/lib-hono-factory-market-atproto.yaml
+  upstream: self
+  depends_on:
+  - sc.atproto-market
+  - sc.lib-common-market-common
+  - sc.lib-common-market-lexicons
+  - sc.lib-market-atproto
+  codeRefIndex:
+  - file:lib/hono-factory-market-atproto/mod.ts mod.ts@lib/hono-factory-market-atproto/mod.ts
+- id: sc.lib-hono-factory-market-settlement-free
+  name: lib-hono-factory-market-settlement-free
+  spec: specs/lib-hono-factory-market-settlement-free.yaml
+  upstream: self
+  depends_on:
+  - sc.atproto-market
+  - sc.lib-abc-market
+  - sc.lib-common-market-common
+  - sc.lib-market-atproto
+  - sc.lib-market-settlement-free
+  codeRefIndex:
+  - file:lib/hono-factory-market-settlement-free/mod.ts mod.ts@lib/hono-factory-market-settlement-free/mod.ts
