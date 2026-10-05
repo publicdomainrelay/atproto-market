@@ -15,17 +15,9 @@ spec:
     requirements:
     - +r.control-plane-and-report-route
 status:
-  phase: Pending
-  message: 'attempt 4 retried by john (The acceptance suite fails at the live guest:
-    the dumbpipe install loops forever. Live container log of the kept guest (--keep-vm):
-    curl -sfL https://github.com/n0-computer/dumbpipe/releases/download/v0.39.0/dumbpipe-v0.39.0-linux-x86_64.tar.gz
-    | tar -xz -C /usr/local/bin dumbpipe answers ''tar: dumbpipe: Not found in archive''
-    and is retried 50+ times, so no listener starts, no ticket is reported and the
-    requester ends on vm_fqdn_timeout timeoutSec=300. The v0.39.0 archive stores the
-    binary as ./dumbpipe: extract with tar -xzf <archive> -C <dir> ./dumbpipe (or
-    untar the whole archive into a temp dir). Make the install fail loudly after a
-    few attempts instead of retrying forever, and do not run the 5-minute acceptance
-    suite yourself while iterating: it is the gate and specd runs it.)'
+  phase: Running
+  message: the agent is realizing lib-did-key-ingress-proxy in a batch of 4 led by
+    atproto-market
   attempt: 4
   retryReason: 'The acceptance suite fails at the live guest: the dumbpipe install
     loops forever. Live container log of the kept guest (--keep-vm): curl -sfL https://github.com/n0-computer/dumbpipe/releases/download/v0.39.0/dumbpipe-v0.39.0-linux-x86_64.tar.gz
