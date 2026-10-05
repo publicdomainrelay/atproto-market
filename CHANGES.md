@@ -48,11 +48,18 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 - added `r.relay-visibility-check` (SHOULD): "When relay URLs and a visibility hostname are available, verifyRelayVisibility is run against the offering collection for the bidder DID; a positive result logs the indexing relays and a negative result logs a warning hinting that requester-side listReposByCollection discovery will not find this bidder. Failure never aborts boot."
 - added `r.worker-permission-mode` (MUST): "The Deno worker provider defaults its worker permission mode to "deny-all"; only the value "allow-net" installs a permission policy handler, loaded dynamically."
 
+### hono-market
+
+- intent: "" -> "This context exists to pin down what hono-market is for: nothing. It marks the package as a deliberate stub so that readers and tooling do not go looking for a Hono app, an XRPC handler, or a market client here, and so that the market behaviour owned by the Hono market factory and the market-atproto client is not duplicated into this package. The specification is therefore mostly prohibitive: the module stays empty, the manifest stays minimal, and the real market surface stays where it lives."
+- added `r.empty-entry-module` (MUST): "The package entry module hono-market/mod.ts is a valid ES module with no exports; it must not define or re-export any value, type, factory, or handler, and must produce no side effects, so importing the package leaves a consumer with nothing to bind and no behaviour to observe."
+- added `r.manifest-stays-minimal` (MUST): "The package manifest hono-market/deno.json must carry no imports, no tasks, and no export mappings, so the stub resolves under Deno's defaults and exposes no entry point beyond the empty mod.ts."
+- added `r.no-market-behaviour` (SHOULD): "Market HTTP and market client behaviour must stay in the packages that own it, the Hono market factory and the market-atproto client, rather than being copied into this package, so no Hono factory, XRPC handler, or market client is duplicated or re-exported from hono-market."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance | coverage |
 | --- | --- | --- | --- | --- | --- | --- |
 | atproto-market-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | hono-bidder-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
-| hono-compute-contract-gateway-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Pending |  | 0 | - | - |
-| hono-market-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Pending |  | 0 | - | - |
+| hono-compute-contract-gateway-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
+| hono-market-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |

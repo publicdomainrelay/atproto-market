@@ -8,5 +8,38 @@ spec:
   upstream: self
   dependsOn:
   - sc.atproto-market
+  intent: 'This context exists to pin down what hono-market is for: nothing. It marks
+    the package as a deliberate stub so that readers and tooling do not go looking
+    for a Hono app, an XRPC handler, or a market client here, and so that the market
+    behaviour owned by the Hono market factory and the market-atproto client is not
+    duplicated into this package. The specification is therefore mostly prohibitive:
+    the module stays empty, the manifest stays minimal, and the real market surface
+    stays where it lives.'
+  requirements:
+  - id: r.empty-entry-module
+    level: MUST
+    text: The package entry module hono-market/mod.ts is a valid ES module with no
+      exports; it must not define or re-export any value, type, factory, or handler,
+      and must produce no side effects, so importing the package leaves a consumer
+      with nothing to bind and no behaviour to observe.
+    codeRefs:
+    - file:hono-market/mod.ts
+  - id: r.manifest-stays-minimal
+    level: MUST
+    text: The package manifest hono-market/deno.json must carry no imports, no tasks,
+      and no export mappings, so the stub resolves under Deno's defaults and exposes
+      no entry point beyond the empty mod.ts.
+    codeRefs:
+    - file:hono-market/deno.json
+    - file:hono-market/mod.ts
+  - id: r.no-market-behaviour
+    level: SHOULD
+    text: Market HTTP and market client behaviour must stay in the packages that own
+      it, the Hono market factory and the market-atproto client, rather than being
+      copied into this package, so no Hono factory, XRPC handler, or market client
+      is duplicated or re-exported from hono-market.
+    codeRefs:
+    - file:hono-market/mod.ts
 codeRefIndex:
+- file:hono-market/deno.json deno.json@hono-market/deno.json
 - file:hono-market/mod.ts mod.ts@hono-market/mod.ts

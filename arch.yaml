@@ -173,7 +173,15 @@ system_contexts:
   upstream: self
   depends_on:
   - sc.atproto-market
+  requirements:
+  - id: r.empty-entry-module
+    level: MUST
+  - id: r.manifest-stays-minimal
+    level: MUST
+  - id: r.no-market-behaviour
+    level: SHOULD
   codeRefIndex:
+  - file:hono-market/deno.json deno.json@hono-market/deno.json
   - file:hono-market/mod.ts mod.ts@hono-market/mod.ts
 - id: sc.lib-abc-compute-contract-gateway
   name: lib-abc-compute-contract-gateway
