@@ -9,5 +9,22 @@ spec:
   fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
   toCommit: 05fe29612a62a645d70273560238ecc3180414d2
 status:
-  phase: Running
-  message: the agent is summarizing lib-trust-graph-bsky-mutuals
+  phase: Succeeded
+  agentLog: 'lib-trust-graph-bsky-mutuals is a single-file Deno module at lib/trust-graph-bsky-mutuals/mod.ts
+    that adapts a Bluesky follow lookup into the VouchResolver abstraction defined
+    in lib/abc/trust-graph/mod.ts. It exports the options interface BskyMutualsVouchResolverOpts,
+    which requires an injected getFollows(actor: string): Promise<Set<string>> and
+    accepts an optional log(level, msg, meta?) callback, and the factory createBskyMutualsVouchResolver(opts),
+    which returns an object implementing getVouchedDids(did) and isVouched(voucher,
+    vouchee). The follow set of an actor is treated directly as that actor''s vouched
+    set, so a vouch holds exactly when the voucher follows the vouchee, with no filtering,
+    mapping, or re-wrapping of the set at this boundary. Every lookup is fail-soft:
+    a rejecting getFollows is caught inside the resolver, logged at level "warn" with
+    the message "bsky-mutuals follow lookup failed" and metadata carrying the looked-up
+    DID under key did plus String(err) under key error, and degraded to an empty Set
+    for getVouchedDids or false for isVouched rather than propagating to the trust
+    evaluation that called in. When opts.log is nullish the factory substitutes a
+    no-op logger so logging is never required of the caller. The package also carries
+    a lib/trust-graph-bsky-mutuals/deno.json manifest that the code index does not
+    treat as source.'
+  message: wrote 9 requirement(s) and 2 interface(s) for lib-trust-graph-bsky-mutuals

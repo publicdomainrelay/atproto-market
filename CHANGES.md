@@ -713,6 +713,19 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 - added `r.signature-verification` (MUST): "The token signature is verified with jose.jwtVerify against the grant's issuerUri as issuer and expectedAud as audience, using the configured clockTolerance; any failure other than a missing matching key is rethrown as UnauthorizedException 'token verification failed'."
 - added `r.sub-required` (MUST): "A verified payload whose sub claim is absent or is not a string is rejected with UnauthorizedException 'token has no sub', so every authorized request is attributable to a subject."
 
+### lib-trust-graph-bsky-mutuals
+
+- intent: "" -> "This context exists to pin down the one adapter that lets the trust graph read its vouch signal out of Bluesky's social graph instead of from a bespoke trust store: it fixes the shape of the injection point (BskyMutualsVouchResolverOpts) and the exact semantics of the two VouchResolver methods the factory returns. It is written so the module can be reimplemented or audited without reading the Bluesky client behind getFollows, and so the fail-soft contract is explicit -- a follow source that is slow, rate-limited or down must degrade to "no vouch" rather than abort trust evaluation, with a per-actor warn log as the only evidence left behind."
+- added `r.conform-to-vouch-resolver` (MUST): "The object returned by createBskyMutualsVouchResolver must satisfy the VouchResolver contract from lib/abc/trust-graph/mod.ts, so the module remains a drop-in implementation and callers depend only on that abstraction rather than on this package."
+- added `r.export-factory-and-opts` (MUST): "The module must export createBskyMutualsVouchResolver, a factory taking a BskyMutualsVouchResolverOpts argument and returning a resolver exposing getVouchedDids and isVouched, so callers can plug a Bluesky follow graph into the trust graph without depending on a concrete Bluesky client."
+- added `r.fail-soft-on-lookup-error` (MUST): "A rejected getFollows must never propagate out of the resolver: getVouchedDids must catch it and return a new empty Set, and isVouched must catch it and return false, so an unreachable follow source degrades to no-vouch instead of failing the trust evaluation that called in."
+- added `r.is-vouched-membership` (MUST): "isVouched(voucher, vouchee) must await getFollows(voucher) and report whether the resulting Set has vouchee, so a vouch holds exactly when the voucher follows the vouchee."
+- added `r.log-optional-noop-default` (MUST): "When opts.log is nullish the factory must substitute a no-op logger, so logging is never required of the caller and the warn call can never throw, while a supplied log is invoked directly with (level, msg, meta)."
+- added `r.opts-get-follows-required` (MUST): "BskyMutualsVouchResolverOpts must require getFollows(actor: string): Promise<Set<string>> as the sole source of vouch data and must accept an optional log(level: string, msg: string, meta?: Record<string, unknown>): void; the factory destructures getFollows and log out of its options argument, so no other configuration is needed."
+- added `r.package-manifest` (MAY): "The package may carry a lib/trust-graph-bsky-mutuals/deno.json manifest declaring its module metadata for Deno tooling; the code index does not treat that file as source, so it must not be relied on to export the adapter."
+- added `r.vouched-dids-are-follows` (MUST): "getVouchedDids(did) must await getFollows(did) and return that follow Set unchanged, treating an actor's follow set as exactly the set of DIDs that actor vouches for, so no filtering, mapping or re-wrapping of the set happens at this boundary."
+- added `r.warn-log-on-error` (MUST): "On a caught lookup error the resolver must log level "warn" with the message "bsky-mutuals follow lookup failed" and metadata carrying the looked-up DID under key did (the did argument in getVouchedDids, the voucher argument in isVouched) plus the error stringified with String(err) under key error, so failures are diagnosable per actor."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance | coverage |
@@ -761,4 +774,5 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 | lib-operator-discovery-badge-blue-keys-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-requester-xrpc-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
 | lib-secrets-oidc-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
-| lib-trust-graph-bsky-mutuals-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
+| lib-trust-graph-bsky-mutuals-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
+| lib-trust-graph-tangled-graph-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |

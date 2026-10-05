@@ -2421,8 +2421,30 @@ system_contexts:
   depends_on:
   - sc.atproto-market
   - sc.lib-abc-trust-graph
+  requirements:
+  - id: r.conform-to-vouch-resolver
+    level: MUST
+  - id: r.export-factory-and-opts
+    level: MUST
+  - id: r.fail-soft-on-lookup-error
+    level: MUST
+  - id: r.is-vouched-membership
+    level: MUST
+  - id: r.log-optional-noop-default
+    level: MUST
+  - id: r.opts-get-follows-required
+    level: MUST
+  - id: r.package-manifest
+    level: MAY
+  - id: r.vouched-dids-are-follows
+    level: MUST
+  - id: r.warn-log-on-error
+    level: MUST
   codeRefIndex:
+  - file:lib/trust-graph-bsky-mutuals/deno.json deno.json@lib/trust-graph-bsky-mutuals/deno.json
   - file:lib/trust-graph-bsky-mutuals/mod.ts mod.ts@lib/trust-graph-bsky-mutuals/mod.ts
+  - function:34fc226f1ebe43b6ca206f58c9e43a2f createBskyMutualsVouchResolver@lib/trust-graph-bsky-mutuals/mod.ts:8
+  - interface:db90b579bdaef85c0398478a8d9c2578 BskyMutualsVouchResolverOpts@lib/trust-graph-bsky-mutuals/mod.ts:3
 - id: sc.lib-trust-graph-tangled-graph
   name: lib-trust-graph-tangled-graph
   spec: specs/lib-trust-graph-tangled-graph.yaml

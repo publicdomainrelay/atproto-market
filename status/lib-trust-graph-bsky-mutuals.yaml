@@ -1,10 +1,11 @@
 syncedFingerprint: b8e3d05832678a399e9de4ecce9394faf689809041b052eb389f929b36259f88
-realizedSpecHash: 51978ed422656eb34342bd38711f0aba4880f898fd344c49ecf20557afc15415
+realizedSpecHash: 243555055de389df6e63a75b6e6608c5610dfd5aef3eefd01fca2fe06fe2a722
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: BskyMutualsVouchResolverOpts, createBskyMutualsVouchResolver'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual
