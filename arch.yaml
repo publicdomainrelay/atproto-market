@@ -1393,6 +1393,8 @@ system_contexts:
   requirements:
   - id: r.close-idempotent-before-serve
     level: MUST
+  - id: r.control-plane-and-report-route
+    level: MUST
   - id: r.create-ingress-factory
     level: MUST
   - id: r.direct-subscription-handler

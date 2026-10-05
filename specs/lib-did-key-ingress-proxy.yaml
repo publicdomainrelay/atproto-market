@@ -16,7 +16,10 @@ spec:
     keeps the two signing identities separable and leaves TLS, the lazily resolved
     loopback target and the in-process direct subscription handler as opt-in knobs,
     so the same factory serves a TLS-terminated public dispatcher and a test process
-    with an in-memory firehose source.'
+    with an in-memory firehose source. It is the requester''s control plane only:
+    the market XRPC calls, the requester''s own mounted routes and the websocket tunnel
+    stay here, while the SSH data plane to a provisioned guest is carried by iroh
+    and no longer routes through this package.'
   requirements:
   - id: r.close-idempotent-before-serve
     level: MUST
@@ -26,6 +29,21 @@ spec:
     codeRefs:
     - file:lib/did-key-ingress-proxy/mod.ts
     - function:ab0d43e74646836bd86d4b393d2cafa0
+  - id: r.control-plane-and-report-route
+    level: MUST
+    text: 'createIngress is the requester''s control plane and its only public face:
+      the relay carries the market XRPC calls (submitBid, submitEvent, associateConfirm)
+      and every route the requester mounts on its own app, so a route mounted on the
+      requester''s serve is reachable at the relay''s ingress URL even though the
+      requester owns no routable address — which is what makes the inbound route a
+      provisioned guest POSTs its transport address to reachable. The websocket tunnel
+      target (localWsTarget and the subscriber tunnel) stays available and unchanged
+      for callers that explicitly select the tunnel or fedproxy-ssh transport, but
+      the SSH data plane no longer depends on this package: an iroh guest is reached
+      by ticket through dumbpipe, never through the subscriber tunnel, and nothing
+      host-side reads the guest''s address out of the relay.'
+    codeRefs:
+    - file:lib/did-key-ingress-proxy/mod.ts
   - id: r.create-ingress-factory
     level: MUST
     text: 'createIngress(opts) must build and return an IngressRef from a CreateIngressOpts

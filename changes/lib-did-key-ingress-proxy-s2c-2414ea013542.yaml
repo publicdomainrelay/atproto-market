@@ -1,0 +1,18 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-did-key-ingress-proxy-s2c-2414ea013542
+  namespace: default
+spec:
+  systemContext: lib-did-key-ingress-proxy
+  direction: SpecToCode
+  fromSpecHash: e1dfbcad244bc7ca6c9f01b5adc02db5310cbe54a7887879fd8d4f1a025dd5f6
+  toSpecHash: 2414ea0135428272c475ce7c8582cb74bb7a9f3089d22575c7bf4e37354481db
+  delta:
+    counts:
+      added: 1
+      changed: 1
+    requirements:
+    - +r.control-plane-and-report-route
+status:
+  phase: Pending

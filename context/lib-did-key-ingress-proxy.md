@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-This context exists so a local XRPC app can be reached from outside without owning a routable address: createIngress bundles subscriber registration, per-method service-auth minting, WebSocket target resolution and shutdown behind one IngressRef, letting a dispatcher publish an ingress identity on an ingress proxy host and hand inbound relay requests back into its own fetch handler. The options record keeps the two signing identities separable and leaves TLS, the lazily resolved loopback target and the in-process direct subscription handler as opt-in knobs, so the same factory serves a TLS-terminated public dispatcher and a test process with an in-memory firehose source.
+This context exists so a local XRPC app can be reached from outside without owning a routable address: createIngress bundles subscriber registration, per-method service-auth minting, WebSocket target resolution and shutdown behind one IngressRef, letting a dispatcher publish an ingress identity on an ingress proxy host and hand inbound relay requests back into its own fetch handler. The options record keeps the two signing identities separable and leaves TLS, the lazily resolved loopback target and the in-process direct subscription handler as opt-in knobs, so the same factory serves a TLS-terminated public dispatcher and a test process with an in-memory firehose source. It is the requester's control plane only: the market XRPC calls, the requester's own mounted routes and the websocket tunnel stay here, while the SSH data plane to a provisioned guest is carried by iroh and no longer routes through this package.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 
