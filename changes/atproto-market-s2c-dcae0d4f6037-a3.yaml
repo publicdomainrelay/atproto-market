@@ -17,17 +17,8 @@ spec:
     - +r.iroh-acceptance-plc-key-resolution
     - +r.iroh-cloud-init-fixture
 status:
-  phase: Pending
-  message: 'attempt 3 retried by john (The realize gate denied this change and that
-    denial is the requirement: PolicyDenied: rfp-relay-only-guest-ssh: ssh from test
-    reaches the guest directly: test/bidder_container_integration_test.ts:251. That
-    ssh carries no ProxyCommand, so it dials the guest address itself. A guest is
-    reached only through the transport the RFP cloud-init deployed: give the ssh the
-    dumbpipe ProxyCommand for the ticket the guest reported (the same transport the
-    guest runs), or do not dial at all -- wait for the flow to report sshReady and
-    assert on the result instead. Never ssh, Deno.connect or curl a guest address
-    directly from a test. Keep the rest of the previous attempt, including the ./dumbpipe
-    extraction fix.)'
+  phase: Running
+  message: the agent is realizing atproto-market in a batch of 4 led by atproto-market
   attempt: 3
   retryReason: 'The realize gate denied this change and that denial is the requirement:
     PolicyDenied: rfp-relay-only-guest-ssh: ssh from test reaches the guest directly:
