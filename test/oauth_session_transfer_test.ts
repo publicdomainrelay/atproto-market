@@ -18,6 +18,7 @@ import { createLogger } from "@publicdomainrelay/logger";
 import { createRepoFactory } from "@publicdomainrelay/hono-factory-atproto-repo-deno";
 import { MemoryStorage, signerFromKeypair } from "@publicdomainrelay/atproto-repo-deno";
 import { createRelayFactory as createDispatcherFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc";
+import { resolveDidKeyFromPlc } from "./fetch-interceptor.ts";
 import { createRelayFactory as createAtprotoRelayFactory } from "@publicdomainrelay/hono-factory-atproto-relay-xrpc";
 import type { SessionInjector } from "@publicdomainrelay/atproto-oauth-server-abc";
 import type { ContainerBackend } from "@publicdomainrelay/container-backend-abc";
@@ -279,6 +280,7 @@ Deno.test({
   const dispatcherApp = createDispatcherFactory({
     hostname: "relay.localhost",
     additionalHosts: [gateway],
+    resolveDidKey: resolveDidKeyFromPlc,
   }).createApp();
   const dispAc = new AbortController();
   // Two listeners on one app: plain HTTP for in-process components and the

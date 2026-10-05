@@ -301,9 +301,18 @@ export function createVmBidderCallbacks(deps: VmBidderDeps): {
         registered.add(rk);
         const nowIso = new Date().toISOString();
 
+        // Informational only: the provider's provisioned address (a
+        // non-routable container/droplet IP), never the guest's iroh ticket or
+        // endpoint id. The ticket is the capability that dials the guest's
+        // sshd, and this record is world-readable, so it must never carry one.
+        // No ticket is requested from the provider either: getNodeId is not
+        // part of the pinned ComputeProvider contract. The requester learns the
+        // ticket from the guest's own report to its per-contract endpoint.
+        const address = provisionIp;
+
         createRepoRecord(COMPUTE_EVENTS_VM_ONNETWORK_NSID, {
           $type: COMPUTE_EVENTS_VM_ONNETWORK_NSID,
-          address: provisionIp,
+          address,
           createdAt: nowIso,
         }).then(({ uri: vmOnNetworkUri, cid: vmOnNetworkCid }) => {
           return createSignedRepoRecord(EVENT_NSID, {
@@ -312,7 +321,7 @@ export function createVmBidderCallbacks(deps: VmBidderDeps): {
             payload: strongRef(vmOnNetworkUri, vmOnNetworkCid),
           }, did);
         }).then(({ uri: eventUri, cid: eventCid, record: eventRecord }) => {
-          cbLog("info", "vm.onNetwork event created on PDS (firehose)", { receiptKey: rk, ip: provisionIp, eventUri });
+          cbLog("info", "vm.onNetwork event created on PDS (firehose)", { receiptKey: rk, address, eventUri });
 
           // Best-effort: also push via submitEvent XRPC if endpoint available.
           const submitEventUrl = (accept as { submitEvent?: string }).submitEvent;

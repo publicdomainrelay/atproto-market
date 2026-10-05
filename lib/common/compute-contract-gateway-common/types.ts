@@ -78,6 +78,10 @@ export interface GatewayComputeResponse {
   sshExitCode?: number;
   websocatUrl?: string;
   vmFqdn?: string;
+  /** Guest transport module actually used for the run ("iroh" by default). */
+  transport?: string;
+  /** iroh dumbpipe ticket to dial, under the iroh transport. */
+  ticket?: string;
   winnerDid?: string;
   winnerBidUri?: string;
   winnerBidCid?: string;

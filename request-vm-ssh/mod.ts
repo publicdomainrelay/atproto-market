@@ -7,6 +7,7 @@ import {
   createOAuthRequester,
   runComputeContract,
   createSshSessionProvider,
+  ensureDumbpipe,
   ensureWebsocat,
 } from "@publicdomainrelay/requester-xrpc";
 import { pollForOAuthSession, createOAuthAgentFromSession, tryRestoreOAuthQRSession, saveOAuthQRSession, OAuthSessionExpiredError } from "@publicdomainrelay/atproto-helpers";
@@ -89,6 +90,10 @@ if (userDataPath) {
   logger.info("user_data_loaded", { userDataPath, bytes: baseUserData.length });
 }
 const rbac = !(options.skipRbac as boolean);
+// Guest transport module. Default iroh (dumbpipe listener); only fedproxy-ssh
+// selects the legacy websocat/relay plane, and it is reachable only by naming
+// it explicitly.
+const userDataTransport = (options.userDataTransport as string) ?? "iroh";
 
 const capabilities: GuestCapability[] = [];
 const secretsPath = options.secrets as string | undefined;
@@ -102,7 +107,24 @@ if (secretsPath) {
   });
 }
 
-await ensureWebsocat(logger);
+// Fetch the helper binary the selected transport's SSH ProxyCommand needs:
+// dumbpipe under the default iroh transport, websocat for the legacy
+// tunnel/fedproxy-ssh transports. --skip-ssh runs no SSH and fetches neither;
+// an unknown transport id fetches nothing and later fails in the cloud-init
+// module registry.
+const sshHelperByTransport: Record<string, "dumbpipe" | "websocat"> = {
+  iroh: "dumbpipe",
+  tunnel: "websocat",
+  "fedproxy-ssh": "websocat",
+};
+if (!(options.skipSsh as boolean)) {
+  const sshHelper = sshHelperByTransport[userDataTransport];
+  if (sshHelper === "websocat") {
+    await ensureWebsocat(logger);
+  } else if (sshHelper === "dumbpipe") {
+    await ensureDumbpipe(logger);
+  }
+}
 logger.info("requester_starting", { label, ingressProxyHost, relayUrls });
 
 const serve = createServe({
@@ -512,9 +534,7 @@ const result = await runComputeContract(pds, {
   denyBidderDids,
   relayUrls,
   baseUserData,
-  userData: (options.userDataTransport as string | undefined)
-    ? { transport: options.userDataTransport as string }
-    : undefined,
+  userData: { transport: userDataTransport },
   rbac,
   capabilities,
   policy,

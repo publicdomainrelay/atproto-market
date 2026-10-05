@@ -172,8 +172,9 @@ export default {
     },
     "user-data-transport": {
       type: "string" as const,
-      description: "Transport module id for the composed cloud-init (default tunnel; see cloud-init-common listUserDataModules)",
+      description: "Transport module id for the composed cloud-init (default iroh; see cloud-init-common listUserDataModules)",
       env: "USER_DATA_TRANSPORT",
+      default: "iroh",
     },
     "secrets": {
       type: "string" as const,

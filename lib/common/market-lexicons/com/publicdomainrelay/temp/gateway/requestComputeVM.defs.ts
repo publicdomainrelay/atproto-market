@@ -38,6 +38,12 @@ export const $input = /*#__PURE__*/ l.jsonPayload({
 export type $Input<B = l.BinaryData> = l.InferPayload<typeof $input, B>
 export type $InputBody<B = l.BinaryData> = l.InferPayloadBody<typeof $input, B>
 
+/**
+ * Response payload. `transport` names the cloud-init transport that actually
+ * ran ("iroh" by default) and `ticket` carries the iroh dumbpipe ticket the
+ * guest reported; `websocatUrl` and `vmFqdn` are populated only under the
+ * legacy fedproxy-ssh transport.
+ */
 export const $output = /*#__PURE__*/ l.jsonPayload({
   receiptUri: /*#__PURE__*/ l.optional(
     /*#__PURE__*/ l.string({ format: 'at-uri' }),
@@ -52,6 +58,8 @@ export const $output = /*#__PURE__*/ l.jsonPayload({
     /*#__PURE__*/ l.string({ format: 'uri' }),
   ),
   vmFqdn: /*#__PURE__*/ l.optional(/*#__PURE__*/ l.string()),
+  transport: /*#__PURE__*/ l.optional(/*#__PURE__*/ l.string()),
+  ticket: /*#__PURE__*/ l.optional(/*#__PURE__*/ l.string()),
   winnerDid: /*#__PURE__*/ l.optional(
     /*#__PURE__*/ l.string({ format: 'did' }),
   ),
@@ -80,7 +88,7 @@ export type $OutputBody<B = l.BinaryData> = l.InferPayloadBody<
   B
 >
 
-/** Request a VM through the compute contract gateway. Gateway builds cloud-init from sshPublicKey, creates compute.vm and market.rfp records, discovers bidders, runs the full RFP protocol, submits accept, and verifies the receipt. Returns receipt refs and websocatUrl for SSH access. */
+/** Request a VM through the compute contract gateway. Gateway builds cloud-init from sshPublicKey, creates compute.vm and market.rfp records, discovers bidders, runs the full RFP protocol, submits accept, and verifies the receipt. Returns receipt refs plus the transport that ran and the SSH target it produced. */
 const main = /*#__PURE__*/ l.procedure($nsid, $params, $input, $output, [
   'InvalidRequest',
   'AuthRequired',

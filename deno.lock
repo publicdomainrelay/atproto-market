@@ -1738,6 +1738,7 @@
       "lib/abc/requester": {
         "dependencies": [
           "jsr:@publicdomainrelay/cloud-init-common@0",
+          "jsr:@publicdomainrelay/guest-capability-abc@0",
           "jsr:@publicdomainrelay/logger@0",
           "jsr:@publicdomainrelay/policy-common@0",
           "jsr:@publicdomainrelay/serve@0"
@@ -1943,7 +1944,8 @@
           "npm:@atproto/common-web@0.5",
           "npm:@atproto/common@0.5",
           "npm:@atproto/crypto@0.5",
-          "npm:@atproto/identity@0.5"
+          "npm:@atproto/identity@0.5",
+          "npm:jose@5"
         ]
       },
       "lib/secrets-oidc": {

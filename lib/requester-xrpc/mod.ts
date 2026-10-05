@@ -3,6 +3,7 @@
 // All I/O lives here: fetch, Deno.Command, Deno.makeTempDir, WebSocket, crypto.
 
 import { Secp256k1Keypair } from "@atproto/crypto";
+import * as jose from "jose";
 import { IdResolver } from "@atproto/identity";
 import { TID } from "@atproto/common";
 import { getPdsEndpoint } from "@atproto/common-web";
@@ -93,6 +94,195 @@ export interface RequesterPDSImpl extends RequesterPDS {
   signer: Signer;
   keypair: Secp256k1Keypair;
   api: RepoApi;
+}
+
+// ---------------------------------------------------------------------------
+// per-contract transport report endpoint (iroh transport)
+// ---------------------------------------------------------------------------
+//
+// Under the default iroh transport the guest reports its dumbpipe ticket to the
+// requester's own repo app (POST /v1/on-network), never to a public record: a
+// record on the bidder's PDS is world-readable and the ticket is the capability
+// that dials the guest's sshd. The route belongs to the repo app and
+// createRequesterPDS mounts it as part of building the PDS -- before
+// serve.app.route("/", app) copies that app's routes into the serve app the
+// ingress actually serves. Hono compiles its route table at that call and
+// throws on any later app.post, and reaching into its route registry or router
+// is not a supported way to add a route, so the route must exist before the app
+// is served and is never added, removed or rebuilt later. runComputeContract
+// only registers and drops a per-contract entry on it. One requester serves
+// several contracts at once, so the handler matches the posted accept ref
+// against each live contract's own ref and accepts exactly one report per
+// contract. The accept ref is public, so it is not a credential: the handler
+// also authenticates the reporter with the guest workload-identity token the
+// provider mints at boot, and answers 401 when that token does not verify
+// against the winning bid's bid_config. No credential is baked into the
+// cloud-config: the composed user_data is published inside the compute.vm
+// record, so a bearer token there would be public and would only appear to
+// protect the endpoint.
+
+export interface OnNetworkReportEntry {
+  /** The contract's current accept ref; empty until the accept is written. */
+  accept(): { uri: string; cid: string };
+  /** Called with the reported ticket the first time this contract reports. */
+  onTicket(ticket: string): void;
+  /**
+   * Verify the reporting guest's workload-identity bearer token before the
+   * ticket settles the SSH wait. The guest mints it at boot: it exchanges the
+   * provider-provisioned token, named by the accept bundle's bid_config, at the
+   * provider's `/v1/oidc/issue`, and the result must carry this contract's
+   * issuer, audience and provider tag-derived subject. The public accept ref is
+   * not a credential -- without this check a reader of the contract records
+   * could race the real guest with an iroh endpoint of its own.
+   */
+  authorize(token: string): Promise<boolean>;
+}
+
+const REPORT_PATH = "/v1/on-network";
+
+/** Live report entries per app, keyed by entry; the value is the settled flag. */
+const onNetworkReportEntries = new WeakMap<object, Map<OnNetworkReportEntry, boolean>>();
+
+/**
+ * Extract the bearer token from an Authorization header. Empty when the header
+ * is missing or is not a Bearer credential -- the caller fails closed.
+ */
+function bearerToken(header: string | undefined | null): string {
+  if (!header) return "";
+  const m = /^Bearer\s+(.+)$/i.exec(header.trim());
+  return m ? m[1].trim() : "";
+}
+
+/**
+ * Resolve the issuer's published signing keys and verify a workload-identity
+ * token through them. Discovery and the JWKS go through globalThis.fetch,
+ * resolved at call time, so a local dispatcher or a test fetch interceptor is
+ * honoured -- the same reason createSecretsAuthorizer takes a fetch. The
+ * token must be issued by the provider named in the winning bid's bid_config,
+ * carry the audience this contract requested, and name this contract's
+ * provider tag-derived subject.
+ */
+export async function verifyWorkloadIdentityToken(
+  token: string,
+  expected: { issuerUri: string; expectedAud: string; expectedSub: string },
+  opts: { fetch?: typeof fetch; clockToleranceSec?: number } = {},
+): Promise<boolean> {
+  if (!token) return false;
+  const doFetch = opts.fetch ?? globalThis.fetch;
+  const clockTolerance = opts.clockToleranceSec ?? 5;
+  try {
+    const unverified = jose.decodeJwt(token);
+    const aud = Array.isArray(unverified.aud) ? unverified.aud[0] : unverified.aud;
+    if (aud !== expected.expectedAud) return false;
+    const verifyWith = async (jwks: jose.JWTVerifyGetKey) =>
+      (await jose.jwtVerify(token, jwks, {
+        issuer: expected.issuerUri,
+        audience: expected.expectedAud,
+        clockTolerance,
+      })).payload;
+    let payload: jose.JWTPayload;
+    try {
+      payload = await verifyWith(await reportIssuerJwks(expected.issuerUri, doFetch));
+    } catch (err) {
+      // A key we have never seen means the issuer rotated; reload once before
+      // treating the token as invalid.
+      if (!(err instanceof jose.errors.JWKSNoMatchingKey)) return false;
+      payload = await verifyWith(await reportIssuerJwks(expected.issuerUri, doFetch, true));
+    }
+    return payload.sub === expected.expectedSub;
+  } catch {
+    return false;
+  }
+}
+
+const reportJwksCache = new Map<string, jose.JWTVerifyGetKey>();
+
+/** Fetch (and cache) an issuer's JWKS as a local key set, through doFetch. */
+async function reportIssuerJwks(
+  issuerUri: string,
+  doFetch: typeof fetch,
+  reload = false,
+): Promise<jose.JWTVerifyGetKey> {
+  if (!reload) {
+    const cached = reportJwksCache.get(issuerUri);
+    if (cached) return cached;
+  }
+  const base = issuerUri.replace(/\/$/, "");
+  const confRes = await doFetch(`${base}/.well-known/openid-configuration`);
+  if (!confRes.ok) throw new Error(`issuer discovery failed: ${confRes.status}`);
+  const conf = await confRes.json() as { jwks_uri?: string };
+  if (!conf.jwks_uri) throw new Error(`issuer ${issuerUri} published no jwks_uri`);
+  const jwksRes = await doFetch(conf.jwks_uri);
+  if (!jwksRes.ok) throw new Error(`jwks fetch failed: ${jwksRes.status}`);
+  const set = jose.createLocalJWKSet(await jwksRes.json() as jose.JSONWebKeySet);
+  reportJwksCache.set(issuerUri, set);
+  return set;
+}
+
+/**
+ * Mount POST /v1/on-network on the repo app. createRequesterPDS calls this
+ * while it builds the PDS, before serve.app.route("/", app) copies the repo
+ * app's routes into the app the ingress serves; Hono throws when a route is
+ * added to an app that has already served, so this route is mounted exactly
+ * once and never added, removed or rebuilt afterwards. The handler is mounted
+ * once per app; it answers 401 unless the reporter presents a bearer token
+ * this contract's entry authorizes, 409 for a posted accept ref that matches no
+ * live contract or a second report for a contract that already settled, and it
+ * never replaces a settled ticket.
+ */
+export function mountOnNetworkReportHandler(app: HonoApp): void {
+  if (onNetworkReportEntries.has(app as object)) return;
+  onNetworkReportEntries.set(app as object, new Map());
+  const handler = async (c: HonoApp) => {
+    const body = await c.req.json().catch(() => ({})) as {
+      acceptUri?: string;
+      acceptCid?: string;
+      address?: string;
+    };
+    const entries = onNetworkReportEntries.get(app as object);
+    if (!entries || !body?.acceptUri || !body?.acceptCid) {
+      return c.json({ error: "accept ref mismatch" }, 409);
+    }
+    let match: OnNetworkReportEntry | undefined;
+    for (const entry of entries.keys()) {
+      const current = entry.accept();
+      if (current.uri === body.acceptUri && current.cid === body.acceptCid) {
+        match = entry;
+        break;
+      }
+    }
+    if (!match) return c.json({ error: "accept ref mismatch" }, 409);
+    if (entries.get(match)) return c.json({ error: "already settled" }, 409);
+    // Fail closed on the reporter's workload identity: no valid token means no
+    // settlement, and a settled ticket is never replaced by an unauthenticated
+    // report.
+    const token = bearerToken(c.req.header("authorization"));
+    if (!token || !(await match.authorize(token))) {
+      return c.json({ error: "unauthorized" }, 401);
+    }
+    if (!body.address) return c.json({ error: "missing address" }, 400);
+    entries.set(match, true);
+    match.onTicket(String(body.address));
+    return c.json({ ok: true });
+  };
+  app.post(REPORT_PATH, handler);
+}
+
+/**
+ * Register a contract's report entry on the already-mounted route. A contract
+ * is only ever added to or dropped from the entry map -- the route itself is
+ * created by createRequesterPDS and never touched here.
+ */
+export function registerOnNetworkReport(app: HonoApp, entry: OnNetworkReportEntry): void {
+  onNetworkReportEntries.get(app as object)?.set(entry, false);
+}
+
+/**
+ * Drop a contract's report entry when the contract ends, so a late report
+ * matches no live contract and is answered 409.
+ */
+export function unregisterOnNetworkReport(app: HonoApp, entry: OnNetworkReportEntry): void {
+  onNetworkReportEntries.get(app as object)?.delete(entry);
 }
 
 // ---------------------------------------------------------------------------
@@ -573,6 +763,11 @@ export async function createRequesterPDS(
 
   // -- mount the repo app + relay on the shared serve handle ------------
 
+  // The per-contract iroh report route is part of the repo app and must exist
+  // before the app is served: route("/", app) copies the app's routes here, and
+  // Hono throws on any app.post after that point. runComputeContract only adds
+  // and drops a per-contract entry on the mounted route.
+  mountOnNetworkReportHandler(app);
   serve.app.route("/", app as never);
   serve.addRelay(relay);
 
@@ -690,23 +885,46 @@ export async function createRequesterPDS(
 // ---------------------------------------------------------------------------
 
 /**
- * Tunnel URL for a guest FQDN. A guest announces `<subdomain>.<ingressProxyHost>`,
- * so an explicit port means a local dispatcher on plain HTTP; production is
- * `<subdomain>.fedproxy.com` on 443. Forcing wss:// at a plaintext listener fails
- * the TLS handshake ("record overflow") rather than falling back.
+ * Tunnel URL for a guest FQDN -- the legacy relay transport only. A guest
+ * announces `<subdomain>.<ingressProxyHost>`, so an explicit port means a local
+ * dispatcher on plain HTTP; production is `<subdomain>.fedproxy.com` on 443.
+ * Forcing wss:// at a plaintext listener fails the TLS handshake ("record
+ * overflow") rather than falling back.
  */
 export function tunnelWsUrl(fqdn: string): string {
   const scheme = fqdn.includes(":") ? "ws" : "wss";
   return `${scheme}://${fqdn}/xrpc/com.fedproxy.temp.xrpc.tunnel`;
 }
 
+/**
+ * Default ProxyCommand for a transport target, derived from the transport id
+ * that ran -- never from the shape of the target string. A ticket and a relay
+ * FQDN are told apart by the transport that produced them: `iroh` dials the
+ * published ticket with a stdio `dumbpipe connect`, while `tunnel` and
+ * `fedproxy-ssh` keep the websocat bridge to tunnelWsUrl.
+ */
+export function defaultProxyCommand(target: string, transport = "iroh"): string {
+  return transport === "iroh"
+    ? `dumbpipe connect ${target}`
+    : `websocat --binary ${tunnelWsUrl(target)}`;
+}
+
+/**
+ * Which helper binary the selected transport's SSH path needs. Only `iroh`
+ * needs dumbpipe; `tunnel` and `fedproxy-ssh` need websocat.
+ */
+export function sshHelperForTransport(transport: string): "dumbpipe" | "websocat" {
+  return transport === "iroh" ? "dumbpipe" : "websocat";
+}
+
 export function sshTunnelArgs(
   privateKeyPath: string,
-  fqdn: string,
+  target: string,
   proxyCmdOverride?: string,
+  transport = "iroh",
 ): string[] {
   return [
-    "-o", `ProxyCommand=${proxyCmdOverride ?? `websocat --binary ${tunnelWsUrl(fqdn)}`}`,
+    "-o", `ProxyCommand=${proxyCmdOverride ?? defaultProxyCommand(target, transport)}`,
     "-o", `IdentityFile=${privateKeyPath}`,
     "-o", "IdentitiesOnly=yes",
     "-o", "StrictHostKeyChecking=no",
@@ -717,7 +935,7 @@ export function sshTunnelArgs(
 
 export function createSshSessionProvider(
   logger?: StructuredLoggerInterface,
-  opts?: { proxyCommandFn?: (fqdn: string) => string },
+  opts?: { proxyCommandFn?: (target: string) => string; transport?: string },
 ): SshSessionProvider {
   const log = (event: string, extra: Record<string, unknown> = {}) =>
     logger ? logger.info(event, extra) : console.log(JSON.stringify({ event, ...extra }));
@@ -741,20 +959,20 @@ export function createSshSessionProvider(
 
   async function pollReady(
     privateKeyPath: string,
-    fqdn: string,
+    target: string,
     timeoutMs: number,
   ): Promise<boolean> {
-    const proxyCmd = opts?.proxyCommandFn?.(fqdn);
-    log("ssh_poll_start", { fqdn, proxyCmd: proxyCmd?.slice(0, 150), timeoutMs });
+    const proxyCmd = opts?.proxyCommandFn?.(target);
+    log("ssh_poll_start", { fqdn: target, proxyCmd: proxyCmd?.slice(0, 150), timeoutMs });
     const deadline = Date.now() + timeoutMs;
     let attempt = 0;
     while (Date.now() < deadline) {
       attempt++;
       const sshArgs = [
-        ...sshTunnelArgs(privateKeyPath, fqdn, proxyCmd),
+        ...sshTunnelArgs(privateKeyPath, target, proxyCmd, opts?.transport ?? "iroh"),
         "-o", "BatchMode=yes",
         "-o", "ConnectTimeout=10",
-        `root@${fqdn}`,
+        `root@${target}`,
         "true",
       ];
       if (attempt === 1) log("ssh_poll_cmd", { args: sshArgs.slice(0, 6) });
@@ -765,31 +983,31 @@ export function createSshSessionProvider(
       });
       const { code, stdout, stderr } = await cmd.output();
       if (code === 0) {
-        log("vm_ssh_ready", { fqdn, attempt });
+        log("vm_ssh_ready", { fqdn: target, attempt });
         return true;
       }
       const errText = new TextDecoder().decode(stderr).trim();
       const outText = new TextDecoder().decode(stdout).trim();
       const fullError = (errText + (outText ? " | stdout:" + outText : "")).slice(0, 400);
-      log("vm_ssh_poll", { fqdn, attempt, code, error: errText.slice(0, 200), fullError });
+      log("vm_ssh_poll", { fqdn: target, attempt, code, error: errText.slice(0, 200), fullError });
       await new Promise((r) => setTimeout(r, 5000));
     }
-    log("vm_ssh_timeout", { fqdn, timeoutMs });
+    log("vm_ssh_timeout", { fqdn: target, timeoutMs });
     return false;
   }
 
   async function runSession(
     privateKeyPath: string,
-    fqdn: string,
+    target: string,
     program: string,
   ): Promise<number> {
-    const proxyCmd = opts?.proxyCommandFn?.(fqdn);
+    const proxyCmd = opts?.proxyCommandFn?.(target);
     const interactive = Deno.stdin.isTerminal();
-    const args = [...sshTunnelArgs(privateKeyPath, fqdn, proxyCmd)];
+    const args = [...sshTunnelArgs(privateKeyPath, target, proxyCmd, opts?.transport ?? "iroh")];
     if (interactive) {
-      args.push("-tt", `root@${fqdn}`);
+      args.push("-tt", `root@${target}`);
     } else {
-      args.push(`root@${fqdn}`, program);
+      args.push(`root@${target}`, program);
     }
     const cmd = new Deno.Command("ssh", { args, stdin: "inherit", stdout: "inherit", stderr: "inherit" });
     const child = cmd.spawn();
@@ -847,6 +1065,82 @@ export async function ensureWebsocat(logger?: StructuredLoggerInterface): Promis
 }
 
 // ---------------------------------------------------------------------------
+// dumbpipe bootstrap (iroh transport)
+// ---------------------------------------------------------------------------
+
+/** dumbpipe release pinned to the version the guest iroh module installs. */
+const DUMBPIPE_VERSION = "v0.39.0";
+
+/**
+ * Make a `dumbpipe` binary available for the iroh transport's SSH ProxyCommand,
+ * the way ensureWebsocat does for the legacy websocat bridge. Returns
+ * immediately when dumbpipe is already on PATH; otherwise resolves this host's
+ * platform triple, downloads the matching release archive from the
+ * n0-computer/dumbpipe releases, extracts the binary, chmods it 0755 and
+ * prepends its directory to PATH. A failed download is logged, never thrown.
+ */
+export async function ensureDumbpipe(logger?: StructuredLoggerInterface): Promise<void> {
+  const log = (event: string, extra: Record<string, unknown> = {}) =>
+    logger ? logger.info(event, extra) : console.log(JSON.stringify({ event, ...extra }));
+  const which = new Deno.Command("which", { args: ["dumbpipe"], stdout: "null", stderr: "null" });
+  if ((await which.output()).code === 0) {
+    log("dumbpipe_found", { source: "system" });
+    return;
+  }
+
+  const plat = Deno.build.os;
+  const arch = Deno.build.arch;
+  const triple: Record<string, Record<string, string>> = {
+    linux: { x86_64: "linux-x86_64", aarch64: "linux-aarch64" },
+    darwin: { x86_64: "darwin-x86_64", aarch64: "darwin-aarch64" },
+  };
+  const target = triple[plat]?.[arch];
+  if (!target) {
+    log("dumbpipe_unsupported", { plat, arch });
+    return;
+  }
+
+  const url = `https://github.com/n0-computer/dumbpipe/releases/download/${DUMBPIPE_VERSION}/dumbpipe-${DUMBPIPE_VERSION}-${target}.tar.gz`;
+  log("dumbpipe_downloading", { url });
+
+  try {
+    const dir = await Deno.makeTempDir({ prefix: "dumbpipe-" });
+    const archivePath = `${dir}/dumbpipe.tar.gz`;
+    const resp = await fetch(url);
+    if (!resp.ok || !resp.body) {
+      log("dumbpipe_download_failed", { status: resp.status });
+      return;
+    }
+    const file = await Deno.open(archivePath, { write: true, create: true });
+    await resp.body.pipeTo(file.writable);
+
+    // The release archive stores its single member as ./dumbpipe; naming the
+    // bare `dumbpipe` fails with `tar: dumbpipe: Not found in archive` (exit 2)
+    // and leaves no binary on PATH.
+    const tar = new Deno.Command("tar", {
+      args: ["-xzf", archivePath, "-C", dir, "./dumbpipe"],
+      stdout: "null",
+      stderr: "piped",
+    });
+    const extracted = await tar.output();
+    if (extracted.code !== 0) {
+      log("dumbpipe_extract_failed", {
+        error: new TextDecoder().decode(extracted.stderr).slice(0, 200),
+      });
+      return;
+    }
+    const binPath = `${dir}/dumbpipe`;
+    await Deno.chmod(binPath, 0o755);
+    log("dumbpipe_downloaded", { path: binPath });
+
+    Deno.env.set("PATH", `${dir}:${Deno.env.get("PATH") ?? ""}`);
+    log("dumbpipe_path_updated", { dir });
+  } catch (err) {
+    log("dumbpipe_download_failed", { error: String(err) });
+  }
+}
+
+// ---------------------------------------------------------------------------
 // runComputeContract -- adapted from reference server.ts
 // ---------------------------------------------------------------------------
 
@@ -885,6 +1179,17 @@ export async function runComputeContract(
   const skipSsh = opts.skipSsh ?? false;
   const execProgram = opts.execProgram ?? "bash";
   const keepVm = opts.keepVm ?? false;
+  // Guest transport module. Default "iroh": the guest publishes a dumbpipe
+  // ticket on vm.onNetwork and the requester dials it with dumbpipe. The legacy
+  // "tunnel"/"fedproxy-ssh" transports publish a relay FQDN and only those keep
+  // the websocat ProxyCommand.
+  const transport = opts.userData?.transport ?? "iroh";
+  const usesDumbpipe = transport === "iroh";
+  // Under iroh the SSH target is the guest's privately reported ticket, so the
+  // public onNetwork/submitEvent path must not settle the wait. The legacy
+  // transports (and an explicit proxy command override, which names its own
+  // target) keep resolving from the event path unchanged.
+  const useEventPath = !usesDumbpipe || !!opts.sshProxyCommandFn;
   const vmReadyTimeoutSec = opts.vmReadyTimeoutSec ?? 300;
   const extraBidderDids = opts.extraBidderDids ?? [];
   const denyBidderDids = opts.denyBidderDids ?? [];
@@ -901,7 +1206,7 @@ export async function runComputeContract(
   };
   const sshProvider = opts.sshProvider ?? createSshSessionProvider(
     opts.logger,
-    { proxyCommandFn: opts.sshProxyCommandFn },
+    { proxyCommandFn: opts.sshProxyCommandFn, transport },
   );
   const relayUrl = opts.relayUrl;
   const relayUrls = opts.relayUrls ?? (relayUrl ? [relayUrl] : []);
@@ -1026,10 +1331,10 @@ export async function runComputeContract(
               const payloadRes = await fetch(payloadUrl);
               const payloadData = await payloadRes.json();
               const address = (payloadData.value as Record<string, unknown>)?.address as string | undefined;
-                            // Only resolve on dispatcher FQDN, not container IP.
-              // Container IPs (192.168.x.x) contain only digits+dots; FQDNs contain letters.
-              const isFqdn = address && /[a-zA-Z]/.test(address);
-if (address && isFqdn && !vmFqdn) {
+              // The address on a public record is informational only -- under
+              // iroh the ticket arrives over the private report endpoint, so a
+              // record can never settle the SSH wait.
+              if (useEventPath && address && /[a-zA-Z]/.test(address) && !vmFqdn) {
                 vmFqdn = address;
                 vmFqdnReady.resolve(address);
                 log("vm_fqdn_discovered", { fqdn: address, eventUri: data.uri });
@@ -1057,7 +1362,7 @@ if (address && isFqdn && !vmFqdn) {
               const data = await res.json();
               const value = data.value as Record<string, unknown> | undefined;
               const address = value?.address as string | undefined;
-              if (address && typeof address === "string" && /[a-zA-Z]/.test(address) && !vmFqdn) {
+              if (useEventPath && address && typeof address === "string" && /[a-zA-Z]/.test(address) && !vmFqdn) {
                 vmFqdn = address;
                 vmFqdnReady.resolve(address);
                 log("vm_fqdn_discovered", { fqdn: address, uri: data.uri });
@@ -1065,25 +1370,8 @@ if (address && isFqdn && !vmFqdn) {
             } catch { /* best-effort */ }
           })();
         }
-        // REGISTER_IDENTITY: extract iroh nodeId
-        if (e.collection === COMPUTE_EVENTS_VM_REGISTER_IDENTITY_NSID) {
-          (async () => {
-            try {
-              const doc = await idResolver.did.resolve(e.did);
-              if (!doc) return;
-              const pdsUrl = getPdsEndpoint(doc);
-              if (!pdsUrl) return;
-              const recordUrl = `${pdsUrl}/xrpc/com.atproto.repo.getRecord?repo=${encodeURIComponent(e.did)}&collection=${encodeURIComponent(e.collection)}&rkey=${e.rkey}`;
-              const res = await fetch(recordUrl);
-              const data = await res.json();
-              const identity = (data.value as Record<string, unknown>)?.computeIdentity as Record<string, unknown> | undefined;
-              if (identity?.nodeId) {
-                log("iroh_node_id_firehose", { nodeId: identity.nodeId });
-                pds.resolveIrohNodeId?.(String(identity.nodeId));
-              }
-            } catch { /* best-effort */ }
-          })();
-        }
+        // REGISTER_IDENTITY is informational here: the nodeId on a public record
+        // is never a transport target under iroh, so it cannot settle the wait.
         // RECEIPT_NSID: collect receipts for firehose-based discovery when
         // submitAccept XRPC doesn't return one (push path failed or bidder
         // doesn't expose receipt in response). Keyed by accept.uri so the
@@ -1132,24 +1420,92 @@ if (address && isFqdn && !vmFqdn) {
   let privateKeyPath = "";
   let vmFqdn = "";
   const vmFqdnReady = Promise.withResolvers<string>();
-  // Wire guest-side onNetwork events (submitEvent) -> vmFqdnReady.
+  // The contract's current accept ref, read by the report endpoint so a posted
+  // report only settles the contract whose accept ref it names. The ref is
+  // public, so it is not a credential: the report must also carry the guest's
+  // workload-identity token, verified against the identity below.
+  let acceptRef: { uri: string; cid: string } = { uri: "", cid: "" };
+  // The workload identity the reporting guest must present, derived from the
+  // winning bid's bid_config once it is resolved and the accept is written.
+  // Undefined until then, so an early report cannot settle the wait.
+  let reportIdentity:
+    | { issuerUri: string; expectedAud: string; expectedSub: string }
+    | undefined;
+
+  // Per-contract private report channel (iroh). The route lives on the repo app
+  // createRequesterPDS built and mounted under the serve app, before the
+  // cloud-config is composed because the endpoint URL is baked into it. Here
+  // only this contract's entry is registered and dropped. skipSsh registers
+  // nothing: no SSH means no ticket to resolve.
+  const reportApp = (usesDumbpipe && !skipSsh)
+    ? (pds as RequesterPDSImpl).app
+    : undefined;
+  const reportUrl = reportApp
+    ? `${(pds.relay.ingressUrl || pds.ingressUrl).replace(/\/+$/, "")}/v1/on-network`
+    : "";
+  const reportRegistered = !!(reportApp && reportUrl);
+  const reportEntry = reportRegistered
+    ? {
+      accept: () => acceptRef,
+      // Fail closed until the winning bid's identity is known: the public
+      // accept ref alone must not be able to point this contract at an
+      // attacker's iroh endpoint.
+      authorize: async (token: string) => {
+        const expected = reportIdentity;
+        if (!expected) {
+          log("iroh_report_unauthorized", { reason: "identity not resolved" });
+          return false;
+        }
+        const ok = await verifyWorkloadIdentityToken(token, expected);
+        if (!ok) log("iroh_report_unauthorized", { reason: "token did not verify" });
+        return ok;
+      },
+      onTicket: (ticket: string) => {
+        // The ticket is the SSH transport target under iroh: settle the wait
+        // with it (the endpoint already bound it to this contract's accept ref
+        // and accepts exactly one report per contract).
+        if (!vmFqdn) {
+          vmFqdn = ticket;
+          vmFqdnReady.resolve(ticket);
+          log("iroh_ticket_reported", { ticketLen: ticket.length });
+        }
+      },
+    }
+    : undefined;
+  if (reportApp && reportEntry) {
+    registerOnNetworkReport(reportApp, reportEntry);
+  } else if (usesDumbpipe && !skipSsh) {
+    log("iroh_report_endpoint_unavailable", { ingressUrl: pds.relay.ingressUrl });
+  }
+  const endReport = () => {
+    if (reportApp && reportEntry) unregisterOnNetworkReport(reportApp, reportEntry);
+  };
+
+  // Wire guest-side onNetwork events (submitEvent) -> vmFqdnReady. Only the
+  // legacy transports (and an explicit proxy command override) resolve their
+  // transport target from the public event path.
   const onNetworkFromSubmitEvent = (address: string) => {
     // Bidder-side onNetwork fires first with container IP (e.g. 192.168.x.x),
-    // guest-side fires later with dispatcher FQDN (e.g. subdomain.localhost:port).
-    // Only the FQDN is routable through SSH ProxyCommand. Wait for it.
-    const isFqdn = /[a-zA-Z]/.test(address);
-    if (isFqdn && !vmFqdn) {
+    // guest-side fires later with the legacy transport target (a dispatcher
+    // FQDN such as subdomain.localhost:port). Both carry letters, so the
+    // letters test admits either; a bare container IP is not routable through
+    // the ProxyCommand and is skipped. Under iroh the ticket never comes from
+    // here, so the event path is not registered at all.
+    if (!useEventPath) return;
+    const isTarget = /[a-zA-Z]/.test(address);
+    if (isTarget && !vmFqdn) {
       vmFqdn = address;
       vmFqdnReady.resolve(address);
       log("vm_fqdn_discovered", { fqdn: address, source: "submitEvent" });
-    } else if (!isFqdn) {
-      log("vm_onnetwork_ip_skipped", { address, hint: "waiting for guest FQDN via submitEvent" });
+    } else if (!isTarget) {
+      log("vm_onnetwork_ip_skipped", { address, hint: "waiting for guest transport target via submitEvent" });
     }
   };
   // Registered only once the receipt is known, because the receipt is what keys
   // this contract's events. Registering before it exists would need a keyless
   // slot, and several contracts share one requester.
   const registerOnNetwork = () => {
+    if (!useEventPath) return;
     if (!_receiptUri || !_receiptCid) return;
     pds.setOnNetworkResolved?.(`${_receiptUri}#${_receiptCid}`, onNetworkFromSubmitEvent);
   };
@@ -1161,7 +1517,9 @@ if (address && isFqdn && !vmFqdn) {
     log("ssh_keypair_generated", {
       privateKeyPath,
       publicKey: ssh.publicKey,
-      hint: "FQDN will be discovered from vm.onNetwork event after guest tunnel subscriber registers",
+      hint: usesDumbpipe
+        ? "guest reports its iroh ticket to the requester's per-contract endpoint after boot"
+        : "FQDN will be discovered from vm.onNetwork event after the guest registers",
     });
 
     // Capabilities stand up their resources BEFORE the cloud-config is built:
@@ -1182,10 +1540,10 @@ if (address && isFqdn && !vmFqdn) {
 
     // Compose user_data via the cloud-init-common buildUserData: the caller's
     // base cloud-config (if any) patched with the transport module (default
-    // "tunnel" = did-key-ingress-proxy tunnel-subscriber, never fedproxy-client;
-    // the guest derives its secp256k1 identity from the sshd host key at boot via
-    // HKDF, so no private key material sits in cloud-init) plus any extra
-    // modules. opts.userDataFactory still fully replaces the result.
+    // "iroh" = dumbpipe listener over the iroh network; the guest installs
+    // dumbpipe, bridges it to loopback sshd and publishes its ticket, so no
+    // private key material sits in cloud-init) plus any extra modules.
+    // opts.userDataFactory still fully replaces the result.
     const ud = opts.userData;
     cloudInit = buildUserData({
       ctx: {
@@ -1201,11 +1559,15 @@ if (address && isFqdn && !vmFqdn) {
         // (e.g. the GitLab plugin's ConnectInfo identity) share the guest's
         // /root/.ssh/authorized_keys.
         sshAuthorizedKey: [ssh.publicKey, ...(opts.sshAuthorizedKeys ?? [])].join("\n"),
+        // Private per-contract report channel: the iroh module POSTs the guest
+        // ticket here, so the capability never enters a record. Nothing secret
+        // is carried -- this user_data is published in the compute.vm record.
+        irohReportUrl: reportRegistered ? reportUrl : undefined,
         ...capCtx,
       },
       base: ud?.base ?? opts.baseUserData,
       modules: [
-        ud?.transport ?? "tunnel",
+        transport,
         ...(ud?.modules ?? []),
         ...capabilities.flatMap((c) => c.userDataModule ? [c.userDataModule] : []),
       ],
@@ -1545,6 +1907,7 @@ runcmd:
   if (bids.length === 0) {
     const result: ContractFlowResult = { event: "no_bids", error: `no bids received within ${bidWindowSec}s` };
     log("no_bids", result as unknown as Record<string, unknown>);
+    endReport();
     await disposeCapabilities();
     return result;
   }
@@ -1559,7 +1922,11 @@ runcmd:
   // every guest capability derive their authorization from.
   const serviceName = vmName.trim() || "compute";
   let wifConfig: WifSimpleConfig | undefined;
-  if ((opts.rbac && !skipSsh) || capabilities.length > 0) {
+  // The report endpoint needs the winner's bid_config too, even when the
+  // contract runs without rbac and without capabilities: that config names the
+  // issuer the guest's report token is minted by, so the reporter can be
+  // authenticated instead of trusting the public accept ref.
+  if ((opts.rbac && !skipSsh) || capabilities.length > 0 || reportRegistered) {
     const bidConfigRef = (winner.record.config ?? winner.record.bidConfig) as { uri?: string; cid?: string } | undefined;
     if (bidConfigRef?.uri && bidConfigRef?.cid) {
       try {
@@ -1644,6 +2011,7 @@ runcmd:
         error: `winner rejected by policy: ${evalResult.violations.map(v => v.msg).join("; ")}`,
         bids: bids.length,
       };
+      endReport();
       await disposeCapabilities();
       return result;
     }
@@ -1657,6 +2025,28 @@ runcmd:
     submitEvent: `${pds.did}#pdr_temp_compute_event`,
     createdAt: new Date().toISOString(),
   }, pds.attestationKp, pds.did);
+  // The report endpoint answers 409 until the accept ref matches this value.
+  acceptRef = { uri: acceptUri, cid: acceptCid };
+  // The guest mints its report token from the provider-provisioned token, for
+  // the audience it reads out of this accept record's own authority and with
+  // the subject the provider tagged it with. Derive the same three values here,
+  // exactly the way the secrets grant is derived, so only this contract's real
+  // guest can settle the SSH wait.
+  if (wifConfig) {
+    const reportVars = deriveGrantVars({
+      cfg: wifConfig,
+      subjectDid: atUriAuthority(rfpUri),
+      audienceDid: atUriAuthority(acceptUri),
+      role: serviceName,
+    });
+    reportIdentity = {
+      issuerUri: reportVars.issuerUri,
+      expectedAud: reportVars.expectedAud,
+      expectedSub: reportVars.subject,
+    };
+  } else if (reportRegistered) {
+    log("iroh_report_identity_unavailable", { reason: "no usable bidConfig" });
+  }
   log("accept_created", { uri: acceptUri, cid: acceptCid });
 
   // 8. Submit accept to winning bidder.
@@ -1762,15 +2152,24 @@ runcmd:
   } else if (!receiptOk) {
     log("vm_poll_bailed", { reason: "no valid receipt", receiptUri, receiptCid });
   } else {
-      // SSH through fedproxy relay tunnel (websocat ProxyCommand).
-    // Default: dispatcher tunnel ProxyCommand. Route through bash for PATH.
+    // SSH over the guest's transport target: the dumbpipe ticket the guest
+    // reported under the default iroh transport, or the relay FQDN of the
+    // legacy tunnel/fedproxy-ssh transport. The ProxyCommand follows the
+    // transport id -- `dumbpipe connect <ticket>` vs `websocat --binary
+    // wss://<fqdn>` -- never the shape of the target string, and an explicit
+    // sshProxyCommandFn still fully overrides it.
+    const proxyCmdOverride = opts.sshProxyCommandFn;
+    const needsWebsocat = proxyCmdOverride
+      ? proxyCmdOverride("t").includes("websocat")
+      : sshHelperForTransport(transport) === "websocat";
+    await (needsWebsocat ? ensureWebsocat(opts.logger) : ensureDumbpipe(opts.logger));
     const sshTunnel = opts.sshProvider ?? createSshSessionProvider(
       opts.logger,
-      { proxyCommandFn: opts.sshProxyCommandFn ??
-        ((fqdn: string) => `/opt/homebrew/bin/websocat --binary ${tunnelWsUrl(fqdn)}`) },
+      { proxyCommandFn: proxyCmdOverride, transport },
     );
-    // FQDN discovered from vm.onNetwork event (guest publishes after tunnel subscriber registers).
-    // Timeout after vmReadyTimeoutSec if onNetwork event never arrives.
+    // Transport target discovered from vm.onNetwork event (guest publishes its
+    // ticket after the dumbpipe listener starts). Timeout after
+    // vmReadyTimeoutSec if onNetwork event never arrives.
     const fqdnTimeout = setTimeout(() => {
       vmFqdnReady.resolve(""); // empty string = timeout signal
     }, vmReadyTimeoutSec * 1000);
@@ -1854,6 +2253,15 @@ runcmd:
       }
     }
   }
+
+  // Report the transport that actually ran and, under iroh, the ticket the
+  // guest reported (vmFqdn holds the transport target: the dumbpipe ticket
+  // for iroh, the relay FQDN for the legacy fedproxy-ssh transport).
+  result.transport = transport;
+  if (usesDumbpipe && vmFqdn) result.ticket = vmFqdn;
+  // The contract has ended: invalidate its report token so a late report cannot
+  // resolve a wait that no longer exists.
+  endReport();
 
   await disposeCapabilities();
   return result;
@@ -2110,10 +2518,14 @@ export async function createOAuthRequester(opts: CreateOAuthRequesterOpts): Prom
   };
 }
 
-function randomHex8(): string {
-  const b = new Uint8Array(4);
+function randomHex(bytes: number): string {
+  const b = new Uint8Array(bytes);
   crypto.getRandomValues(b);
   return Array.from(b, (x) => x.toString(16).padStart(2, "0")).join("");
+}
+
+function randomHex8(): string {
+  return randomHex(4);
 }
 
 async function listRecordsAll(

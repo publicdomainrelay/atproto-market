@@ -7,6 +7,7 @@
     "@publicdomainrelay/logger": "jsr:@publicdomainrelay/logger@^0",
     "@publicdomainrelay/serve": "jsr:@publicdomainrelay/serve@^0",
     "@publicdomainrelay/policy-common": "jsr:@publicdomainrelay/policy-common@^0",
-    "@publicdomainrelay/cloud-init-common": "jsr:@publicdomainrelay/cloud-init-common@^0"
+    "@publicdomainrelay/cloud-init-common": "jsr:@publicdomainrelay/cloud-init-common@^0",
+    "@publicdomainrelay/guest-capability-abc": "jsr:@publicdomainrelay/guest-capability-abc@^0"
   }
 }

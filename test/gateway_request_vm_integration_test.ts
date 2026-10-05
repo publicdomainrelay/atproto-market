@@ -12,6 +12,7 @@ import { createComputeProviderHooks } from "@publicdomainrelay/market-bidder-com
 import { createLocalComputeProvider } from "@publicdomainrelay/compute-provider-local";
 import type { ComputeAtproto } from "@publicdomainrelay/compute-provider-abc";
 import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc";
+import { resolveDidKeyFromPlc } from "./fetch-interceptor.ts";
 import { createComputeContractGateway } from "@publicdomainrelay/compute-contract-gateway-xrpc";
 
 function didWebToHttps(s: string): string {
@@ -23,7 +24,10 @@ Deno.test(
   async () => {
     const logger = createLogger({ serviceName: "gateway_test" });
 
-    const dispatcher = createRelayFactory({ hostname: "localhost" }).createApp();
+    const dispatcher = createRelayFactory({
+      hostname: "localhost",
+      resolveDidKey: resolveDidKeyFromPlc,
+    }).createApp();
     const dispAc = new AbortController();
     const dispServer = Deno.serve(
       { port: 0, signal: dispAc.signal, hostname: "0.0.0.0" },
@@ -210,12 +214,12 @@ Deno.test(
         "receiptUri should be a string",
       );
       assert(
-        typeof result.websocatUrl === "string",
-        "websocatUrl should be a string",
+        result.transport === "iroh",
+        "transport should default to iroh",
       );
       assert(
-        result.websocatUrl!.includes("gateway-test-vm"),
-        "websocatUrl should include vm name",
+        result.websocatUrl === undefined && result.vmFqdn === undefined,
+        "no relay FQDN is synthesized under the iroh transport",
       );
       assert(
         typeof result.winnerDid === "string",

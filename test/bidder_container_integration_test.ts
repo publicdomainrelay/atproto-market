@@ -1,12 +1,27 @@
 // Integration: start a real bidder (container-mode local compute provider) and
 // drive a real requester (request-vm-ssh lib) against it through a real local
-// xrpc relay dispatcher, denying the central/default bidder so the bid must
-// come from the locally-started bidder.
+// xrpc relay dispatcher, proving the whole live SSH-over-iroh chain:
+//
+//   RFP -> bid -> accept -> the guest's cloud-init installs dumbpipe and starts
+//   the listener -> the guest reports its iroh ticket to the requester's own
+//   per-contract endpoint (POST /v1/on-network, authenticated with the workload
+//   identity the provider minted) -> ssh with a `dumbpipe connect <ticket>`
+//   ProxyCommand runs the exec program inside the real guest.
 //
 // No external network: a high-fidelity in-process fake PLC directory derives
 // DID documents from the genesis ops the components submit, and global fetch is
 // patched to send https://plc.directory + https://*.localhost traffic to the
 // local PLC / dispatcher (the dispatcher routes by Host-header subdomain).
+//
+// The dispatcher serves one app on two listeners, exactly as the OAuth suite
+// does: plain HTTP for the in-process components, and TLS for the guest. The
+// guest reaches the dispatcher as <sub>.relay.localhost (hostnameOnly drops the
+// port), so the certificate's SANs are relay.localhost and *.relay.localhost --
+// a single-label wildcard such as *.localhost is rejected by TLS stacks. The
+// provider is given the guest TLS port and the CA so it rewrites the guest's
+// https://*.localhost URLs onto that port, resolves them to the container
+// gateway and installs the CA in the guest's trust store: the report endpoint
+// URL is baked into the cloud-config the guest runs.
 //
 // Container mode only (no full VM, no deno workers). The local provider
 // auto-selects the container backend per OS: macOS `container`, else Docker.
@@ -25,12 +40,59 @@ import { createPlcDirectoryClient } from "@publicdomainrelay/did-plc";
 import { createMarketBidder } from "@publicdomainrelay/market-bidder";
 import { createComputeProviderHooks } from "@publicdomainrelay/market-bidder-compute";
 import { createLocalComputeProvider } from "@publicdomainrelay/compute-provider-local";
+import { createOidcProvisioningEnricher } from "@publicdomainrelay/oidc-issuer-hono";
+import { createRbacProvisioner } from "@publicdomainrelay/rbac-atproto";
 import type { ComputeAtproto } from "@publicdomainrelay/compute-provider-abc";
+import type { ContainerBackend } from "@publicdomainrelay/container-backend-abc";
+import { createContainerBackend } from "@publicdomainrelay/container-backend-container";
+import { createDockerBackend } from "@publicdomainrelay/container-backend-docker";
+import { generateLocalhostTlsCert } from "@publicdomainrelay/tls-localhost";
 import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc";
+import { flattenLabel } from "@publicdomainrelay/cloud-init-common";
+import { installFetchInterceptor, resolveDidKeyFromPlc } from "./fetch-interceptor.ts";
 import { createRequesterPDS, runComputeContract } from "@publicdomainrelay/requester-xrpc";
 
 function didWebToHttps(s: string): string {
   return s.startsWith("did:web:") ? "https://" + s.slice("did:web:".length) : s;
+}
+
+function serveOnPort0(
+  f: (r: Request) => Response | Promise<Response>,
+  ac: AbortController,
+  hostname = "127.0.0.1",
+  cert?: string,
+  key?: string,
+): Promise<number> {
+  const { promise, resolve } = Promise.withResolvers<number>();
+  const tlsOpts = cert && key ? { cert, key } : {};
+  Deno.serve(
+    {
+      port: 0,
+      hostname,
+      signal: ac.signal,
+      onListen: (a) => resolve((a as Deno.NetAddr).port),
+      ...tlsOpts,
+    },
+    f,
+  );
+  return promise;
+}
+
+/** The guest container the provider names pdr-<flattened did>-*. */
+async function findContainerByDid(
+  backend: ContainerBackend,
+  did: string,
+): Promise<string | null> {
+  const prefix = `pdr-${flattenLabel(did)}`;
+  const { stdout } = await backend.command([
+    "ps",
+    "--format",
+    "{{.Names}}",
+    "--filter",
+    `name=${prefix}`,
+  ]);
+  if (!stdout) return null;
+  return stdout.split("\n").find((n) => n.startsWith(prefix)) ?? null;
 }
 
 // -- high-fidelity fake PLC directory --------------------------------------
@@ -85,48 +147,74 @@ function createFakePlc() {
 }
 
 Deno.test({
-  name: "[integration] bidder (container mode) wins bid when central default denied",
+  name: "[integration] bidder (container mode) provisions a guest and runs SSH over iroh",
   sanitizeOps: false,
   sanitizeResources: false,
 }, async () => {
   const logger = createLogger({ serviceName: "it" });
-
   const cleanups: Array<() => void> = [];
 
-  const dispatcherApp = createRelayFactory({ hostname: "localhost" }).createApp();
-  const dispatcherCtl = new AbortController();
-  const { promise: dispPortReady, resolve: resolveDispPort } = Promise.withResolvers<number>();
-  Deno.serve(
-    { port: 0, hostname: "127.0.0.1", signal: dispatcherCtl.signal, onListen: (addr) => resolveDispPort((addr as Deno.NetAddr).port) },
-    dispatcherApp.fetch,
-  );
-  const dispPort = await dispPortReady;
-  cleanups.push(() => dispatcherCtl.abort());
-  const ingressProxyHost = `localhost:${dispPort}`;
+  // -- container backend: without a runtime there is nothing to SSH into ----
+  const backend: ContainerBackend = Deno.build.os === "darwin"
+    ? createContainerBackend()
+    : createDockerBackend();
+  if (!(await backend.ensureRunning())) {
+    console.log(`[SKIP] container backend not available (${Deno.build.os})`);
+    return;
+  }
+  const gateway = await backend.defaultGateway();
+  logger.info("container_backend", { type: backend.type, gateway });
 
-  // -- fake PLC ---------------------------------------------------------
+  // -- dispatcher: relay.localhost, plain + TLS listeners on 0.0.0.0 --------
+  // The guest reaches <sub>.relay.localhost, so the two-label base gives the
+  // certificate a usable wildcard; additionalHosts admits the gateway IP the
+  // guest dials.
+  const { caCertPem, serverCertPem, serverKeyPem } = await generateLocalhostTlsCert({
+    extraDnsSans: ["relay.localhost", "*.relay.localhost"],
+  });
+  const dispatcherApp = createRelayFactory({
+    hostname: "relay.localhost",
+    additionalHosts: [gateway],
+    resolveDidKey: resolveDidKeyFromPlc,
+  }).createApp();
+  const dispAc = new AbortController();
+  const dispTlsAc = new AbortController();
+  const dispPort = await serveOnPort0(dispatcherApp.fetch, dispAc, "0.0.0.0");
+  const dispTlsPort = await serveOnPort0(
+    dispatcherApp.fetch,
+    dispTlsAc,
+    "0.0.0.0",
+    serverCertPem,
+    serverKeyPem,
+  );
+  cleanups.push(() => { dispAc.abort(); dispTlsAc.abort(); });
+  // The requester's ingress URL is https://<sub>.relay.localhost (hostnameOnly
+  // drops the port): a name the container resolves to the gateway.
+  const ingressProxyHost = `relay.localhost:${dispPort}`;
+
+  // -- fake PLC -------------------------------------------------------------
   const plc = createFakePlc();
   const plcCtl = new AbortController();
-  const { promise: plcPortReady, resolve: resolvePlcPort } = Promise.withResolvers<number>();
-  Deno.serve(
-    { port: 0, hostname: "127.0.0.1", signal: plcCtl.signal, onListen: (addr) => resolvePlcPort((addr as Deno.NetAddr).port) },
-    plc.app.fetch,
-  );
-  const plcPort = await plcPortReady;
+  const plcPort = await serveOnPort0(plc.app.fetch, plcCtl);
   cleanups.push(() => plcCtl.abort());
   const plcDirectoryUrl = `http://localhost:${plcPort}`;
 
-  // -- Fetch interception ----------------------------------------------
-  const { installFetchInterceptor } = await import("./fetch-interceptor.ts");
+  // -- fetch interception ---------------------------------------------------
+  // The requester verifies the reporter token by fetching the provider issuer's
+  // discovery document and JWKS at the issuer_uri the winning bid_config names
+  // -- a host carrying the guest TLS port. Point the interceptor at the TLS
+  // listener with the CA, so that fetch stays https instead of being
+  // downgraded to http against a TLS listener.
   const restoreFetch = installFetchInterceptor({
     realFetch: globalThis.fetch,
     plcDirectoryUrl,
-    dispPort,
+    dispPort: dispTlsPort,
+    caCertPem,
   });
   cleanups.push(restoreFetch);
 
+  let bidderDid = "";
   try {
-
     // -- bidder -----------------------------------------------------------
     const bidderKeypair = await Secp256k1Keypair.create({ exportable: true });
     const bidderPrivHex = Array.from(await bidderKeypair.export())
@@ -145,22 +233,36 @@ Deno.test({
       plcDirectory: createPlcDirectoryClient({ plcDirectoryUrl }),
       agent: pdsAgent,
     });
+    bidderDid = atproto.did;
 
     const makeRelay = async () => {
       const kp = await Secp256k1Keypair.create({ exportable: true });
       return createIngress({ logger, ingressProxyHost, signer: atproto.signer, keypair: kp });
     };
 
-    // local compute provider (container mode) on its own relay/serve
+    // local compute provider (container mode) on its own relay/serve. The
+    // issuer URL is the provider's own relay name with the guest TLS port, so
+    // the issuer_uri in the winning bid_config is reachable by the guest and by
+    // this process's interceptor.
     const providerRelay = await makeRelay();
     const providerServe = createServe({ logger, relays: [providerRelay] });
+    const issuerUrl = () => didWebToHttps(providerRelay.ingressRef);
     const provider = createComputeProviderHooks({
       provider: createLocalComputeProvider({
         logger,
         atproto: atproto as unknown as ComputeAtproto,
         serve: providerServe,
-        getIssuerUrl: () => didWebToHttps(providerRelay.ingressRef),
+        getIssuerUrl: issuerUrl,
+        // The guest is issued its workload-identity token by the provider's
+        // OIDC issuer; the report POST exchanges that token and the requester
+        // verifies the exchanged token against this issuer's JWKS.
+        oidcProvisioner: createOidcProvisioningEnricher(issuerUrl),
+        rbacProvisioner: createRbacProvisioner(),
         containerMode: "container",
+        ingressProxyHost,
+        // Guest-side rewriting: https://*.localhost -> gateway:<dispTlsPort>.
+        caCertPem,
+        guestTlsPort: dispTlsPort,
       }),
     });
     await providerServe.beginServe();
@@ -181,51 +283,57 @@ Deno.test({
       plcDirectoryUrl, ingressProxyHost, label: "requester",
     });
     cleanups.push(() => requesterServe.shutdown());
-
-    // runComputeContract deletes pendingBids[rfpUri] after collecting, so spy
-    // on inserts to capture every bid the requester received.
-    const seenBids: Array<{ did: string; uri: string }> = [];
-    const origSet = requester.pendingBids.set.bind(requester.pendingBids);
-    requester.pendingBids.set = ((k: string, v: Array<{ did: string; uri: string }>) => {
-      for (const b of v) seenBids.push({ did: b.did, uri: b.uri });
-      return origSet(k, v as never);
-    }) as typeof requester.pendingBids.set;
-
     await requester.beginServe();
 
-    // -- run the contract: deny the central default, include our bidder ----
+    // -- run the whole contract, SSH included ------------------------------
+    // No Promise.race cap: the contract owns the flow to the end. Tearing the
+    // services down while the bidder is still provisioning aborts its in-flight
+    // record resolves and surfaces as `TypeError: fetch failed`, which is a
+    // teardown race, not a provisioning failure.
     let contractErr: unknown;
-    const contract = runComputeContract(requester, {
+    const result = await runComputeContract(requester, {
       logger,
       ingressProxyHost,
-      skipSsh: true,
+      skipSsh: false,
       keepVm: true,
       policy: { name: "open", args: { bidWindowSec: 8 } },
-      vmReadyTimeoutSec: 1,
-      execProgram: "true",
+      vmReadyTimeoutSec: 180,
+      // The exit code only succeeds inside the real guest: the exec program
+      // both echoes a marker and tests the binary the guest's cloud-init
+      // installed.
+      execProgram: "test -x /usr/local/bin/dumbpipe && echo SSH_OK_VIA_IROH",
       extraBidderDids: [atproto.did],
       denyBidderDids: ["did:plc:centraldefaultbidder000000"],
-    }).catch((e) => { contractErr = e; });
-    // The bid is collected within the bid window; cap total time so real
-    // container provisioning on accept cannot hang the test.
-    await Promise.race([
-      contract,
-      new Promise((r) => setTimeout(r, 40_000)),
-    ]);
+    }).catch((e) => {
+      contractErr = e;
+      return undefined;
+    });
 
-    // -- assert: a bid from our locally-started bidder was collected -------
-    const ourBids = seenBids.filter((b) => b.did === atproto.did);
     assert(
-      ourBids.length > 0,
-      `expected >=1 bid from our bidder ${atproto.did}; saw ${seenBids.length} bid(s) from ${
-        JSON.stringify(seenBids.map((b) => b.did))
-      }; contractErr=${contractErr ? String(contractErr) : "none"}`,
+      result,
+      `contract must complete; contractErr=${contractErr ? String(contractErr) : "none"}`,
     );
     assert(
-      !seenBids.some((b) => b.did === "did:plc:centraldefaultbidder000000"),
-      "central default bidder must not have bid (it was denied)",
+      result!.winnerDid === atproto.did,
+      `winner must be our bidder ${atproto.did}, got ${result!.winnerDid}`,
+    );
+    // A green run proves the whole chain: the guest installed dumbpipe, the
+    // guest reported its ticket to the requester's per-contract endpoint, and
+    // ssh with `dumbpipe connect <ticket>` ran the command in the guest.
+    assert(
+      result!.sshReady === true,
+      `guest SSH must become ready over iroh, got ${result!.sshReady}`,
+    );
+    assert(
+      result!.sshExitCode === 0,
+      `ssh exec must exit 0 inside the guest, got ${result!.sshExitCode}`,
     );
   } finally {
+    // Remove the kept guest container; the contract itself is already done.
+    if (bidderDid) {
+      const name = await findContainerByDid(backend, bidderDid).catch(() => null);
+      if (name) await backend.rm(name).catch(() => {});
+    }
     for (const c of cleanups.reverse()) {
       try { c(); } catch { /* best effort */ }
     }

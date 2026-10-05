@@ -1,19 +1,27 @@
 # request-vm-ssh
 
-Request compute VM over RFP market, get SSH session tunneled through
-xrpc relay. Guest born from cloud-init only -- no hand-built
-provisioning.
+Request a compute VM over the RFP market, then open an SSH session to it.
+Guest born from cloud-init only -- no hand-built provisioning.
 
-Topology:
+Default transport is **iroh**: the guest runs a `dumbpipe` listener that
+bridges the iroh network to its loopback sshd, reports its ticket to the
+requester's own per-contract endpoint, and the host dials that ticket with
+`dumbpipe connect`. No websocat runs on the host.
+
+Topology (default, `--user-data-transport iroh`):
+
+```
+ssh -> dumbpipe connect <ticket> -> iroh network -> guest dumbpipe listener -> sshd:22
+       (host, ensures dumbpipe)                     (cloud-init iroh module)
+```
+
+The legacy `tunnel` and `fedproxy-ssh` transports, selected explicitly with
+`--user-data-transport`, keep the relay path:
 
 ```
 ssh -> websocat ProxyCommand -> xrpc-relay -> tunnel-subscriber (guest) -> sshd:22
        (host)                   (dispatch)     (xrpc tunnel agent)
 ```
-
-Fedproxy-client replaced by xrpc tunnel-subscriber. Guest websocat
-dropped -- subscriber speaks raw TCP to sshd. Host websocat stays (reference
-cli.ts pattern).
 
 ## Quick start (local dev)
 
@@ -83,13 +91,20 @@ container ls -a | grep pdr- | awk '{print $1}' | xargs container rm -f
 1. `request-vm-ssh` starts relay + JSR registry (or connects to existing)
 2. Creates requester PDS, registers DID with real PLC directory
 3. Discovers bidders from `BIDDER_HANDLE_NNNN` env vars
-4. Generates cloud-init via `buildTunnelUserData` (tunnel-subscriber replacing
-   fedproxy-client)
+4. Generates cloud-init via `buildUserData` with the selected transport module
+   (`iroh` by default: it installs dumbpipe and the `dumbpipe-listen` unit)
 5. Creates VM record + signed RFP, broadcasts to bidders
 6. Winning bidder provisions guest (container/VB) from cloud-init
-7. Guest boots: installs sshd, pulls tunnel-subscriber from JSR registry,
-   registers with relay, bridges relay tunnel to sshd:22
-8. Host opens SSH through `websocat ProxyCommand -> relay -> subscriber -> sshd`
+7. Guest boots: installs sshd + dumbpipe, starts `dumbpipe listen-tcp` against
+   127.0.0.1:22, and reports its iroh ticket to the requester's own per-contract
+   `/v1/on-network` endpoint -- never through a public record
+8. Host ensures `dumbpipe` and opens SSH through
+   `dumbpipe connect <ticket> -> iroh -> guest listener -> sshd`
+
+With `--user-data-transport tunnel` or `fedproxy-ssh` the guest instead pulls
+the tunnel-subscriber (tunnel) or runs websocat + fedproxy-client
+(fedproxy-ssh), registers with the relay, and the host reaches it through the
+legacy `websocat ProxyCommand -> xrpc-relay -> tunnel-subscriber -> sshd` path.
 
 ## Secrets (--secrets)
 
@@ -265,6 +280,7 @@ reach your bidder, and only your bidder may fulfill your RFPs.
 | `--relay-port` | auto | Relay dispatch port |
 | `--registry-port` | auto | JSR registry port |
 | `--bidder-dids` | -- | Additional bidder DIDs to include (comma-separated) |
+| `--user-data-transport` | `iroh` | Guest transport module: `iroh` (dumbpipe listener, the default) or the legacy `tunnel`/`fedproxy-ssh` relay path |
 | `--secrets` | -- | Path to `[{"path","value"}]` JSON delivered to the guest over an ephemeral RBAC-gated server ([details](#secrets---secrets)) |
 | `--policy` | `only-me` | Policy name: `only-me`, `tangled-vouch`, `mutuals`, `open`, `bid-payload` |
 | `--policy-args` | `{}` | Policy arguments as JSON, e.g. `{"bidWindowSec":30,"firstFree":true}` |

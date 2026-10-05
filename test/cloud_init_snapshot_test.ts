@@ -2,7 +2,7 @@
 //
 // Fixtures are byte-stable outputs of the composer (generated once during the
 // migration; regenerate only when intentionally changing the composed YAML):
-//   test/fixtures/cloud-init/{tunnel,fedproxy-ssh,fedproxy-web-wootty}.yaml
+//   test/fixtures/cloud-init/{tunnel,iroh,fedproxy-ssh,fedproxy-web-wootty}.yaml
 //
 // Run:
 //   deno test -A test/cloud_init_snapshot_test.ts
@@ -30,6 +30,10 @@ const CTX = {
   sshAuthorizedKey: SSH,
   ingressProxyHost: "relay.local:443",
   audHost: "relay.local",
+  // Requester-supplied per-contract report channel: the guest posts its iroh
+  // ticket here instead of publishing it in a world-readable record. No
+  // credential may be carried -- this user_data is published in a record.
+  irohReportUrl: "https://req-abc.relay.local/v1/on-network",
 };
 
 function fixture(name: string): Promise<string> {
@@ -42,6 +46,10 @@ Deno.test("composer snapshots match fixtures", async () => {
   assertEquals(
     buildUserData({ ctx: CTX, modules: ["tunnel"] }),
     await fixture("tunnel.yaml"),
+  );
+  assertEquals(
+    buildUserData({ ctx: CTX, modules: ["iroh"] }),
+    await fixture("iroh.yaml"),
   );
   assertEquals(
     buildUserData({ ctx: CTX, modules: ["fedproxy-ssh"] }),
@@ -123,6 +131,138 @@ Deno.test("tunnel has no ListenAddress (direct-TCP probe)", () => {
   assert(!y.includes("ListenAddress"));
   assert(y.includes("tunnel-subscriber.service"));
   assert(y.includes(`--target-port 22`));
+});
+
+Deno.test("iroh dumbpipe listener replaces the tunnel subscriber", () => {
+  const y = buildUserData({ ctx: CTX, modules: ["iroh"] });
+  assert(y.startsWith("#cloud-config\n"), "cloud-config header");
+  assert(y.includes("/root/.ssh/authorized_keys"), "root key installed");
+  assert(y.includes(SSH), "authorized key comes from ctx.sshAuthorizedKey");
+  assert(y.includes("PermitRootLogin prohibit-password"), "key-only root login");
+  assert(y.includes("PasswordAuthentication no"), "no password auth");
+  assert(!y.includes("ListenAddress"), "sshd stays probe-able on :22");
+  assert(y.includes("n0-computer/dumbpipe/releases/download"), "dumbpipe release archive");
+  // The release archive stores its member as ./dumbpipe; naming the bare
+  // `dumbpipe` fails with `tar: dumbpipe: Not found in archive` (exit 2).
+  assert(y.includes("./dumbpipe"), "extracts the ./dumbpipe member");
+  // curl -q first: the guest's /root/.curlrc carries the container resolver
+  // rule, and without -q it would send the github download to the gateway too.
+  assert(y.includes("curl -qfsSL"), "install ignores the guest's curl config");
+  assert(y.includes("dumbpipe-listen.service"), "listener unit installed");
+  assert(y.includes("listen-tcp --host 127.0.0.1:22"), "listener bridges to sshd");
+  assert(y.includes("/root/secrets/iroh-node-id"), "ticket captured for the requester");
+  assert(!y.includes("tunnel-subscriber"), "old transport not re-emitted");
+});
+
+Deno.test("iroh listener keeps a stable identity and a fresh ticket", () => {
+  const y = buildUserData({ ctx: CTX, modules: ["iroh"] });
+  // Stable iroh identity: the secret file is created once, under umask 077, by
+  // the listener script itself, which sources it in-process -- the unit carries
+  // no EnvironmentFile, because the container-mode systemctl shim cannot run a
+  // quoted ExecStart and has no ExecStartPre.
+  assert(y.includes(". /root/secrets/iroh.env"), "listener sources the secret file");
+  assert(y.includes("IROH_SECRET="), "secret file carries IROH_SECRET");
+  assert(
+    y.includes("[ ! -s /root/secrets/iroh.env ]"),
+    "secret generated only when missing or empty",
+  );
+  assert(y.includes("umask 077"), "secret written under umask 077");
+  assert(y.includes("chmod 0600 /root/secrets/iroh.env"), "secret file locked down");
+  // Freshness: the log is truncated on every start and the reporter re-extracts
+  // the ticket, so a restarted listener cannot report a stale ticket.
+  assert(y.includes(": > /root/secrets/iroh-dumbpipe.log"), "log truncated on each start");
+  assert(
+    y.includes("/usr/local/bin/iroh-report-ticket.sh &"),
+    "reporter launched before the listener execs",
+  );
+  assert(
+    y.includes("exec /usr/local/bin/dumbpipe listen-tcp --host 127.0.0.1:22"),
+    "listener execs dumbpipe itself",
+  );
+  // Private report channel: the ticket goes to the requester's own endpoint,
+  // never into a public record.
+  assert(y.includes(CTX.irohReportUrl), "report endpoint from ctx.irohReportUrl");
+  assert(y.includes("/root/secrets/iroh-node-id"), "ticket captured for the requester");
+  assert(y.includes("accept.uri"), "accept ref read from the injected bundle");
+});
+
+Deno.test("iroh unit is one bare-path ExecStart and mints its report token at boot", () => {
+  const y = buildUserData({ ctx: CTX, modules: ["iroh"] });
+  // The container-mode systemctl shim cannot run a quoted ExecStart, ignores a
+  // StandardOutput=append: redirect and implements no ExecStartPost, so the
+  // unit starts one bare-path script that owns the identity, the log and the
+  // report itself. The unit still declares the EnvironmentFile the identity is
+  // read from and an ExecStartPre that prepares it, which is what real systemd
+  // uses; the script repeats both jobs, because the shim runs neither.
+  assert(
+    y.includes("ExecStart=/usr/local/bin/iroh-listen.sh"),
+    "bare-path ExecStart",
+  );
+  assert(
+    y.includes("EnvironmentFile=-/root/secrets/iroh.env"),
+    "unit reads the identity through EnvironmentFile",
+  );
+  assert(
+    y.includes("ExecStartPre=/usr/local/bin/iroh-prepare.sh"),
+    "unit prepares the secret and truncates the log before starting",
+  );
+  assert(!y.includes("ExecStartPost="), "no ExecStartPost");
+  assert(
+    !y.includes("StandardOutput=append:/root/secrets"),
+    "no append redirect",
+  );
+  assert(!y.includes("/bin/sh -c '"), "no quoted ExecStart");
+  assert(
+    y.includes("exec >>/root/secrets/iroh-dumbpipe.log 2>&1"),
+    "the script owns the listener log",
+  );
+  // The credential is minted at boot from the bidder-injected accept bundle:
+  // the composed user_data is published inside the compute.vm record, so a
+  // token carried here would be public and would only appear to protect the
+  // endpoint. The exchange retries inside the same loop, and the endpoint is
+  // never called without a token.
+  assert(
+    y.includes("Authorization: Bearer $_report_token"),
+    "report POST is authenticated with a boot-minted token",
+  );
+  assert(y.includes(".bid_config.value // .bid_config"), "token config read from bid_config");
+  assert(y.includes(".token // empty"), "bearer comes from the provider token exchange");
+  assert(!/Bearer (?!\$)/.test(y), "no literal token is carried in the cloud-config");
+  // The provisioning token's base64url payload varies in length, so the
+  // subject decode pads to a multiple of four instead of appending a fixed
+  // "==" (the secrets module's fixed pad fails on this guest's 435-char token).
+  assert(y.includes("case $((${#_payload} % 4)) in"), "payload padded to a multiple of four");
+  assert(y.includes('2) _payload="${_payload}=="'), "remainder 2 takes two pads");
+  assert(y.includes('3) _payload="${_payload}="'), "remainder 3 takes one pad");
+  assert(y.includes('1) _payload="${_payload}==="'), "remainder 1 takes three pads");
+});
+
+Deno.test("iroh ticket extraction matches the connect-tcp line dumbpipe prints", () => {
+  const y = buildUserData({ ctx: CTX, modules: ["iroh"] });
+  // `dumbpipe listen-tcp` prints `dumbpipe connect-tcp <ticket>` on stderr, so
+  // the extraction must key on the subcommand that was actually printed.
+  assert(y.includes("dumbpipe connect-tcp "), "extracts from the connect-tcp line");
+  assert(!y.includes("dumbpipe connect [^"), "no bare `dumbpipe connect` prefix");
+});
+
+Deno.test("every module that configures an sshd installs openssh-server", () => {
+  for (const id of listUserDataModules()) {
+    const y = buildUserData({ ctx: CTX, modules: [id] });
+    const configuresSshd = y.includes("sshd_config.d/") ||
+      y.includes("systemctl enable --now ssh");
+    if (!configuresSshd) continue;
+    assert(
+      y.includes("openssh-server"),
+      `${id} configures an sshd but never installs openssh-server`,
+    );
+  }
+  // The rule has to bite for the transports that actually own an sshd.
+  for (const id of ["tunnel", "fedproxy-ssh", "iroh"]) {
+    assert(
+      /sshd_config\.d\//.test(buildUserData({ ctx: CTX, modules: [id] })),
+      `${id} is covered by the completeness rule`,
+    );
+  }
 });
 
 Deno.test("wootty combo carries token handoff + hardening", () => {
@@ -208,6 +348,7 @@ Deno.test("injectJsrUrl adds JSR_URL env to tunnel unit", () => {
 
 Deno.test("registry: built-ins present, unknown id throws", () => {
   assert(listUserDataModules().includes("tunnel"));
+  assert(listUserDataModules().includes("iroh"));
   assert(listUserDataModules().includes("fedproxy-ssh"));
   assert(listUserDataModules().includes("fedproxy-web"));
   assert(listUserDataModules().includes("wootty"));
