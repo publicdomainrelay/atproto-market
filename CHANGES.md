@@ -239,6 +239,20 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 - added `r.verify-jwt-unimplemented` (MUST): "WebCryptoKey.verifyJwt must accept the token and options parameters but always throw an Error reading "WebCryptoKey.verifyJwt not implemented"; the key is used for signing DPoP proofs only, so verification is out of scope for this helper."
 - added `r.web-crypto-key-extends-jwk-key` (MUST): "WebCryptoKey must extend @atproto/jwk's abstract Key and pass super a JWK built from the public and private JWK arguments plus the alg and kid, with use fixed to "sig" and key_ops fixed to ["sign", "verify"], while holding the CryptoKey, the alg string and the public JWK in private fields (#cryptoKey, #alg, #publicJwk) that createJwt reads."
 
+### lib-cocore-api
+
+- intent: "" -> "This context exists so that the cocore AppView's API-key management surface has one small, dependency-light client that any consumer in the repository can import instead of hand-rolling fetch calls and service-auth token minting. It fixes the wire contract (endpoint layout, authorization header, JSON bodies, error shape) once, so the AppView server side and its CLI or tests can agree on it, and it keeps the client self-contained under lib/cocore-api so it can be type-checked and versioned on its own."
+- added `r.api-key-shape` (MUST): "ApiKey must describe a stored key with required id, name and createdAt strings plus an optional lastUsedAt for keys that have never been used, and CreateApiKeyResponse (token plus key) and ListApiKeysResponse (keys array) must both reference that same ApiKey shape rather than restating its fields, so a field added to ApiKey appears in every response type."
+- added `r.base-url-normalization` (MUST): "The client must resolve its base URL from opts.appviewUrl, falling back to https://appview.cocore.dev when the option is absent, and must strip every trailing slash before building an endpoint, so request URLs never contain a doubled slash regardless of how the caller spelled the URL."
+- added `r.client-factory` (MUST): "createCocoreClient must accept a CocoreClientOptions object and return a CocoreClient whose createApiKey, listApiKeys and deleteApiKey methods close over that same options object, taking the optional appviewUrl, the required getServiceAuth callback used to mint tokens, and the optional fetch implementation from it."
+- added `r.create-api-key` (MUST): "CocoreClient.createApiKey must take a name, POST it as the { name } body to the cocore create-API-key NSID, and resolve to a CreateApiKeyResponse carrying both the plaintext token and the created ApiKey record."
+- added `r.delete-api-key` (MUST): "CocoreClient.deleteApiKey must take the key id, POST an { id } body to the cocore delete-API-key NSID, and resolve to void, discarding the response payload while still surfacing any request failure thrown by the call helper."
+- added `r.deno-manifest` (SHOULD): "The module should keep its own deno.json manifest beside mod.ts so the package can be imported and type-checked on its own, independent of whichever consumer embeds it."
+- added `r.error-on-non-2xx` (MUST): "When a response is not ok, the call helper must read the response text (tolerating a failed read by falling back to an empty string) and throw an Error whose message names the cocore NSID, the HTTP status and that body text, rather than returning a partial or parsed result."
+- added `r.list-api-keys` (MUST): "CocoreClient.listApiKeys must take no arguments, POST with no body to the cocore list-API-keys NSID, and resolve to a ListApiKeysResponse whose keys array holds ApiKey entries."
+- added `r.service-auth-audience` (MUST): "The client must parse the normalized base URL and derive the service-auth audience as did:web:<host>, then obtain a token for every request by awaiting opts.getServiceAuth with that audience and the NSID being called, so no token is cached or reused across calls and each request carries credentials scoped to the method it invokes."
+- added `r.xrpc-post-request` (MUST): "Each call must issue a POST through the resolved fetch implementation (opts.fetch falling back to globalThis.fetch) to <base>/xrpc/<nsid> with content-type application/json and an authorization header of the form Bearer <token>, attach a JSON-stringified body only when a body argument is supplied, and resolve to the parsed JSON of a successful response."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance | coverage |
@@ -256,5 +270,5 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 | lib-atproto-attestation-port-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-atproto-helpers-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-atproto-oauth-helpers-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
-| lib-cocore-api-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
+| lib-cocore-api-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-common-cloud-init-common-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |

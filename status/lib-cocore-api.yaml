@@ -1,11 +1,11 @@
 syncedFingerprint: 85c3c98e84d99a541d65e2aa64667cf7370f958680a1a68a2e06f40d73abb018
-realizedSpecHash: 4db3d140eaab8a7bfa92be1f295cc74485821c55ca6a6c06fac5137b3820f962
+realizedSpecHash: 838867331032c8d4ac76fa261cda5334605d2f6e7b17fc5e9c58c8f775b47316
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: ApiKey, CocoreClient, CocoreClientOptions, CreateApiKeyResponse,
-    ListApiKeysResponse, call, createCocoreClient'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual

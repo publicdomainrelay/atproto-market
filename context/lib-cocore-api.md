@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so that the cocore AppView's API-key management surface has one small, dependency-light client that any consumer in the repository can import instead of hand-rolling fetch calls and service-auth token minting. It fixes the wire contract (endpoint layout, authorization header, JSON bodies, error shape) once, so the AppView server side and its CLI or tests can agree on it, and it keeps the client self-contained under lib/cocore-api so it can be type-checked and versioned on its own.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

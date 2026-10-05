@@ -8,5 +8,149 @@ spec:
   upstream: self
   dependsOn:
   - sc.atproto-market
+  intent: This context exists so that the cocore AppView's API-key management surface
+    has one small, dependency-light client that any consumer in the repository can
+    import instead of hand-rolling fetch calls and service-auth token minting. It
+    fixes the wire contract (endpoint layout, authorization header, JSON bodies, error
+    shape) once, so the AppView server side and its CLI or tests can agree on it,
+    and it keeps the client self-contained under lib/cocore-api so it can be type-checked
+    and versioned on its own.
+  requirements:
+  - id: r.api-key-shape
+    level: MUST
+    text: ApiKey must describe a stored key with required id, name and createdAt strings
+      plus an optional lastUsedAt for keys that have never been used, and CreateApiKeyResponse
+      (token plus key) and ListApiKeysResponse (keys array) must both reference that
+      same ApiKey shape rather than restating its fields, so a field added to ApiKey
+      appears in every response type.
+    codeRefs:
+    - interface:09decfc0b5223bf533f41d5230769bc8
+    - interface:1bcea98b6e61d0fa858c001c956b655d
+    - interface:a6b944b6f1859d7bd5b304b7a2b77b3c
+  - id: r.base-url-normalization
+    level: MUST
+    text: The client must resolve its base URL from opts.appviewUrl, falling back
+      to https://appview.cocore.dev when the option is absent, and must strip every
+      trailing slash before building an endpoint, so request URLs never contain a
+      doubled slash regardless of how the caller spelled the URL.
+    codeRefs:
+    - file:lib/cocore-api/mod.ts
+    - function:1fea095a0bee325bdb1aae5e86e8f6a3
+  - id: r.client-factory
+    level: MUST
+    text: createCocoreClient must accept a CocoreClientOptions object and return a
+      CocoreClient whose createApiKey, listApiKeys and deleteApiKey methods close
+      over that same options object, taking the optional appviewUrl, the required
+      getServiceAuth callback used to mint tokens, and the optional fetch implementation
+      from it.
+    codeRefs:
+    - function:1fea095a0bee325bdb1aae5e86e8f6a3
+    - interface:6c1e6b8fec8cdfaf8c00a2c93ec26f2e
+    - interface:8ec256e4f14d893e88afbca014d72b53
+  - id: r.create-api-key
+    level: MUST
+    text: CocoreClient.createApiKey must take a name, POST it as the { name } body
+      to the cocore create-API-key NSID, and resolve to a CreateApiKeyResponse carrying
+      both the plaintext token and the created ApiKey record.
+    codeRefs:
+    - function:d182b9f8d24e2ca8806313b0bcd98280
+    - interface:1bcea98b6e61d0fa858c001c956b655d
+    - interface:6c1e6b8fec8cdfaf8c00a2c93ec26f2e
+  - id: r.delete-api-key
+    level: MUST
+    text: CocoreClient.deleteApiKey must take the key id, POST an { id } body to the
+      cocore delete-API-key NSID, and resolve to void, discarding the response payload
+      while still surfacing any request failure thrown by the call helper.
+    codeRefs:
+    - function:d182b9f8d24e2ca8806313b0bcd98280
+    - interface:6c1e6b8fec8cdfaf8c00a2c93ec26f2e
+  - id: r.deno-manifest
+    level: SHOULD
+    text: The module should keep its own deno.json manifest beside mod.ts so the package
+      can be imported and type-checked on its own, independent of whichever consumer
+      embeds it.
+    codeRefs:
+    - file:lib/cocore-api/deno.json
+    - file:lib/cocore-api/mod.ts
+  - id: r.error-on-non-2xx
+    level: MUST
+    text: When a response is not ok, the call helper must read the response text (tolerating
+      a failed read by falling back to an empty string) and throw an Error whose message
+      names the cocore NSID, the HTTP status and that body text, rather than returning
+      a partial or parsed result.
+    codeRefs:
+    - file:lib/cocore-api/mod.ts
+    - function:d182b9f8d24e2ca8806313b0bcd98280
+  - id: r.list-api-keys
+    level: MUST
+    text: CocoreClient.listApiKeys must take no arguments, POST with no body to the
+      cocore list-API-keys NSID, and resolve to a ListApiKeysResponse whose keys array
+      holds ApiKey entries.
+    codeRefs:
+    - function:d182b9f8d24e2ca8806313b0bcd98280
+    - interface:09decfc0b5223bf533f41d5230769bc8
+    - interface:6c1e6b8fec8cdfaf8c00a2c93ec26f2e
+  - id: r.service-auth-audience
+    level: MUST
+    text: The client must parse the normalized base URL and derive the service-auth
+      audience as did:web:<host>, then obtain a token for every request by awaiting
+      opts.getServiceAuth with that audience and the NSID being called, so no token
+      is cached or reused across calls and each request carries credentials scoped
+      to the method it invokes.
+    codeRefs:
+    - function:1fea095a0bee325bdb1aae5e86e8f6a3
+    - function:d182b9f8d24e2ca8806313b0bcd98280
+  - id: r.xrpc-post-request
+    level: MUST
+    text: Each call must issue a POST through the resolved fetch implementation (opts.fetch
+      falling back to globalThis.fetch) to <base>/xrpc/<nsid> with content-type application/json
+      and an authorization header of the form Bearer <token>, attach a JSON-stringified
+      body only when a body argument is supplied, and resolve to the parsed JSON of
+      a successful response.
+    codeRefs:
+    - file:lib/cocore-api/mod.ts
+    - function:d182b9f8d24e2ca8806313b0bcd98280
+  interfaces:
+  - name: ApiKey
+    kind: interface
+    signature: 'interface ApiKey { id: string; name: string; createdAt: string; lastUsedAt?:
+      string }'
+    file: lib/cocore-api/mod.ts
+  - name: CocoreClient
+    kind: interface
+    signature: 'interface CocoreClient { createApiKey(name: string): Promise<CreateApiKeyResponse>;
+      listApiKeys(): Promise<ListApiKeysResponse>; deleteApiKey(id: string): Promise<void>
+      }'
+    file: lib/cocore-api/mod.ts
+  - name: CocoreClientOptions
+    kind: interface
+    signature: 'interface CocoreClientOptions { appviewUrl?: string; getServiceAuth(aud:
+      string, nsid: string): string | Promise<string>; fetch?: typeof globalThis.fetch
+      }'
+    file: lib/cocore-api/mod.ts
+  - name: CreateApiKeyResponse
+    kind: interface
+    signature: 'interface CreateApiKeyResponse { token: string; key: ApiKey }'
+    file: lib/cocore-api/mod.ts
+  - name: ListApiKeysResponse
+    kind: interface
+    signature: 'interface ListApiKeysResponse { keys: ApiKey[] }'
+    file: lib/cocore-api/mod.ts
+  - name: call
+    kind: function
+    signature: 'function call(nsid: string, body?: Record<string, unknown>): Promise<unknown>'
+    file: lib/cocore-api/mod.ts
+  - name: createCocoreClient
+    kind: function
+    signature: 'function createCocoreClient(opts: CocoreClientOptions): CocoreClient'
+    file: lib/cocore-api/mod.ts
 codeRefIndex:
+- file:lib/cocore-api/deno.json deno.json@lib/cocore-api/deno.json
 - file:lib/cocore-api/mod.ts mod.ts@lib/cocore-api/mod.ts
+- function:1fea095a0bee325bdb1aae5e86e8f6a3 createCocoreClient@lib/cocore-api/mod.ts:35
+- function:d182b9f8d24e2ca8806313b0bcd98280 call@lib/cocore-api/mod.ts:40
+- interface:09decfc0b5223bf533f41d5230769bc8 ListApiKeysResponse@lib/cocore-api/mod.ts:17
+- interface:1bcea98b6e61d0fa858c001c956b655d CreateApiKeyResponse@lib/cocore-api/mod.ts:12
+- interface:6c1e6b8fec8cdfaf8c00a2c93ec26f2e CocoreClient@lib/cocore-api/mod.ts:29
+- interface:8ec256e4f14d893e88afbca014d72b53 CocoreClientOptions@lib/cocore-api/mod.ts:21
+- interface:a6b944b6f1859d7bd5b304b7a2b77b3c ApiKey@lib/cocore-api/mod.ts:5
