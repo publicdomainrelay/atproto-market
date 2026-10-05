@@ -1,14 +1,11 @@
 syncedFingerprint: 62eadf7a15fa0d39072ffd39bfb7ee22b17dee000dd95df4fb38a4f7f5eae3b5
-realizedSpecHash: 319a24c26d550614707a522679a64dfc37054d20f1b997d12beb2c3c67d2ef29
+realizedSpecHash: 6e0d217651490467c7d757f4d7272f9ef45a5d164bb6ace3aaad27f49d5b78f4
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: HandlerDeps, MemoryPlcStore, MemoryPlcStore.exportLogs, MemoryPlcStore.getAuditLog,
-    MemoryPlcStore.getCurrentOps, MemoryPlcStore.getOpByCid, MemoryPlcStore.insertOp,
-    MemoryPlcStore.nullifyOps, PlcDirectoryFactory, PlcDirectoryOptions, PlcStore,
-    computeOperationCid, createPlcDirectoryFactory, mountHandlers, resolveDidDocument,
-    validateOperationStructure, validatePrevChain, validateRotationKeyAuth, verifyOperationSignature'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual

@@ -9,5 +9,20 @@ spec:
   fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
   toCommit: 05fe29612a62a645d70273560238ecc3180414d2
 status:
-  phase: Running
-  message: the agent is summarizing lib-hono-factory-did-plc-directory
+  phase: Succeeded
+  agentLog: 'lib/hono-factory-did-plc-directory is the Deno + Hono PLC directory library
+    in atproto-market. mod.ts re-exports the public surface; factory.ts builds the
+    app from optional PlcDirectoryOptions (store, version, verifySig) and returns
+    a PlcDirectoryFactory holding both the Hono app and the PlcStore in use; handlers.ts
+    declares HandlerDeps (required store and version, optional verifySig) and mountHandlers,
+    which wires GET /health, GET /export, GET /:did, POST /:did, GET /:did/log and
+    GET /:did/log/audit, with the export handler honouring after and count query parameters.
+    validation.ts supplies the operation pipeline: computeOperationCid hashes signed
+    bytes with SHA-256 and wraps the digest as a base32 CIDv1 under the dag-cbor codec,
+    while validateOperationStructure, verifyOperationSignature, validatePrevChain
+    and validateRotationKeyAuth check shape, signature, previous-CID chain and rotation-key
+    authority. did-resolution.ts replays a DID''s current operation log into a DID
+    document, returning null for an empty log or a log ending in a tombstone. MemoryPlcStore
+    is the in-memory PlcStore implementation, keyed by DID, with current and audit
+    views, CID lookup, insertion, nullification and time-ordered export.'
+  message: wrote 13 requirement(s) and 19 interface(s) for lib-hono-factory-did-plc-directory

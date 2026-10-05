@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so a host can serve a did:plc style directory over HTTP without owning identity storage or cryptography: the library takes an injected PlcStore and verifySig, mounts the standard PLC route table on a Hono app, and exposes the app plus the store back to the caller. It separates the operation pipeline (structure, signature, prev-chain and rotation-key checks, CID derivation) from the transport, and keeps the DID-document projection as a pure replay of a DID's current operation log.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 
