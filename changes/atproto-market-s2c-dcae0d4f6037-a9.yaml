@@ -17,8 +17,8 @@ spec:
     - +r.iroh-acceptance-plc-key-resolution
     - +r.iroh-cloud-init-fixture
 status:
-  phase: Running
-  message: the agent is realizing atproto-market in a batch of 5 led by atproto-market
+  phase: Failed
+  message: 'restored: the branch recorded this change as Running'
   attempt: 9
   retryReason: 'Spec amended: r.iroh-ticket-report now requires the report URL to
     name the port the guest reaches and to install the CA, and the reporter to fail
@@ -31,6 +31,31 @@ status:
     the ticket-report route on the plain listener and use http on its port. Keep the
     suite economical.'
   retryBy: john
+  progress:
+    turns: 1
+    tools:
+    - tool: Edit
+      count: 17
+    - tool: Read
+      count: 22
+    - tool: Write
+      count: 1
+    files:
+    - .dp_check.ts
+    - compute-contract-full-flow/run_full_flow.ts
+    - lib/abc/requester/mod.ts
+    - lib/did-key-ingress-proxy/mod.ts
+    - lib/guest-capability-secrets/mod.ts
+    - lib/requester-xrpc/mod.ts
+    - test/bidder_container_integration_test.ts
+    - test/bidder_cross_platform_integration_test.ts
+    - test/bidder_prod_integration_test.ts
+    - test/bidder_ssh_relay_test.ts
+    - test/cloud_init_snapshot_test.ts
+    - test/fetch-interceptor.ts
+    notes: 2
+    first: "2026-10-05T20:58:39Z"
+    last: "2026-10-05T21:06:36Z"
 superseded:
 - name: atproto-market-s2c-dcae0d4f6037-a8
   phase: Failed

@@ -16,8 +16,8 @@ spec:
     - +ensureDumbpipe
     - ~createSshSessionProvider
 status:
-  phase: Running
-  message: the agent is realizing lib-requester-xrpc in a batch of 5 led by atproto-market
+  phase: Failed
+  message: 'restored: the branch recorded this change as Running'
   attempt: 11
   retryReason: 'Spec amended: r.iroh-ticket-report now requires the report URL to
     name the port the guest reaches and to install the CA, and the reporter to fail

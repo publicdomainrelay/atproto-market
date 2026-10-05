@@ -211,7 +211,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | atproto-market-s2c-dcae0d4f6037-a6 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | atproto-market-s2c-dcae0d4f6037-a7 | SpecToCode | Failed |  | 0 | - | - |
 | atproto-market-s2c-dcae0d4f6037-a8 | SpecToCode | Failed |  | 0 | acceptance failed | - |
-| atproto-market-s2c-dcae0d4f6037-a9 | SpecToCode | Running |  | 0 | - | - |
+| atproto-market-s2c-dcae0d4f6037-a9 | SpecToCode | Failed |  | 0 | - | - |
 | atproto-market-s2c-e34ce8f9f34c | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | atproto-market-s2c-e34ce8f9f34c-a10 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | atproto-market-s2c-e34ce8f9f34c-a11 | SpecToCode | Failed |  | 0 | - | - |
@@ -238,7 +238,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-compute-contract-gateway-xrpc-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Failed |  | 0 | - | - |
 | lib-did-key-ingress-proxy-s2c-2414ea013542 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | lib-did-key-ingress-proxy-s2c-2414ea013542-a10 | SpecToCode | Failed |  | 0 | acceptance failed | - |
-| lib-did-key-ingress-proxy-s2c-2414ea013542-a11 | SpecToCode | Running |  | 0 | - | - |
+| lib-did-key-ingress-proxy-s2c-2414ea013542-a11 | SpecToCode | Failed |  | 0 | - | - |
 | lib-did-key-ingress-proxy-s2c-2414ea013542-a2 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | lib-did-key-ingress-proxy-s2c-2414ea013542-a3 | SpecToCode | Failed |  | 0 | - | - |
 | lib-did-key-ingress-proxy-s2c-2414ea013542-a4 | SpecToCode | Failed |  | 0 | - | - |
@@ -257,7 +257,7 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | lib-market-settlement-x402-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-requester-xrpc-s2c-0c605032289f | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | lib-requester-xrpc-s2c-0c605032289f-a10 | SpecToCode | Failed |  | 0 | acceptance failed | - |
-| lib-requester-xrpc-s2c-0c605032289f-a11 | SpecToCode | Running |  | 0 | - | - |
+| lib-requester-xrpc-s2c-0c605032289f-a11 | SpecToCode | Failed |  | 0 | - | - |
 | lib-requester-xrpc-s2c-0c605032289f-a2 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | lib-requester-xrpc-s2c-0c605032289f-a3 | SpecToCode | Failed |  | 0 | - | - |
 | lib-requester-xrpc-s2c-0c605032289f-a4 | SpecToCode | Failed |  | 0 | - | - |
