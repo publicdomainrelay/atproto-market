@@ -1,0 +1,94 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: atproto-market-s2c-f3075524231b-a5
+  namespace: default
+spec:
+  systemContext: atproto-market
+  direction: SpecToCode
+  fromSpecHash: f67957227b5c419b9f74c4edbfea0ea54caf8a643990c7bec310952d90535644
+  toSpecHash: f3075524231b1b640004f7b9226574675880fef118c4c36df3c1f6b3ae6db0e6
+  delta:
+    counts:
+      added: 4
+      changed: 1
+    requirements:
+    - +r.iroh-acceptance-flow
+    - +r.iroh-acceptance-plc-key-resolution
+    - +r.iroh-cloud-init-fixture
+    - +r.iroh-full-flow-harness
+status:
+  phase: Pending
+  message: 'attempt 5 retried by john (The guest''s report never lands, so the requester
+    never receives the ticket and ssh never becomes ready: the container''s /usr/local/bin/report-iroh-ticket.sh
+    was still retrying when the suite gave up (10m). Live evidence from the kept guest:
+    the report URL the flow bakes into cloud-init is https://did-key-<...>.localhost/iroh-ticket/<ref>
+    with NO port, so curl dials 443, and nothing listens on 443 -- the requester''s
+    guest-facing listener is on an ephemeral port. The guest''s /etc/hosts already
+    resolves that name to the container gateway (172.17.0.1), so the name is right
+    and the port is wrong. Make the report URL one the guest can actually reach: append
+    the port the requester''s guest-facing listener is bound to (the same port the
+    guest''s other https://*.localhost calls use) and install the requester''s CA
+    in the guest so curl verifies the certificate; or mount the ticket-report route
+    on the plain HTTP listener and use http://<subdomain>.localhost:<plainPort>/...
+    . Make the report script fail fast instead of retrying for five minutes, and have
+    the suite assert the report returned 200. Everything else works: the guest boots
+    from the RFP cloud-init, the dumbpipe listener runs and reports its ticket, ensureDumbpipe
+    no longer hangs. Be economical: change only what this needs and do not run the
+    acceptance suite yourself.)'
+  attempt: 5
+  retryReason: 'The guest''s report never lands, so the requester never receives the
+    ticket and ssh never becomes ready: the container''s /usr/local/bin/report-iroh-ticket.sh
+    was still retrying when the suite gave up (10m). Live evidence from the kept guest:
+    the report URL the flow bakes into cloud-init is https://did-key-<...>.localhost/iroh-ticket/<ref>
+    with NO port, so curl dials 443, and nothing listens on 443 -- the requester''s
+    guest-facing listener is on an ephemeral port. The guest''s /etc/hosts already
+    resolves that name to the container gateway (172.17.0.1), so the name is right
+    and the port is wrong. Make the report URL one the guest can actually reach: append
+    the port the requester''s guest-facing listener is bound to (the same port the
+    guest''s other https://*.localhost calls use) and install the requester''s CA
+    in the guest so curl verifies the certificate; or mount the ticket-report route
+    on the plain HTTP listener and use http://<subdomain>.localhost:<plainPort>/...
+    . Make the report script fail fast instead of retrying for five minutes, and have
+    the suite assert the report returned 200. Everything else works: the guest boots
+    from the RFP cloud-init, the dumbpipe listener runs and reports its ticket, ensureDumbpipe
+    no longer hangs. Be economical: change only what this needs and do not run the
+    acceptance suite yourself.'
+  retryBy: john
+superseded:
+- name: atproto-market-s2c-f3075524231b-a4
+  phase: Failed
+  message: 'claudecli: realize atproto-market: the model did not answer within 15m0s'
+- name: atproto-market-s2c-f3075524231b-a3
+  phase: Failed
+  message: 'claudecli: realize atproto-market: the model did not answer within 15m0s'
+- name: atproto-market-s2c-f3075524231b-a2
+  phase: Failed
+  message: |-
+    ...response_error","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping","status":404,"durationMs":0,"label":"requester"}
+    {"ts":"2026-10-05T19:58:24.104Z","level":"info","message":"oidc request","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping"}
+    {"ts":"2026-10-05T19:58:24.105Z","level":"info","message":"response_error","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping","status":404,"durationMs":1,"label":"requester"}
+    {"ts":"2026-10-05T19:58:29.106Z","level":"info","message":"oidc request","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping"}
+    {"ts":"2026-10-05T19:58:29.106Z","level":"info","message":"response_error","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping","status":404,"durationMs":0,"label":"requester"}
+    {"ts":"2026-10-05T19:58:34.108Z","level":"info","message":"oidc request","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping"}
+    {"ts":"2026-10-05T19:58:34.108Z","level":"info","message":"response_error","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping","status":404,"durationMs":0,"label":"requester"}
+    {"ts":"2026-10-05T19:58:39.110Z","level":"info","message":"oidc request","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping"}
+    {"ts":"2026-10-05T19:58:39.110Z","level":"info","message":"response_error","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping","status":404,"durationMs":0,"label":"requester"}
+    {"ts":"2026-10-05T19:58:44.112Z","level":"info","message":"oidc request","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping"}
+    {"ts":"2026-10-05T19:58:44.112Z","level":"info","message":"response_error","prefix":"it","method":"GET","path":"/xrpc/com.publicdomainrelay.temp.keepalive.ping","status":404,"durationMs":0,"label":"requester"}
+- name: atproto-market-s2c-f3075524231b
+  phase: Failed
+  message: "...8hl7bygtvf\"}\n{\"ts\":\"2026-10-05T19:20:52.044Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"requester\",\"code\":1005,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T19:20:52.044Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":1005,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T19:20:52.044Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":1005,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T19:20:52.044Z\",\"level\":\"error\",\"message\":\"ws_error\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"error\":\"[object
+    ErrorEvent]\"}\n{\"ts\":\"2026-10-05T19:20:52.044Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":0,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T19:20:52.044Z\",\"level\":\"info\",\"message\":\"ws_reconnect_scheduled\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"delayMs\":1000,\"attempt\":1}\n\e[0m\e[38;5;245m-----
+    output end -----\e[0m\n[integration] iroh: guest provisioned by the RFP cloud-init
+    is reached over its dumbpipe ticket ... \e[0m\e[31mFAILED\e[0m \e[0m\e[38;5;245m(10m1s)\e[0m\n\n\e[0m\e[1m\e[37m\e[41m
+    ERRORS \e[0m\n\n[integration] iroh: guest provisioned by the RFP cloud-init is
+    reached over its dumbpipe ticket \e[0m\e[38;5;245m=> ./test/bidder_container_integration_test.ts:98:6\e[0m\n\e[0m\e[1m\e[31merror\e[0m:
+    AssertionError: guest never became reachable over the iroh transport\n    throw
+    new AssertionError(msg);\n\e[0m\e[31m          ^\e[0m\n    at \e[0m\e[1m\e[3massert\e[0m
+    (\e[0m\e[36mhttps://jsr.io/@std/assert/1.0.19/assert.ts\e[0m:\e[0m\e[33m22\e[0m:\e[0m\e[33m11\e[0m)\n
+    \   at \e[0m\e[2m\e[38;5;245mfile:///tmp/specd-worktree-3562178589/atproto-market/\e[0m\e[0m\e[36mtest/bidder_container_integration_test.ts\e[0m:\e[0m\e[33m246\e[0m:\e[0m\e[33m5\e[0m\n\n\e[0m\e[1m\e[37m\e[41m
+    FAILURES \e[0m\n\n[integration] iroh: guest provisioned by the RFP cloud-init
+    is reached over its dumbpipe ticket \e[0m\e[38;5;245m=> ./test/bidder_container_integration_test.ts:98:6\e[0m\n\n\e[0m\e[31mFAILED\e[0m
+    | 0 passed | 1 failed \e[0m\e[38;5;245m(10m1s)\e[0m\n\n\e[0m\e[1m\e[31merror\e[0m:
+    Test failed"
