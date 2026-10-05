@@ -1,0 +1,327 @@
+observedCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
+syncedCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
+syncedFingerprint: 7db345857e8b6877445aac371f185792cee3e360aba0ddeb898383ca876d5a35
+realizedSpecHash: 5d4109681174b03a68b5c6b52a0ccad194ad747bbac86926ca01ddc20a96e2a5
+conditions:
+- type: CodeSynced
+  status: "False"
+  reason: InterfacesMissing
+  message: 'undeclared: ArraySeparatorStyle, ArrayStyle, Auth, AuthToken, BodySerializer,
+    Client, ClientMeta, Config, Field, Fields, FieldsConfig, HttpMethod, JsonValue,
+    ObjectStyle, OmitNever, PathSerializer, QuerySerializer, QuerySerializerOptions,
+    SerializerOptions, ServerSentEventsOptions, ServerSentEventsOptions.onRequest,
+    ServerSentEventsOptions.onSseError, ServerSentEventsOptions.onSseEvent, ServerSentEventsOptions.sseSleepFn,
+    ServerSentEventsResult, StreamEvent, bodySerializer, buildClientParams, createSseClient,
+    defaultPathSerializer, getAuthToken, getUrl, getValidRequestBody, queryKeyJsonReplacer,
+    separatorArrayExplode, separatorArrayNoExplode, separatorObjectExplode, serializeArrayParam,
+    serializeObjectParam, serializePrimitiveParam, serializeQueryKeyValue, stringifyToJsonValue'
+- type: Drifted
+  status: "False"
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
+- type: SpecValid
+  status: "True"
+  reason: ValidatorPassed
+  message: the spec passes the validator
+observed:
+  files:
+  - lib/did-plc/generated/core/auth.gen.ts
+  - lib/did-plc/generated/core/bodySerializer.gen.ts
+  - lib/did-plc/generated/core/params.gen.ts
+  - lib/did-plc/generated/core/pathSerializer.gen.ts
+  - lib/did-plc/generated/core/queryKeySerializer.gen.ts
+  - lib/did-plc/generated/core/serverSentEvents.gen.ts
+  - lib/did-plc/generated/core/types.gen.ts
+  - lib/did-plc/generated/core/utils.gen.ts
+  interfaces:
+  - name: AuthToken
+    kind: type_alias
+    file: lib/did-plc/generated/core/auth.gen.ts
+    line: 3
+    codegraphId: type_alias:7735ceb25b97fac3d2d1b121e3f89176
+  - name: Auth
+    kind: interface
+    file: lib/did-plc/generated/core/auth.gen.ts
+    line: 5
+    codegraphId: interface:77f3963c1fa0f8f2cb8e9d7a27958cb2
+  - name: getAuthToken
+    kind: function
+    signature: |-
+      (
+        auth: Auth,
+        callback: ((auth: Auth) => Promise<AuthToken> | AuthToken) | AuthToken,
+      ): Promise<string | undefined>
+    file: lib/did-plc/generated/core/auth.gen.ts
+    line: 29
+    codegraphId: function:726d44cabe8461d0ca02ce11929e1984
+  - name: QuerySerializer
+    kind: type_alias
+    file: lib/did-plc/generated/core/bodySerializer.gen.ts
+    line: 5
+    codegraphId: type_alias:7b083dfe3c20e80a081ae3b7540d6395
+  - name: BodySerializer
+    kind: type_alias
+    file: lib/did-plc/generated/core/bodySerializer.gen.ts
+    line: 7
+    codegraphId: type_alias:dde729a96cfbf612b97b92a3c998d820
+  - name: QuerySerializerOptions
+    kind: type_alias
+    file: lib/did-plc/generated/core/bodySerializer.gen.ts
+    line: 15
+    codegraphId: type_alias:cfd18ecca404ce0fa829adfbfed5419a
+  - name: bodySerializer
+    kind: function
+    signature: '(body: unknown): FormData'
+    file: lib/did-plc/generated/core/bodySerializer.gen.ts
+    line: 42
+    codegraphId: function:9886966e31c3b2166c2973f6d894a6c9
+  - name: Field
+    kind: type_alias
+    file: lib/did-plc/generated/core/params.gen.ts
+    line: 5
+    codegraphId: type_alias:ed6588bd0f4545931394c9a19ffb3d2f
+  - name: Fields
+    kind: interface
+    file: lib/did-plc/generated/core/params.gen.ts
+    line: 38
+    codegraphId: interface:86925fded451512a00e035e61ca0d84c
+  - name: FieldsConfig
+    kind: type_alias
+    file: lib/did-plc/generated/core/params.gen.ts
+    line: 43
+    codegraphId: type_alias:c6ba6174744a90575aff38757edd13d9
+  - name: buildClientParams
+    kind: function
+    signature: '(args: ReadonlyArray<unknown>, fields: FieldsConfig): Params'
+    file: lib/did-plc/generated/core/params.gen.ts
+    line: 107
+    codegraphId: function:857ac81730785f9de7bbc011af2905ee
+  - name: SerializerOptions
+    kind: interface
+    file: lib/did-plc/generated/core/pathSerializer.gen.ts
+    line: 10
+    codegraphId: interface:1b456f0aa4a4892de795fc7cfe346405
+  - name: ArrayStyle
+    kind: type_alias
+    file: lib/did-plc/generated/core/pathSerializer.gen.ts
+    line: 18
+    codegraphId: type_alias:e1b2742b89886caca1ea4b29d97eab5c
+  - name: ArraySeparatorStyle
+    kind: type_alias
+    file: lib/did-plc/generated/core/pathSerializer.gen.ts
+    line: 19
+    codegraphId: type_alias:1442602a19a8b8d826fe955ec8b35459
+  - name: ObjectStyle
+    kind: type_alias
+    file: lib/did-plc/generated/core/pathSerializer.gen.ts
+    line: 21
+    codegraphId: type_alias:d4025b696fa82ef945e4ff5e7c98f3ca
+  - name: separatorArrayExplode
+    kind: function
+    signature: '(style: ArraySeparatorStyle): ''.'' | '';'' | '','' | ''&'''
+    file: lib/did-plc/generated/core/pathSerializer.gen.ts
+    line: 28
+    codegraphId: function:0eec6a8b5f95850e00b60b674c319208
+  - name: separatorArrayNoExplode
+    kind: function
+    signature: '(style: ArraySeparatorStyle): '','' | ''|'' | ''%20'''
+    file: lib/did-plc/generated/core/pathSerializer.gen.ts
+    line: 41
+    codegraphId: function:9e1e59ef39a8a3523eabbe58a707c0da
+  - name: separatorObjectExplode
+    kind: function
+    signature: '(style: ObjectSeparatorStyle): ''.'' | '';'' | '','' | ''&'''
+    file: lib/did-plc/generated/core/pathSerializer.gen.ts
+    line: 54
+    codegraphId: function:52c78b83773379b2af971b52fe7d344b
+  - name: serializeArrayParam
+    kind: function
+    signature: |-
+      ({
+        allowReserved,
+        explode,
+        name,
+        style,
+        value,
+      }: SerializeOptions<ArraySeparatorStyle> & {
+        value: unknown[];
+      }): string
+    file: lib/did-plc/generated/core/pathSerializer.gen.ts
+    line: 67
+    codegraphId: function:3aa423aa49ce15b5c281fdf674ccea83
+  - name: serializePrimitiveParam
+    kind: function
+    signature: |-
+      ({
+        allowReserved,
+        name,
+        value,
+      }: SerializePrimitiveParam): string
+    file: lib/did-plc/generated/core/pathSerializer.gen.ts
+    line: 109
+    codegraphId: function:d8a8ad4ef7229e1f081c6bf168c34b83
+  - name: serializeObjectParam
+    kind: function
+    signature: |-
+      ({
+        allowReserved,
+        explode,
+        name,
+        style,
+        value,
+        valueOnly,
+      }: SerializeOptions<ObjectSeparatorStyle> & {
+        value: Record<string, unknown> | Date;
+        valueOnly?: boolean;
+      }): string
+    file: lib/did-plc/generated/core/pathSerializer.gen.ts
+    line: 127
+    codegraphId: function:6b40f3b794b4bad43b14cd20458c4211
+  - name: JsonValue
+    kind: type_alias
+    file: lib/did-plc/generated/core/queryKeySerializer.gen.ts
+    line: 6
+    codegraphId: type_alias:73d3e5f774b282eef2fec4e0529a39f4
+  - name: queryKeyJsonReplacer
+    kind: function
+    signature: '(_key: string, value: unknown): unknown | undefined'
+    file: lib/did-plc/generated/core/queryKeySerializer.gen.ts
+    line: 17
+    codegraphId: function:fd2b04c364cd99e46d33fea953a519f3
+  - name: stringifyToJsonValue
+    kind: function
+    signature: '(input: unknown): JsonValue | undefined'
+    file: lib/did-plc/generated/core/queryKeySerializer.gen.ts
+    line: 33
+    codegraphId: function:322f298b5f2b35c454545e9e7383ed23
+  - name: serializeQueryKeyValue
+    kind: function
+    signature: '(value: unknown): JsonValue | undefined'
+    file: lib/did-plc/generated/core/queryKeySerializer.gen.ts
+    line: 83
+    codegraphId: function:e070a49e14782e2ad70106dfca6b7555
+  - name: ServerSentEventsOptions
+    kind: type_alias
+    file: lib/did-plc/generated/core/serverSentEvents.gen.ts
+    line: 5
+    codegraphId: type_alias:918b65cfb156b73540784120485ddc65
+  - name: ServerSentEventsOptions.onRequest
+    kind: method
+    signature: 'onRequest?: (url: string, init: RequestInit) => Promise<Request>'
+    file: lib/did-plc/generated/core/serverSentEvents.gen.ts
+    line: 17
+    codegraphId: method:ea065c4e19adf5aad92b1f94271d9c6b
+  - name: ServerSentEventsOptions.onSseError
+    kind: method
+    signature: 'onSseError?: (error: unknown) => void'
+    file: lib/did-plc/generated/core/serverSentEvents.gen.ts
+    line: 25
+    codegraphId: method:903d25222e9da49cf170564fbcd88121
+  - name: ServerSentEventsOptions.onSseEvent
+    kind: method
+    signature: 'onSseEvent?: (event: StreamEvent<TData>) => void'
+    file: lib/did-plc/generated/core/serverSentEvents.gen.ts
+    line: 34
+    codegraphId: method:5c7ca5bd02df3770e74bbdce8d0506c2
+  - name: ServerSentEventsOptions.sseSleepFn
+    kind: method
+    signature: 'sseSleepFn?: (ms: number) => Promise<void>'
+    file: lib/did-plc/generated/core/serverSentEvents.gen.ts
+    line: 63
+    codegraphId: method:3e119e404dd19ce39adbd340693e853e
+  - name: StreamEvent
+    kind: interface
+    file: lib/did-plc/generated/core/serverSentEvents.gen.ts
+    line: 67
+    codegraphId: interface:21dc1cb955f27a91202088472797c2b3
+  - name: ServerSentEventsResult
+    kind: type_alias
+    file: lib/did-plc/generated/core/serverSentEvents.gen.ts
+    line: 74
+    codegraphId: type_alias:c40de77654e0d20536f33c98f3814deb
+  - name: createSseClient
+    kind: function
+    signature: |-
+      ({
+        onRequest,
+        onSseError,
+        onSseEvent,
+        responseTransformer,
+        responseValidator,
+        sseDefaultRetryDelay,
+        sseMaxRetryAttempts,
+        sseMaxRetryDelay,
+        sseSleepFn,
+        url,
+        ...options
+      }: ServerSentEventsOptions): ServerSentEventsResult<TData>
+    file: lib/did-plc/generated/core/serverSentEvents.gen.ts
+    line: 82
+    codegraphId: function:328544b37c6f5c21f27f71b2df1541fe
+  - name: HttpMethod
+    kind: type_alias
+    file: lib/did-plc/generated/core/types.gen.ts
+    line: 6
+    codegraphId: type_alias:2945f346c02f778b7f7a30bb74276e1a
+  - name: Client
+    kind: type_alias
+    file: lib/did-plc/generated/core/types.gen.ts
+    line: 17
+    codegraphId: type_alias:4666391d97cd157ecd65221851e39295
+  - name: Config
+    kind: interface
+    file: lib/did-plc/generated/core/types.gen.ts
+    line: 35
+    codegraphId: interface:d7cde3b0b3197fc22f539e91215196ed
+  - name: ClientMeta
+    kind: interface
+    file: lib/did-plc/generated/core/types.gen.ts
+    line: 98
+    codegraphId: interface:9f7ce76ffc39dcee7f4408f47e8dc761
+  - name: OmitNever
+    kind: type_alias
+    file: lib/did-plc/generated/core/types.gen.ts
+    line: 108
+    codegraphId: type_alias:5099914286af01f9125c6a3086d0a4ac
+  - name: PathSerializer
+    kind: interface
+    file: lib/did-plc/generated/core/utils.gen.ts
+    line: 11
+    codegraphId: interface:9724358a094cfd674de35400ce1b41f5
+  - name: defaultPathSerializer
+    kind: function
+    signature: '({ path, url: _url }: PathSerializer): string'
+    file: lib/did-plc/generated/core/utils.gen.ts
+    line: 18
+    codegraphId: function:44cf0e94fd6213ef2ce23d5c6a2d1d08
+  - name: getUrl
+    kind: function
+    signature: |-
+      ({
+        baseUrl,
+        path,
+        query,
+        querySerializer,
+        url: _url,
+      }: {
+        baseUrl?: string;
+        path?: Record<string, unknown>;
+        query?: Record<string, unknown>;
+        querySerializer: QuerySerializer;
+        url: string;
+      }): string
+    file: lib/did-plc/generated/core/utils.gen.ts
+    line: 85
+    codegraphId: function:8a8169ef157538cd873bebae1c7e4b7c
+  - name: getValidRequestBody
+    kind: function
+    signature: |-
+      (options: {
+        body?: unknown;
+        bodySerializer?: BodySerializer | null;
+        serializedBody?: unknown;
+      }): unknown
+    file: lib/did-plc/generated/core/utils.gen.ts
+    line: 113
+    codegraphId: function:6da9c83dca2343cb8d6ab89b226694e3
+  fingerprint: 7db345857e8b6877445aac371f185792cee3e360aba0ddeb898383ca876d5a35

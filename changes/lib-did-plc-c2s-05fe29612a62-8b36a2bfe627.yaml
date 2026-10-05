@@ -1,0 +1,16 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-did-plc-c2s-05fe29612a62-8b36a2bfe627
+  namespace: default
+spec:
+  systemContext: lib-did-plc
+  direction: CodeToSpec
+  fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
+  toCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
+  delta:
+    counts:
+      removed: 122
+      changed: 2
+status:
+  phase: Pending

@@ -1493,22 +1493,11 @@ system_contexts:
   - class:ca276d9a71683fdf566bcdf5fb46e47c PlcClient@lib/did-plc/client.ts:131
   - file:lib/did-plc/client.ts client.ts@lib/did-plc/client.ts
   - file:lib/did-plc/fixup-openapi.ts fixup-openapi.ts@lib/did-plc/fixup-openapi.ts
-  - file:lib/did-plc/generated/client.gen.ts client.gen.ts@lib/did-plc/generated/client.gen.ts
   - file:lib/did-plc/generated/client/client.gen.ts client.gen.ts@lib/did-plc/generated/client/client.gen.ts
-  - file:lib/did-plc/generated/client/index.ts index.ts@lib/did-plc/generated/client/index.ts
-  - file:lib/did-plc/generated/client/types.gen.ts types.gen.ts@lib/did-plc/generated/client/types.gen.ts
-  - file:lib/did-plc/generated/client/utils.gen.ts utils.gen.ts@lib/did-plc/generated/client/utils.gen.ts
-  - file:lib/did-plc/generated/core/auth.gen.ts auth.gen.ts@lib/did-plc/generated/core/auth.gen.ts
-  - file:lib/did-plc/generated/core/bodySerializer.gen.ts bodySerializer.gen.ts@lib/did-plc/generated/core/bodySerializer.gen.ts
-  - file:lib/did-plc/generated/core/params.gen.ts params.gen.ts@lib/did-plc/generated/core/params.gen.ts
   - file:lib/did-plc/generated/core/pathSerializer.gen.ts pathSerializer.gen.ts@lib/did-plc/generated/core/pathSerializer.gen.ts
-  - file:lib/did-plc/generated/core/queryKeySerializer.gen.ts queryKeySerializer.gen.ts@lib/did-plc/generated/core/queryKeySerializer.gen.ts
   - file:lib/did-plc/generated/core/serverSentEvents.gen.ts serverSentEvents.gen.ts@lib/did-plc/generated/core/serverSentEvents.gen.ts
-  - file:lib/did-plc/generated/core/types.gen.ts types.gen.ts@lib/did-plc/generated/core/types.gen.ts
-  - file:lib/did-plc/generated/core/utils.gen.ts utils.gen.ts@lib/did-plc/generated/core/utils.gen.ts
   - file:lib/did-plc/generated/index.ts index.ts@lib/did-plc/generated/index.ts
   - file:lib/did-plc/generated/sdk.gen.ts sdk.gen.ts@lib/did-plc/generated/sdk.gen.ts
-  - file:lib/did-plc/generated/types.gen.ts types.gen.ts@lib/did-plc/generated/types.gen.ts
   - file:lib/did-plc/genesis.ts genesis.ts@lib/did-plc/genesis.ts
   - file:lib/did-plc/keypair-state.ts keypair-state.ts@lib/did-plc/keypair-state.ts
   - file:lib/did-plc/mod.ts mod.ts@lib/did-plc/mod.ts
@@ -1570,6 +1559,41 @@ system_contexts:
   - type_alias:918b65cfb156b73540784120485ddc65 ServerSentEventsOptions@lib/did-plc/generated/core/serverSentEvents.gen.ts:5
   - type_alias:c40de77654e0d20536f33c98f3814deb ServerSentEventsResult@lib/did-plc/generated/core/serverSentEvents.gen.ts:74
   - type_alias:cda4456d40f40308bc05b5e1f3d08229 KeysForDid@lib/did-plc/resolver.ts:15
+- id: sc.lib-did-plc-generated
+  name: lib-did-plc-generated
+  spec: specs/lib-did-plc-generated.yaml
+  upstream: self
+  depends_on:
+  - sc.lib-did-plc-generated-client
+  codeRefIndex:
+  - file:lib/did-plc/generated/client.gen.ts client.gen.ts@lib/did-plc/generated/client.gen.ts
+  - file:lib/did-plc/generated/index.ts index.ts@lib/did-plc/generated/index.ts
+  - file:lib/did-plc/generated/sdk.gen.ts sdk.gen.ts@lib/did-plc/generated/sdk.gen.ts
+  - file:lib/did-plc/generated/types.gen.ts types.gen.ts@lib/did-plc/generated/types.gen.ts
+- id: sc.lib-did-plc-generated-client
+  name: lib-did-plc-generated-client
+  spec: specs/lib-did-plc-generated-client.yaml
+  upstream: self
+  depends_on:
+  - sc.lib-did-plc-generated-core
+  codeRefIndex:
+  - file:lib/did-plc/generated/client/client.gen.ts client.gen.ts@lib/did-plc/generated/client/client.gen.ts
+  - file:lib/did-plc/generated/client/index.ts index.ts@lib/did-plc/generated/client/index.ts
+  - file:lib/did-plc/generated/client/types.gen.ts types.gen.ts@lib/did-plc/generated/client/types.gen.ts
+  - file:lib/did-plc/generated/client/utils.gen.ts utils.gen.ts@lib/did-plc/generated/client/utils.gen.ts
+- id: sc.lib-did-plc-generated-core
+  name: lib-did-plc-generated-core
+  spec: specs/lib-did-plc-generated-core.yaml
+  upstream: self
+  codeRefIndex:
+  - file:lib/did-plc/generated/core/auth.gen.ts auth.gen.ts@lib/did-plc/generated/core/auth.gen.ts
+  - file:lib/did-plc/generated/core/bodySerializer.gen.ts bodySerializer.gen.ts@lib/did-plc/generated/core/bodySerializer.gen.ts
+  - file:lib/did-plc/generated/core/params.gen.ts params.gen.ts@lib/did-plc/generated/core/params.gen.ts
+  - file:lib/did-plc/generated/core/pathSerializer.gen.ts pathSerializer.gen.ts@lib/did-plc/generated/core/pathSerializer.gen.ts
+  - file:lib/did-plc/generated/core/queryKeySerializer.gen.ts queryKeySerializer.gen.ts@lib/did-plc/generated/core/queryKeySerializer.gen.ts
+  - file:lib/did-plc/generated/core/serverSentEvents.gen.ts serverSentEvents.gen.ts@lib/did-plc/generated/core/serverSentEvents.gen.ts
+  - file:lib/did-plc/generated/core/types.gen.ts types.gen.ts@lib/did-plc/generated/core/types.gen.ts
+  - file:lib/did-plc/generated/core/utils.gen.ts utils.gen.ts@lib/did-plc/generated/core/utils.gen.ts
 - id: sc.lib-guest-capability-secrets
   name: lib-guest-capability-secrets
   spec: specs/lib-guest-capability-secrets.yaml
