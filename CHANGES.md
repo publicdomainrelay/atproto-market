@@ -207,7 +207,8 @@ The requirement-level delta against `open-architecture/atproto-market`, and what
 | atproto-market-s2c-e34ce8f9f34c-a5 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | atproto-market-s2c-e34ce8f9f34c-a6 | SpecToCode | Failed |  | 0 | acceptance failed | - |
 | atproto-market-s2c-e34ce8f9f34c-a7 | SpecToCode | Pending |  | 0 | - | - |
-| atproto-market-s2c-f3075524231b | SpecToCode | Running |  | 0 | - | - |
+| atproto-market-s2c-f3075524231b | SpecToCode | Failed |  | 0 | acceptance failed | - |
+| atproto-market-s2c-f3075524231b-a2 | SpecToCode | Pending |  | 0 | - | - |
 | compute-contract-full-flow-c2s-8b36a2bfe627-8b36a2bfe627 | CodeToSpec | Succeeded |  | 0 | - | - |
 | hono-plc-c2s-8b36a2bfe627-8b36a2bfe627 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-abc-requester-s2c-a24b0558524f | SpecToCode | Succeeded | 8b36a2bf | 0 | acceptance passed | 1 of 4 missing |
