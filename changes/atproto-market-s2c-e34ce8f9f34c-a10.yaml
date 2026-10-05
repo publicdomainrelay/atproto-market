@@ -18,24 +18,8 @@ spec:
     - +r.iroh-cloud-init-fixture
     - +r.iroh-full-flow-harness
 status:
-  phase: Pending
-  message: 'attempt 10 retried by john (The guest''s report never lands, so the requester
-    never receives the ticket and ssh never becomes ready: the container''s /usr/local/bin/report-iroh-ticket.sh
-    was still retrying when the suite gave up (10m). Live evidence from the kept guest:
-    the report URL the flow bakes into cloud-init is https://did-key-<...>.localhost/iroh-ticket/<ref>
-    with NO port, so curl dials 443, and nothing listens on 443 -- the requester''s
-    guest-facing listener is on an ephemeral port. The guest''s /etc/hosts already
-    resolves that name to the container gateway (172.17.0.1), so the name is right
-    and the port is wrong. Make the report URL one the guest can actually reach: append
-    the port the requester''s guest-facing listener is bound to (the same port the
-    guest''s other https://*.localhost calls use) and install the requester''s CA
-    in the guest so curl verifies the certificate; or mount the ticket-report route
-    on the plain HTTP listener and use http://<subdomain>.localhost:<plainPort>/...
-    . Make the report script fail fast instead of retrying for five minutes, and have
-    the suite assert the report returned 200. Everything else works: the guest boots
-    from the RFP cloud-init, the dumbpipe listener runs and reports its ticket, ensureDumbpipe
-    no longer hangs. Be economical: change only what this needs and do not run the
-    acceptance suite yourself.)'
+  phase: Failed
+  message: 'admission: another change of atproto-market is already running'
   attempt: 10
   retryReason: 'The guest''s report never lands, so the requester never receives the
     ticket and ssh never becomes ready: the container''s /usr/local/bin/report-iroh-ticket.sh
