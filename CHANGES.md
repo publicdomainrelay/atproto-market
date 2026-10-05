@@ -1,6 +1,6 @@
 # Changes on `open-architecture/atproto-market--spec-iroh-dumbpipe-policy2-20261005`
 
-The requirement-level delta against `open-architecture/atproto-market`, and what this branch realized.
+The requirement-level delta against `open-architecture/atproto-market--spec-iroh-dumbpipe-policy2-20261005`, and what this branch realized.
 
 ## Requirements
 
