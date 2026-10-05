@@ -1,12 +1,11 @@
 syncedFingerprint: 2076c902857ac4bea558bd1462f045436c7e0300383a9622284edbd16b81eac9
-realizedSpecHash: 6fdd8171ff8778270aae9a40e3d78dd30c0349599dabcce9b5be70c97390a708
+realizedSpecHash: f4bef80adb5023304fa2d68a8b44eef34ae9d9008ab46171d9c8848e3aea7102
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: DidResolverLike, OAuthAgentOptions, OAuthAgentSession, applyWrites,
-    createDesktopATProto, createOAuthAgent, createRecord, dpopFetch, getRecord, getServiceAuth,
-    listRecords, putRecord, refreshLock'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual

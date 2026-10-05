@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so a desktop or CLI bidder agent can drive an AT Protocol repository through an OAuth session without depending on the unpublished DPoP fetch wrapper inside @atproto/oauth-client. It defines the session and options shapes the host application supplies, owns the DPoP proof, nonce and token-refresh mechanics that keep long-lived sessions working across clock skew, and exposes the record read/write and service-auth operations the atproto-helpers agent contract expects. It also provides the desktop adapter that layers market-specific record helpers and service calls onto createATProto, so the market bidder code has one narrow module to import rather than reaching into auth, identity and repo plumbing itself.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

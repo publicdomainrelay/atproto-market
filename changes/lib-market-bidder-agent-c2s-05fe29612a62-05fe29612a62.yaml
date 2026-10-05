@@ -9,5 +9,23 @@ spec:
   fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
   toCommit: 05fe29612a62a645d70273560238ecc3180414d2
 status:
-  phase: Running
-  message: the agent is summarizing lib-market-bidder-agent
+  phase: Succeeded
+  agentLog: 'lib/market-bidder-agent is a Deno/TypeScript module at lib/market-bidder-agent/mod.ts
+    that adapts an AT Protocol OAuth session to the AtprotoAgentLike surface the atproto-helpers
+    package consumes. Its createOAuthAgent export takes an OAuthAgentSession (did,
+    pds, accessJwt, dpopKeyPair, dpopPublicJwk), a caller-supplied signer exposing
+    did() and sign(bytes), and OAuthAgentOptions, and returns an agent whose applyWrites,
+    getRecord, listRecords, createRecord, putRecord and getServiceAuth all reach the
+    session PDS over XRPC with validate: false. Because @atproto/oauth-client does
+    not export its dpopFetchWrapper from the public entrypoint, the module reimplements
+    the missing pieces inline: RFC 9449 DPoP proof generation over crypto.subtle,
+    an origin-keyed nonce store with the use_dpop_nonce retry, a refreshLock that
+    collapses concurrent 401s into a single refreshSession call, and an invalid_token
+    refresh-and-retry loop capped at two attempts to absorb clock skew between the
+    auth server and the PDS. A second export, createDesktopATProto, delegates to createATProto
+    from the helpers package and patches in record helpers (TID-keyed create, put-backed
+    update, signed records with inline attestations) plus a callService that resolves
+    http(s) or did: endpoints, mints a service-auth token, and POSTs the XRPC body
+    with a Bearer authorization header. The package also ships a deno.json beside
+    mod.ts.'
+  message: wrote 17 requirement(s) and 13 interface(s) for lib-market-bidder-agent
