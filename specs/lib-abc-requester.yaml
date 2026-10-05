@@ -113,29 +113,33 @@ spec:
       defaults to fedproxy.com, the userData transport module defaults to the iroh
       module id (the dumbpipe listener transport), and sshProxyCommandFn, when supplied,
       overrides the per-target ProxyCommand that otherwise follows the transport the
-      flow selected — `dumbpipe connect <ticket>` for iroh and websocat --binary wss://<fqdn>
-      only for the explicitly selected tunnel or fedproxy-ssh transport — letting
-      tests and alternate ingress topologies rewrite the guest endpoint while keeping
-      the RFP flow intact.'
+      flow selected — `dumbpipe connect <ticket>` for iroh and `websocat --binary
+      wss://<fqdn>` only for the explicitly selected tunnel or fedproxy-ssh transport
+      — letting tests and alternate ingress topologies rewrite the guest endpoint
+      while keeping the RFP flow intact.'
     codeRefs:
     - interface:7fb903e1181ae51a3d69c0a40484e610
   - id: r.contract-flow-hold-mode
     level: MUST
     text: 'hold turns the flow into provisioning-only mode: after SSH-ready it does
-      not run execProgram, holds the VM until holdAbort fires and then deletes it,
-      and holdAbort is ignored unless hold is set.'
+      not run execProgram, holds the VM until holdAbort fires and then deletes it
+      (vm.delete), and holdAbort is ignored unless hold is set.'
     codeRefs:
     - interface:7fb903e1181ae51a3d69c0a40484e610
   - id: r.contract-flow-options-surface
     level: MUST
     text: 'ContractFlowOptions is the whole option surface of the contract flow and
-      every field is optional: VM naming and PLC URL, guest /etc/hosts aliases, relay
-      URLs plus extra and denied bidder DIDs, the ssh toggles (skipSsh, execProgram,
-      keepVm, sshAuthorizedKeys, vmReadyTimeoutSec, onSshStart and onSshEnd), the
-      ingressProxyHost and fedingressHost planes, cloud-init composition (userData
-      with base, transport, modules and overrides, the deprecated baseUserData, and
-      userDataFactory which wins over userData), the capabilities array, the rbac
-      toggle, appliesToNsid, and the policy knobs (policy, policyEngine, onlyRemotePolicyExec,
+      every field is optional: VM naming and PLC URL, guest /etc/hosts aliases for
+      dialling the dispatcher by a name the requester also resolves, relay URLs for
+      listReposByCollection bidder discovery plus extra and denied bidder DIDs, the
+      ssh toggles (skipSsh, execProgram, keepVm, sshAuthorizedKeys appended to the
+      requester''s own ephemeral key in the guest''s authorized_keys, vmReadyTimeoutSec,
+      onSshStart and onSshEnd), the ingressProxyHost dispatcher plane and the fedingressHost
+      fedproxy plane the polled VM FQDN derives from, cloud-init composition (userData
+      with base, transport, modules and overrides, the deprecated baseUserData used
+      only when userData.base is unset, and userDataFactory which wins over userData
+      and receives the ssh authorized key), the capabilities array, the rbac toggle,
+      appliesToNsid, and the policy knobs (policy, policyEngine, onlyRemotePolicyExec,
       allowUntrustedPolicyExec); the flow never names an individual capability, so
       adding one does not change this module.'
     codeRefs:
@@ -145,8 +149,9 @@ spec:
     text: ContractFlowResult reports the terminal event name plus whichever URIs and
       CIDs the run produced (vm, rfp, accept, bid and receipt), the winner DID, the
       submit event reference and receiptOk flag, the bid count, sshReady and sshExitCode,
-      and an error string; every field other than event is optional, so partial results
-      can be returned for a failed run.
+      the output captured from the session's stdout/stderr as sshOutput when the provider
+      captures it, and an error string; every field other than event is optional,
+      so partial results can be returned for a failed run.
     codeRefs:
     - interface:747f4e8ee217aaf65deeda3d92575495
   - id: r.contract-flow-result-transport
@@ -333,7 +338,8 @@ spec:
       string; rfpUri?: string; rfpCid?: string; acceptUri?: string; acceptCid?: string;
       bidUri?: string; bidCid?: string; winnerDid?: string; receiptUri?: string; receiptCid?:
       string; submitEventRef?: string; receiptOk?: boolean; bids?: number; error?:
-      string; sshProxyCommand?: string; sshReady?: boolean; sshExitCode?: number }'
+      string; sshProxyCommand?: string; sshReady?: boolean; sshExitCode?: number;
+      sshOutput?: string }'
     file: lib/abc/requester/mod.ts
   - name: PDSOptions
     kind: interface

@@ -12,5 +12,24 @@ spec:
     counts:
       changed: 14
 status:
-  phase: Running
-  message: the agent is summarizing lib-abc-requester
+  phase: Succeeded
+  agentLog: 'The requester ABC layer lives in lib/abc/requester/mod.ts and declares,
+    as pure types plus three pure helpers, everything the atproto-market requester
+    implementation, its CLI and the hermetic test fakes must agree on before any I/O
+    happens. It fixes the bid vocabulary — a CollectedBid is exactly did, uri, cid
+    and a raw atproto record, with payload NSID and price read out of that record
+    by bidPayloadNsid and bidCost — and the winner rule, selectWinner reducing to
+    the strictly cheapest bid and returning undefined for an empty list. BidCollector
+    adds the collection half: it dedupes by uri, keeps arrival order, marks a bid
+    free by comparing bidPayloadNsid against a caller-supplied freeBidNsid, and can
+    short-circuit the bid window through a Promise.withResolvers earlyWinner that
+    settles at most once, gated by an async allow policy and drained by drain so a
+    caller that stops waiting still sees every in-flight policy check settle. Beside
+    it sit the transport-facing contracts: RequesterPDS with its association handshake,
+    bidder calls, repo-record writers, ingress lifecycle and its per-contract, opaque
+    transport-address interest; SshSessionProvider with generateKeypair, pollReady
+    and runSession over a guest address that is an iroh ticket or a relay hostname
+    rather than an FQDN; and the ContractFlowOptions and ContractFlowResult bags,
+    whose fields are all optional apart from the result''s event name, with sshProxyCommand
+    and sshOutput reporting back the transport and output the run actually used.'
+  message: wrote 25 requirement(s) and 18 interface(s) for lib-abc-requester
