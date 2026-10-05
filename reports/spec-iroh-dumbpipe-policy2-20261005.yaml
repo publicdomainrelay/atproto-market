@@ -1,0 +1,75 @@
+commit: 05fe29612a62a645d70273560238ecc3180414d2
+constraints: 8
+repository: atproto-market
+reviewed:
+- apiVersion: specs.publicdomainrelay.dev/v1alpha1
+  kind: ArchitectureModel
+  name: atproto-market
+  namespace: default
+- apiVersion: specs.publicdomainrelay.dev/v1alpha1
+  kind: CodeGraph
+  name: atproto-market
+  namespace: default
+severity:
+  error: 2
+templates: 7
+totals:
+  deny: 2
+violations:
+- constraint: guest-report-driven-onnetwork
+  details:
+    file: lib/market-bidder-compute/mod.ts
+    line: 304
+  enforcementAction: deny
+  id: df47ecf4f1c1c412
+  level: MUST
+  location:
+    declaration: createVmBidderCallbacks
+    file: lib/market-bidder-compute/mod.ts
+    line: 304
+  msg: createVmBidderCallbacks emits the vm.onNetwork event from the provisioning
+    lifecycle, not from an inbound guest report
+  object:
+    apiVersion: specs.publicdomainrelay.dev/v1alpha1
+    kind: CodeGraph
+    name: atproto-market
+    namespace: default
+  policy: guest-report-driven-emission
+  severity: error
+  title: the guest network identity and the vm.onNetwork event are emitted from an
+    inbound guest report
+- constraint: rfp-guest-reports-network
+  details:
+    effect:
+      attrs:
+        type: COMPUTE_EVENTS_VM_ONNETWORK_NSID
+      component: lib-market-bidder-compute
+      context: lib-market-bidder-compute
+      file: lib/market-bidder-compute/mod.ts
+      id: e8f244a01974a176
+      kind: event.emit
+      line: 304
+      node: function:5ec21894bcf015b3164a07db128adf72
+    file: lib/market-bidder-compute/mod.ts
+    line: 304
+    routeClass: report
+  enforcementAction: deny
+  id: 15e4e9c0699c1994
+  level: MUST
+  location:
+    attrs: type=COMPUTE_EVENTS_VM_ONNETWORK_NSID
+    declaration: createVmBidderCallbacks
+    file: lib/market-bidder-compute/mod.ts
+    kind: event.emit
+    line: 304
+  msg: 'the host emits the network report "COMPUTE_EVENTS_VM_ONNETWORK_NSID" from
+    the provisioning lifecycle, not from the http.handle of the guest''s report: lib/market-bidder-compute/mod.ts:304'
+  object:
+    apiVersion: specs.publicdomainrelay.dev/v1alpha1
+    kind: ArchitectureModel
+    name: atproto-market
+    namespace: default
+  policy: rfp-guest-reports-network
+  severity: error
+  title: the guest reports its network information and that report drives the host's
+    emission
