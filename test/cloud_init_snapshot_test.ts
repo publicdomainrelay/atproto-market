@@ -153,9 +153,11 @@ Deno.test("iroh dumbpipe listener replaces the tunnel subscriber", () => {
 
 Deno.test("iroh listener keeps a stable identity and a fresh ticket", () => {
   const y = buildUserData({ ctx: CTX, modules: ["iroh"] });
-  // Stable iroh identity: the secret file is created once, under umask 077, in
-  // the unit that starts the listener, and read through an EnvironmentFile.
-  assert(y.includes("EnvironmentFile=-/root/secrets/iroh.env"), "unit reads the secret file");
+  // Stable iroh identity: the secret file is created once, under umask 077, by
+  // the listener script itself, which sources it in-process -- the unit carries
+  // no EnvironmentFile, because the container-mode systemctl shim cannot run a
+  // quoted ExecStart and has no ExecStartPre.
+  assert(y.includes(". /root/secrets/iroh.env"), "listener sources the secret file");
   assert(y.includes("IROH_SECRET="), "secret file carries IROH_SECRET");
   assert(
     y.includes("[ ! -s /root/secrets/iroh.env ]"),
@@ -163,25 +165,57 @@ Deno.test("iroh listener keeps a stable identity and a fresh ticket", () => {
   );
   assert(y.includes("umask 077"), "secret written under umask 077");
   assert(y.includes("chmod 0600 /root/secrets/iroh.env"), "secret file locked down");
-  // Freshness: the log is truncated on every start and the ticket re-extracted
-  // by an ExecStartPost, so a restarted listener cannot report a stale ticket.
+  // Freshness: the log is truncated on every start and the reporter re-extracts
+  // the ticket, so a restarted listener cannot report a stale ticket.
   assert(y.includes(": > /root/secrets/iroh-dumbpipe.log"), "log truncated on each start");
   assert(
-    y.includes("ExecStartPost=-/usr/local/bin/iroh-capture-ticket.sh"),
-    "ticket re-extracted on each start",
+    y.includes("/usr/local/bin/iroh-report-ticket.sh &"),
+    "reporter launched before the listener execs",
   );
-  assert(y.includes("ExecStartPre=/usr/local/bin/iroh-prepare.sh"), "prepares secret + log");
-  // Private report channel: the ticket goes to the requester's own endpoint,
-  // never into a public record -- and the destination carries no credential,
-  // because this cloud-config is published inside the compute.vm record.
-  assert(y.includes(CTX.irohReportUrl), "report endpoint from ctx.irohReportUrl");
-  assert(y.includes("/root/secrets/iroh-report.json"), "report destination written 0600");
   assert(
-    y.includes(`{"url":"${CTX.irohReportUrl}"}`),
-    "report destination carries only the url",
+    y.includes("exec /usr/local/bin/dumbpipe listen-tcp --host 127.0.0.1:22"),
+    "listener execs dumbpipe itself",
   );
-  assert(!y.includes("Bearer"), "no credential baked into cloud-init");
+  // Private report channel: the ticket goes to the requester's own endpoint,
+  // never into a public record.
+  assert(y.includes(CTX.irohReportUrl), "report endpoint from ctx.irohReportUrl");
+  assert(y.includes("/root/secrets/iroh-node-id"), "ticket captured for the requester");
   assert(y.includes("accept.uri"), "accept ref read from the injected bundle");
+});
+
+Deno.test("iroh unit is one bare-path ExecStart and mints its report token at boot", () => {
+  const y = buildUserData({ ctx: CTX, modules: ["iroh"] });
+  // The container-mode systemctl shim cannot run a quoted ExecStart, ignores a
+  // StandardOutput=append: redirect and implements no ExecStartPost, so the
+  // unit starts one bare-path script that owns the identity, the log and the
+  // report itself.
+  assert(
+    y.includes("ExecStart=/usr/local/bin/iroh-listen.sh"),
+    "bare-path ExecStart",
+  );
+  assert(!y.includes("ExecStartPre="), "no ExecStartPre");
+  assert(!y.includes("ExecStartPost="), "no ExecStartPost");
+  assert(
+    !y.includes("StandardOutput=append:/root/secrets"),
+    "no append redirect",
+  );
+  assert(!y.includes("/bin/sh -c '"), "no quoted ExecStart");
+  assert(
+    y.includes("exec >>/root/secrets/iroh-dumbpipe.log 2>&1"),
+    "the script owns the listener log",
+  );
+  // The credential is minted at boot from the bidder-injected accept bundle:
+  // the composed user_data is published inside the compute.vm record, so a
+  // token carried here would be public and would only appear to protect the
+  // endpoint. The exchange retries inside the same loop, and the endpoint is
+  // never called without a token.
+  assert(
+    y.includes("Authorization: Bearer $_report_token"),
+    "report POST is authenticated with a boot-minted token",
+  );
+  assert(y.includes(".bid_config.value // .bid_config"), "token config read from bid_config");
+  assert(y.includes(".token // empty"), "bearer comes from the provider token exchange");
+  assert(!/Bearer (?!\$)/.test(y), "no literal token is carried in the cloud-config");
 });
 
 Deno.test("iroh ticket extraction matches the connect-tcp line dumbpipe prints", () => {

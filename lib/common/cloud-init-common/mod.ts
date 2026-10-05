@@ -325,15 +325,21 @@ const DEFAULT_ACCEPT_PATH = "/root/secrets/publicdomainrelay.com/market/accept.j
  * tunnel-subscriber). Guest sshd keeps :22 on loopback; dumbpipe publishes a
  * `listen-tcp` endpoint over the iroh network. dumbpipe prints its control
  * output -- including the ticket as the argument of the `dumbpipe connect-tcp
- * <ticket>` line -- on stderr, so the unit appends the listener's combined
- * output to /root/secrets/iroh-dumbpipe.log and an ExecStartPost extracts the
- * ticket token, writes /root/secrets/iroh-node-id (a local convenience only)
- * and reports it to the requester's own per-contract endpoint
- * (ctx.irohReportUrl) -- never to a public record. The
- * log is truncated and the ticket re-extracted on every start, and the iroh
- * identity is persisted in /root/secrets/iroh.env so restarts keep the same
- * endpoint id. Requires ctx.sshAuthorizedKey. Optional: ctx.targetPort,
- * ctx.irohReportUrl, ctx.secretsAcceptPath.
+ * <ticket>` line -- on stderr. The unit runs one bare-path script, because the
+ * container-mode systemctl shim cannot execute a quoted ExecStart, ignores a
+ * StandardOutput=append: redirect and implements no ExecStartPost: the script
+ * sources the persisted iroh identity in-process, owns the listener log through
+ * its own redirection, starts the ticket reporter in the background and then
+ * execs dumbpipe. The reporter re-extracts the ticket into
+ * /root/secrets/iroh-node-id (a local convenience only) and reports it to the
+ * requester's own per-contract endpoint (ctx.irohReportUrl) -- never to a public
+ * record -- authenticating with a bearer token it mints at boot from the
+ * bidder-injected accept bundle, because the composed user_data is published
+ * inside the compute.vm record and no credential may be carried there. The log
+ * is truncated and the ticket re-extracted on every start, and the iroh identity
+ * is persisted in /root/secrets/iroh.env so restarts keep the same endpoint id.
+ * Requires ctx.sshAuthorizedKey. Optional: ctx.targetPort, ctx.irohReportUrl,
+ * ctx.secretsAcceptPath.
  */
 const irohModule: UserDataModule = (ctx) => {
   const targetPort = ctx.targetPort ?? 22;
@@ -341,28 +347,42 @@ const irohModule: UserDataModule = (ctx) => {
   const reportUrl = ctx.irohReportUrl ?? "";
   const reports = reportUrl !== "";
 
-  // Persist a stable iroh identity: dumbpipe mints a fresh one (printing
-  // "using secret key <hex>") when IROH_SECRET is unset, which would change the
-  // endpoint id on every start and invalidate every ticket already delivered.
-  const prepareScript = [
+  // One bare-path ExecStart keeps every start-time behaviour in the script: the
+  // container-mode systemctl shim cannot run a quoted ExecStart, ignores a
+  // StandardOutput=append: redirect and implements no ExecStartPost.
+  const listenScript = [
     "#!/bin/sh",
     "set -eu",
     "install -d -m 0700 -o root -g root /root/secrets",
+    // Persist a stable iroh identity: dumbpipe mints a fresh one (printing
+    // "using secret key <hex>") when IROH_SECRET is unset, which would change
+    // the endpoint id on every start and invalidate every ticket already
+    // delivered.
     "if [ ! -s /root/secrets/iroh.env ]; then",
     "  (umask 077 && printf 'IROH_SECRET=%s\\n' \"$(head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \\n')\" > /root/secrets/iroh.env)",
     "  chown root:root /root/secrets/iroh.env",
     "  chmod 0600 /root/secrets/iroh.env",
     "fi",
+    // Source the identity in-process: the unit has no EnvironmentFile, and on
+    // the first start the file did not exist yet.
+    "set -a",
+    ". /root/secrets/iroh.env",
+    "set +a",
     "# Truncate, never append: extraction may only read this run's ticket.",
     ": > /root/secrets/iroh-dumbpipe.log",
     "chmod 0600 /root/secrets/iroh-dumbpipe.log",
+    "# Own the log through our own redirection, and start the reporter before",
+    "# the listener needs it.",
+    "exec >>/root/secrets/iroh-dumbpipe.log 2>&1",
+    "/usr/local/bin/iroh-report-ticket.sh &",
+    `exec /usr/local/bin/dumbpipe listen-tcp --host 127.0.0.1:${targetPort}`,
     "",
   ].join("\n");
 
   // Re-extract on every start: a restarted listener issues a new ticket (the
   // endpoint id is stable, the direct addresses inside the ticket are not), so
   // the previously delivered ticket would be stale.
-  const captureLines = [
+  const reportLines = [
     "#!/bin/sh",
     "set -u",
     "LOG=/root/secrets/iroh-dumbpipe.log",
@@ -381,33 +401,56 @@ const irohModule: UserDataModule = (ctx) => {
     "chmod 0600 /root/secrets/iroh-node-id",
   ];
   if (reports) {
-    captureLines.push(
+    reportLines.push(
       "# Report the ticket to the requester's per-contract endpoint (never a record).",
-      "if [ -s /root/secrets/iroh-report.json ]; then",
-      "  _url=$(sed -n 's/.*\"url\":\"\\([^\"]*\\)\".*/\\1/p' /root/secrets/iroh-report.json)",
-      `  _accept_uri=$(jq -r '.accept.uri // empty' ${acceptPath} 2>/dev/null || true)`,
-      `  _accept_cid=$(jq -r '.accept.cid // empty' ${acceptPath} 2>/dev/null || true)`,
-      "  _body=$(printf '{\"acceptUri\":\"%s\",\"acceptCid\":\"%s\",\"address\":\"%s\",\"createdAt\":\"%s\"}' \"$_accept_uri\" \"$_accept_cid\" \"$TICKET\" \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\")",
-      "  _attempt=1",
-      "  _delay=2",
-      "  while [ \"$_attempt\" -le 5 ]; do",
-      "    if curl -fsS -m 10 -X POST \"$_url\" -H \"content-type: application/json\" -d \"$_body\" >/dev/null; then",
-      "      echo \"iroh ticket reported\" >&2",
-      "      break",
-      "    fi",
-      "    echo \"iroh ticket report attempt $_attempt failed\" >&2",
-      "    sleep \"$_delay\"",
-      "    _attempt=$((_attempt + 1))",
-      "    _delay=$((_delay * 2))",
-      "  done",
-      "fi",
+      "_url=\"" + reportUrl + "\"",
+      "_accept_json=\"" + acceptPath + "\"",
+      "for _ in $(seq 1 60); do",
+      "  [ -f \"$_accept_json\" ] && break",
+      "  sleep 2",
+      "done",
+      "# Provider specifics come from the bidder-injected bundle at runtime: the",
+      "# bidder wraps bid_config as a strongRef ({uri, cid, value}), older ones",
+      "# inlined it. No provider path is baked into this cloud-config.",
+      "_wif=$(jq -c '.bid_config.value // .bid_config // {}' \"$_accept_json\" 2>/dev/null || echo '{}')",
+      "_token_path=$(printf '%s' \"$_wif\" | jq -r '.token_path // empty')",
+      "_url_path=$(printf '%s' \"$_wif\" | jq -r '.url_path // empty')",
+      "_url_route=$(printf '%s' \"$_wif\" | jq -r '.url_route // \"/v1/oidc/issue\"')",
+      "# The requester that must accept this report is the accept record's own",
+      "# authority, so the minted token is scoped to it and not to the provider.",
+      "_accept_uri=$(jq -r '.accept.uri // empty' \"$_accept_json\" 2>/dev/null || true)",
+      "_accept_cid=$(jq -r '.accept.cid // empty' \"$_accept_json\" 2>/dev/null || true)",
+      "_requester=$(printf '%s' \"$_accept_uri\" | sed -n 's|^at://\\([^/]*\\)/.*|\\1|p')",
+      "_aud=\"api://ATProto?actx=${_requester}\"",
+      "_wid_token=$(cat \"$_token_path\" 2>/dev/null || true)",
+      "_issuer=$(cat \"$_url_path\" 2>/dev/null || true)",
+      "_sub=$(printf '%s' \"$_wid_token\" | cut -d. -f2 | tr '_-' '/+' | sed -e 's/$/==/' | base64 -d 2>/dev/null | jq -r .sub 2>/dev/null || true)",
+      "_created=$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+      "_body=$(printf '{\"acceptUri\":\"%s\",\"acceptCid\":\"%s\",\"address\":\"%s\",\"createdAt\":\"%s\"}' \"$_accept_uri\" \"$_accept_cid\" \"$TICKET\" \"$_created\")",
+      "# Mint the bearer at boot: the composed user_data is published inside the",
+      "# compute.vm record, so no credential may be carried in it. The exchange",
+      "# retries inside the same loop, and the endpoint is never called without a",
+      "# token.",
+      "_attempt=1",
+      "_delay=2",
+      "while [ \"$_attempt\" -le 5 ]; do",
+      "  _report_token=$(curl -sf -m 10 -X POST \"$_issuer$_url_route\" -H \"Authorization: Bearer $_wid_token\" -H 'content-type: application/json' -d \"$(printf '{\"aud\":\"%s\",\"sub\":\"%s\",\"ttl\":300}' \"$_aud\" \"$_sub\")\" | jq -r '.token // empty') || true",
+      "  if [ -n \"$_report_token\" ] && curl -fsS -m 10 -X POST \"$_url\" -H 'content-type: application/json' -H \"Authorization: Bearer $_report_token\" -d \"$_body\" >/dev/null; then",
+      "    echo \"iroh ticket reported\" >&2",
+      "    break",
+      "  fi",
+      "  echo \"iroh ticket report attempt $_attempt failed\" >&2",
+      "  sleep \"$_delay\"",
+      "  _attempt=$((_attempt + 1))",
+      "  _delay=$((_delay * 2))",
+      "done",
       "# A failed report must not stop or restart the listener.",
       "exit 0",
     );
   } else {
-    captureLines.push("exit 0");
+    reportLines.push("exit 0");
   }
-  const captureScript = captureLines.join("\n") + "\n";
+  const reportScript = reportLines.join("\n") + "\n";
 
   const writeFiles: WriteFileEntry[] = [
     {
@@ -427,26 +470,18 @@ const irohModule: UserDataModule = (ctx) => {
       ].join("\n") + "\n",
     },
     {
-      path: "/usr/local/bin/iroh-prepare.sh",
+      path: "/usr/local/bin/iroh-listen.sh",
       owner: "root:root",
       permissions: "0755",
-      content: prepareScript,
+      content: listenScript,
     },
     {
-      path: "/usr/local/bin/iroh-capture-ticket.sh",
+      path: "/usr/local/bin/iroh-report-ticket.sh",
       owner: "root:root",
       permissions: "0755",
-      content: captureScript,
+      content: reportScript,
     },
   ];
-  if (reports) {
-    writeFiles.push({
-      path: "/root/secrets/iroh-report.json",
-      owner: "root:root",
-      permissions: "0600",
-      content: JSON.stringify({ url: reportUrl }) + "\n",
-    });
-  }
   writeFiles.push({
     path: "/etc/systemd/system/dumbpipe-listen.service",
     owner: "root:root",
@@ -460,20 +495,13 @@ const irohModule: UserDataModule = (ctx) => {
       "[Service]",
       "Type=simple",
       "User=root",
-      "# Prepares the persisted IROH_SECRET and truncates the listener log.",
-      "ExecStartPre=/usr/local/bin/iroh-prepare.sh",
-      "EnvironmentFile=-/root/secrets/iroh.env",
-      "# Source the secret in-process too: on the first start systemd read the",
-      "# EnvironmentFile before ExecStartPre created it.",
-      "ExecStart=/bin/sh -c 'set -a; [ -f /root/secrets/iroh.env ] && . /root/secrets/iroh.env; exec /usr/local/bin/dumbpipe listen-tcp --host 127.0.0.1:" + targetPort + "'",
-      "# Extracts and reports the ticket; a missing ticket logs and exits non-zero",
-      "# without taking the listener down ('-' keeps a non-zero exit non-fatal).",
-      "ExecStartPost=-/usr/local/bin/iroh-capture-ticket.sh",
+      "# One bare-path ExecStart: the container-mode systemctl shim cannot run a",
+      "# quoted ExecStart, ignores a StandardOutput=append: redirect and has no",
+      "# ExecStartPost, so the script owns the identity, the log and the report.",
+      "ExecStart=/usr/local/bin/iroh-listen.sh",
       "Restart=always",
       "RestartSec=5",
       "TimeoutStopSec=10",
-      "StandardOutput=append:/root/secrets/iroh-dumbpipe.log",
-      "StandardError=append:/root/secrets/iroh-dumbpipe.log",
       "",
       "[Install]",
       "WantedBy=multi-user.target",

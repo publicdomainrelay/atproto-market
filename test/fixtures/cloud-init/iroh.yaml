@@ -18,7 +18,7 @@ write_files:
       # Key-only root login; dumbpipe bridges iroh traffic to sshd on loopback.
       PermitRootLogin prohibit-password
       PasswordAuthentication no
-  - path: /usr/local/bin/iroh-prepare.sh
+  - path: /usr/local/bin/iroh-listen.sh
     owner: root:root
     permissions: "0755"
     content: |
@@ -30,10 +30,18 @@ write_files:
         chown root:root /root/secrets/iroh.env
         chmod 0600 /root/secrets/iroh.env
       fi
+      set -a
+      . /root/secrets/iroh.env
+      set +a
       # Truncate, never append: extraction may only read this run's ticket.
       : > /root/secrets/iroh-dumbpipe.log
       chmod 0600 /root/secrets/iroh-dumbpipe.log
-  - path: /usr/local/bin/iroh-capture-ticket.sh
+      # Own the log through our own redirection, and start the reporter before
+      # the listener needs it.
+      exec >>/root/secrets/iroh-dumbpipe.log 2>&1
+      /usr/local/bin/iroh-report-ticket.sh &
+      exec /usr/local/bin/dumbpipe listen-tcp --host 127.0.0.1:22
+  - path: /usr/local/bin/iroh-report-ticket.sh
     owner: root:root
     permissions: "0755"
     content: |
@@ -54,31 +62,49 @@ write_files:
       printf '%s' "$TICKET" > /root/secrets/iroh-node-id
       chmod 0600 /root/secrets/iroh-node-id
       # Report the ticket to the requester's per-contract endpoint (never a record).
-      if [ -s /root/secrets/iroh-report.json ]; then
-        _url=$(sed -n 's/.*"url":"\([^"]*\)".*/\1/p' /root/secrets/iroh-report.json)
-        _accept_uri=$(jq -r '.accept.uri // empty' /root/secrets/publicdomainrelay.com/market/accept.json 2>/dev/null || true)
-        _accept_cid=$(jq -r '.accept.cid // empty' /root/secrets/publicdomainrelay.com/market/accept.json 2>/dev/null || true)
-        _body=$(printf '{"acceptUri":"%s","acceptCid":"%s","address":"%s","createdAt":"%s"}' "$_accept_uri" "$_accept_cid" "$TICKET" "$(date -u +%Y-%m-%dT%H:%M:%SZ)")
-        _attempt=1
-        _delay=2
-        while [ "$_attempt" -le 5 ]; do
-          if curl -fsS -m 10 -X POST "$_url" -H "content-type: application/json" -d "$_body" >/dev/null; then
-            echo "iroh ticket reported" >&2
-            break
-          fi
-          echo "iroh ticket report attempt $_attempt failed" >&2
-          sleep "$_delay"
-          _attempt=$((_attempt + 1))
-          _delay=$((_delay * 2))
-        done
-      fi
+      _url="https://req-abc.relay.local/v1/on-network"
+      _accept_json="/root/secrets/publicdomainrelay.com/market/accept.json"
+      for _ in $(seq 1 60); do
+        [ -f "$_accept_json" ] && break
+        sleep 2
+      done
+      # Provider specifics come from the bidder-injected bundle at runtime: the
+      # bidder wraps bid_config as a strongRef ({uri, cid, value}), older ones
+      # inlined it. No provider path is baked into this cloud-config.
+      _wif=$(jq -c '.bid_config.value // .bid_config // {}' "$_accept_json" 2>/dev/null || echo '{}')
+      _token_path=$(printf '%s' "$_wif" | jq -r '.token_path // empty')
+      _url_path=$(printf '%s' "$_wif" | jq -r '.url_path // empty')
+      _url_route=$(printf '%s' "$_wif" | jq -r '.url_route // "/v1/oidc/issue"')
+      # The requester that must accept this report is the accept record's own
+      # authority, so the minted token is scoped to it and not to the provider.
+      _accept_uri=$(jq -r '.accept.uri // empty' "$_accept_json" 2>/dev/null || true)
+      _accept_cid=$(jq -r '.accept.cid // empty' "$_accept_json" 2>/dev/null || true)
+      _requester=$(printf '%s' "$_accept_uri" | sed -n 's|^at://\([^/]*\)/.*|\1|p')
+      _aud="api://ATProto?actx=${_requester}"
+      _wid_token=$(cat "$_token_path" 2>/dev/null || true)
+      _issuer=$(cat "$_url_path" 2>/dev/null || true)
+      _sub=$(printf '%s' "$_wid_token" | cut -d. -f2 | tr '_-' '/+' | sed -e 's/$/==/' | base64 -d 2>/dev/null | jq -r .sub 2>/dev/null || true)
+      _created=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+      _body=$(printf '{"acceptUri":"%s","acceptCid":"%s","address":"%s","createdAt":"%s"}' "$_accept_uri" "$_accept_cid" "$TICKET" "$_created")
+      # Mint the bearer at boot: the composed user_data is published inside the
+      # compute.vm record, so no credential may be carried in it. The exchange
+      # retries inside the same loop, and the endpoint is never called without a
+      # token.
+      _attempt=1
+      _delay=2
+      while [ "$_attempt" -le 5 ]; do
+        _report_token=$(curl -sf -m 10 -X POST "$_issuer$_url_route" -H "Authorization: Bearer $_wid_token" -H 'content-type: application/json' -d "$(printf '{"aud":"%s","sub":"%s","ttl":300}' "$_aud" "$_sub")" | jq -r '.token // empty') || true
+        if [ -n "$_report_token" ] && curl -fsS -m 10 -X POST "$_url" -H 'content-type: application/json' -H "Authorization: Bearer $_report_token" -d "$_body" >/dev/null; then
+          echo "iroh ticket reported" >&2
+          break
+        fi
+        echo "iroh ticket report attempt $_attempt failed" >&2
+        sleep "$_delay"
+        _attempt=$((_attempt + 1))
+        _delay=$((_delay * 2))
+      done
       # A failed report must not stop or restart the listener.
       exit 0
-  - path: /root/secrets/iroh-report.json
-    owner: root:root
-    permissions: "0600"
-    content: |
-      {"url":"https://req-abc.relay.local/v1/on-network"}
   - path: /etc/systemd/system/dumbpipe-listen.service
     owner: root:root
     permissions: "0644"
@@ -91,20 +117,13 @@ write_files:
       [Service]
       Type=simple
       User=root
-      # Prepares the persisted IROH_SECRET and truncates the listener log.
-      ExecStartPre=/usr/local/bin/iroh-prepare.sh
-      EnvironmentFile=-/root/secrets/iroh.env
-      # Source the secret in-process too: on the first start systemd read the
-      # EnvironmentFile before ExecStartPre created it.
-      ExecStart=/bin/sh -c 'set -a; [ -f /root/secrets/iroh.env ] && . /root/secrets/iroh.env; exec /usr/local/bin/dumbpipe listen-tcp --host 127.0.0.1:22'
-      # Extracts and reports the ticket; a missing ticket logs and exits non-zero
-      # without taking the listener down ('-' keeps a non-zero exit non-fatal).
-      ExecStartPost=-/usr/local/bin/iroh-capture-ticket.sh
+      # One bare-path ExecStart: the container-mode systemctl shim cannot run a
+      # quoted ExecStart, ignores a StandardOutput=append: redirect and has no
+      # ExecStartPost, so the script owns the identity, the log and the report.
+      ExecStart=/usr/local/bin/iroh-listen.sh
       Restart=always
       RestartSec=5
       TimeoutStopSec=10
-      StandardOutput=append:/root/secrets/iroh-dumbpipe.log
-      StandardError=append:/root/secrets/iroh-dumbpipe.log
 
       [Install]
       WantedBy=multi-user.target
