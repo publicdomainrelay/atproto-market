@@ -310,6 +310,22 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 - added `r.ssh-key-register-policy` (MUST): "The policy object marks itself with meta.policy "ssh-key-register" and contributes a draft-07 JSON schema for /xrpc/com.atproto.repo.createRecord that requires the body's capability and body properties, enums capability to "create", constrains collection to the fedproxy SSH key NSID, requires collection and record inside the body, and closes the record object with additionalProperties false, so the record authorises only the creation of fedproxy SSH key records."
 - added `r.subject-placeholders` (MUST): "renderSubject replaces every occurrence of the literal placeholders {actx}, {did-plc-key} and {role} in the given template with vars.actx, vars.didPlcKey and vars.role respectively, applying each substitution globally so a repeated placeholder is expanded everywhere and no matching placeholder text survives in the result."
 
+### lib-common-market-common
+
+- intent: "" -> "This context exists because the market packages need one place to agree on record shapes, logging, and outbound-request safety before they can settle bids against each other. Without it each package would redeclare the atproto strong-reference shape, invent its own logger signature, and grow its own — or no — SSRF check on the settlement URL it fetches. It pins the shared aliases to the lexicon-generated types, gives consumers a single typed strongRef construction point, and makes the egress guard the mandatory gate on any URL a market package fetches, so the safety rules are audited once rather than per consumer."
+- added `r.deno-package-config` (MUST): "deno.json declares the Deno configuration and export map for lib/common/market-common, since every source file in the package is TypeScript consumed through Deno and the package root export resolves through it."
+- added `r.egress-metadata-hosts-always-blocked` (MUST): "Regardless of options, assertSafeEgressUrl rejects the cloud-metadata hosts 169.254.169.254 and metadata.google.internal, matching the hostname lowercased with surrounding IPv6 square brackets stripped, so no caller can opt back into reaching the instance metadata service."
+- added `r.egress-opt-in-private-blocking` (MUST): "When EgressOptions.blockPrivate is set, assertSafeEgressUrl additionally rejects loopback and private hosts, testing the normalized hostname against localhost, ::1, the 127. prefix, 10., 192.168., 169.254., the 172.16 through 172.31 range, and the fc/fd unique-local prefixes, throwing an Error naming the blocked host; without the flag those hosts pass."
+- added `r.egress-options-shape` (MUST): "EgressOptions carries a single optional boolean blockPrivate, and assertSafeEgressUrl defaults the whole options object to an empty one, so a caller that passes no options gets blockPrivate absent and therefore falsy and only the scheme and metadata checks apply."
+- added `r.egress-parse-and-scheme-allowlist` (MUST): "assertSafeEgressUrl parses the raw string with the URL constructor; input the constructor cannot parse throws an Error naming the invalid URL, and a parsed URL whose protocol is not exactly http: or https: throws an Error naming the blocked scheme, so no other scheme and no unparseable string can reach a fetch."
+- added `r.egress-returns-parsed-url` (MUST): "When every check passes, assertSafeEgressUrl returns the parsed URL object rather than the raw string, so callers fetch the normalized address and cannot diverge from the address that was validated."
+- added `r.logger-contract` (MUST): "LogLevel enumerates the accepted severity levels and Logger types the log callable taking a level plus message, so packages can accept an injected logger without depending on a concrete implementation; noopLogger is a Logger that discards every call and is the default consumers fall back to when no logger is supplied."
+- added `r.market-record-types` (MUST): "types.ts exports Offering, RFP, Accept, Bid, MarketEvent, and Resolved as the shared aliases for each market record kind, so every consumer package validates and passes the same shape for a given record instead of redeclaring it."
+- added `r.shared-constants` (SHOULD): "constants.ts holds the values shared across the market packages, so a constant used by more than one package is defined once here rather than copied at each call site."
+- added `r.single-entry-point` (MUST): "mod.ts is the package's single export entry point, re-exporting the shared types, the logger helpers, and the egress guard, so consumers import from the package root rather than reaching into individual files."
+- added `r.strong-ref-alias` (MUST): "StrongRef is exported as an alias of the lexicon-generated _StrongRef type, so consumers use the atproto strong-reference shape rather than a redeclaration that could drift from the lexicon."
+- added `r.strong-ref-constructor` (MUST): "strongRef(uri, cid) builds a StrongRef from the supplied AT-URI and CID strings, giving callers one typed construction point instead of hand-written object literals at each settlement site."
+
 ## Realization
 
 | change | direction | phase | commit | verify | acceptance | coverage |
@@ -331,5 +347,5 @@ The requirement-level delta against `open-architecture/atproto-market--spec-iroh
 | lib-common-cloud-init-common-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-common-compute-contract-gateway-common-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-common-fedproxy-rbac-common-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
-| lib-common-market-common-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |
+| lib-common-market-common-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Succeeded |  | 0 | - | - |
 | lib-common-market-lexicons-c2s-05fe29612a62-05fe29612a62 | CodeToSpec | Running |  | 0 | - | - |

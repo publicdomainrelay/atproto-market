@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists because the market packages need one place to agree on record shapes, logging, and outbound-request safety before they can settle bids against each other. Without it each package would redeclare the atproto strong-reference shape, invent its own logger signature, and grow its own — or no — SSRF check on the settlement URL it fetches. It pins the shared aliases to the lexicon-generated types, gives consumers a single typed strongRef construction point, and makes the egress guard the mandatory gate on any URL a market package fetches, so the safety rules are audited once rather than per consumer.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 

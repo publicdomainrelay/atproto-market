@@ -9,8 +9,188 @@ spec:
   dependsOn:
   - sc.atproto-market
   - sc.lib-common-market-lexicons
+  intent: This context exists because the market packages need one place to agree
+    on record shapes, logging, and outbound-request safety before they can settle
+    bids against each other. Without it each package would redeclare the atproto strong-reference
+    shape, invent its own logger signature, and grow its own — or no — SSRF check
+    on the settlement URL it fetches. It pins the shared aliases to the lexicon-generated
+    types, gives consumers a single typed strongRef construction point, and makes
+    the egress guard the mandatory gate on any URL a market package fetches, so the
+    safety rules are audited once rather than per consumer.
+  requirements:
+  - id: r.deno-package-config
+    level: MUST
+    text: deno.json declares the Deno configuration and export map for lib/common/market-common,
+      since every source file in the package is TypeScript consumed through Deno and
+      the package root export resolves through it.
+    codeRefs:
+    - file:lib/common/market-common/deno.json
+    - file:lib/common/market-common/mod.ts
+  - id: r.egress-metadata-hosts-always-blocked
+    level: MUST
+    text: Regardless of options, assertSafeEgressUrl rejects the cloud-metadata hosts
+      169.254.169.254 and metadata.google.internal, matching the hostname lowercased
+      with surrounding IPv6 square brackets stripped, so no caller can opt back into
+      reaching the instance metadata service.
+    codeRefs:
+    - function:4a9182a659c42eaf5efea613d576bf56
+  - id: r.egress-opt-in-private-blocking
+    level: MUST
+    text: When EgressOptions.blockPrivate is set, assertSafeEgressUrl additionally
+      rejects loopback and private hosts, testing the normalized hostname against
+      localhost, ::1, the 127. prefix, 10., 192.168., 169.254., the 172.16 through
+      172.31 range, and the fc/fd unique-local prefixes, throwing an Error naming
+      the blocked host; without the flag those hosts pass.
+    codeRefs:
+    - function:4a9182a659c42eaf5efea613d576bf56
+    - type_alias:3b05835c22ae315ee54800118068199e
+  - id: r.egress-options-shape
+    level: MUST
+    text: EgressOptions carries a single optional boolean blockPrivate, and assertSafeEgressUrl
+      defaults the whole options object to an empty one, so a caller that passes no
+      options gets blockPrivate absent and therefore falsy and only the scheme and
+      metadata checks apply.
+    codeRefs:
+    - function:4a9182a659c42eaf5efea613d576bf56
+    - type_alias:3b05835c22ae315ee54800118068199e
+  - id: r.egress-parse-and-scheme-allowlist
+    level: MUST
+    text: 'assertSafeEgressUrl parses the raw string with the URL constructor; input
+      the constructor cannot parse throws an Error naming the invalid URL, and a parsed
+      URL whose protocol is not exactly http: or https: throws an Error naming the
+      blocked scheme, so no other scheme and no unparseable string can reach a fetch.'
+    codeRefs:
+    - file:lib/common/market-common/egress.ts
+    - function:4a9182a659c42eaf5efea613d576bf56
+  - id: r.egress-returns-parsed-url
+    level: MUST
+    text: When every check passes, assertSafeEgressUrl returns the parsed URL object
+      rather than the raw string, so callers fetch the normalized address and cannot
+      diverge from the address that was validated.
+    codeRefs:
+    - function:4a9182a659c42eaf5efea613d576bf56
+  - id: r.logger-contract
+    level: MUST
+    text: LogLevel enumerates the accepted severity levels and Logger types the log
+      callable taking a level plus message, so packages can accept an injected logger
+      without depending on a concrete implementation; noopLogger is a Logger that
+      discards every call and is the default consumers fall back to when no logger
+      is supplied.
+    codeRefs:
+    - function:bdb007fdd15fa3b35d2579e3f50a9102
+    - type_alias:5227ebb1a1c9a0e6fc64c180ba49b225
+    - type_alias:a1be7c028260b060bface7fb68430980
+  - id: r.market-record-types
+    level: MUST
+    text: types.ts exports Offering, RFP, Accept, Bid, MarketEvent, and Resolved as
+      the shared aliases for each market record kind, so every consumer package validates
+      and passes the same shape for a given record instead of redeclaring it.
+    codeRefs:
+    - type_alias:0ddacc3f4f8324551fc28543224d5848
+    - type_alias:1415ed8e9c4445551461c01489f8e98e
+    - type_alias:4a83a08396757c59cee4d1abc1ac4e96
+    - type_alias:68f1befbdba2e558d52f81fadb208604
+    - type_alias:bf97d5bc1681c49e28bb73c0ef924a28
+    - type_alias:cecc1b0d37ba12dc3d30a216f27c4d7d
+  - id: r.shared-constants
+    level: SHOULD
+    text: constants.ts holds the values shared across the market packages, so a constant
+      used by more than one package is defined once here rather than copied at each
+      call site.
+    codeRefs:
+    - file:lib/common/market-common/constants.ts
+  - id: r.single-entry-point
+    level: MUST
+    text: mod.ts is the package's single export entry point, re-exporting the shared
+      types, the logger helpers, and the egress guard, so consumers import from the
+      package root rather than reaching into individual files.
+    codeRefs:
+    - file:lib/common/market-common/mod.ts
+  - id: r.strong-ref-alias
+    level: MUST
+    text: StrongRef is exported as an alias of the lexicon-generated _StrongRef type,
+      so consumers use the atproto strong-reference shape rather than a redeclaration
+      that could drift from the lexicon.
+    codeRefs:
+    - file:lib/common/market-common/types.ts
+    - type_alias:094ab49db888ff112d27c2d9863156fb
+  - id: r.strong-ref-constructor
+    level: MUST
+    text: strongRef(uri, cid) builds a StrongRef from the supplied AT-URI and CID
+      strings, giving callers one typed construction point instead of hand-written
+      object literals at each settlement site.
+    codeRefs:
+    - function:98a3eb25fe3e5d71119b4776db96f280
+  interfaces:
+  - name: Accept
+    kind: type_alias
+    signature: type Accept
+    file: lib/common/market-common/types.ts
+  - name: Bid
+    kind: type_alias
+    signature: type Bid
+    file: lib/common/market-common/types.ts
+  - name: EgressOptions
+    kind: type_alias
+    signature: 'type EgressOptions = { blockPrivate?: boolean }'
+    file: lib/common/market-common/egress.ts
+  - name: LogLevel
+    kind: type_alias
+    signature: type LogLevel
+    file: lib/common/market-common/types.ts
+  - name: Logger
+    kind: type_alias
+    signature: type Logger
+    file: lib/common/market-common/types.ts
+  - name: MarketEvent
+    kind: type_alias
+    signature: type MarketEvent
+    file: lib/common/market-common/types.ts
+  - name: Offering
+    kind: type_alias
+    signature: type Offering
+    file: lib/common/market-common/types.ts
+  - name: RFP
+    kind: type_alias
+    signature: type RFP
+    file: lib/common/market-common/types.ts
+  - name: Resolved
+    kind: type_alias
+    signature: type Resolved
+    file: lib/common/market-common/types.ts
+  - name: StrongRef
+    kind: type_alias
+    signature: type StrongRef = _StrongRef
+    file: lib/common/market-common/types.ts
+  - name: assertSafeEgressUrl
+    kind: function
+    signature: 'function assertSafeEgressUrl(raw: string, opts: EgressOptions = {}):
+      URL'
+    file: lib/common/market-common/egress.ts
+  - name: noopLogger
+    kind: function
+    signature: function noopLogger()
+    file: lib/common/market-common/types.ts
+  - name: strongRef
+    kind: function
+    signature: 'function strongRef(uri: string, cid: string): StrongRef'
+    file: lib/common/market-common/types.ts
 codeRefIndex:
 - file:lib/common/market-common/constants.ts constants.ts@lib/common/market-common/constants.ts
+- file:lib/common/market-common/deno.json deno.json@lib/common/market-common/deno.json
 - file:lib/common/market-common/egress.ts egress.ts@lib/common/market-common/egress.ts
 - file:lib/common/market-common/mod.ts mod.ts@lib/common/market-common/mod.ts
 - file:lib/common/market-common/types.ts types.ts@lib/common/market-common/types.ts
+- function:4a9182a659c42eaf5efea613d576bf56 assertSafeEgressUrl@lib/common/market-common/egress.ts:5
+- function:98a3eb25fe3e5d71119b4776db96f280 strongRef@lib/common/market-common/types.ts:23
+- function:bdb007fdd15fa3b35d2579e3f50a9102 noopLogger@lib/common/market-common/types.ts:21
+- type_alias:094ab49db888ff112d27c2d9863156fb StrongRef@lib/common/market-common/types.ts:8
+- type_alias:0ddacc3f4f8324551fc28543224d5848 Resolved@lib/common/market-common/types.ts:15
+- type_alias:1415ed8e9c4445551461c01489f8e98e RFP@lib/common/market-common/types.ts:10
+- type_alias:3b05835c22ae315ee54800118068199e EgressOptions@lib/common/market-common/egress.ts:1
+- type_alias:4a83a08396757c59cee4d1abc1ac4e96 Bid@lib/common/market-common/types.ts:12
+- type_alias:5227ebb1a1c9a0e6fc64c180ba49b225 Logger@lib/common/market-common/types.ts:19
+- type_alias:68f1befbdba2e558d52f81fadb208604 MarketEvent@lib/common/market-common/types.ts:13
+- type_alias:a1be7c028260b060bface7fb68430980 LogLevel@lib/common/market-common/types.ts:17
+- type_alias:bf97d5bc1681c49e28bb73c0ef924a28 Offering@lib/common/market-common/types.ts:9
+- type_alias:cecc1b0d37ba12dc3d30a216f27c4d7d Accept@lib/common/market-common/types.ts:11

@@ -1,11 +1,11 @@
 syncedFingerprint: 45b9b8260b4d7a8e89d8374490a616ec2b976315211f46bd754cafb73a751879
-realizedSpecHash: 983ff55ec19eea3df818c0df3c1b935c5ebdffde8c972fa1675f48843aced67a
+realizedSpecHash: e4591477d95a693e115f710d6a6de7e6ee2985bf7e18166333f40093128af516
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: Accept, Bid, EgressOptions, LogLevel, Logger, MarketEvent,
-    Offering, RFP, Resolved, StrongRef, assertSafeEgressUrl, noopLogger, strongRef'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual
