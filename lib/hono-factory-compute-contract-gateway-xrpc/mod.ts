@@ -24,12 +24,16 @@ export interface ComputeContractGatewayFactoryOptions {
 
 export function createComputeContractGatewayFactory(
   opts: ComputeContractGatewayFactoryOptions,
-): { app: Hono } {
+): { app: Hono<{ Variables: { issuerDid: string } }> } {
   const { gateway, hostname, idResolver, audienceDids } = opts;
 
   function requireAuth(lxm: string) {
     return async (
-      c: { req: { header: (n: string) => string | undefined }; json: (b: unknown, s?: number) => Response },
+      c: {
+        req: { header: (n: string) => string | undefined };
+        json: (b: unknown, s?: number) => Response;
+        set: (k: string, v: unknown) => void;
+      },
       next: () => Promise<void>,
     ) => {
       const host = (c.req.header("host") ?? hostname).split(":")[0];
@@ -38,7 +42,7 @@ export function createComputeContractGatewayFactory(
         return c.json({ error: "Unauthorized", message: "missing Authorization header" }, 401);
       }
       try {
-        await verifyServiceAuth({
+        const auth = await verifyServiceAuth({
           authHeader,
           hostname: host,
           lxm,
@@ -46,6 +50,7 @@ export function createComputeContractGatewayFactory(
           extraAudienceDids: audienceDids ?? [gateway.did],
           idResolver,
         });
+        c.set("issuerDid", auth.issuerDid);
       } catch (err) {
         return c.json({ error: "Unauthorized", message: String(err) }, 401);
       }
@@ -53,7 +58,7 @@ export function createComputeContractGatewayFactory(
     };
   }
 
-  const app = new Hono();
+  const app = new Hono<{ Variables: { issuerDid: string } }>();
   app.use("*", cors());
 
   app.get("/health", (c) => c.json({ status: "ok" }));
@@ -78,12 +83,7 @@ export function createComputeContractGatewayFactory(
     requireAuth(REQUEST_COMPUTE_VM_LXM),
     async (c) => {
       const body = await c.req.json();
-      const authHeader = c.req.header("authorization") ?? "";
-      const payload = body.payload as string;
-      const issuerDid = payload
-        ? JSON.parse(atob(payload.split(".")[1])).iss
-        : "unknown";
-
+      const issuerDid = c.get("issuerDid");
       const result = await gateway.requestComputeVM(
         { did: issuerDid },
         body,
