@@ -1,7 +1,7 @@
-observedCommit: 26307737e859bee951a621bfdf44cfef947350e1
-syncedCommit: a15d9cdab92c38dfb523398231ab0344f6d06909
-syncedFingerprint: f1df3e4b14bbd7ffaab569337e29facbb2d496946eca2de28568c72e2e310342
-realizedSpecHash: 0c1bd2c5dcde6bfcb503dac4cb3d700db7ab6a4cd1e2fbc63e300251371773c4
+observedCommit: ffac22ea07b888ea0ddfcd7c582cab27bc8d31f3
+syncedCommit: ffac22ea07b888ea0ddfcd7c582cab27bc8d31f3
+syncedFingerprint: 60b9512a3761d34274defccc74bae47cd2e02a4b9139a80091b8a60966109a6a
+realizedSpecHash: 004f6cdd8bb83f17419033a71ddc6a64e5d72a41bb09879c126e0ba716bcfb3e
 conditions:
 - type: CodeSynced
   status: "False"
@@ -10,9 +10,9 @@ conditions:
     r.deprecated-wrappers: function:46c9fd0cecf9645ba56294190be1600c, r.inject-jsr-url:
     function:4466755423490bdd6cd4a58e579cc002'
 - type: Drifted
-  status: "True"
-  reason: FingerprintChanged
-  message: observed facts changed since the spec was last synced
+  status: "False"
+  reason: FingerprintEqual
+  message: observed facts match the synced fingerprint
 - type: SpecValid
   status: "True"
   reason: ValidatorPassed
@@ -98,18 +98,18 @@ observed:
     kind: function
     signature: '(ctx: CloudInitContext): string'
     file: lib/common/cloud-init-common/mod.ts
-    line: 1102
-    codegraphId: function:a163e1b3e27755329d8ec1eb9d02596c
+    line: 1141
+    codegraphId: function:df307b28fafe7f6eb4d4f9086935dc3c
   - name: buildTunnelUserData
     kind: function
     signature: '(ctx: TunnelCloudInitContext): string'
     file: lib/common/cloud-init-common/mod.ts
-    line: 1110
-    codegraphId: function:16c8235c08b8afb442734ae197b1d61e
+    line: 1149
+    codegraphId: function:e0207a5f28173eb255c10961e9fb528b
   - name: injectJsrUrl
     kind: function
     signature: '(userData: string, jsrUrl: string): string'
     file: lib/common/cloud-init-common/mod.ts
-    line: 1115
-    codegraphId: function:1a8e70c2c7c4bc322d99b9c2c3633d8b
-  fingerprint: d0f255cb29cabeeb06f084bf3f675ad3999dbd14036e9eb1947df9eeac19a79d
+    line: 1154
+    codegraphId: function:4c9364a2eba6051041a3e329e3673cd2
+  fingerprint: 60b9512a3761d34274defccc74bae47cd2e02a4b9139a80091b8a60966109a6a
