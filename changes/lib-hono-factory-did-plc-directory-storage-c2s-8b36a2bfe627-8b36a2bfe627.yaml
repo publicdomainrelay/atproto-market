@@ -1,0 +1,13 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: lib-hono-factory-did-plc-directory-storage-c2s-8b36a2bfe627-8b36a2bfe627
+  namespace: default
+spec:
+  systemContext: lib-hono-factory-did-plc-directory-storage
+  direction: CodeToSpec
+  fromCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
+  toCommit: 8b36a2bfe627f7128cc32482542ecaf1718a2577
+status:
+  phase: Running
+  message: the agent is summarizing lib-hono-factory-did-plc-directory-storage
