@@ -17,21 +17,8 @@ spec:
     - +r.iroh-acceptance-plc-key-resolution
     - +r.iroh-cloud-init-fixture
 status:
-  phase: Pending
-  message: 'attempt 6 retried by john (The acceptance hangs before the RFP is ever
-    submitted: ensureDumbpipe never resolves. Reproduced standalone in this worktree:
-    deno run -A ''await ensureDumbpipe()'' prints {"event":"dumbpipe_downloading"}
-    and then ''error: Top-level await promise never resolved''. Cause is readTarGz
-    in lib/requester-xrpc/mod.ts: it does const writer = ds.writable.getWriter();
-    writer.write(archive); await writer.close(); and nothing reads ds.readable until
-    after close(), so the DecompressionStream''s backpressure deadlocks on a 3.8 MB
-    payload. Minimal repro that hangs: ds=new DecompressionStream(''gzip''); w=ds.writable.getWriter();
-    w.write(archive); await w.close(); . Fix it by streaming through the platform
-    -- const tar = new Uint8Array(await new Response(new Blob([archive]).stream().pipeThrough(new
-    DecompressionStream(''gzip''))).arrayBuffer()) -- or by consuming ds.readable
-    concurrently while writing, and await every write. Also bound the download fetch
-    with AbortSignal.timeout(60000) so a stuck download fails the suite instead of
-    hanging it. Keep everything else.)'
+  phase: Running
+  message: the agent is realizing atproto-market in a batch of 4 led by atproto-market
   attempt: 6
   retryReason: 'The acceptance hangs before the RFP is ever submitted: ensureDumbpipe
     never resolves. Reproduced standalone in this worktree: deno run -A ''await ensureDumbpipe()''
