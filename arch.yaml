@@ -270,7 +270,28 @@ system_contexts:
   upstream: self
   depends_on:
   - sc.lib-hono-factory-did-plc-directory
+  requirements:
+  - id: r.bind-address
+    level: MUST
+  - id: r.config-resolution
+    level: MUST
+  - id: r.config-surface
+    level: MUST
+  - id: r.graceful-shutdown
+    level: MUST
+  - id: r.non-persistent-storage
+    level: MAY
+  - id: r.port-file
+    level: SHOULD
+  - id: r.runtime-config-overlay
+    level: SHOULD
+  - id: r.server-composition
+    level: MUST
+  - id: r.tls-from-files
+    level: SHOULD
   codeRefIndex:
+  - file:hono-plc/cli-args-env.json cli-args-env.json@hono-plc/cli-args-env.json
+  - file:hono-plc/config.json config.json@hono-plc/config.json
   - file:hono-plc/mod.ts mod.ts@hono-plc/mod.ts
 - id: sc.lib-abc-compute-contract-gateway
   name: lib-abc-compute-contract-gateway

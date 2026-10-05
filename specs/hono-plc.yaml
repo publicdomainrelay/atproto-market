@@ -8,5 +8,100 @@ spec:
   upstream: self
   dependsOn:
   - sc.lib-hono-factory-did-plc-directory
+  intent: 'This context exists so the did:plc directory server can be launched as
+    a process: it is the composition root that turns declarative configuration plus
+    an injected store into a listening HTTP service. It owns exactly the wiring that
+    no library layer may own, namely option resolution from cli-args-env.json and
+    config.json, store and factory construction, address and TLS binding, port-file
+    publication, app mounting, signal handling, and process lifecycle, while the actual
+    PLC directory semantics stay in the lib/hono-factory-did-plc-directory dependency
+    it declares. Anything below it stays independently testable because the entrypoint
+    holds no protocol logic of its own.'
+  requirements:
+  - id: r.bind-address
+    level: MUST
+    text: The TCP listener binds to the resolved hostname when it is a non-empty string
+      and otherwise falls back to 127.0.0.1, on the resolved port, so the server never
+      binds to an unset address.
+    codeRefs:
+    - file:hono-plc/mod.ts
+  - id: r.config-resolution
+    level: MUST
+    text: Options are resolved by constructing a single Command with the name CONFIG_PATH_HONO_PLC,
+      passing the imported cli-args-env.json and the runtime config, and awaiting
+      resolve(); the destructured options object is the only source of values for
+      the rest of the module, so every option's provenance stays declarative and swappable.
+    codeRefs:
+    - file:hono-plc/cli-args-env.json
+    - file:hono-plc/mod.ts
+  - id: r.config-surface
+    level: MUST
+    text: 'The command''s configuration surface is exactly five options declared in
+      hono-plc/cli-args-env.json: port (number, environment variable PORT, default
+      2587), hostname (string, environment variable HOSTNAME, default 127.0.0.1),
+      tls-cert-file (string, environment variable TLS_CERT_FILE, no default), tls-key-file
+      (string, environment variable TLS_KEY_FILE, no default) and port-file (string,
+      environment variable PORT_FILE, default ./port-bound-to); an absent flag is
+      satisfied first by its environment variable and then by its declared default,
+      so no option is read from the process environment by hand.'
+    codeRefs:
+    - file:hono-plc/cli-args-env.json
+    - file:hono-plc/mod.ts
+  - id: r.graceful-shutdown
+    level: MUST
+    text: SIGINT and SIGTERM listeners are both registered against one shutdown routine
+      that calls the server's shutdown and then Deno.exit, so either signal terminates
+      the process cleanly with the listening socket released rather than leaving the
+      process to die with the port still held.
+    codeRefs:
+    - file:hono-plc/mod.ts
+  - id: r.non-persistent-storage
+    level: MAY
+    text: Because the store handed to the factory is the in-memory MemoryPlcStore,
+      PLC operation logs live only in process memory and are discarded on restart;
+      durable persistence is deliberately out of scope for this entrypoint and would
+      be introduced by passing a different store to the factory.
+    codeRefs:
+    - file:hono-plc/mod.ts
+  - id: r.port-file
+    level: SHOULD
+    text: The resolved port-file option is passed to createServe as portFile so the
+      actually bound TCP port is written to that path once listening, which makes
+      an ephemeral port of 0 usable by callers that need to discover the address the
+      server chose.
+    codeRefs:
+    - file:hono-plc/cli-args-env.json
+    - file:hono-plc/mod.ts
+  - id: r.runtime-config-overlay
+    level: SHOULD
+    text: hono-plc/config.json is imported inside a try/catch so a missing or unresolvable
+      file leaves runtimeConfig null and resolution proceeds from flags, environment
+      variables and declared defaults alone; the shipped file supplies port 2587 and
+      hostname 0.0.0.0 as runtime values, overriding the per-option defaults, and
+      the CONFIG_PATH_HONO_PLC environment variable selects where that config is loaded
+      from.
+    codeRefs:
+    - file:hono-plc/config.json
+    - file:hono-plc/mod.ts
+  - id: r.server-composition
+    level: MUST
+    text: The entrypoint creates a logger named hono-plc, instantiates an in-memory
+      MemoryPlcStore, wraps it with createPlcDirectoryFactory, creates the server
+      through createServe with that logger and the resolved TCP address, mounts the
+      factory's Hono app at the root path "/", and only then awaits beginServe(),
+      so no request is accepted before the directory app is mounted.
+    codeRefs:
+    - file:hono-plc/mod.ts
+  - id: r.tls-from-files
+    level: SHOULD
+    text: The resolved tls-cert-file and tls-key-file options are passed to createServe
+      as the TCP certFile and keyFile; when they are absent the values are undefined
+      and the listener serves plaintext, so TLS is opt-in and requires the operator
+      to supply both a PEM certificate and its matching private key.
+    codeRefs:
+    - file:hono-plc/cli-args-env.json
+    - file:hono-plc/mod.ts
 codeRefIndex:
+- file:hono-plc/cli-args-env.json cli-args-env.json@hono-plc/cli-args-env.json
+- file:hono-plc/config.json config.json@hono-plc/config.json
 - file:hono-plc/mod.ts mod.ts@hono-plc/mod.ts
