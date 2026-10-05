@@ -1,27 +1,25 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
 kind: SpecChange
 metadata:
-  name: atproto-market-s2c-e34ce8f9f34c-a2
+  name: lib-did-key-ingress-proxy-s2c-2414ea013542-a2
   namespace: default
 spec:
-  systemContext: atproto-market
+  systemContext: lib-did-key-ingress-proxy
   direction: SpecToCode
-  fromSpecHash: f67957227b5c419b9f74c4edbfea0ea54caf8a643990c7bec310952d90535644
-  toSpecHash: e34ce8f9f34c928cb2dd218db376e10a9d79504bb8b03eeb3928a4aff39c6878
+  fromSpecHash: e1dfbcad244bc7ca6c9f01b5adc02db5310cbe54a7887879fd8d4f1a025dd5f6
+  toSpecHash: 2414ea0135428272c475ce7c8582cb74bb7a9f3089d22575c7bf4e37354481db
   delta:
     counts:
-      added: 4
+      added: 1
       changed: 1
     requirements:
-    - +r.iroh-acceptance-flow
-    - +r.iroh-acceptance-plc-key-resolution
-    - +r.iroh-cloud-init-fixture
-    - +r.iroh-full-flow-harness
+    - +r.control-plane-and-report-route
 status:
   phase: Running
-  message: the agent is realizing atproto-market in a batch of 3 led by atproto-market
+  message: the agent is realizing lib-did-key-ingress-proxy in a batch of 3 led by
+    atproto-market
 superseded:
-- name: atproto-market-s2c-e34ce8f9f34c
+- name: lib-did-key-ingress-proxy-s2c-2414ea013542
   phase: Failed
   message: "...eBody\":{\"error\":\"AuthenticationRequired\",\"message\":\"Error:
     aud mismatch: expected did:web:relay.localhost, got did:web:172.17.0.1\"}}\n\e[0m\e[38;5;245m-----

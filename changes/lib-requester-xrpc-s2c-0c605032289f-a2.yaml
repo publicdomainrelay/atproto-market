@@ -1,27 +1,25 @@
 apiVersion: specs.publicdomainrelay.dev/v1alpha1
 kind: SpecChange
 metadata:
-  name: atproto-market-s2c-e34ce8f9f34c-a2
+  name: lib-requester-xrpc-s2c-0c605032289f-a2
   namespace: default
 spec:
-  systemContext: atproto-market
+  systemContext: lib-requester-xrpc
   direction: SpecToCode
-  fromSpecHash: f67957227b5c419b9f74c4edbfea0ea54caf8a643990c7bec310952d90535644
-  toSpecHash: e34ce8f9f34c928cb2dd218db376e10a9d79504bb8b03eeb3928a4aff39c6878
+  fromSpecHash: 3611abcafbcbd420fecb6cf4a6f008a2baae868bc12af924c04e35c75422f641
+  toSpecHash: 0c605032289f77268681864d9212fb3f7e614b5a94c43c24543f55b2f8619fac
   delta:
     counts:
-      added: 4
+      added: 1
       changed: 1
-    requirements:
-    - +r.iroh-acceptance-flow
-    - +r.iroh-acceptance-plc-key-resolution
-    - +r.iroh-cloud-init-fixture
-    - +r.iroh-full-flow-harness
+    interfaces:
+    - +ensureDumbpipe
+    - ~createSshSessionProvider
 status:
   phase: Running
-  message: the agent is realizing atproto-market in a batch of 3 led by atproto-market
+  message: the agent is realizing lib-requester-xrpc in a batch of 3 led by atproto-market
 superseded:
-- name: atproto-market-s2c-e34ce8f9f34c
+- name: lib-requester-xrpc-s2c-0c605032289f
   phase: Failed
   message: "...eBody\":{\"error\":\"AuthenticationRequired\",\"message\":\"Error:
     aud mismatch: expected did:web:relay.localhost, got did:web:172.17.0.1\"}}\n\e[0m\e[38;5;245m-----
