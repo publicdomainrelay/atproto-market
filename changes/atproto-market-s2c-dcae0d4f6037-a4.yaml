@@ -1,0 +1,95 @@
+apiVersion: specs.publicdomainrelay.dev/v1alpha1
+kind: SpecChange
+metadata:
+  name: atproto-market-s2c-dcae0d4f6037-a4
+  namespace: default
+spec:
+  systemContext: atproto-market
+  direction: SpecToCode
+  fromSpecHash: f67957227b5c419b9f74c4edbfea0ea54caf8a643990c7bec310952d90535644
+  toSpecHash: dcae0d4f6037998b498be37b203eb756cdbcb09ac186ababe1da57b1b6b91a0d
+  delta:
+    counts:
+      added: 3
+      changed: 1
+    requirements:
+    - +r.iroh-acceptance-flow
+    - +r.iroh-acceptance-plc-key-resolution
+    - +r.iroh-cloud-init-fixture
+status:
+  phase: Pending
+  message: 'attempt 4 retried by john (The acceptance run now fails before provisioning,
+    on the harness''s own test double: AssertionError: the did:key fast path resolves
+    the key without a PLC round trip, at test/bidder_container_integration_test.ts:213.
+    That assertion is about your mock, not about the transport. Delete it and every
+    other assertion about the resolver''s internals. The fake PLC only has to answer
+    a did:plc lookup with a DID document whose verification method is a did:key, so
+    the relay''s registration nonce is not 401 and the receipt verifies. Then assert
+    only the real facts: RFP -> bid -> accept -> cloud-init, the guest reports its
+    ticket over the transport the cloud-init deployed, sshReady becomes true with
+    a ProxyCommand that is ''dumbpipe connect <ticket>'' (never websocat, never a
+    bare address), and a program run inside the guest prints SSH_OK_VIA_IROH and exits
+    0. Keep the harness small and do not run it yourself -- specd runs it as the gate.
+    The cloud-init iroh module is landed and now extracts ./dumbpipe correctly with
+    a bounded retry, so the guest will listen and report.)'
+  attempt: 4
+  retryReason: 'The acceptance run now fails before provisioning, on the harness''s
+    own test double: AssertionError: the did:key fast path resolves the key without
+    a PLC round trip, at test/bidder_container_integration_test.ts:213. That assertion
+    is about your mock, not about the transport. Delete it and every other assertion
+    about the resolver''s internals. The fake PLC only has to answer a did:plc lookup
+    with a DID document whose verification method is a did:key, so the relay''s registration
+    nonce is not 401 and the receipt verifies. Then assert only the real facts: RFP
+    -> bid -> accept -> cloud-init, the guest reports its ticket over the transport
+    the cloud-init deployed, sshReady becomes true with a ProxyCommand that is ''dumbpipe
+    connect <ticket>'' (never websocat, never a bare address), and a program run inside
+    the guest prints SSH_OK_VIA_IROH and exits 0. Keep the harness small and do not
+    run it yourself -- specd runs it as the gate. The cloud-init iroh module is landed
+    and now extracts ./dumbpipe correctly with a bounded retry, so the guest will
+    listen and report.'
+  retryBy: john
+superseded:
+- name: atproto-market-s2c-dcae0d4f6037-a3
+  phase: Failed
+  message: "...t\":\"localhost:45709\"}\n{\"ts\":\"2026-10-05T18:55:58.942Z\",\"level\":\"info\",\"message\":\"xrpc-relay
+    registered\",\"prefix\":\"iroh-acceptance\",\"subdomain\":\"did-key-zq3shw86r71pshd7vvmkgrw1zyvjktmnsorgtjdygs7ldx2lo\",\"ingressRef\":\"did:web:did-key-zq3shw86r71pshd7vvmkgrw1zyvjktmnsorgtjdygs7ldx2lo.localhost\"}\n{\"ts\":\"2026-10-05T18:55:58.944Z\",\"level\":\"info\",\"message\":\"subscriber_disconnected\",\"prefix\":\"relay\",\"component\":\"relay\",\"subdomain\":\"did-key-zq3shw86r71pshd7vvmkgrw1zyvjktmnsorgtjdygs7ldx2lo\"}\n{\"ts\":\"2026-10-05T18:55:58.944Z\",\"level\":\"error\",\"message\":\"ws_error\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"error\":\"[object
+    ErrorEvent]\"}\n{\"ts\":\"2026-10-05T18:55:58.944Z\",\"level\":\"info\",\"message\":\"ws_close\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"code\":0,\"reason\":\"\"}\n{\"ts\":\"2026-10-05T18:55:58.944Z\",\"level\":\"info\",\"message\":\"ws_reconnect_scheduled\",\"prefix\":\"subscriber\",\"component\":\"bidder\",\"delayMs\":1000,\"attempt\":1}\n\e[0m\e[38;5;245m-----
+    output end -----\e[0m\n[acceptance] iroh: RFP -> bid -> accept -> cloud-init ->
+    ssh by ticket ... \e[0m\e[31mFAILED\e[0m \e[0m\e[38;5;245m(282ms)\e[0m\n\n\e[0m\e[1m\e[37m\e[41m
+    ERRORS \e[0m\n\n[acceptance] iroh: RFP -> bid -> accept -> cloud-init -> ssh by
+    ticket \e[0m\e[38;5;245m=> ./test/bidder_container_integration_test.ts:104:6\e[0m\n\e[0m\e[1m\e[31merror\e[0m:
+    AssertionError: the did:key fast path resolves the key without a PLC round trip\n
+    \   throw new AssertionError(msg);\n\e[0m\e[31m          ^\e[0m\n    at \e[0m\e[1m\e[3massert\e[0m
+    (\e[0m\e[36mhttps://jsr.io/@std/assert/1.0.19/assert.ts\e[0m:\e[0m\e[33m22\e[0m:\e[0m\e[33m11\e[0m)\n
+    \   at \e[0m\e[2m\e[38;5;245mfile:///tmp/specd-worktree-3255465641/atproto-market/\e[0m\e[0m\e[36mtest/bidder_container_integration_test.ts\e[0m:\e[0m\e[33m213\e[0m:\e[0m\e[33m5\e[0m\n\n\e[0m\e[1m\e[37m\e[41m
+    FAILURES \e[0m\n\n[acceptance] iroh: RFP -> bid -> accept -> cloud-init -> ssh
+    by ticket \e[0m\e[38;5;245m=> ./test/bidder_container_integration_test.ts:104:6\e[0m\n\n\e[0m\e[31mFAILED\e[0m
+    | 0 passed | 1 failed \e[0m\e[38;5;245m(291ms)\e[0m\n\n\e[0m\e[1m\e[31merror\e[0m:
+    Test failed"
+- name: atproto-market-s2c-dcae0d4f6037-a2
+  phase: Failed
+  message: 'PolicyDenied: rfp-relay-only-guest-ssh: ssh from test reaches the guest
+    directly: test/bidder_container_integration_test.ts:251; a guest is reached only
+    through a relay, so give the ssh a ProxyCommand that goes through any transport
+    -- the org relay, fedproxy, websocat, iroh, dumbpipe, cloudflared or an unnamed
+    tunnel'
+- name: atproto-market-s2c-dcae0d4f6037
+  phase: Failed
+  message: "...eBody\":{\"error\":\"AuthenticationRequired\",\"message\":\"Error:
+    aud mismatch: expected did:web:relay.localhost, got did:web:172.17.0.1\"}}\n\e[0m\e[38;5;245m-----
+    output end -----\e[0m\n[integration] iroh acceptance: RFP -> bid -> accept ->
+    cloud-init -> SSH over dumbpipe ... \e[0m\e[31mFAILED\e[0m \e[0m\e[38;5;245m(251ms)\e[0m\n\n\e[0m\e[1m\e[37m\e[41m
+    ERRORS \e[0m\n\n[integration] iroh acceptance: RFP -> bid -> accept -> cloud-init
+    -> SSH over dumbpipe \e[0m\e[38;5;245m=> ./test/bidder_container_integration_test.ts:109:6\e[0m\n\e[0m\e[1m\e[31merror\e[0m:
+    Error: nonce request failed: 401 {\"error\":\"AuthenticationRequired\",\"message\":\"Error:
+    aud mismatch: expected did:web:relay.localhost, got did:web:172.17.0.1\"}\n        throw
+    new Error(`nonce request failed: ${nonceRes.status} ${err}`);\n\e[0m\e[31m              ^\e[0m\n
+    \   at \e[0m\e[36mfile:///tmp/specd-worktree-2874627032/did-key-ingress-proxy/lib/did-key-ingress-proxy-subscriber-xrpc/mod.ts\e[0m:\e[0m\e[33m366\e[0m:\e[0m\e[33m15\e[0m\n
+    \   at async \e[0m\e[1m\e[3mcreateSubscriber\e[0m (\e[0m\e[36mfile:///tmp/specd-worktree-2874627032/did-key-ingress-proxy/lib/did-key-ingress-proxy-subscriber-xrpc/mod.ts\e[0m:\e[0m\e[33m444\e[0m:\e[0m\e[33m3\e[0m)\n
+    \   at async \e[0m\e[1m\e[3mObject.onServe\e[0m (\e[0m\e[2m\e[38;5;245mfile:///tmp/specd-worktree-2874627032/atproto-market/\e[0m\e[0m\e[36mlib/did-key-ingress-proxy/mod.ts\e[0m:\e[0m\e[33m60\e[0m:\e[0m\e[33m22\e[0m)\n
+    \   at async \e[0m\e[1m\e[3mObject.beginServe\e[0m (\e[0m\e[36mfile:///tmp/specd-worktree-2874627032/typescript-helpers/lib/serve/mod.ts\e[0m:\e[0m\e[33m163\e[0m:\e[0m\e[33m7\e[0m)\n
+    \   at async \e[0m\e[2m\e[38;5;245mfile:///tmp/specd-worktree-2874627032/atproto-market/\e[0m\e[0m\e[36mtest/bidder_container_integration_test.ts\e[0m:\e[0m\e[33m174\e[0m:\e[0m\e[33m5\e[0m\n\n\e[0m\e[1m\e[37m\e[41m
+    FAILURES \e[0m\n\n[integration] iroh acceptance: RFP -> bid -> accept -> cloud-init
+    -> SSH over dumbpipe \e[0m\e[38;5;245m=> ./test/bidder_container_integration_test.ts:109:6\e[0m\n\n\e[0m\e[31mFAILED\e[0m
+    | 0 passed | 1 failed \e[0m\e[38;5;245m(261ms)\e[0m\n\n\e[0m\e[1m\e[31merror\e[0m:
+    Test failed"
