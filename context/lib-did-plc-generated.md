@@ -2,7 +2,7 @@
 
 Repository: `atproto-market`
 
-_(empty: write what this context is for)_
+This context exists so that the generated PLC-directory client is described as the code actually is, rather than re-derived from the upstream OpenAPI description: it pins the seven operation functions, the per-operation request/response/error type quartets, the PLC domain models, and the Options contract that lets a caller inject a client or thread a meta bag. It is the machine-written half of lib/did-plc, and treating it as generated output keeps hand-written adaptations — the Deno request path and the submitOp/getLog/getLastOp wrappers — on the outside, where regeneration cannot clobber them.
 
 _The resolved code references are regenerated on every run. Cite the ids above rather than writing them here._
 
