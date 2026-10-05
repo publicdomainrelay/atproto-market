@@ -224,8 +224,29 @@ system_contexts:
   depends_on:
   - sc.atproto-market
   - sc.lib-common-compute-contract-gateway-common
+  requirements:
+  - id: r.delete-compute
+    level: MUST
+  - id: r.export-gateway-interface
+    level: MUST
+  - id: r.gateway-identity
+    level: MUST
+  - id: r.package-manifest
+    level: MUST
+  - id: r.provision-vm
+    level: MUST
+  - id: r.provision-worker-ephemeral
+    level: MUST
+  - id: r.provision-worker-persistent
+    level: MUST
+  - id: r.serve-lifecycle
+    level: MUST
+  - id: r.shared-boundary-types
+    level: SHOULD
   codeRefIndex:
+  - file:lib/abc/compute-contract-gateway/deno.json deno.json@lib/abc/compute-contract-gateway/deno.json
   - file:lib/abc/compute-contract-gateway/mod.ts mod.ts@lib/abc/compute-contract-gateway/mod.ts
+  - interface:686284d942a70c576d3538a0ee80e825 ComputeContractGateway@lib/abc/compute-contract-gateway/mod.ts:8
 - id: sc.lib-abc-guest-capability
   name: lib-abc-guest-capability
   spec: specs/lib-abc-guest-capability.yaml

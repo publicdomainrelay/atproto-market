@@ -9,5 +9,20 @@ spec:
   fromCommit: 05fe29612a62a645d70273560238ecc3180414d2
   toCommit: 05fe29612a62a645d70273560238ecc3180414d2
 status:
-  phase: Running
-  message: the agent is summarizing lib-abc-compute-contract-gateway
+  phase: Succeeded
+  agentLog: 'lib/abc/compute-contract-gateway is the abstract gateway boundary of
+    atproto-market: a single Deno TypeScript module, lib/abc/compute-contract-gateway/mod.ts,
+    exporting one interface, ComputeContractGateway, alongside a deno.json package
+    manifest. The interface carries a did string naming the gateway, an async beginServe/dispose
+    lifecycle pair, three provisioning calls that each take a CallerIdentity plus
+    an input record and resolve to a GatewayComputeResponse (requestComputeVM with
+    ComputeRequestVMInput, requestComputeWorkerEphemeral and requestComputeWorkerPersistent
+    with ComputeRequestWorkerInput), and deleteCompute taking a CallerIdentity plus
+    receiptUri, receiptCid and token and resolving to { ok: boolean }. The boundary
+    types CallerIdentity, ComputeRequestVMInput, ComputeRequestWorkerInput and GatewayComputeResponse
+    come from lib/common/compute-contract-gateway-common/types.ts rather than being
+    redeclared here. Transport lives elsewhere, in lib/compute-contract-gateway-xrpc
+    where createComputeContractGateway builds this interface over a requester PDS,
+    and the Hono factory in lib/hono-factory-compute-contract-gateway-xrpc injects
+    it into the HTTP surface.'
+  message: wrote 9 requirement(s) and 1 interface(s) for lib-abc-compute-contract-gateway

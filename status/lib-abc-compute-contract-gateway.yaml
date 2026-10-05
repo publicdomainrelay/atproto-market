@@ -1,10 +1,11 @@
 syncedFingerprint: 3ace54d94a28605fd535e1685d355c9b5b2f7456a18aee9347b6e44991572b24
-realizedSpecHash: 9ba02a35c145d7b8637b43d87398e56481bd81ae734a804c6cba642f5320faaa
+realizedSpecHash: bff5f52057dd4e7b9eb5d762b34ce561415c38196355b7b0964973b8ba3e4978
 conditions:
 - type: CodeSynced
-  status: "False"
-  reason: InterfacesMissing
-  message: 'undeclared: ComputeContractGateway'
+  status: "True"
+  reason: InterfacesObserved
+  message: every declared interface is observed, nothing undeclared is exported and
+    every requirement code ref resolves
 - type: Drifted
   status: "False"
   reason: FingerprintEqual
