@@ -12,7 +12,7 @@ import { createComputeProviderHooks } from "@publicdomainrelay/market-bidder-com
 import { createLocalComputeProvider } from "@publicdomainrelay/compute-provider-local";
 import type { ComputeAtproto } from "@publicdomainrelay/compute-provider-abc";
 import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc";
-import { createRequesterPDS, runComputeContract, createSshSessionProvider } from "@publicdomainrelay/requester-xrpc";
+import { createRequesterPDS, runComputeContract, createSshSessionProvider, ensureWebsocat } from "@publicdomainrelay/requester-xrpc";
 function installFetchInterceptor(opts: {
   realFetch: typeof globalThis.fetch;
   plcDirectoryUrl: string;
@@ -246,11 +246,17 @@ async function main() {
   log(`requester did: ${requester.did}`);
   log(`bidder did: ${atproto.did}`);
 
+  // This harness keeps the websocket relay topology end to end, so it selects
+  // the tunnel transport explicitly -- the flow's default is iroh -- and
+  // bootstraps the websocat binary that transport's ProxyCommand runs.
+  await ensureWebsocat(logger);
   const sshProvider = createSshSessionProvider(logger);
+  log("transport: tunnel (websocat ProxyCommand through the local dispatcher)");
 
   const contract = await runComputeContract(requester, {
     logger,
     ingressProxyHost,
+    userData: { transport: "tunnel" },
     skipSsh: false,
     keepVm: true,
     policy: { name: "only-me", args: { bidWindowSec: 15 } },
@@ -343,7 +349,7 @@ runComputeContract()
   │                                    ├- onAccept -> provision
   │                                    │    ├- OIDC enrichment
   │                                    │    ├- runContainer()
-  │                                    │    └- cloud-init: sshd + websocat
+  │                                    │    └- cloud-init: sshd + relay tunnel
   │                                    └- eventCallbacks
   ├- wait bidWindowSec (15s)
   ├- pick lowest-cost bid
