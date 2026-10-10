@@ -1696,6 +1696,7 @@
           "jsr:@publicdomainrelay/atproto-helpers@0",
           "jsr:@publicdomainrelay/cli-args-env@0",
           "jsr:@publicdomainrelay/compute-provider-digitalocean@0",
+          "jsr:@publicdomainrelay/compute-provider-firecracker@0",
           "jsr:@publicdomainrelay/compute-provider-local@0",
           "jsr:@publicdomainrelay/did-key-ingress-proxy@0",
           "jsr:@publicdomainrelay/did-plc@0",
@@ -1707,6 +1708,8 @@
           "jsr:@publicdomainrelay/market-bidder-worker@0",
           "jsr:@publicdomainrelay/market-bidder@0",
           "jsr:@publicdomainrelay/market-common@0",
+          "jsr:@publicdomainrelay/microvm-firecracker@0",
+          "jsr:@publicdomainrelay/node-image-firecracker@0",
           "jsr:@publicdomainrelay/oidc-issuer-hono@0",
           "jsr:@publicdomainrelay/rbac-atproto@0",
           "jsr:@publicdomainrelay/serve@0",
@@ -2080,6 +2083,20 @@
           "npm:yaml@^2.7.0"
         ]
       },
+      "jsr:@publicdomainrelay/compute-provider-firecracker@0.0.0": {
+        "dependencies": [
+          "jsr:@hono/hono@4",
+          "jsr:@publicdomainrelay/atproto-helpers@0",
+          "jsr:@publicdomainrelay/cloud-init-common@0",
+          "jsr:@publicdomainrelay/compute-provider-abc@0",
+          "jsr:@publicdomainrelay/microvm-firecracker@0",
+          "jsr:@publicdomainrelay/node-image-abc@0",
+          "jsr:@publicdomainrelay/oidc-issuer-abc@0",
+          "jsr:@publicdomainrelay/oidc-issuer-hono@0",
+          "jsr:@publicdomainrelay/secrets-common@0",
+          "npm:yaml@^2.7.0"
+        ]
+      },
       "jsr:@publicdomainrelay/compute-provider-local@0.0.0": {
         "dependencies": [
           "jsr:@publicdomainrelay/atproto-helpers@0",
@@ -2261,6 +2278,13 @@
       "jsr:@publicdomainrelay/http-error@0.1.0": {},
       "jsr:@publicdomainrelay/logger@0.2.0": {},
       "jsr:@publicdomainrelay/market-bidder-keys@0.0.0": {},
+      "jsr:@publicdomainrelay/microvm-firecracker@0.0.0": {},
+      "jsr:@publicdomainrelay/node-image-abc@0.0.0": {},
+      "jsr:@publicdomainrelay/node-image-firecracker@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/node-image-abc@0"
+        ]
+      },
       "jsr:@publicdomainrelay/oauth-scope@0.0.0": {},
       "jsr:@publicdomainrelay/oauth-server-common@0.0.0": {},
       "jsr:@publicdomainrelay/oidc-issuer-abc@0.0.0": {
