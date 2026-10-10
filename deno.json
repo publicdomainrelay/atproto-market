@@ -193,7 +193,11 @@
     "jsr:@publicdomainrelay/policy-engine-server-gha-lite@0": "../policy-engine/lib/policy-engine-server-gha-lite/mod.ts",
     "jsr:@publicdomainrelay/policy-deno-typescript@0": "../policy-engine/lib/policies/deno-typescript/mod.ts",
     "jsr:@publicdomainrelay/policy-deno-typescript-shared@0": "../policy-engine/lib/policies/deno-typescript-shared/mod.ts",
-    "jsr:@publicdomainrelay/policies-gha-lite@0": "../policy-engine/lib/policies/gha-lite/mod.ts"
+    "jsr:@publicdomainrelay/policies-gha-lite@0": "../policy-engine/lib/policies/gha-lite/mod.ts",
+    "@publicdomainrelay/compute-provider-firecracker": "../hono-compute-provider/lib/compute-provider-firecracker/mod.ts",
+    "@publicdomainrelay/node-image-firecracker": "../hono-compute-provider/lib/node-image-firecracker/mod.ts",
+    "@publicdomainrelay/microvm-firecracker": "../hono-compute-provider/lib/microvm-firecracker/mod.ts",
+    "@publicdomainrelay/node-image-abc": "../hono-compute-provider/lib/abc/node-image/mod.ts"
   },
   "tasks": {
     "check": "deno check lib/common/market-lexicons/mod.ts lib/common/market-common/mod.ts lib/abc/market/mod.ts lib/abc/market-bidder/mod.ts lib/market-atproto/mod.ts lib/common/cloud-init-common/mod.ts lib/abc/requester/mod.ts",
