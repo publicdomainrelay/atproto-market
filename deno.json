@@ -28,6 +28,7 @@
     "lib/hono-factory-secrets-oidc",
     "lib/guest-capability-secrets",
     "lib/abc/compute-request",
+    "lib/compute-request-xrpc",
     "lib/abc/requester",
     "lib/requester-xrpc",
     "lib/hono-factory-requester-xrpc",
@@ -157,6 +158,7 @@
     "@publicdomainrelay/oidc-issuer-hono": "../hono-compute-provider/lib/oidc-issuer-hono/mod.ts",
     "@publicdomainrelay/rbac-atproto": "../hono-compute-provider/lib/rbac-atproto/mod.ts",
     "@publicdomainrelay/compute-request-abc": "./lib/abc/compute-request/mod.ts",
+    "@publicdomainrelay/compute-request-xrpc": "./lib/compute-request-xrpc/mod.ts",
     "@publicdomainrelay/requester-abc": "./lib/abc/requester/mod.ts",
     "@publicdomainrelay/requester-xrpc": "./lib/requester-xrpc/mod.ts",
     "@publicdomainrelay/sandbox-abc": "../deno-worker-sandbox/lib/abc/sandbox/mod.ts",
@@ -202,7 +204,7 @@
     "@publicdomainrelay/node-image-abc": "../hono-compute-provider/lib/abc/node-image/mod.ts"
   },
   "tasks": {
-    "check": "deno check lib/common/market-lexicons/mod.ts lib/common/market-common/mod.ts lib/abc/market/mod.ts lib/abc/market-bidder/mod.ts lib/market-atproto/mod.ts lib/common/cloud-init-common/mod.ts lib/abc/requester/mod.ts lib/abc/compute-request/mod.ts",
+    "check": "deno check lib/common/market-lexicons/mod.ts lib/common/market-common/mod.ts lib/abc/market/mod.ts lib/abc/market-bidder/mod.ts lib/market-atproto/mod.ts lib/common/cloud-init-common/mod.ts lib/abc/requester/mod.ts lib/abc/compute-request/mod.ts lib/compute-request-xrpc/mod.ts lib/requester-xrpc/mod.ts",
     "generate-lexicons": "goat lex pull com.atproto.repo.strongRef && deno x -A -y npm:@atproto/lex build --override --import-ext \".ts\" --lexicons ./lexicons --out lib/common/market-lexicons",
     "test:readme": "deno test -A test/gateway_readme_smoke_test.ts"
   },
