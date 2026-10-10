@@ -1698,6 +1698,7 @@
           "jsr:@publicdomainrelay/compute-provider-digitalocean@0",
           "jsr:@publicdomainrelay/compute-provider-firecracker@0",
           "jsr:@publicdomainrelay/compute-provider-local@0",
+          "jsr:@publicdomainrelay/container-backend-docker@0",
           "jsr:@publicdomainrelay/did-key-ingress-proxy@0",
           "jsr:@publicdomainrelay/did-plc@0",
           "jsr:@publicdomainrelay/firehose-watcher-abc@0",
@@ -2278,7 +2279,11 @@
       "jsr:@publicdomainrelay/http-error@0.1.0": {},
       "jsr:@publicdomainrelay/logger@0.2.0": {},
       "jsr:@publicdomainrelay/market-bidder-keys@0.0.0": {},
-      "jsr:@publicdomainrelay/microvm-firecracker@0.0.0": {},
+      "jsr:@publicdomainrelay/microvm-firecracker@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/container-backend-abc@0"
+        ]
+      },
       "jsr:@publicdomainrelay/node-image-abc@0.0.0": {},
       "jsr:@publicdomainrelay/node-image-firecracker@0.0.0": {
         "dependencies": [
