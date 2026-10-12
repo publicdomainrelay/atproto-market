@@ -74,7 +74,7 @@ interface BidderProcess {
   stop(): Promise<void>;
 }
 
-const BIDDER_OPTION_ENV = /^(ATP_|OAUTH_|IDENTITY_VAULT_|MARKET_IDENTITY_|REPO_PRIVATE_KEY|PDS_STATE_PATH|ASSOCIATE_WITH|SKIP_QR|RELAY_URL|FIREHOSE_|INGRESS_PROXY_HOST|PLC_DIRECTORY_URL|SERVE_|PORT_FILE|CONTRACT_STORE_DIR|COMPUTE_PROVIDER_|CA_CERT_PEM|GUEST_TLS_PORT|CONFIG_PATH_)/;
+const BIDDER_OPTION_ENV = /^(ATP_|OAUTH_|IDENTITY_VAULT_|MARKET_IDENTITY_|REPO_PRIVATE_KEY|PDS_STATE_PATH|ASSOCIATE_WITH|SKIP_QR|RELAY_URL|FIREHOSE_|INGRESS_PROXY_HOST|PLC_DIRECTORY_URL|SERVE_|PORT_FILE|LISTENERS_FILE|STATUS_FILE|CONTRACT_STORE_DIR|COMPUTE_PROVIDER_|CA_CERT_PEM|GUEST_TLS_PORT|CONFIG_PATH_)/;
 
 function inheritedEnv(): Record<string, string> {
   return Object.fromEntries(Object.entries(Deno.env.toObject()).filter(([k]) => !BIDDER_OPTION_ENV.test(k)));
@@ -195,6 +195,8 @@ function stateArgs(dir: string): string[] {
     "--pds-state-path", `${dir}/pds-state`,
     "--oauth-session-path", `${dir}/oauth-session.json`,
     "--port-file", `${dir}/port-bound-to`,
+    "--listeners-file", `${dir}/listeners.json`,
+    "--status-file", `${dir}/status.json`,
   ];
 }
 
@@ -298,8 +300,16 @@ Deno.test({
       ...stateArgs(dir),
     ]);
     try {
-      const { did } = await withTimeout(bidder.ready, 60_000, "bidder_ready");
+      const { did, servePort } = await withTimeout(bidder.ready, 60_000, "bidder_ready");
       assert(did !== accountDid, "localRepo mode must not sign in to the account");
+      const status = JSON.parse(await Deno.readTextFile(`${dir}/status.json`)) as { did: string; servePort: number };
+      assertEquals(status.did, did, "the status file names the bidder's DID");
+      assertEquals(status.servePort, servePort, "the status file names the bound serve port");
+      const reported = JSON.parse(await Deno.readTextFile(`${dir}/listeners.json`)) as { listeners: Array<{ kind: string; address: string }> };
+      assert(
+        reported.listeners.some((l) => l.kind === "tcp" && l.address.endsWith(`:${servePort}`)),
+        `the listeners file reports the bound tcp port, got ${JSON.stringify(reported)}`,
+      );
       assert(bidder.saw("localPDS plc registering"), "localRepo mode builds the in-process repo");
       assertEquals(await pds.listRecords(accountDid, OFFERING_NSID), [], "nothing may be written to the account's PDS");
       const doc = await (await fetch(`${plcUrl}/${did}`)).json() as { service: Array<{ id: string; serviceEndpoint: string }> };
