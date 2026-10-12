@@ -1753,9 +1753,14 @@
           "jsr:@publicdomainrelay/market-bidder-worker@0",
           "jsr:@publicdomainrelay/market-bidder@0",
           "jsr:@publicdomainrelay/market-common@0",
+          "jsr:@publicdomainrelay/market-identity-abc@0",
+          "jsr:@publicdomainrelay/market-identity-atproto@0",
+          "jsr:@publicdomainrelay/market-identity-kcp@0",
+          "jsr:@publicdomainrelay/market-identity-memory@0",
+          "jsr:@publicdomainrelay/market-identity-vault-file@0",
+          "jsr:@publicdomainrelay/market-identity-vault-openbao@0",
           "jsr:@publicdomainrelay/microvm-firecracker@0",
           "jsr:@publicdomainrelay/node-image-firecracker@0",
-          "jsr:@publicdomainrelay/oidc-issuer-hono@0",
           "jsr:@publicdomainrelay/rbac-atproto@0",
           "jsr:@publicdomainrelay/serve@0",
           "npm:@atproto/crypto@0.5",
@@ -2007,6 +2012,11 @@
         ]
       },
       "lib/market-identity-memory": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/market-identity-abc@0"
+        ]
+      },
+      "lib/market-identity-vault-file": {
         "dependencies": [
           "jsr:@publicdomainrelay/market-identity-abc@0"
         ]
@@ -2542,6 +2552,7 @@
       "jsr:@publicdomainrelay/socialweb-computer-common@0.0.0": {},
       "jsr:@publicdomainrelay/socialweb-computer-k8s-abc@0.0.0": {},
       "jsr:@publicdomainrelay/socialweb-computer-k8s-api@0.0.0": {},
+      "jsr:@publicdomainrelay/socialweb-computer-k8s-claim-keys-openbao@0.0.0": {},
       "jsr:@publicdomainrelay/socialweb-computer-k8s-common@0.0.0": {},
       "jsr:@publicdomainrelay/socialweb-computer-k8s-downloads-fs@0.0.0": {},
       "jsr:@publicdomainrelay/socialweb-computer-k8s-gateway-xrpc@0.0.0": {},
