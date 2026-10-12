@@ -1749,6 +1749,7 @@
           "jsr:@publicdomainrelay/firehose-watcher-subscriberepos@0",
           "jsr:@publicdomainrelay/logger@0",
           "jsr:@publicdomainrelay/market-atproto@0",
+          "jsr:@publicdomainrelay/market-bidder-contract-store-fs@0",
           "jsr:@publicdomainrelay/market-bidder-worker@0",
           "jsr:@publicdomainrelay/market-bidder@0",
           "jsr:@publicdomainrelay/market-common@0",
