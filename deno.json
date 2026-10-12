@@ -214,7 +214,8 @@
   "tasks": {
     "check": "deno check lib/common/market-lexicons/mod.ts lib/common/market-common/mod.ts lib/abc/market/mod.ts lib/abc/market-bidder/mod.ts lib/market-atproto/mod.ts lib/common/cloud-init-common/mod.ts lib/abc/requester/mod.ts lib/abc/compute-request/mod.ts lib/abc/scope-refresh/mod.ts lib/scope-refresh-timers/mod.ts lib/compute-request-xrpc/mod.ts lib/requester-xrpc/mod.ts",
     "generate-lexicons": "goat lex pull com.atproto.repo.strongRef && deno x -A -y npm:@atproto/lex build --override --import-ext \".ts\" --lexicons ./lexicons --out lib/common/market-lexicons",
-    "test:readme": "deno test -A test/gateway_readme_smoke_test.ts"
+    "test:readme": "deno test -A test/gateway_readme_smoke_test.ts",
+    "test:protocol": "deno test --allow-read test/role_scope_coverage_test.ts"
   },
   "fmt": {
     "lineWidth": 100
