@@ -194,6 +194,7 @@
     "@publicdomainrelay/hono-factory-package-registry": "../hono-jsr/lib/hono-factory-package-registry/mod.ts",
     "hono": "npm:hono@^4.12.23",
     "@std/assert": "jsr:@std/assert@^1",
+    "yaml": "npm:yaml@^2.7.0",
     "multiformats": "npm:multiformats@^13.3.0",
     "multiformats/bases/base32": "npm:multiformats@^13.3.0/bases/base32",
     "@publicdomainrelay/policy-engine-abc": "../policy-engine/lib/abc/policy-engine/mod.ts",

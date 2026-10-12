@@ -1730,7 +1730,8 @@
       "npm:@ipld/dag-cbor@^9.2.0",
       "npm:hono@^4.12.23",
       "npm:jose@5",
-      "npm:multiformats@^13.3.0"
+      "npm:multiformats@^13.3.0",
+      "npm:yaml@^2.7.0"
     ],
     "members": {
       "hono-bidder": {
