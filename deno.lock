@@ -1736,7 +1736,6 @@
     "members": {
       "hono-bidder": {
         "dependencies": [
-          "jsr:@libs/qrcode@2",
           "jsr:@publicdomainrelay/atproto-helpers@0",
           "jsr:@publicdomainrelay/cli-args-env@0",
           "jsr:@publicdomainrelay/compute-provider-digitalocean@0",
@@ -1748,6 +1747,8 @@
           "jsr:@publicdomainrelay/firehose-watcher-abc@0",
           "jsr:@publicdomainrelay/firehose-watcher-jetstream@0",
           "jsr:@publicdomainrelay/firehose-watcher-subscriberepos@0",
+          "jsr:@publicdomainrelay/identity-prompt-kcp@0",
+          "jsr:@publicdomainrelay/identity-prompt-tty@0",
           "jsr:@publicdomainrelay/logger@0",
           "jsr:@publicdomainrelay/market-atproto@0",
           "jsr:@publicdomainrelay/market-bidder-contract-store-fs@0",
@@ -1756,7 +1757,6 @@
           "jsr:@publicdomainrelay/market-common@0",
           "jsr:@publicdomainrelay/market-identity-abc@0",
           "jsr:@publicdomainrelay/market-identity-atproto@0",
-          "jsr:@publicdomainrelay/market-identity-kcp@0",
           "jsr:@publicdomainrelay/market-identity-memory@0",
           "jsr:@publicdomainrelay/market-identity-vault-file@0",
           "jsr:@publicdomainrelay/market-identity-vault-openbao@0",
@@ -1764,8 +1764,8 @@
           "jsr:@publicdomainrelay/node-image-firecracker@0",
           "jsr:@publicdomainrelay/rbac-atproto@0",
           "jsr:@publicdomainrelay/serve@0",
-          "npm:@atproto/crypto@0.5",
-          "npm:@atproto/identity@0.5"
+          "jsr:@publicdomainrelay/utils-attestation-key@0",
+          "npm:@atproto/crypto@0.5"
         ]
       },
       "hono-compute-contract-gateway": {
@@ -1793,6 +1793,11 @@
         "dependencies": [
           "jsr:@publicdomainrelay/cloud-init-common@0",
           "jsr:@publicdomainrelay/fedproxy-rbac-common@0"
+        ]
+      },
+      "lib/abc/market-identity": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/identity-prompt-abc@0"
         ]
       },
       "lib/abc/requester": {
@@ -1986,6 +1991,23 @@
           "jsr:@publicdomainrelay/secrets-oidc@0"
         ]
       },
+      "lib/identity-prompt-kcp": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/identity-prompt-abc@0"
+        ]
+      },
+      "lib/identity-prompt-memory": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/identity-prompt-abc@0"
+        ]
+      },
+      "lib/identity-prompt-tty": {
+        "dependencies": [
+          "jsr:@libs/qrcode@2",
+          "jsr:@publicdomainrelay/atproto-oauth-helpers@0",
+          "jsr:@publicdomainrelay/identity-prompt-abc@0"
+        ]
+      },
       "lib/market-atproto": {
         "dependencies": [
           "npm:@atproto/api@~0.20.8",
@@ -2005,11 +2027,6 @@
           "jsr:@publicdomainrelay/market-lexicons@0",
           "npm:@atproto/crypto@0.5",
           "npm:@atproto/identity@0.5"
-        ]
-      },
-      "lib/market-identity-kcp": {
-        "dependencies": [
-          "jsr:@publicdomainrelay/market-identity-abc@0"
         ]
       },
       "lib/market-identity-memory": {
@@ -2084,15 +2101,23 @@
       },
       "request-vm-ssh": {
         "dependencies": [
-          "jsr:@libs/qrcode@2",
+          "jsr:@publicdomainrelay/atproto-helpers@0",
           "jsr:@publicdomainrelay/cli-args-env@0",
           "jsr:@publicdomainrelay/cloud-init-common@0",
           "jsr:@publicdomainrelay/firehose-watcher-jetstream@0",
           "jsr:@publicdomainrelay/firehose-watcher-subscriberepos@0",
           "jsr:@publicdomainrelay/guest-capability-abc@0",
           "jsr:@publicdomainrelay/guest-capability-secrets@0",
+          "jsr:@publicdomainrelay/identity-prompt-kcp@0",
+          "jsr:@publicdomainrelay/identity-prompt-tty@0",
           "jsr:@publicdomainrelay/logger@0",
+          "jsr:@publicdomainrelay/market-atproto@0",
           "jsr:@publicdomainrelay/market-common@0",
+          "jsr:@publicdomainrelay/market-identity-abc@0",
+          "jsr:@publicdomainrelay/market-identity-atproto@0",
+          "jsr:@publicdomainrelay/market-identity-memory@0",
+          "jsr:@publicdomainrelay/market-identity-vault-file@0",
+          "jsr:@publicdomainrelay/market-identity-vault-openbao@0",
           "jsr:@publicdomainrelay/policy-deno-typescript@0",
           "jsr:@publicdomainrelay/policy-engine-cli-options@0",
           "jsr:@publicdomainrelay/policy-engine-evaluator@0",
