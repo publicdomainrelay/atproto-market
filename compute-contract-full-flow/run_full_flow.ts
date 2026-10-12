@@ -13,29 +13,8 @@ import { createLocalComputeProvider } from "@publicdomainrelay/compute-provider-
 import type { ComputeAtproto } from "@publicdomainrelay/compute-provider-abc";
 import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc";
 import { createRequesterPDS, runComputeContract, createSshSessionProvider, ensureDumbpipe } from "@publicdomainrelay/requester-xrpc";
-function installFetchInterceptor(opts: {
-  realFetch: typeof globalThis.fetch;
-  plcDirectoryUrl: string;
-  dispPort: number;
-}): () => void {
-  const { realFetch, plcDirectoryUrl, dispPort } = opts;
-  globalThis.fetch = ((input: string | URL | Request, init?: RequestInit) => {
-    let url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
-    if (url.startsWith("https://plc.directory/")) {
-      url = plcDirectoryUrl + url.slice("https://plc.directory".length);
-      return realFetch(new Request(url, input instanceof Request ? input : init));
-    }
-    const m = url.match(/^https:\/\/([^/]+)(\/.*)?$/);
-    if (m && (m[1].endsWith(".localhost") || m[1] === "localhost" || m[1].includes(".localhost:"))) {
-      let host = m[1];
-      if (!host.includes(":")) host = `${host}:${dispPort}`;
-      url = `http://${host}${m[2] ?? ""}`;
-      return realFetch(new Request(url, input instanceof Request ? input : init));
-    }
-    return realFetch(input as string | URL | Request, init);
-  }) as typeof fetch;
-  return () => { globalThis.fetch = realFetch; };
-}
+import { marketNetwork } from "@publicdomainrelay/market-network-common";
+import { installMarketNetworkFetch } from "@publicdomainrelay/market-network-fetch";
 
 const OUTPUT_DIR = new URL(".", import.meta.url).pathname;
 const LOG_FILE = `${OUTPUT_DIR}/full-flow.log`;
@@ -135,10 +114,8 @@ async function main() {
   const plcDirectoryUrl = `http://localhost:${plcPort}`;
   log(`fake PLC listening on ${plcDirectoryUrl}`);
 
-  const restoreFetch = installFetchInterceptor({
-    realFetch: globalThis.fetch,
-    plcDirectoryUrl,
-    dispPort,
+  const restoreFetch = installMarketNetworkFetch({
+    network: marketNetwork({ plcDirectoryUrl, ingressProxyHost }),
   });
   cleanups.push(restoreFetch);
 
