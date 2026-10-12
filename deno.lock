@@ -1776,6 +1776,11 @@
           "jsr:@publicdomainrelay/compute-contract-gateway-common@0"
         ]
       },
+      "lib/abc/compute-request": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/market-common@0"
+        ]
+      },
       "lib/abc/guest-capability": {
         "dependencies": [
           "jsr:@publicdomainrelay/cloud-init-common@0",
