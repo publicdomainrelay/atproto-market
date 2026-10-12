@@ -1,4 +1,4 @@
-import { assert } from "@std/assert";
+import { assert, assertEquals } from "@std/assert";
 import { Secp256k1Keypair } from "@atproto/crypto";
 import { Hono } from "@hono/hono";
 import { createLogger } from "@publicdomainrelay/logger";
@@ -166,7 +166,6 @@ Deno.test(
         serve: gatewayServe,
         plcDirectoryUrl,
         ingressProxyHost,
-        fedingressHost: `localhost:${dispPort}`,
         label: "gateway",
         relayUrls: [],
       });
@@ -209,14 +208,7 @@ Deno.test(
         typeof result.receiptUri === "string",
         "receiptUri should be a string",
       );
-      assert(
-        typeof result.websocatUrl === "string",
-        "websocatUrl should be a string",
-      );
-      assert(
-        result.websocatUrl!.includes("gateway-test-vm"),
-        "websocatUrl should include vm name",
-      );
+      assertEquals(result.sshProxyCommand, undefined, "a skipSsh request attempts no ssh");
       assert(
         typeof result.winnerDid === "string",
         "winnerDid should be a string",

@@ -1,7 +1,7 @@
 // Cross-platform bidder integration test matrix.
 // Validates: RFP -> bid -> accept -> container provision.
 // Two bidder variants: hono-bidder (static imports for core flow) +
-// hono-bidder CLI subprocess (local ssh-xrpc-relay).
+// hono-bidder CLI subprocess (ssh over the guest's iroh endpoint).
 // Runs on macOS (container CLI), Linux (docker), WSL2 (docker), Windows (wsl docker).
 //
 //   deno test --allow-all test/bidder_cross_platform_integration_test.ts
@@ -21,7 +21,7 @@ import { createLocalComputeProvider } from "@publicdomainrelay/compute-provider-
 import type { ComputeAtproto } from "@publicdomainrelay/compute-provider-abc";
 import { createRelayFactory } from "@publicdomainrelay/hono-factory-did-key-ingress-proxy-xrpc";
 import {
-  createRequesterPDS, ensureWebsocat, runComputeContract,
+  createRequesterPDS, runComputeContract,
 } from "@publicdomainrelay/requester-xrpc";
 import type { ContainerBackend } from "@publicdomainrelay/container-backend-abc";
 import { createContainerBackend } from "@publicdomainrelay/container-backend-container";
@@ -504,40 +504,23 @@ Deno.test({
       // Use gateway IP so the guest container can reach the relay dispatcher.
       // "localhost" inside the container = container's own loopback, not the host.
       ingressProxyHost: `${gateway}:${dispPort}`,
-      // audHost for JWT -- must match relay's hostname (localhost), not gateway IP
-      fedingressHost: "relay.localhost",
-      // This step proves the websocket relay tunnel, so it names that transport
-      // instead of taking the iroh default the flow now composes.
-      userData: { transport: "tunnel" },
       skipSsh: false,
       keepVm: false,
       policy: { name: "open", args: { bidWindowSec: 8 } },
       vmReadyTimeoutSec: 240,
-      execProgram: "echo SSH_OK_VIA_RELAY && uname -a",
+      execProgram: "echo SSH_OK_OVER_IROH && uname -a",
       extraBidderDids: [proc.did],
       denyBidderDids: ["did:plc:centraldefaultbidder000000"],
-      // The guest announces its fqdn as <sub>.<gateway-ip>:<port> (reachable
-      // from inside the container network). On the host, rewrite to
-      // <sub>.relay.localhost:<port> -- resolves to loopback and the Host
-      // header matches the dispatcher's subdomain routing. Plain listener:
-      // only guest OIDC needs the TLS one.
-      sshProxyCommandFn: (fqdn: string) => {
-        const sub = fqdn.split(".")[0];
-        const port = fqdn.includes(":") ? fqdn.slice(fqdn.lastIndexOf(":") + 1) : "80";
-        return `websocat --binary ws://${sub}.relay.localhost:${port}/xrpc/com.fedproxy.temp.xrpc.tunnel`;
-      },
     });
 
     assert(result.event === "compute_request_complete",
       `[${opts.label}] expected compute_request_complete, got ${result.event}: ${result.error ?? ""}`);
-    assert(result.sshReady === true, `[${opts.label}] guest never reachable over ssh relay`);
+    assert(result.sshReady === true, `[${opts.label}] guest never reachable over iroh`);
+    assert(result.sshProxyCommand?.includes(" connect "), `[${opts.label}] ssh went through ${result.sshProxyCommand}`);
     assert(result.sshExitCode === 0, `[${opts.label}] ssh session exited ${result.sshExitCode}`);
   }
 
-  // websocat needed for SSH ProxyCommand tunnel -- CI runners may not have it.
-  await ensureWebsocat(logger).catch(() => {});
-
-  await t.step("[bidder:hono-bidder] ssh via local xrpc relay", async () => {
+  await t.step("[bidder:hono-bidder] ssh over iroh", async () => {
     await runSshStep({
       label: "hono-bidder-local-ssh",
       spawnConfig: {

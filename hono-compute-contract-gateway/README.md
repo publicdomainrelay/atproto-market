@@ -167,20 +167,20 @@ goat xrpc procedure "$GATEWAY_URL" com.publicdomainrelay.temp.gateway.requestCom
 
 ### 5. Connect via SSH
 
-Gateway returns `websocatUrl` and `vmFqdn`:
+A request with `skipSsh: false` reaches the guest over its iroh endpoint, the
+only guest transport, and the gateway returns the ssh ProxyCommand it used:
 
 ```json
 {
   "receiptOk": true,
-  "websocatUrl": "wss://my-vm--did-plc-paeucw23byz57hqwihjmw4o3.fedproxy.com",
-  "vmFqdn": "my-vm--did-plc-paeucw23byz57hqwihjmw4o3.fedproxy.com"
+  "sshProxyCommand": "dumbpipe connect <ticket>"
 }
 ```
 
 ```sh
-ssh -o ProxyCommand='websocat --binary wss://my-vm--did-plc-paeucw23byz57hqwihjmw4o3.fedproxy.com' \
+ssh -o ProxyCommand='dumbpipe connect <ticket>' \
     -o IdentityFile=./my-vm-key \
-    root@my-vm--did-plc-paeucw23byz57hqwihjmw4o3.fedproxy.com
+    root@guest
 ```
 
 ## Request a Deno Worker
@@ -321,7 +321,7 @@ goat xrpc procedure "$GATEWAY_URL" com.publicdomainrelay.temp.gateway.requestCom
 | `--pds-state-path` | `PDS_STATE_PATH` | -- | Path for persistent PDS state (Deno.Kv SQLite) |
 | `--plc-directory-url` | `PLC_DIRECTORY_URL` | `https://plc.directory` | PLC directory |
 | `--dispatcher-host` | `INGRESS_PROXY_HOST` | `xrpc.fedproxy.com` | XRPC relay |
-| `--fedproxy-host` | `FEDPROXY_HOST` | `fedproxy.com` | SSH ingress |
+| `--fedproxy-host` | -- | -- | Removed (legacy-transport): refused; iroh is the only guest transport |
 | `--relay-urls` | `RELAY_URLS` | `https://reg.market.fedfork.com` | Bidder discovery |
 
 ## Development
@@ -335,7 +335,7 @@ deno test -A --config atproto-market/deno.json atproto-market/test/bidder_contai
 # Gateway VM provisioning test (container mode, local infrastructure)
 deno test -A --config atproto-market/deno.json atproto-market/test/gateway_request_vm_integration_test.ts
 
-# Gateway SSH test (container mode, SSH via websocat)
+# Gateway SSH test (container mode, SSH over iroh)
 deno test -A --config atproto-market/deno.json atproto-market/test/gateway_ssh_integration_test.ts
 
 # README smoke test (runs README shell blocks against local infra)

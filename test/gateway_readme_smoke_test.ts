@@ -309,7 +309,6 @@ Deno.test({
         "--hostname", "127.0.0.1",
         "--plc-directory-url", plcDirectoryUrl,
         "--ingress-proxy-host", ingressProxyHost,
-        "--fedproxy-host", "localhost",
         "--pds-state-path", `${gatewayTmp}/pds.db`,
       ],
       stdout: "piped", stderr: "piped",
@@ -440,14 +439,14 @@ Deno.test({
         }
 
         // Skip blocks that need infra not provided by test:
-        // - SSH connection blocks (need real SSH + fedproxy)
+        // - SSH connection blocks (need a real guest ticket)
         // - goat record create (needs PDS OAuth session, not just service auth)
         // - deno test blocks (recursion)
         // - goat resolve with hardcoded URLs (uses $GATEWAY_URL now)
         // - goat xrpc procedure blocks with multiline source (goat puts source
         //   in HTTP header, newlines break the request -- known goat limitation)
         if (
-          (b.includes("ssh ") && (b.includes("websocat") || b.includes("ProxyCommand"))) ||
+          (b.includes("ssh ") && b.includes("ProxyCommand")) ||
           b.includes("goat record create") ||
           b.includes("deno test ") ||
           b.includes("goat repo ") ||

@@ -29,7 +29,6 @@ export interface GatewayOptions {
   privateKeyHex?: string;
   plcDirectoryUrl?: string;
   ingressProxyHost?: string;
-  fedingressHost?: string;
   label?: string;
   storagePath?: string;
   relayUrls?: string[];
@@ -77,14 +76,9 @@ export function createComputeContractGateway(
       const { runComputeContract, createSshSessionProvider } = await import(
         "@publicdomainrelay/requester-xrpc"
       );
-      const { flattenLabel } = await import(
-        "@publicdomainrelay/cloud-init-common"
-      );
 
       const vmName = (input.computeVm.role as string) ||
         `compute-${crypto.randomUUID().slice(0, 8)}`;
-      const fedingressHost = opts.fedingressHost ?? "fedproxy.com";
-
       const sshProvider = createSshSessionProvider(logger);
 
       const result = await runComputeContract(pds, {
@@ -96,13 +90,9 @@ export function createComputeContractGateway(
         rbac: true,
         vmReadyTimeoutSec: input.vmReadyTimeoutSec,
         execProgram: input.execProgram,
-        fedingressHost,
         plcUrl: opts.plcDirectoryUrl,
         ingressProxyHost: opts.ingressProxyHost,
         sshProvider,
-        // The gateway reports a websocat relay URL, so the guest is provisioned
-        // with the websocket transport explicitly instead of the iroh default.
-        userData: { transport: "tunnel" },
         logger,
         extraBidderDids: input.extraBidderDids,
         relayUrls: opts.relayUrls,
@@ -116,18 +106,13 @@ export function createComputeContractGateway(
         };
       }
 
-      const vmFqdn =
-        `${flattenLabel(vmName)}--${flattenLabel(pds.did)}.${fedingressHost}`;
-      const websocatUrl = `wss://${vmFqdn}`;
-
       return {
         receiptUri: result.receiptUri,
         receiptCid: result.receiptCid,
         receiptOk: result.receiptOk,
         sshReady: result.sshReady,
         sshExitCode: result.sshExitCode,
-        websocatUrl,
-        vmFqdn,
+        sshProxyCommand: result.sshProxyCommand,
         winnerDid: result.winnerDid,
         winnerBidUri: result.bidUri,
         winnerBidCid: result.bidCid,
@@ -159,7 +144,6 @@ export function createComputeContractGateway(
       );
 
       const vmName = `worker-${crypto.randomUUID().slice(0, 8)}`;
-      const fedingressHost = opts.fedingressHost ?? "fedproxy.com";
       const sshProvider = createSshSessionProvider(logger);
 
       const result = await runComputeContract(pds, {
@@ -168,11 +152,9 @@ export function createComputeContractGateway(
         policyEngine: input.policyEngine,
         skipSsh: true,
         keepVm: true,
-        fedingressHost,
         plcUrl: opts.plcDirectoryUrl,
         ingressProxyHost: opts.ingressProxyHost,
         sshProvider,
-        userData: { transport: "tunnel" },
         logger,
         extraBidderDids: input.extraBidderDids ?? [],
         appliesToNsid: WORKER_MANIFEST_NSID,
@@ -216,7 +198,6 @@ export function createComputeContractGateway(
       );
 
       const vmName = `worker-${crypto.randomUUID().slice(0, 8)}`;
-      const fedingressHost = opts.fedingressHost ?? "fedproxy.com";
       const sshProvider = createSshSessionProvider(logger);
 
       const result = await runComputeContract(pds, {
@@ -225,11 +206,9 @@ export function createComputeContractGateway(
         policyEngine: input.policyEngine,
         skipSsh: true,
         keepVm: true,
-        fedingressHost,
         plcUrl: opts.plcDirectoryUrl,
         ingressProxyHost: opts.ingressProxyHost,
         sshProvider,
-        userData: { transport: "tunnel" },
         logger,
         extraBidderDids: [],
         appliesToNsid: WORKER_MANIFEST_NSID,

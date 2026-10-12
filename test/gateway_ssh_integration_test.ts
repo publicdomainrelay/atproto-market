@@ -160,7 +160,6 @@ Deno.test(
         serve: gatewayServe,
         plcDirectoryUrl,
         ingressProxyHost,
-        fedingressHost: `localhost:${dispPort}`,
         label: "gateway",
       });
       await gateway.beginServe();
@@ -199,7 +198,7 @@ Deno.test(
         receiptOk: result.receiptOk,
         sshReady: result.sshReady,
         sshExitCode: result.sshExitCode,
-        websocatUrl: result.websocatUrl,
+        sshProxyCommand: result.sshProxyCommand,
       } as Record<string, unknown>);
 
       assert(result.receiptOk === true, "receiptOk should be true");
@@ -208,9 +207,10 @@ Deno.test(
         "receiptUri should be a string",
       );
       assert(
-        typeof result.websocatUrl === "string",
-        "websocatUrl should be a string",
+        result.sshProxyCommand === undefined || result.sshProxyCommand.includes("dumbpipe connect "),
+        `the gateway reaches the guest only over iroh, got ${result.sshProxyCommand}`,
       );
+      assert(!JSON.stringify(result).includes("websocat"), "the gateway names no websocat path");
 
       await gateway.dispose();
       await bidder.shutdown();

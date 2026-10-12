@@ -119,7 +119,6 @@ Deno.test(
       const gateway = createComputeContractGateway({
         logger, serve: gatewayServe,
         plcDirectoryUrl, ingressProxyHost,
-        fedingressHost: `localhost:${dispPort}`,
         label: "gateway-worker",
       });
       await gateway.beginServe();

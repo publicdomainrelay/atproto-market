@@ -4,6 +4,7 @@ import { createServe } from "@publicdomainrelay/serve";
 import { IdResolver } from "@atproto/identity";
 import { createComputeContractGateway } from "@publicdomainrelay/compute-contract-gateway-xrpc";
 import { createComputeContractGatewayFactory } from "@publicdomainrelay/hono-factory-compute-contract-gateway-xrpc";
+import { removedTransportFlagsIn } from "@publicdomainrelay/cloud-init-common";
 import cliArgsEnv from "./cli-args-env.json" with { type: "json" };
 
 let runtimeConfig = null;
@@ -17,6 +18,12 @@ const { options } = await new Command(
   cliArgsEnv,
   runtimeConfig,
 ).resolve();
+
+const removedFlags = removedTransportFlagsIn(options, ["fedproxy-host"]);
+if (removedFlags.length > 0) {
+  for (const err of removedFlags) console.error(err.message);
+  Deno.exit(2);
+}
 
 const logger = createLogger({ serviceName: "compute-contract-gateway" });
 
@@ -54,7 +61,6 @@ const gateway = createComputeContractGateway({
   privateKeyHex,
   plcDirectoryUrl: options.plcDirectoryUrl as string | undefined,
   ingressProxyHost: options.ingressProxyHost as string | undefined,
-  fedingressHost: options.fedingressHost as string | undefined,
   label: "compute-contract-gateway",
   storagePath,
   relayUrls: relayUrlsStr

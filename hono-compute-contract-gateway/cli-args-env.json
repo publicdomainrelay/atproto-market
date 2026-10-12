@@ -42,9 +42,7 @@
     },
     "fedproxy-host": {
       "type": "string",
-      "description": "FedProxy SSH ingress host",
-      "env": "FEDPROXY_HOST",
-      "default": "fedproxy.com"
+      "description": "Removed (legacy-transport): iroh is the only guest transport; passing it is refused"
     },
     "relay-urls": {
       "type": "string",

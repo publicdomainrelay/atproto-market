@@ -76,8 +76,7 @@ export interface GatewayComputeResponse {
   receiptOk?: boolean;
   sshReady?: boolean;
   sshExitCode?: number;
-  websocatUrl?: string;
-  vmFqdn?: string;
+  sshProxyCommand?: string;
   winnerDid?: string;
   winnerBidUri?: string;
   winnerBidCid?: string;

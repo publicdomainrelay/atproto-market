@@ -1,5 +1,4 @@
 {
   "hostname": "localhost",
-  "ingress-proxy-host": "xrpc.fedproxy.com",
-  "fedproxy-host": "fedproxy.com"
+  "ingress-proxy-host": "xrpc.fedproxy.com"
 }
