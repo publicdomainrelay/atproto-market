@@ -93,5 +93,11 @@ in since step 3.
 | 3 | did-key-associator 3cde452: `generated/oauth-scope.js` regenerated. `oauth_scope_drift_test.ts` is red with the file from 3cde452^ and green at 3cde452; static files deployed by hand 2026-10-12T01:41:55Z (backup `/root/qr-static-backup/20261012T014155Z`), the step `deploy.sh --static-only` now performs |
 | 4 | Every bidder account re-signs in through the QR |
 
-`vm.hostKeys` (M4-HOST-KEYS) is the next NSID
-to follow this checklist.
+## Second NSID: `com.publicdomainrelay.temp.compute.events.vm.hostKeys`
+
+| Step | Change |
+|------|--------|
+| 1 | atproto-market task/host-keys: `lexicons/com/publicdomainrelay/temp/compute/events/vm/hostKeys.json`, generated types, `COMPUTE_EVENTS_VM_HOST_KEYS_NSID`; written by `lib/market-bidder-compute` (`createRepoRecord(COMPUTE_EVENTS_VM_HOST_KEYS_NSID, ...)`). `test/vm_hostkeys_lexicon_test.ts` |
+| 2 | typescript-helpers task/host-keys: `VM_HOST_KEYS` in `BIDDER_OAUTH_SCOPE`. `role_scope_coverage_test.ts` was red without it (`vm.hostKeys?action=create (lib/market-bidder-compute/mod.ts:246)`) |
+| 3 | did-key-associator task/host-keys: `generated/oauth-scope.js` regenerated; `oauth_scope_drift_test.ts` red with the old file, green with the new one. The `--static-only` deploy is the lead's |
+| 4 | Every bidder account re-signs in through the QR before a live bidder publishes vm.hostKeys |
