@@ -209,6 +209,7 @@
     "@publicdomainrelay/compute-provider-firecracker": "../hono-compute-provider/lib/compute-provider-firecracker/mod.ts",
     "@publicdomainrelay/node-image-firecracker": "../hono-compute-provider/lib/node-image-firecracker/mod.ts",
     "@publicdomainrelay/microvm-firecracker": "../hono-compute-provider/lib/microvm-firecracker/mod.ts",
+    "@publicdomainrelay/microvm-firecracker-userns": "../hono-compute-provider/lib/microvm-firecracker-userns/mod.ts",
     "@publicdomainrelay/node-image-abc": "../hono-compute-provider/lib/abc/node-image/mod.ts"
   },
   "tasks": {
