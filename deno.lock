@@ -2397,6 +2397,12 @@
       "jsr:@publicdomainrelay/key-file-fs@0.0.0": {},
       "jsr:@publicdomainrelay/logger@0.2.0": {},
       "jsr:@publicdomainrelay/market-bidder-keys@0.0.0": {},
+      "jsr:@publicdomainrelay/market-network-common@0.0.0": {},
+      "jsr:@publicdomainrelay/market-network-fetch@0.0.0": {
+        "dependencies": [
+          "jsr:@publicdomainrelay/market-network-common@0"
+        ]
+      },
       "jsr:@publicdomainrelay/microvm-firecracker@0.0.0": {
         "dependencies": [
           "jsr:@publicdomainrelay/container-backend-abc@0"
